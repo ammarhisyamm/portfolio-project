@@ -29,17 +29,12 @@ export default async function HomePage() {
       <TrustStrip items={content.trust} />
       <AboutPanel about={content.about} contact={content.contact} socials={content.socials.items} />
 
-      <section className="grid gap-3">
-        <div className="px-0.5">
-          <span className="kicker">Working experience</span>
-        </div>
-        <ExperienceAccordion items={content.experience} />
-      </section>
+      <ExperienceAccordion items={content.experience} />
 
       <CategoryStacks categories={content.homeCategories} />
 
-      <section className="grid gap-3">
-        <div className="flex items-end justify-between gap-4 px-0.5">
+      <section className="panel p-5 sm:p-8">
+        <div className="flex items-end justify-between gap-4">
           <span className="kicker">Selected work</span>
           <Link
             href="/work"
@@ -49,7 +44,9 @@ export default async function HomePage() {
             <ArrowRight size={13} className="ml-1 inline" aria-hidden="true" />
           </Link>
         </div>
-        <FeaturedWork caseStudies={featured} />
+        <div className="mt-6">
+          <FeaturedWork caseStudies={featured} />
+        </div>
       </section>
     </div>
   );

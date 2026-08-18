@@ -25,11 +25,9 @@ export default function CategoryStacks({ categories }: { categories: HomeCategor
   if (categories.length === 0) return null;
 
   return (
-    <section className="grid gap-3 md:gap-4">
-      <div className="px-0.5">
-        <span className="kicker">Design exploration</span>
-      </div>
-      <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+    <section className="panel p-5 sm:p-8">
+      <span className="kicker">Design exploration</span>
+      <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2">
         {categories.map((cat) => (
           <CategoryStack key={cat.key} cat={cat} />
         ))}

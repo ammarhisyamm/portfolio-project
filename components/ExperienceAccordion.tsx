@@ -10,10 +10,12 @@ export default function ExperienceAccordion({ items }: { items: ExperienceItem[]
 
   return (
     <div className="panel p-5 sm:p-8">
-      {items.map((job, i) => {
-        const isOpen = open === i;
-        return (
-          <div key={job.company} className={`border-line ${i > 0 ? "border-t" : ""}`}>
+      <span className="kicker">Working experience</span>
+      <div className="mt-4 border-t border-line">
+        {items.map((job, i) => {
+          const isOpen = open === i;
+          return (
+            <div key={job.company} className={`border-line ${i > 0 ? "border-t" : ""}`}>
             <button
               type="button"
               onClick={() => setOpen(isOpen ? null : i)}
@@ -65,6 +67,7 @@ export default function ExperienceAccordion({ items }: { items: ExperienceItem[]
           </div>
         );
       })}
+      </div>
     </div>
   );
 }

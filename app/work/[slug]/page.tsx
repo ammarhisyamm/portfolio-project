@@ -74,9 +74,9 @@ export default async function CaseStudyPage({ params }: Props) {
           Back to work
         </Link>
 
-        <Reveal className="grid gap-5 px-0.5 pt-6 sm:pt-10">
+        <Reveal className="panel grid gap-5 p-5 sm:p-8">
           {meta && <span className="kicker">{meta}</span>}
-          <h1 className="max-w-[1000px] text-[clamp(34px,5.6vw,72px)] font-normal leading-[1.02] tracking-[-0.06em]">
+          <h1 className="text-[clamp(30px,4.5vw,52px)] font-normal leading-[1.05] tracking-[-0.06em]">
             {cs.hero_headline || cs.title}
           </h1>
           {cs.hero_description && (

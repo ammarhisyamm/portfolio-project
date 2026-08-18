@@ -17,9 +17,11 @@ export default function CategoryGallery({ cat }: { cat: HomeCategory }) {
         Back to home
       </Link>
 
-      <div className="grid gap-4 px-0.5 pt-6 sm:pt-8">
+      <div className="panel p-5 sm:p-8">
         <span className="kicker">Design exploration</span>
-        <h1 className="text-[clamp(34px,5vw,64px)] font-normal leading-none tracking-[-0.06em]">{cat.label}</h1>
+        <h1 className="mt-2 text-[clamp(30px,4.5vw,48px)] font-normal leading-none tracking-[-0.06em]">
+          {cat.label}
+        </h1>
       </div>
 
       {sorted.length > 0 ? (
