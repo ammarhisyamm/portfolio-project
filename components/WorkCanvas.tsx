@@ -257,6 +257,8 @@ export default function WorkCanvas({ projects }: { projects: Project[] }) {
   // Pan canvas (empty space, space+drag, or middle mouse)
   const onViewportPointerDown = (e: React.PointerEvent) => {
     if (e.button !== 0 && e.button !== 1) return;
+    const target = e.target as HTMLElement | null;
+    if (target?.closest("button, a, [role='button']")) return;
     const el = viewportElRef.current;
     if (!el) return;
     if (e.button === 1) e.preventDefault();
@@ -381,7 +383,7 @@ export default function WorkCanvas({ projects }: { projects: Project[] }) {
                       }
                     }}
                     style={{ transform: `rotate(${layout.rotation}deg)` }}
-                    className={`group cursor-move touch-none select-none overflow-hidden rounded-[14px] border border-line bg-panel shadow-soft transition-shadow duration-300 hover:shadow-soft ${
+                    className={`group pointer-events-auto cursor-move touch-none select-none overflow-hidden rounded-[14px] border border-line bg-panel shadow-soft transition-shadow duration-300 hover:shadow-soft ${
                       spaceDown ? "cursor-grab" : "cursor-move"
                     }`}
                   >
