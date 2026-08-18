@@ -2,11 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { House, UserRound, BriefcaseBusiness, Mail } from "lucide-react";
+import { House, BriefcaseBusiness, Mail } from "lucide-react";
 
 const TABS = [
   { href: "/", label: "Home", Icon: House },
-  { href: "/about", label: "About", Icon: UserRound },
   { href: "/work", label: "Work", Icon: BriefcaseBusiness },
   { href: "/contact", label: "Contact", Icon: Mail },
 ];

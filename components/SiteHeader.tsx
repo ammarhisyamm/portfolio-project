@@ -6,7 +6,6 @@ import Clock from "./Clock";
 
 const LINKS = [
   { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
   { href: "/work", label: "Work" },
   { href: "/contact", label: "Contact" },
 ];
