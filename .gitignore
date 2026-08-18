@@ -1,4 +1,26 @@
-node_modules/
-dist/
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
 .DS_Store
-.vite/
+*.pem
+*.log
+
+# env
+.env*
+!.env.example
+
+# vercel
+.vercel
+
+# vite leftovers
+/dist

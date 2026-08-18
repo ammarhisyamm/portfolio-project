@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    @apply bg-bg font-sans text-[15px] leading-normal text-ink;
+  }
+  ::selection {
+    @apply bg-ink text-white;
+  }
+  :focus-visible {
+    @apply outline outline-2 outline-offset-[3px] outline-ink;
+  }
+}
+
+@layer components {
+  .panel {
+    @apply rounded-panel border border-line bg-panel;
+  }
+  .kicker {
+    @apply block font-mono text-[11px] uppercase tracking-[0.02em] text-sub;
+  }
+  .btn {
+    @apply inline-flex min-h-12 items-center justify-center gap-2.5 whitespace-nowrap rounded-full px-6 text-sm font-medium no-underline;
+  }
+  .btn-primary {
+    @apply border border-ink bg-ink text-white;
+  }
+  .btn-secondary {
+    @apply border border-line-strong bg-panel text-ink;
+  }
+  .field {
+    @apply w-full rounded-chip border border-line bg-bg px-4 py-3 text-sm text-ink transition-colors placeholder:text-muted focus:border-ink focus:outline-none;
+  }
+  .field-error {
+    @apply border-red-400 focus:border-red-400;
+  }
+  .media-ph {
+    @apply grid h-full w-full place-items-center gap-3.5 text-center text-muted;
+    background-color: #ecece8;
+    background-image:
+      repeating-linear-gradient(0deg, #e3e3de 0 1px, transparent 1px 36px),
+      repeating-linear-gradient(90deg, #e3e3de 0 1px, transparent 1px 36px);
+  }
+  .media-ph span {
+    @apply font-mono text-[10px] uppercase tracking-[0.06em] text-[#a8a8a2];
+  }
+  .hero-decor {
+    background-image:
+      repeating-linear-gradient(0deg, #eaeae6 0 1px, transparent 1px 42px),
+      repeating-linear-gradient(90deg, #eaeae6 0 1px, transparent 1px 42px);
+    -webkit-mask-image: radial-gradient(circle at 72% 42%, #000 0%, transparent 80%);
+    mask-image: radial-gradient(circle at 72% 42%, #000 0%, transparent 80%);
+    opacity: 0.8;
+  }
+}
+
+/* Lenis smooth scrolling */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
