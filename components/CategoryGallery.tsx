@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import type { HomeCategory } from "@/lib/content";
-import Media from "./Media";
+import Lightbox from "./Lightbox";
 
 export default function CategoryGallery({ cat }: { cat: HomeCategory }) {
   const images = cat.images.filter((i) => i.visible);
@@ -25,21 +25,7 @@ export default function CategoryGallery({ cat }: { cat: HomeCategory }) {
       </div>
 
       {sorted.length > 0 ? (
-        <div className="columns-1 gap-3 space-y-3 sm:columns-2 md:gap-4 md:space-y-4 lg:columns-3">
-          {sorted.map((img, i) => (
-            <figure
-              key={img.id ?? i}
-              className="break-inside-avoid overflow-hidden rounded-[14px] border border-line bg-panel sm:rounded-[18px]"
-            >
-              <Media
-                src={img.image_url}
-                alt={img.alt_text || `${cat.label} visual ${i + 1}`}
-                label={cat.label}
-                imgClassName="h-auto w-full"
-              />
-            </figure>
-          ))}
-        </div>
+        <Lightbox images={sorted} />
       ) : (
         <p className="px-0.5 text-sm text-sub">Belum ada gambar untuk kategori ini.</p>
       )}

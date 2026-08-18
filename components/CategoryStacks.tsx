@@ -92,7 +92,7 @@ function CategoryStack({ cat }: { cat: HomeCategory }) {
                 src={primary.image_url}
                 alt={primary.alt_text || cat.label}
                 label={cat.label}
-                imgClassName="h-full w-full object-cover select-none transition-transform duration-500 ease-out"
+                imgClassName="h-full w-full object-cover select-none transition-transform duration-500 ease-out group-hover:scale-[1.05]"
               />
             </div>
           ) : (
@@ -104,7 +104,7 @@ function CategoryStack({ cat }: { cat: HomeCategory }) {
 
         {count > 0 && (
           <motion.span
-            className="absolute right-3 top-3 z-20 grid h-9 w-9 place-items-center rounded-full bg-[#2456ff] text-[13px] font-semibold text-white shadow-[0_6px_18px_rgba(36,86,255,0.4)] sm:h-10 sm:w-10"
+            className="absolute right-3 top-3 z-20 grid h-9 w-9 place-items-center rounded-full border border-line bg-panel text-[13px] font-semibold text-ink shadow-soft sm:h-10 sm:w-10"
             animate={hover ? { y: -3 } : { y: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
           >
