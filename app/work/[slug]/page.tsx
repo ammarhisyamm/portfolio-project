@@ -97,7 +97,7 @@ export default async function CaseStudyPage({ params }: Props) {
         )}
 
         {info.length > 0 && (
-          <div className="grid grid-cols-2 gap-x-6 gap-y-6 border-t border-line pt-8 md:grid-cols-3 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-x-8 gap-y-6 border-t border-line pt-8">
             {info.map(([label, value]) => (
               <div key={label} className="grid content-start gap-1.5">
                 <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted">{label}</span>

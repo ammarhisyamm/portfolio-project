@@ -93,7 +93,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
     case "METRIC_HIGHLIGHT":
       return (
         <section className="grid gap-3 md:gap-4">
-          <div className="grid gap-6 border-t border-line pt-10 md:grid-cols-[0.9fr_1.1fr] md:gap-10">
+          <div className="grid gap-4 border-t border-line pt-8">
             <span className="kicker">{block.eyebrow || "Metrics"}</span>
             <div className="grid gap-4">
               {block.heading && <h2 className="text-[clamp(24px,3vw,34px)] leading-[1.12] tracking-[-0.05em]">{block.heading}</h2>}
@@ -101,7 +101,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
             </div>
           </div>
           {(block.metrics?.length ?? 0) > 0 && (
-            <div className="grid grid-cols-2 gap-3 md:gap-4 lg:grid-cols-4">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:gap-4">
               {block.metrics.map((m, i) => (
                 <div key={i} className="rounded-[14px] border border-line bg-panel p-5 sm:rounded-[18px]">
                   <div className="text-[clamp(28px,3.6vw,46px)] font-medium leading-none tracking-[-0.05em]">{m.value}</div>
@@ -116,7 +116,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
     case "QUOTE":
       return (
         <section className="grid gap-3 md:gap-4">
-          <div className="grid gap-6 border-t border-line pt-10 md:grid-cols-[0.9fr_1.1fr] md:gap-10">
+          <div className="grid gap-4 border-t border-line pt-8">
             <span className="kicker">{block.eyebrow || "Quote"}</span>
             <figure className="grid gap-5">
               <blockquote className="text-[clamp(22px,3vw,32px)] font-normal leading-[1.25] tracking-[-0.04em]">
@@ -135,7 +135,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
     case "IMAGE_GALLERY":
       return (
         <section className="grid gap-3 md:gap-4">
-          <div className="grid gap-6 border-t border-line pt-10 md:grid-cols-[0.9fr_1.1fr] md:gap-10">
+          <div className="grid gap-4 border-t border-line pt-8">
             <span className="kicker">{block.eyebrow || "Gallery"}</span>
             <div className="grid gap-4">
               {block.heading && <h2 className="text-[clamp(24px,3vw,34px)] leading-[1.12] tracking-[-0.05em]">{block.heading}</h2>}
@@ -175,7 +175,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
       if (!medias.length) {
         return (
           <section className="grid gap-3 md:gap-4">
-            <div className="grid gap-6 border-t border-line pt-10 md:grid-cols-[0.9fr_1.1fr] md:gap-10">
+            <div className="grid gap-4 border-t border-line pt-8">
               <span className="kicker">{block.eyebrow || "Detail"}</span>
               {text}
             </div>
@@ -185,8 +185,8 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
       const reversed = block.layout === "left";
       return (
         <section className="grid gap-3 md:gap-4">
-          <div className="grid items-center gap-6 md:grid-cols-2 md:gap-10">
-            <div className={`grid gap-4 ${reversed ? "md:order-2" : ""}`}>
+          <div className="grid gap-6">
+            <div className="grid gap-4">
               <span className="kicker">{block.eyebrow || "Detail"}</span>
               {text}
             </div>
@@ -199,7 +199,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
     case "BEFORE_AFTER":
       return medias.length > 0 ? (
         <section className="grid gap-3 md:gap-4">
-          <div className="grid gap-6 border-t border-line pt-10 md:grid-cols-[0.9fr_1.1fr] md:gap-10">
+          <div className="grid gap-4 border-t border-line pt-8">
             <span className="kicker">{block.eyebrow || "Before / After"}</span>
             <div className="grid gap-4">
               {block.heading && <h2 className="text-[clamp(24px,3vw,34px)] leading-[1.12] tracking-[-0.05em]">{block.heading}</h2>}
@@ -217,7 +217,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
       if (!url) return null;
       return (
         <section className="grid gap-3 md:gap-4">
-          <div className="grid gap-6 border-t border-line pt-10 md:grid-cols-[0.9fr_1.1fr] md:gap-10">
+          <div className="grid gap-4 border-t border-line pt-8">
             <span className="kicker">{block.eyebrow || "Video"}</span>
             <div className="grid gap-4">
               {block.heading && <h2 className="text-[clamp(24px,3vw,34px)] leading-[1.12] tracking-[-0.05em]">{block.heading}</h2>}
@@ -247,7 +247,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
       if (url) {
         return (
           <section className="grid gap-3 md:gap-4">
-            <div className="grid gap-6 border-t border-line pt-10 md:grid-cols-[0.9fr_1.1fr] md:gap-10">
+            <div className="grid gap-4 border-t border-line pt-8">
               <span className="kicker">{block.eyebrow || "Prototype"}</span>
               <div className="grid gap-4">
                 {block.heading && <h2 className="text-[clamp(24px,3vw,34px)] leading-[1.12] tracking-[-0.05em]">{block.heading}</h2>}
@@ -284,7 +284,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
       if (!ARTICLE_TYPES.has(block.block_type)) return null;
       return (
         <section className="grid gap-3 md:gap-4">
-          <div className="grid gap-6 border-t border-line pt-10 md:grid-cols-[0.9fr_1.1fr] md:gap-10">
+          <div className="grid gap-4 border-t border-line pt-8">
             <span className="kicker">{block.eyebrow || block.block_type.replaceAll("_", " ")}</span>
             <div className="grid gap-4">
               {block.heading && <h2 className="text-[clamp(24px,3vw,34px)] leading-[1.12] tracking-[-0.05em]">{block.heading}</h2>}
