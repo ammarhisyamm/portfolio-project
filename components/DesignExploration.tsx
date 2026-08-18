@@ -44,7 +44,7 @@ export default function DesignExploration() {
       <div className="panel overflow-hidden py-6">
         <div
           className="marquee relative overflow-hidden"
-          style={{ "--marquee-duration": "48s" } as CSSProperties}
+          style={{ "--marquee-duration": "120s" } as CSSProperties}
         >
           <div className="marquee-track flex">
             <Frame />

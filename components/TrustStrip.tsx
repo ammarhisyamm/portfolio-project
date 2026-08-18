@@ -32,7 +32,7 @@ export default function TrustStrip() {
       </div>
       <div
         className="marquee relative overflow-hidden py-5"
-        style={{ "--marquee-duration": "32s" } as CSSProperties}
+        style={{ "--marquee-duration": "70s" } as CSSProperties}
         aria-hidden="true"
       >
         <div className="marquee-track flex">

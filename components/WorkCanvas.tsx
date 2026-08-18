@@ -1,114 +1,125 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { useProject } from "./ProjectContext";
 import type { Project } from "@/lib/projects";
 import Media from "./Media";
 
-const OFFSETS = ["mt-0", "mt-14", "mt-24", "mt-6", "mt-32", "mt-10", "mt-20", "mt-2"];
+const SCATTER = [
+  { x: 4, y: 8 },
+  { x: 27, y: 16 },
+  { x: 50, y: 6 },
+  { x: 69, y: 18 },
+  { x: 14, y: 44 },
+  { x: 40, y: 52 },
+  { x: 62, y: 44 },
+  { x: 80, y: 54 },
+];
+
+type DragState = {
+  slug: string | null;
+  moved: boolean;
+  startX: number;
+  startY: number;
+  origLeft: number;
+  origTop: number;
+};
 
 export default function WorkCanvas({ projects }: { projects: Project[] }) {
-  const scrollerRef = useRef<HTMLDivElement>(null);
-  const drag = useRef({ active: false, startX: 0, startLeft: 0 });
+  const refs = useRef<Record<string, HTMLDivElement | null>>({});
+  const drag = useRef<DragState>({
+    slug: null,
+    moved: false,
+    startX: 0,
+    startY: 0,
+    origLeft: 0,
+    origTop: 0,
+  });
   const { open } = useProject();
 
-  useEffect(() => {
-    const el = scrollerRef.current;
+  const down = (slug: string) => (e: React.PointerEvent) => {
+    const el = refs.current[slug];
     if (!el) return;
+    drag.current = {
+      slug,
+      moved: false,
+      startX: e.clientX,
+      startY: e.clientY,
+      origLeft: el.offsetLeft,
+      origTop: el.offsetTop,
+    };
+    el.setPointerCapture(e.pointerId);
+    el.classList.add("cursor-grabbing");
+    el.style.zIndex = "10";
+  };
 
-    const onScroll = () => {
-      const half = el.scrollWidth / 2;
-      if (el.scrollLeft >= half) el.scrollLeft -= half;
-    };
+  const move = (e: React.PointerEvent) => {
+    const d = drag.current;
+    const el = d.slug ? refs.current[d.slug] : null;
+    if (!el) return;
+    const dx = e.clientX - d.startX;
+    const dy = e.clientY - d.startY;
+    if (Math.abs(dx) + Math.abs(dy) > 5) d.moved = true;
+    el.style.left = `${d.origLeft + dx}px`;
+    el.style.top = `${d.origTop + dy}px`;
+  };
 
-    const onWheel = (e: WheelEvent) => {
-      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
-      e.preventDefault();
-      el.scrollLeft += e.deltaY;
-    };
-
-    const onPointerDown = (e: PointerEvent) => {
-      drag.current = { active: true, startX: e.clientX, startLeft: el.scrollLeft };
-      el.classList.add("cursor-grabbing");
-    };
-    const onPointerMove = (e: PointerEvent) => {
-      if (!drag.current.active) return;
-      el.scrollLeft = drag.current.startLeft - (e.clientX - drag.current.startX);
-    };
-    const endDrag = () => {
-      drag.current.active = false;
+  const up = () => {
+    const d = drag.current;
+    if (!d.slug) return;
+    const el = refs.current[d.slug];
+    if (el) {
       el.classList.remove("cursor-grabbing");
+      el.style.zIndex = "";
+    }
+    if (!d.moved) open(d.slug);
+    drag.current = {
+      slug: null,
+      moved: false,
+      startX: 0,
+      startY: 0,
+      origLeft: 0,
+      origTop: 0,
     };
+  };
 
-    el.addEventListener("scroll", onScroll);
-    el.addEventListener("wheel", onWheel, { passive: false });
-    el.addEventListener("pointerdown", onPointerDown);
-    el.addEventListener("pointermove", onPointerMove);
-    el.addEventListener("pointerup", endDrag);
-    el.addEventListener("pointerleave", endDrag);
-
-    return () => {
-      el.removeEventListener("scroll", onScroll);
-      el.removeEventListener("wheel", onWheel);
-      el.removeEventListener("pointerdown", onPointerDown);
-      el.removeEventListener("pointermove", onPointerMove);
-      el.removeEventListener("pointerup", endDrag);
-      el.removeEventListener("pointerleave", endDrag);
-    };
-  }, []);
-
-  const group = (key: string) => (
-    <div key={key} className="flex items-start gap-8 px-8 pt-10">
-      {projects.map((p, i) => (
-        <figure key={p.slug} className={`w-64 shrink-0 sm:w-80 ${OFFSETS[i % OFFSETS.length]}`}>
-          <button
-            type="button"
-            onClick={() => open(p.slug)}
-            aria-label={`View ${p.title} case study`}
-            className="group w-full cursor-pointer overflow-hidden rounded-[18px] border border-line bg-panel text-left transition-all duration-300 hover:border-line-strong hover:shadow-soft sm:rounded-[22px] lg:rounded-[24px]"
+  return (
+    <div className="canvas-grid relative h-[60vh] overflow-hidden rounded-[18px] border border-line sm:h-[70vh] sm:rounded-[22px] lg:rounded-[24px]">
+      {projects.map((p, i) => {
+        const pos = SCATTER[i % SCATTER.length];
+        return (
+          <div
+            key={p.slug}
+            ref={(node) => {
+              refs.current[p.slug] = node;
+            }}
+            onPointerDown={down(p.slug)}
+            onPointerMove={move}
+            onPointerUp={up}
+            onPointerCancel={up}
+            role="button"
+            tabIndex={0}
+            aria-label={`Drag ${p.title}, or press Enter to view its case study`}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                open(p.slug);
+              }
+            }}
+            className="absolute w-52 cursor-grab touch-none select-none overflow-hidden rounded-[16px] border border-line bg-panel shadow-soft sm:w-64"
+            style={{ left: `${pos.x}%`, top: `${pos.y}%` }}
           >
-            <div className="aspect-[4/3] w-full overflow-hidden border-b border-line bg-bg">
+            <div className="aspect-[4/3] w-full overflow-hidden bg-bg">
               <Media
                 src={p.image}
                 alt={`Visual for ${p.title}`}
                 label={p.year}
-                imgClassName="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                imgClassName="h-full w-full object-cover pointer-events-none select-none"
               />
             </div>
-            <div className="flex items-center justify-between gap-3 p-4">
-              <span className="truncate text-[14px] font-medium tracking-[-0.02em]">{p.title}</span>
-              <span className="shrink-0 font-mono text-[10px] text-muted">{p.year}</span>
-            </div>
-          </button>
-          <figcaption className="mt-2.5 flex justify-between font-mono text-[10px] uppercase tracking-[0.06em] text-muted">
-            <span>{p.category}</span>
-            <span>Frame 0{i + 1}</span>
-          </figcaption>
-        </figure>
-      ))}
-    </div>
-  );
-
-  return (
-    <div className="overflow-hidden rounded-[18px] border border-line bg-panel sm:rounded-[22px] lg:rounded-[24px]">
-      <div className="flex items-center justify-between gap-4 border-b border-line px-5 py-3">
-        <span className="font-mono text-[11px] uppercase tracking-[0.02em] text-muted">
-          Design canvas
-        </span>
-        <span className="hidden font-mono text-[11px] text-muted sm:block">
-          Scroll or drag — endless
-        </span>
-        <span className="font-mono text-[11px] text-muted sm:hidden">Scroll ↔</span>
-      </div>
-      <div
-        ref={scrollerRef}
-        className="canvas-grid scrollbar-hide h-[68vh] cursor-grab select-none overflow-x-auto overflow-y-hidden"
-      >
-        <div className="flex w-max items-stretch">
-          {group("a")}
-          {group("b")}
-        </div>
-      </div>
+          </div>
+        );
+      })}
     </div>
   );
 }

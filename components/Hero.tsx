@@ -29,7 +29,7 @@ export default function Hero() {
 
   return (
     <section ref={ref} className="panel relative overflow-hidden p-5 sm:p-8 lg:p-10">
-      <div className="relative z-10 flex w-full max-w-[880px] flex-col items-start gap-6">
+      <div className="relative z-10 flex w-full flex-col items-start gap-6">
         <div className="flex w-full flex-wrap items-center justify-between gap-4">
           <span
             data-hero-fade
@@ -43,6 +43,7 @@ export default function Hero() {
           </div>
         </div>
 
+        <div className="flex w-full max-w-[880px] flex-col items-start gap-6">
         <div data-hero-fade className="flex items-center gap-4">
           <div
             aria-hidden="true"
@@ -85,6 +86,7 @@ export default function Hero() {
           <Btn href="/work" variant="secondary">
             View my projects
           </Btn>
+        </div>
         </div>
       </div>
     </section>
