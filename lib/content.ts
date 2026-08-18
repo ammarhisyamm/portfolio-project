@@ -62,11 +62,16 @@ export type FooterContent = {
   links: FooterLink[];
 };
 
+export type TrustItem = {
+  label: string;
+  image: string;
+};
+
 export type SiteContent = {
   projects: Project[];
   experience: ExperienceItem[];
   exploration: ExplorationItem[];
-  trust: string[];
+  trust: TrustItem[];
   hero: {
     name: string;
     title: string;
@@ -161,7 +166,7 @@ export const DEFAULTS: SiteContent = {
   projects,
   experience: DEFAULT_EXPERIENCE,
   exploration: DEFAULT_EXPLORATION,
-  trust: trustItems,
+  trust: trustItems.map((label) => ({ label, image: "" })),
   hero: {
     name: "Hisyam",
     title: "Senior UX/UI & Product Designer",
@@ -228,7 +233,7 @@ export const getContent = cache(async (): Promise<SiteContent> => {
         .order("sort", { ascending: true }),
       supabase.from("experience").select("company,role,period,points").order("sort", { ascending: true }),
       supabase.from("exploration").select("label,image_url").order("sort", { ascending: true }),
-      supabase.from("trust").select("label").order("sort", { ascending: true }),
+      supabase.from("trust").select("label,image_url").order("sort", { ascending: true }),
       supabase.from("site_content").select("key,value"),
     ]);
     if (p.error || e.error || x.error || t.error || s.error) return DEFAULTS;
@@ -257,7 +262,10 @@ export const getContent = cache(async (): Promise<SiteContent> => {
         label: r.label,
         image: r.image_url ?? "",
       })),
-      trust: (t.data ?? []).map((r) => r.label),
+      trust: (t.data ?? []).map((r) => ({
+        label: r.label,
+        image: r.image_url ?? "",
+      })),
       hero: { ...DEFAULTS.hero, ...(site.hero ?? {}) },
       about: { ...DEFAULTS.about, ...(site.about ?? {}) },
       contact: { ...DEFAULTS.contact, ...(site.contact ?? {}) },

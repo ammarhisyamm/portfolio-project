@@ -1,22 +1,30 @@
 import type { CSSProperties } from "react";
+import type { TrustItem } from "@/lib/content";
 
-function Group({ items }: { items: string[] }) {
+function Group({ items }: { items: TrustItem[] }) {
   return (
-    <div className="flex items-center gap-6 pr-6">
-      {items.map((item) => (
-        <span
-          key={item}
-          className="flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full border border-line bg-panel px-5 py-2.5 text-[13px] text-sub"
-        >
-          <span className="h-[5px] w-[5px] rounded-full bg-muted" aria-hidden="true" />
-          {item}
-        </span>
+    <div className="flex items-center gap-12 pr-12">
+      {items.map((logo) => (
+        <div key={logo.label} className="flex h-8 shrink-0 items-center justify-center">
+          {logo.image ? (
+            <img
+              src={logo.image}
+              alt={logo.label}
+              loading="lazy"
+              className="h-8 w-auto max-w-[150px] object-contain opacity-70 grayscale transition-opacity duration-300 hover:opacity-100"
+            />
+          ) : (
+            <span className="whitespace-nowrap font-mono text-[11px] uppercase tracking-[0.06em] text-muted">
+              {logo.label}
+            </span>
+          )}
+        </div>
       ))}
     </div>
   );
 }
 
-export default function TrustStrip({ items }: { items: string[] }) {
+export default function TrustStrip({ items }: { items: TrustItem[] }) {
   const DUPLICATED = [...items, ...items];
   return (
     <div className="panel overflow-hidden">
@@ -29,7 +37,7 @@ export default function TrustStrip({ items }: { items: string[] }) {
         </span>
       </div>
       <div
-        className="marquee relative overflow-hidden py-5"
+        className="marquee relative overflow-hidden py-7"
         style={{ "--marquee-duration": "70s" } as CSSProperties}
         aria-hidden="true"
       >
