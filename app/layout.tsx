@@ -5,7 +5,9 @@ import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import PageTransition from "@/components/PageTransition";
 import MobileTabBar from "@/components/MobileTabBar";
+import StickyNoteWall from "@/components/StickyNoteWall";
 import { getContent } from "@/lib/content";
+import { getNotes } from "@/lib/notes";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +21,7 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const content = await getContent();
+  const [content, notes] = await Promise.all([getContent(), getNotes()]);
   return (
     <html lang="en">
       <body>
@@ -27,6 +29,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <div className="mx-auto w-full max-w-[720px] px-4 pb-28 sm:px-6 md:pb-0">
             <SiteHeader />
             <PageTransition>{children}</PageTransition>
+            <div className="pt-3 md:pt-4">
+              <StickyNoteWall notes={notes} />
+            </div>
             <SiteFooter footer={content.footer} />
           </div>
           <MobileTabBar />
