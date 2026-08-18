@@ -26,12 +26,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html lang="en">
       <body>
         <Providers>
-          <div className="mx-auto w-full max-w-[720px] px-4 pb-28 sm:px-6 md:pb-0">
+          <div className="mx-auto w-full max-w-[720px] px-4 sm:px-6">
             <SiteHeader />
             <PageTransition>{children}</PageTransition>
-            <div className="pt-3 md:pt-4">
-              <StickyNoteWall notes={notes} />
-            </div>
+          </div>
+          <StickyNoteWall notes={notes} />
+          <div className="mx-auto w-full max-w-[720px] px-4 pb-28 sm:px-6 md:pb-0">
             <SiteFooter footer={content.footer} />
           </div>
           <MobileTabBar />

@@ -134,6 +134,22 @@ html.lenis body {
     padding: 20px;
   }
 }
+@keyframes note-drift {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-3px);
+  }
+}
+.note-drift {
+  animation: note-drift 6s ease-in-out infinite alternate;
+}
+@media (prefers-reduced-motion: reduce) {
+  .note-drift {
+    animation: none;
+  }
+}
 .scrollbar-hide {
   scrollbar-width: none;
 }

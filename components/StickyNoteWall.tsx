@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
-import { Check, Pin, Plus, X } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { AnimatePresence, MotionConfig, motion } from "motion/react";
+import { ArrowLeft, ArrowRight, Check, Pin, Plus, X } from "lucide-react";
 import type { VisitorNote } from "@/lib/notes";
 
 const COLORS: Record<string, { bg: string; border: string; text: string }> = {
@@ -17,46 +17,33 @@ const COLORS: Record<string, { bg: string; border: string; text: string }> = {
 
 const COLOR_KEYS = ["cream", "yellow", "pink", "blue", "sage", "lavender"] as const;
 
-function hashStr(s: string): number {
-  let h = 0;
-  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
-  return h / 4294967296;
-}
-
-function place(id: string) {
-  const h1 = hashStr(id + "::x");
-  const h2 = hashStr(id + "::y");
-  const h3 = hashStr(id + "::r");
-  const h4 = hashStr(id + "::s");
-  return {
-    left: `${4 + h1 * 60}%`,
-    top: `${4 + h2 * 52}%`,
-    rot: (h3 - 0.5) * 12,
-    scale: 0.88 + h4 * 0.22,
-  };
-}
-
 function shortDate(iso: string): string {
   const d = new Date(iso);
   if (isNaN(d.getTime())) return "";
   return d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
 }
 
-function NotePaper({ note }: { note: VisitorNote }) {
+function NotePaper({ note, large }: { note: VisitorNote; large?: boolean }) {
   const c = COLORS[note.color] ?? COLORS.cream;
   const isDark = note.color === "ink";
   return (
     <div
-      className="relative h-full w-full rounded-[14px] border p-4 shadow-soft transition-shadow duration-300 hover:shadow-[0_18px_44px_-14px_rgba(22,22,22,0.25)]"
+      className={`relative flex h-full w-full flex-col rounded-[14px] border p-4 shadow-soft transition-shadow duration-300 group-hover:shadow-[0_18px_44px_-14px_rgba(22,22,22,0.22)] ${
+        large ? "p-5 sm:p-6" : ""
+      }`}
       style={{ background: c.bg, borderColor: c.border, color: c.text }}
     >
       <span
         aria-hidden="true"
-        className="absolute -top-2.5 left-1/2 h-3.5 w-9 -translate-x-1/2 rotate-2 bg-white/55"
+        className={`absolute -top-2.5 left-1/2 h-3 w-8 -translate-x-1/2 rotate-2 ${isDark ? "bg-white/20" : "bg-white/55"}`}
         style={{ clipPath: "polygon(4% 0, 96% 8%, 100% 100%, 0 94%)" }}
       />
-      <p className="text-[13.5px] leading-relaxed">{note.message}</p>
-      <div className="mt-3.5 flex items-center justify-between gap-2">
+      <p
+        className={`leading-relaxed ${large ? "text-[15px] sm:text-[16px]" : "text-[13px] line-clamp-5"}`}
+      >
+        {note.message}
+      </p>
+      <div className={`mt-auto flex items-center justify-between gap-2 ${large ? "pt-6" : "pt-3"}`}>
         <span className="font-mono text-[10px] uppercase tracking-[0.06em] opacity-70">
           — {note.name}
         </span>
@@ -66,6 +53,20 @@ function NotePaper({ note }: { note: VisitorNote }) {
           </span>
         )}
       </div>
+
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-2 bottom-2 flex justify-center opacity-0 transition-all duration-300 group-hover:opacity-100"
+      >
+        <span
+          className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.08em] ${
+            isDark ? "bg-white/90 text-ink" : "bg-ink/85 text-white"
+          }`}
+        >
+          Read note <ArrowRight size={10} aria-hidden="true" />
+        </span>
+      </span>
+
       {isDark && (
         <span
           aria-hidden="true"
@@ -78,19 +79,114 @@ function NotePaper({ note }: { note: VisitorNote }) {
   );
 }
 
+function NoteButton({
+  note,
+  onClick,
+  rot,
+  drift,
+  className,
+}: {
+  note: VisitorNote;
+  onClick: () => void;
+  rot: number;
+  drift?: boolean;
+  className?: string;
+}) {
+  return (
+    <motion.button
+      type="button"
+      onClick={onClick}
+      aria-label={`Read note from ${note.name}`}
+      className={`group block w-full cursor-pointer text-left ${className ?? ""}`}
+      initial={{ opacity: 0, y: 16, rotate: rot * 1.6 }}
+      whileInView={{ opacity: 1, y: 0, rotate: rot }}
+      viewport={{ once: true, margin: "-40px" }}
+      whileHover={{ y: -5, rotate: rot * 0.25, scale: 1.02 }}
+      transition={{ type: "spring", stiffness: 300, damping: 24 }}
+    >
+      <div className={drift ? "note-drift" : undefined}>
+        <NotePaper note={note} />
+      </div>
+    </motion.button>
+  );
+}
+
 export default function StickyNoteWall({ notes: initial }: { notes: VisitorNote[] }) {
   const [notes, setNotes] = useState<VisitorNote[]>(initial);
-  const [open, setOpen] = useState(false);
+  const [composerOpen, setComposerOpen] = useState(false);
+  const [readerIndex, setReaderIndex] = useState<number | null>(null);
+  const [carIndex, setCarIndex] = useState(0);
   const [message, setMessage] = useState("");
   const [name, setName] = useState("");
   const [color, setColor] = useState<string>("yellow");
   const [posting, setPosting] = useState(false);
   const [error, setError] = useState("");
   const [pinned, setPinned] = useState(false);
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const closeReaderRef = useRef<HTMLButtonElement>(null);
+  const composerRef = useRef<HTMLDivElement>(null);
 
-  function clearFeedback() {
+  const featured = notes.find((n) => n.color !== "ink") ?? notes[0];
+  const inkNote = notes.find((n) => n.color === "ink");
+  const secondaries = [
+    inkNote,
+    ...notes.filter((n) => n.id !== featured?.id && n.id !== inkNote?.id).slice(0, 2),
+  ].filter(Boolean) as VisitorNote[];
+  const count = notes.length;
+
+  const next = useCallback(() => {
+    setReaderIndex((i) => (i === null ? null : (i + 1) % Math.max(notes.length, 1)));
+  }, [notes.length]);
+  const prev = useCallback(() => {
+    setReaderIndex((i) =>
+      i === null ? null : (i - 1 + Math.max(notes.length, 1)) % Math.max(notes.length, 1)
+    );
+  }, [notes.length]);
+
+  useEffect(() => {
+    const modalOpen = composerOpen || readerIndex !== null;
+    if (!modalOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setComposerOpen(false);
+        setReaderIndex(null);
+      }
+      if (readerIndex !== null) {
+        if (e.key === "ArrowRight") {
+          e.preventDefault();
+          next();
+        }
+        if (e.key === "ArrowLeft") {
+          e.preventDefault();
+          prev();
+        }
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [composerOpen, readerIndex, next, prev]);
+
+  useEffect(() => {
+    if (readerIndex !== null) closeReaderRef.current?.focus();
+  }, [readerIndex]);
+
+  function onCarouselScroll() {
+    const el = carouselRef.current;
+    if (!el) return;
+    const card = el.querySelector<HTMLElement>("[data-card]");
+    const step = card ? card.offsetWidth + 16 : el.clientWidth;
+    setCarIndex(Math.max(0, Math.min(notes.length - 1, Math.round(el.scrollLeft / step))));
+  }
+
+  function openComposer() {
     setError("");
-    setPinned(false);
+    setComposerOpen(true);
+    window.setTimeout(() => composerRef.current?.querySelector("textarea")?.focus(), 60);
   }
 
   async function submit() {
@@ -106,11 +202,11 @@ export default function StickyNoteWall({ notes: initial }: { notes: VisitorNote[
       const d = await res.json();
       if (!res.ok || d.error) throw new Error(d.error ?? "Something went wrong");
       if (d.note) {
-        setNotes((prev) => [d.note as VisitorNote, ...prev]);
+        setNotes((p) => [d.note as VisitorNote, ...p]);
         setPinned(true);
         window.setTimeout(() => setPinned(false), 4000);
       }
-      setOpen(false);
+      setComposerOpen(false);
       setMessage("");
       setName("");
       setColor("yellow");
@@ -121,85 +217,202 @@ export default function StickyNoteWall({ notes: initial }: { notes: VisitorNote[
     }
   }
 
+  const secondaryLayout = [
+    "left-5 top-6 w-44 z-10",
+    "right-5 top-24 w-40 z-10",
+    "bottom-6 left-20 w-44 z-10",
+  ];
+
   return (
-    <section className="panel p-5 sm:p-8">
-      <span className="kicker">Guestbook</span>
-      <h2 className="mt-3 text-[clamp(28px,3.6vw,44px)] font-normal leading-[1.05] tracking-[-0.05em]">
-        Leave Something Behind.
-      </h2>
-      <p className="mt-3 max-w-[560px] text-[15px] leading-relaxed text-sub">
-        You made it this far. Leave me a thought, idea, feedback, or just say hi.
-      </p>
+    <MotionConfig reducedMotion="user">
+      <section className="mx-auto w-full max-w-[1100px] px-4 sm:px-6 lg:px-8" aria-label="Guestbook">
+        <motion.div
+          className="panel px-5 py-10 sm:px-8 sm:py-12 lg:px-12 lg:py-14"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <div className="grid grid-cols-1 gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center lg:gap-16">
+            <div className="min-w-0">
+              <span className="kicker">Guestbook</span>
+              <h2 className="mt-4 text-[clamp(40px,5vw,64px)] font-normal leading-[1.02] tracking-[-0.05em]">
+                Leave Something Behind.
+              </h2>
+              <p className="mt-5 max-w-[420px] text-[15px] leading-[1.7] text-sub">
+                You made it this far. Leave me a thought, idea, feedback, or just say hi.
+              </p>
 
-      <div className="mt-8 overflow-hidden rounded-[14px] border border-line bg-bg shadow-[inset_0_1px_0_rgba(255,255,255,0.6),inset_0_0_60px_rgba(22,22,22,0.03)]">
-        <div className="note-wall relative hidden h-[560px] md:block">
-          {notes.map((n, i) => {
-            const pos = place(n.id);
-            return (
-              <motion.div
-                key={n.id}
-                className="absolute"
-                style={{ left: pos.left, top: pos.top, width: 150, zIndex: n.color === "ink" ? 40 : 10 + (i % 5) }}
-                initial={{ opacity: 0, y: -46, rotate: pos.rot * 1.5, scale: 0.6 }}
-                animate={{ opacity: 1, y: 0, rotate: pos.rot, scale: pos.scale }}
-                transition={{ type: "spring", stiffness: 240, damping: 20, delay: Math.min(i * 0.04, 0.5) }}
-                whileHover={{ y: -5, rotate: pos.rot + 2.5, scale: pos.scale + 0.02 }}
-              >
-                <NotePaper note={n} />
-              </motion.div>
-            );
-          })}
-        </div>
+              <div className="mt-8 hidden items-center gap-4 lg:flex">
+                <button type="button" onClick={openComposer} className="btn btn-primary">
+                  <Plus size={15} aria-hidden="true" />
+                  Leave a note
+                </button>
+                <AnimatePresence>
+                  {pinned && (
+                    <motion.span
+                      initial={{ opacity: 0, y: 4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0 }}
+                      className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.06em] text-accent-ink"
+                    >
+                      <Check size={13} aria-hidden="true" />
+                      Pinned. Thanks for stopping by.
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              </div>
+              <p className="mt-5 hidden font-mono text-[11px] uppercase tracking-[0.06em] text-muted lg:block">
+                {count} people have left something behind.
+              </p>
+            </div>
 
-        <div className="note-wall flex flex-col items-center gap-5 px-4 py-9 md:hidden">
-          {notes.slice(0, 12).map((n, i) => (
-            <motion.div
-              key={n.id}
-              className={`w-[88%] ${i % 2 ? "translate-x-4" : "-translate-x-4"}`}
-              style={{ rotate: i % 2 ? 1.4 : -1.4, zIndex: 10 + (i % 5) }}
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ type: "spring", stiffness: 240, damping: 22, delay: Math.min(i * 0.04, 0.5) }}
-            >
-              <NotePaper note={n} />
-            </motion.div>
-          ))}
-        </div>
-      </div>
+            <div>
+              {/* Desktop / tablet stage */}
+              {featured && (
+                <div className="note-wall relative hidden h-[420px] overflow-hidden rounded-[16px] border border-line lg:block">
+                  {featured && (
+                    <div className="absolute left-1/2 top-1/2 z-20 w-60 -translate-x-1/2 -translate-y-1/2">
+                      <NoteButton note={featured} onClick={() => setReaderIndex(notes.indexOf(featured))} rot={-1.5} drift />
+                    </div>
+                  )}
+                  {secondaries.map((n, i) => (
+                    <div key={n.id} className={`absolute ${secondaryLayout[i % secondaryLayout.length]}`}>
+                      <NoteButton note={n} onClick={() => setReaderIndex(notes.indexOf(n))} rot={[-2.5, 2, -1][i % 3]} />
+                    </div>
+                  ))}
+                </div>
+              )}
 
-      <div className="mt-7 flex flex-col items-center gap-3.5 text-center">
-        <button type="button" onClick={() => setOpen(true)} className="btn btn-primary">
-          <Plus size={15} aria-hidden="true" />
-          Leave a note
-        </button>
+              {/* Mobile / tablet carousel */}
+              <div className="lg:hidden">
+                <div
+                  ref={carouselRef}
+                  onScroll={onCarouselScroll}
+                  className="scrollbar-hide flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-1 pb-2"
+                >
+                  {notes.length > 0 ? (
+                    notes.map((n) => (
+                      <div key={n.id} data-card className="w-[76%] shrink-0 snap-center">
+                        <NoteButton note={n} onClick={() => setReaderIndex(notes.indexOf(n))} rot={-1} />
+                      </div>
+                    ))
+                  ) : (
+                    <p className="px-2 py-8 text-sm text-sub">No notes yet — be the first to leave one.</p>
+                  )}
+                </div>
 
-        <AnimatePresence>
-          {pinned && (
-            <motion.p
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.06em] text-accent-ink"
-            >
-              <Check size={13} aria-hidden="true" />
-              Pinned. Thanks for stopping by.
-            </motion.p>
-          )}
-        </AnimatePresence>
+                {notes.length > 0 && (
+                  <div className="mt-3 flex items-center justify-center gap-1 font-mono text-[11px] uppercase tracking-[0.06em] text-muted">
+                    {carIndex + 1} / {notes.length}
+                  </div>
+                )}
 
-        <p className="font-mono text-[11px] uppercase tracking-[0.06em] text-muted">
-          {notes.length} people have left something behind.
-        </p>
-      </div>
+                <div className="mt-5 flex flex-col items-center gap-3">
+                  <button type="button" onClick={openComposer} className="btn btn-primary">
+                    <Plus size={15} aria-hidden="true" />
+                    Leave a note
+                  </button>
+                  <AnimatePresence>
+                    {pinned && (
+                      <motion.span
+                        initial={{ opacity: 0, y: 4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0 }}
+                        className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.06em] text-accent-ink"
+                      >
+                        <Check size={13} aria-hidden="true" />
+                        Pinned. Thanks for stopping by.
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
+                  <p className="font-mono text-[11px] uppercase tracking-[0.06em] text-muted">
+                    {count} people have left something behind.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </section>
 
+      {/* Reader modal */}
       <AnimatePresence>
-        {open && (
+        {readerIndex !== null && notes[readerIndex] && (
           <motion.div
             className="note-modal-overlay"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => setOpen(false)}
+            onClick={() => setReaderIndex(null)}
+          >
+            <motion.div
+              ref={composerRef}
+              role="dialog"
+              aria-modal="true"
+              aria-label={`Note from ${notes[readerIndex].name}`}
+              className="note-modal"
+              initial={{ opacity: 0, y: 16, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 10, scale: 0.98 }}
+              transition={{ type: "spring", stiffness: 320, damping: 26 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between gap-4">
+                <span className="font-mono text-[10px] uppercase tracking-[0.06em] text-muted">
+                  Note {readerIndex + 1} of {notes.length}
+                </span>
+                <button
+                  ref={closeReaderRef}
+                  type="button"
+                  onClick={() => setReaderIndex(null)}
+                  aria-label="Close note"
+                  className="grid h-9 w-9 place-items-center rounded-full border border-line text-sub transition-colors hover:text-ink"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+
+              <div className="mt-4">
+                <NotePaper note={notes[readerIndex]} large />
+              </div>
+
+              <div className="mt-5 flex items-center justify-between gap-3">
+                <button
+                  type="button"
+                  onClick={prev}
+                  disabled={notes.length <= 1}
+                  aria-label="Previous note"
+                  className="btn btn-secondary px-4 disabled:opacity-40"
+                >
+                  <ArrowLeft size={14} aria-hidden="true" />
+                  Previous
+                </button>
+                <button
+                  type="button"
+                  onClick={next}
+                  disabled={notes.length <= 1}
+                  aria-label="Next note"
+                  className="btn btn-secondary px-4 disabled:opacity-40"
+                >
+                  Next
+                  <ArrowRight size={14} aria-hidden="true" />
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Composer modal */}
+      <AnimatePresence>
+        {composerOpen && (
+          <motion.div
+            className="note-modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setComposerOpen(false)}
           >
             <motion.div
               role="dialog"
@@ -219,7 +432,7 @@ export default function StickyNoteWall({ notes: initial }: { notes: VisitorNote[
                 </div>
                 <button
                   type="button"
-                  onClick={() => setOpen(false)}
+                  onClick={() => setComposerOpen(false)}
                   aria-label="Close"
                   className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-line text-sub transition-colors hover:text-ink"
                 >
@@ -237,7 +450,6 @@ export default function StickyNoteWall({ notes: initial }: { notes: VisitorNote[
                     maxLength={240}
                     placeholder="Write something…"
                     className="field resize-none"
-                    autoFocus
                   />
                 </label>
 
@@ -251,10 +463,7 @@ export default function StickyNoteWall({ notes: initial }: { notes: VisitorNote[
                         <button
                           key={k}
                           type="button"
-                          onClick={() => {
-                            setColor(k);
-                            clearFeedback();
-                          }}
+                          onClick={() => setColor(k)}
                           aria-label={`${k} note`}
                           aria-pressed={active}
                           className={`grid h-8 w-8 place-items-center rounded-full border transition-transform hover:scale-110 ${
@@ -297,6 +506,6 @@ export default function StickyNoteWall({ notes: initial }: { notes: VisitorNote[
           </motion.div>
         )}
       </AnimatePresence>
-    </section>
+    </MotionConfig>
   );
 }
