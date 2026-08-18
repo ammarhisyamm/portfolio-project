@@ -24,7 +24,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html lang="en">
       <body>
         <Providers>
-          <div className="mx-auto max-w-shell px-4 pb-28 sm:px-6 md:pb-0 lg:px-12">
+          <div className="mx-auto w-full max-w-[1180px] px-4 pb-28 sm:px-6 lg:px-10">
             <SiteHeader />
             <PageTransition>{children}</PageTransition>
             <SiteFooter footer={content.footer} />

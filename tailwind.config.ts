@@ -5,31 +5,31 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        bg: "#f5f5f5",
+        bg: "#faf9f6",
         panel: "#ffffff",
-        ink: "#161616",
-        sub: "#686868",
-        muted: "#929292",
-        line: "#e9e9e9",
-        "line-strong": "#e4e4e4",
+        ink: "#141414",
+        sub: "#6a675f",
+        muted: "#9a978f",
+        line: "#e7e4de",
+        "line-strong": "#d9d6cf",
         accent: "#3da06a",
         "accent-soft": "#e7f4ec",
         "accent-ink": "#2c7a4c",
       },
       borderRadius: {
-        panel: "24px",
-        card: "18px",
-        chip: "12px",
+        panel: "2px",
+        card: "2px",
+        chip: "9999px",
       },
       fontFamily: {
         sans: ['"Helvetica Neue"', "Helvetica", "Arial", "Inter", '"Segoe UI"', "sans-serif"],
         mono: ['"SFMono-Regular"', "ui-monospace", "Menlo", "Consolas", "monospace"],
       },
       boxShadow: {
-        soft: "0 1px 2px rgba(22,22,22,.04), 0 8px 24px -12px rgba(22,22,22,.06)",
+        soft: "0 1px 2px rgba(20,20,20,.03)",
       },
       maxWidth: {
-        shell: "1180px",
+        shell: "650px",
       },
       keyframes: {
         "pulse-dot": {

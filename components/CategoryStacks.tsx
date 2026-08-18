@@ -7,9 +7,9 @@ import type { HomeCategory } from "@/lib/content";
 import Media from "./Media";
 
 const BASES = [
-  { left: "4%", top: "8%", width: "58%" },
-  { left: "auto", right: "4%", bottom: "7%", width: "56%" },
-  { left: "26%", top: "30%", width: "48%" },
+  { left: "3%", top: "6%", width: "58%" },
+  { left: "auto", right: "3%", bottom: "5%", width: "56%" },
+  { left: "26%", top: "28%", width: "48%" },
 ];
 
 function saveScroll() {
@@ -25,11 +25,11 @@ export default function CategoryStacks({ categories }: { categories: HomeCategor
   if (categories.length === 0) return null;
 
   return (
-    <section className="grid gap-3 md:gap-4">
-      <div className="px-0.5">
-        <span className="kicker">Design exploration</span>
+    <section className="grid gap-12">
+      <div>
+        <p className="kicker">Work</p>
       </div>
-      <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-3 sm:gap-y-16">
         {categories.map((cat) => (
           <CategoryStack key={cat.key} cat={cat} />
         ))}
@@ -46,7 +46,6 @@ function CategoryStack({ cat }: { cat: HomeCategory }) {
     .filter((i) => i !== primary)
     .sort((a, b) => a.z_order - b.z_order)
     .slice(0, 3);
-  const count = published.length;
 
   return (
     <Link
@@ -56,7 +55,7 @@ function CategoryStack({ cat }: { cat: HomeCategory }) {
       onMouseLeave={() => setHover(false)}
       className="group block focus-visible:outline-2 focus-visible:outline-offset-4"
     >
-      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[18px] border border-line bg-panel sm:rounded-[22px] lg:rounded-[24px]">
+      <div className="relative aspect-[4/3] w-full overflow-hidden border border-line bg-panel">
         {supporting.map((img, i) => {
           const base = BASES[i % BASES.length];
           return (
@@ -66,12 +65,12 @@ function CategoryStack({ cat }: { cat: HomeCategory }) {
               style={{ ...base, zIndex: img.z_order + 1 }}
               animate={
                 hover
-                  ? { x: img.offset_x * 1.8, y: img.offset_y * 1.8, rotate: img.rotation * 1.35 }
+                  ? { x: img.offset_x * 1.5, y: img.offset_y * 1.5, rotate: img.rotation * 1.2 }
                   : { x: img.offset_x, y: img.offset_y, rotate: img.rotation }
               }
-              transition={{ type: "spring", stiffness: 240, damping: 22 }}
+              transition={{ type: "spring", stiffness: 260, damping: 26 }}
             >
-              <div className="aspect-[4/3] w-full overflow-hidden rounded-lg border border-line bg-bg shadow-soft">
+              <div className="aspect-[4/3] w-full overflow-hidden border border-line bg-bg">
                 <Media
                   src={img.image_url}
                   alt={img.alt_text || cat.label}
@@ -85,16 +84,16 @@ function CategoryStack({ cat }: { cat: HomeCategory }) {
 
         <motion.div
           className="absolute inset-0 z-10"
-          animate={hover ? { scale: 1.035 } : { scale: 1 }}
-          transition={{ type: "spring", stiffness: 240, damping: 24 }}
+          animate={hover ? { scale: 1.02 } : { scale: 1 }}
+          transition={{ type: "spring", stiffness: 260, damping: 26 }}
         >
           {primary ? (
-            <div className="h-full w-full overflow-hidden rounded-[16px] border border-line bg-bg shadow-soft sm:rounded-[20px] lg:rounded-[22px]">
+            <div className="h-full w-full overflow-hidden border border-line bg-bg">
               <Media
                 src={primary.image_url}
                 alt={primary.alt_text || cat.label}
                 label={cat.label}
-                imgClassName="h-full w-full object-cover select-none transition-transform duration-500 ease-out"
+                imgClassName="h-full w-full object-cover select-none transition-transform duration-500 ease-out group-hover:scale-[1.02]"
               />
             </div>
           ) : (
@@ -103,23 +102,11 @@ function CategoryStack({ cat }: { cat: HomeCategory }) {
             </div>
           )}
         </motion.div>
-
-        {count > 0 && (
-          <motion.span
-            className="absolute right-3 top-3 z-20 grid h-9 w-9 place-items-center rounded-full bg-[#2456ff] text-[13px] font-semibold text-white shadow-[0_6px_18px_rgba(36,86,255,0.4)] sm:h-10 sm:w-10"
-            animate={hover ? { y: -3 } : { y: 0 }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          >
-            {count}
-          </motion.span>
-        )}
       </div>
 
-      <div className="mt-4 text-center">
-        <span className="text-[15px] font-medium tracking-[-0.02em] text-ink underline-offset-[6px] transition-opacity duration-300 group-hover:opacity-55">
-          {cat.label}
-        </span>
-      </div>
+      <p className="mt-4 text-center text-[12px] uppercase tracking-[0.18em] text-ink transition-opacity duration-300 group-hover:opacity-50">
+        {cat.label}
+      </p>
     </Link>
   );
 }

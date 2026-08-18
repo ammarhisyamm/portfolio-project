@@ -5,45 +5,54 @@ import type { FooterContent } from "@/lib/content";
 
 export default function SiteFooter({ footer }: { footer: FooterContent }) {
   return (
-    <footer className="panel mb-9 mt-3 grid gap-8 p-5 sm:p-8 lg:grid-cols-[1.4fr_auto] lg:gap-14 lg:p-10">
-      <div>
-        <p className="mb-3.5 font-mono text-[11px] uppercase tracking-[0.02em] text-sub">
-          {footer.note}
-        </p>
-        <h2 className="text-[clamp(30px,4vw,52px)] font-normal leading-none tracking-[-0.06em]">
+    <footer className="mx-auto w-full max-w-[650px] border-t border-line">
+      <div className="grid gap-10 py-16 sm:grid-cols-2 sm:py-20">
+        <div>
+          <p className="text-[13px] text-sub">{footer.note}</p>
+          <h2 className="mt-4 text-[26px] font-medium tracking-[-0.03em] leading-tight text-ink">
+            {footer.heading}
+          </h2>
           <a
             href={`mailto:${footer.email}`}
-            className="group inline-flex items-baseline gap-2 no-underline"
+            className="group mt-4 inline-flex items-center gap-1.5 text-[15px] text-ink no-underline hover:text-sub"
           >
-            {footer.heading}
+            {footer.email}
             <ArrowUpRight
-              size={32}
-              className="inline-block text-muted transition-transform duration-300 ease-out group-hover:translate-x-1 group-hover:-translate-y-1"
+              size={15}
+              className="text-muted transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
               aria-hidden="true"
             />
           </a>
-        </h2>
+        </div>
+        <div className="flex flex-col items-start gap-1 sm:items-end">
+          {footer.links.map((link) => (
+            <a
+              key={link.label}
+              href={link.href}
+              className="inline-flex items-center gap-1.5 py-1 text-[13px] text-sub no-underline transition-colors hover:text-ink"
+            >
+              {link.label}
+              <ArrowUpRight size={13} className="text-muted" aria-hidden="true" />
+            </a>
+          ))}
+          <button
+            type="button"
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            className="mt-3 inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.14em] text-muted no-underline transition-colors hover:text-ink"
+          >
+            Back to top
+            <ArrowUp size={11} aria-hidden="true" />
+          </button>
+        </div>
       </div>
-      <div className="flex flex-col items-start lg:justify-self-end">
-        <a href={`mailto:${footer.email}`} className="py-1.5 text-[13px] text-sub no-underline hover:text-ink">
-          {footer.email}
-        </a>
-        {footer.links.map((link) => (
-          <a key={link.label} href={link.href} className="py-1.5 text-[13px] text-sub no-underline hover:text-ink">
-            {link.label}
-          </a>
-        ))}
-        <button
-          type="button"
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="mt-4 text-xs text-muted underline underline-offset-4 hover:text-ink"
-        >
-          Back to top <ArrowUp size={11} className="inline" aria-hidden="true" />
-        </button>
+      <div className="flex items-center justify-between border-t border-line py-6">
+        <small className="text-[11px] uppercase tracking-[0.12em] text-muted">
+          © {new Date().getFullYear()} Hisyam
+        </small>
+        <small className="text-[11px] uppercase tracking-[0.12em] text-muted">
+          Jakarta, Indonesia
+        </small>
       </div>
-      <small className="border-t border-line pt-4 font-mono text-[10px] uppercase tracking-[0.04em] text-muted lg:col-span-2">
-        © {new Date().getFullYear()} Hisyam. Jakarta, Indonesia.
-      </small>
     </footer>
   );
 }

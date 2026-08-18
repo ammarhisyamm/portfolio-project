@@ -5,25 +5,15 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { AnimatePresence, motion } from "motion/react";
-import { Check } from "lucide-react";
-import Btn from "./Btn";
+import { Check, ArrowUpRight } from "lucide-react";
 
 const schema = z.object({
   name: z.string().min(2, "Please add your name."),
   email: z.string().email("Please add a valid email."),
-  projectType: z.string().min(1, "Please select a project type."),
   message: z.string().min(10, "Message should be at least 10 characters."),
 });
 
 type FormValues = z.infer<typeof schema>;
-
-const PROJECT_TYPES = [
-  "Product design",
-  "UX/UI design",
-  "Design system",
-  "Product audit",
-  "Other",
-];
 
 export default function ContactForm({ email }: { email: string }) {
   const {
@@ -35,9 +25,9 @@ export default function ContactForm({ email }: { email: string }) {
   const [sent, setSent] = useState(false);
 
   const onSubmit = async (values: FormValues) => {
-    const subject = encodeURIComponent(`Project inquiry — ${values.projectType}`);
+    const subject = encodeURIComponent(`Project inquiry — ${values.name}`);
     const body = encodeURIComponent(`${values.message}\n\n— ${values.name}\n${values.email}`);
-    await new Promise((r) => setTimeout(r, 900));
+    await new Promise((r) => setTimeout(r, 500));
     window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
     setSent(true);
     reset();
@@ -45,10 +35,10 @@ export default function ContactForm({ email }: { email: string }) {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate className="grid gap-5">
-      <div className="grid gap-5 sm:grid-cols-2">
+    <form onSubmit={handleSubmit(onSubmit)} noValidate className="grid gap-7">
+      <div className="grid gap-7 sm:grid-cols-2">
         <div>
-          <label htmlFor="name" className="mb-2 block font-mono text-[11px] uppercase tracking-[0.02em] text-sub">
+          <label htmlFor="name" className="mb-2 block text-[11px] uppercase tracking-[0.14em] text-muted">
             Name
           </label>
           <input
@@ -62,7 +52,7 @@ export default function ContactForm({ email }: { email: string }) {
           {errors.name && <p className="mt-1.5 text-xs text-red-500">{errors.name.message}</p>}
         </div>
         <div>
-          <label htmlFor="email" className="mb-2 block font-mono text-[11px] uppercase tracking-[0.02em] text-sub">
+          <label htmlFor="email" className="mb-2 block text-[11px] uppercase tracking-[0.14em] text-muted">
             Email
           </label>
           <input
@@ -78,37 +68,12 @@ export default function ContactForm({ email }: { email: string }) {
       </div>
 
       <div>
-        <label htmlFor="projectType" className="mb-2 block font-mono text-[11px] uppercase tracking-[0.02em] text-sub">
-          Project type
-        </label>
-        <select
-          id="projectType"
-          aria-invalid={!!errors.projectType}
-          className={`field ${errors.projectType ? "field-error" : ""}`}
-          defaultValue=""
-          {...register("projectType")}
-        >
-          <option value="" disabled>
-            Select a project type
-          </option>
-          {PROJECT_TYPES.map((t) => (
-            <option key={t} value={t}>
-              {t}
-            </option>
-          ))}
-        </select>
-        {errors.projectType && (
-          <p className="mt-1.5 text-xs text-red-500">{errors.projectType.message}</p>
-        )}
-      </div>
-
-      <div>
-        <label htmlFor="message" className="mb-2 block font-mono text-[11px] uppercase tracking-[0.02em] text-sub">
+        <label htmlFor="message" className="mb-2 block text-[11px] uppercase tracking-[0.14em] text-muted">
           Message
         </label>
         <textarea
           id="message"
-          rows={5}
+          rows={6}
           placeholder="Tell me about your product, problem, or idea."
           aria-invalid={!!errors.message}
           className={`field resize-none ${errors.message ? "field-error" : ""}`}
@@ -118,9 +83,14 @@ export default function ContactForm({ email }: { email: string }) {
       </div>
 
       <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
-        <Btn type="submit" disabled={isSubmitting}>
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="inline-flex min-h-10 items-center gap-2 border border-ink bg-ink px-5 text-[13px] font-medium text-white no-underline transition-colors duration-200 hover:bg-black disabled:opacity-60"
+        >
           {isSubmitting ? "Sending…" : "Send message"}
-        </Btn>
+          <ArrowUpRight size={14} aria-hidden="true" />
+        </button>
         <AnimatePresence>
           {sent && (
             <motion.p
@@ -129,7 +99,7 @@ export default function ContactForm({ email }: { email: string }) {
               exit={{ opacity: 0 }}
               className="flex items-center gap-2 text-sm text-accent-ink"
             >
-              <Check size={15} /> Message sent — I&rsquo;ll get back to you soon.
+              <Check size={15} /> Message ready — I&rsquo;ll get back to you soon.
             </motion.p>
           )}
         </AnimatePresence>

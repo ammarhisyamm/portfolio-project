@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
-import Reveal from "@/components/Reveal";
-import Btn from "@/components/Btn";
-import ProcessAccordion from "@/components/ProcessAccordion";
+import { ArrowUpRight } from "lucide-react";
 import { getContent } from "@/lib/content";
 
 export const metadata: Metadata = { title: "About" };
@@ -10,92 +8,147 @@ export default async function AboutPage() {
   const content = await getContent();
   const { about, contact, socials } = content;
   const linkedin = socials.items.find((s) => s.type === "linkedin")?.href ?? "#";
+  const external = (href: string) => href.startsWith("http");
 
   return (
-    <div className="grid gap-3 pb-16 pt-3 md:gap-4">
-      <Reveal className="panel grid gap-6 p-5 sm:p-8 lg:p-10">
-        <span className="kicker">About</span>
-        <h1 className="max-w-[900px] text-[clamp(32px,4.4vw,58px)] font-normal leading-[1.03] tracking-[-0.06em]">
-          Designing systems that help people make sense of complex things.
-        </h1>
-      </Reveal>
-
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-12 md:gap-4">
-        <Reveal className="panel p-5 sm:p-8 md:col-span-8">
-          <span className="kicker">Introduction</span>
-          <p className="mb-4 text-[clamp(22px,2.4vw,34px)] leading-tight tracking-[-0.05em]">
-            {about.introTitle}
+    <div className="mx-auto w-full max-w-[650px] px-4 sm:px-0">
+      {/* ABOUT */}
+      <section className="pt-16 sm:pt-24">
+        <p className="kicker">About</p>
+        <p className="mt-6 text-[22px] font-medium leading-[1.35] tracking-[-0.02em] text-ink">
+          {about.introTitle}
+        </p>
+        <p className="mt-5 max-w-[60ch] text-[15px] leading-[1.75] text-sub">
+          {about.introBody}
+        </p>
+        {about.background.map((para) => (
+          <p key={para} className="mt-5 max-w-[60ch] text-[15px] leading-[1.75] text-sub">
+            {para}
           </p>
-          <p className="max-w-[620px] leading-relaxed text-sub">{about.introBody}</p>
-        </Reveal>
+        ))}
 
-        <Reveal className="panel flex flex-col items-start gap-1 p-5 sm:p-8 md:col-span-4" y={18}>
-          <span className="kicker">Get in touch</span>
-          <a href={`mailto:${contact.email}`} className="py-1.5 text-[13px] text-sub underline underline-offset-3 hover:text-ink">
-            {contact.email}
-          </a>
-          <a href={linkedin} className="py-1.5 text-[13px] text-sub underline underline-offset-3 hover:text-ink">
-            LinkedIn
-          </a>
-          <Btn href={`mailto:${contact.email}`} className="mt-4 w-full">
-            Let&rsquo;s talk
-          </Btn>
-          <Btn href="#" variant="secondary" className="mt-2.5 w-full">
-            Download CV
-          </Btn>
-        </Reveal>
-
-        <Reveal className="panel p-5 sm:p-8 md:col-span-6">
-          <span className="kicker">Design philosophy</span>
-          <h3 className="mb-3.5 mt-4 text-[clamp(20px,2vw,26px)] font-medium leading-snug tracking-[-0.045em]">
-            {about.philosophyTitle}
-          </h3>
-          <p className="leading-relaxed text-sub">{about.philosophyBody}</p>
-        </Reveal>
-
-        <Reveal className="panel p-5 sm:p-8 md:col-span-6">
-          <span className="kicker">Professional background</span>
-          {about.background.map((para) => (
-            <p key={para} className="mt-4 leading-relaxed text-sub">
-              {para}
-            </p>
-          ))}
-        </Reveal>
-
-        <Reveal className="panel p-5 sm:p-8 md:col-span-12">
-          <span className="kicker">Core capabilities</span>
-          <ul className="mt-4 grid list-none grid-cols-2 gap-x-8 md:grid-cols-3" style={{ padding: 0 }}>
-            {about.capabilities.map((c) => (
-              <li key={c} className="border-t border-line py-4 text-[14px] text-sub">
-                {c}
-              </li>
-            ))}
-          </ul>
-        </Reveal>
-
-        <Reveal className="panel p-5 sm:p-8 md:col-span-6">
-          <span className="kicker">Design process</span>
-          <div className="mt-2">
-            <ProcessAccordion />
+        {about.capabilities.length > 0 && (
+          <div className="mt-10">
+            <p className="kicker">What I do</p>
+            <ul className="mt-3 grid list-none grid-cols-1 gap-x-8 sm:grid-cols-2" style={{ padding: 0 }}>
+              {about.capabilities.map((c) => (
+                <li key={c} className="border-t border-line py-3.5 text-[14px] text-sub">
+                  {c}
+                </li>
+              ))}
+            </ul>
           </div>
-        </Reveal>
+        )}
 
-        <Reveal className="panel p-5 sm:p-8 md:col-span-6">
-          <span className="kicker">Tools &amp; workflow</span>
-          <p className="mt-4 max-w-[600px] leading-relaxed text-sub">{about.tools}</p>
-        </Reveal>
+        {about.tools && (
+          <p className="mt-8 max-w-[60ch] text-[13.5px] leading-[1.7] text-muted">{about.tools}</p>
+        )}
+      </section>
 
-        <Reveal className="panel p-5 sm:p-8 md:col-span-12">
-          <span className="kicker">Selected industries</span>
-          <ul className="mt-4 flex list-none flex-wrap gap-2.5" style={{ padding: 0 }}>
-            {about.industries.map((i) => (
-              <li key={i} className="rounded-full border border-line px-4 py-2 text-[13px] text-sub">
-                {i}
+      {/* EXPERIENCE */}
+      <section className="border-t border-line pt-16 sm:pt-24">
+        <p className="kicker">Experience</p>
+        <div className="relative mt-10 ml-3 border-l border-line">
+          {content.experience.map((job) => (
+            <div key={job.company} className="relative pb-12 pl-8 last:pb-0">
+              <span
+                className="absolute -left-[7px] top-1.5 h-[13px] w-[13px] rounded-full border border-line-strong bg-bg"
+                aria-hidden="true"
+              />
+              <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                <h3 className="text-[16px] font-medium tracking-[-0.01em] text-ink">{job.role}</h3>
+                <span className="font-mono text-[11px] uppercase tracking-[0.06em] text-muted">
+                  {job.period}
+                </span>
+              </div>
+              <p className="mt-1 text-[13px] text-sub">{job.company}</p>
+              {job.points.length > 0 && (
+                <ul className="mt-3 grid list-none gap-1.5" style={{ padding: 0 }}>
+                  {job.points.map((point) => (
+                    <li key={point} className="text-[14px] leading-[1.7] text-sub">
+                      {point}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* EDUCATION */}
+      <section className="border-t border-line pt-16 sm:pt-24">
+        <p className="kicker">Education</p>
+        <div className="relative mt-10 ml-3 border-l border-line">
+          {about.education.map((ed) => (
+            <div key={`${ed.school}-${ed.degree}`} className="relative pb-10 pl-8 last:pb-0">
+              <span
+                className="absolute -left-[7px] top-1.5 h-[13px] w-[13px] rounded-full border border-line-strong bg-bg"
+                aria-hidden="true"
+              />
+              <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                <h3 className="text-[16px] font-medium tracking-[-0.01em] text-ink">{ed.degree}</h3>
+                <span className="font-mono text-[11px] uppercase tracking-[0.06em] text-muted">
+                  {ed.period}
+                </span>
+              </div>
+              <p className="mt-1 text-[13px] text-sub">{ed.school}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* CERTIFICATIONS */}
+      {about.certifications.length > 0 && (
+        <section className="border-t border-line pt-16 sm:pt-24">
+          <p className="kicker">Certifications</p>
+          <ul className="mt-6 list-none" style={{ padding: 0 }}>
+            {about.certifications.map((cert) => (
+              <li key={cert} className="border-t border-line py-4 text-[14px] text-sub first:border-t-0">
+                {cert}
               </li>
             ))}
           </ul>
-        </Reveal>
-      </div>
+        </section>
+      )}
+
+      {/* CONTACT */}
+      <section className="border-t border-line pt-16 pb-20 sm:pt-24 sm:pb-28">
+        <p className="kicker">Contact</p>
+        <div className="mt-8 grid grid-cols-1 gap-0">
+          <a
+            href={`mailto:${contact.email}`}
+            className="group flex items-center justify-between border-t border-line py-4 text-[14px] text-ink no-underline transition-colors hover:text-sub"
+          >
+            <span className="text-[11px] uppercase tracking-[0.14em] text-muted">Email</span>
+            <span className="inline-flex items-center gap-1.5">
+              {contact.email}
+              <ArrowUpRight
+                size={14}
+                className="text-muted transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                aria-hidden="true"
+              />
+            </span>
+          </a>
+          <a
+            href={linkedin}
+            target={external(linkedin) ? "_blank" : undefined}
+            rel={external(linkedin) ? "noreferrer" : undefined}
+            className="group flex items-center justify-between border-t border-line py-4 text-[14px] text-ink no-underline transition-colors hover:text-sub"
+          >
+            <span className="text-[11px] uppercase tracking-[0.14em] text-muted">LinkedIn</span>
+            <span className="inline-flex items-center gap-1.5">
+              View profile
+              <ArrowUpRight
+                size={14}
+                className="text-muted transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                aria-hidden="true"
+              />
+            </span>
+          </a>
+        </div>
+        <p className="mt-10 text-[13px] text-muted">{contact.note}</p>
+      </section>
     </div>
   );
 }
