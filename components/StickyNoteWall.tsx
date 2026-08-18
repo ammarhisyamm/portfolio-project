@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, MotionConfig, motion } from "motion/react";
-import { ArrowLeft, ArrowRight, Check, Pin, Plus, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Plus, X } from "lucide-react";
 import type { VisitorNote } from "@/lib/notes";
 
 const COLORS: Record<string, { bg: string; border: string; text: string }> = {
@@ -28,7 +28,7 @@ function NotePaper({ note, large }: { note: VisitorNote; large?: boolean }) {
   const isDark = note.color === "ink";
   return (
     <div
-      className={`relative flex h-full w-full flex-col rounded-[14px] border p-4 shadow-soft transition-shadow duration-300 group-hover:shadow-[0_18px_44px_-14px_rgba(22,22,22,0.22)] ${
+      className={`relative flex h-full w-full flex-col rounded-[14px] border p-4 shadow-soft transition-shadow duration-300 group-hover:shadow-[0_16px_36px_-16px_rgba(22,22,22,0.2)] ${
         large ? "p-5 sm:p-6" : ""
       }`}
       style={{ background: c.bg, borderColor: c.border, color: c.text }}
@@ -66,15 +66,6 @@ function NotePaper({ note, large }: { note: VisitorNote; large?: boolean }) {
           Read note <ArrowRight size={10} aria-hidden="true" />
         </span>
       </span>
-
-      {isDark && (
-        <span
-          aria-hidden="true"
-          className="absolute right-3 top-3 grid h-6 w-6 place-items-center rounded-full border border-white/15 text-white/70"
-        >
-          <Pin size={11} />
-        </span>
-      )}
     </div>
   );
 }
@@ -83,31 +74,125 @@ function NoteButton({
   note,
   onClick,
   rot,
-  drift,
-  className,
 }: {
   note: VisitorNote;
   onClick: () => void;
   rot: number;
-  drift?: boolean;
-  className?: string;
 }) {
   return (
     <motion.button
       type="button"
       onClick={onClick}
       aria-label={`Read note from ${note.name}`}
-      className={`group block w-full cursor-pointer text-left ${className ?? ""}`}
+      className="group block w-full cursor-pointer text-left"
       initial={{ opacity: 0, y: 16, rotate: rot * 1.6 }}
       whileInView={{ opacity: 1, y: 0, rotate: rot }}
       viewport={{ once: true, margin: "-40px" }}
-      whileHover={{ y: -5, rotate: rot * 0.25, scale: 1.02 }}
+      whileHover={{ y: -4, rotate: rot * 0.25, scale: 1.02 }}
       transition={{ type: "spring", stiffness: 300, damping: 24 }}
     >
-      <div className={drift ? "note-drift" : undefined}>
-        <NotePaper note={note} />
-      </div>
+      <NotePaper note={note} />
     </motion.button>
+  );
+}
+
+function DragNote({
+  note,
+  rot,
+  onClick,
+  className,
+  base,
+  drags,
+  onDrag,
+  suppressRef,
+}: {
+  note: VisitorNote;
+  rot: number;
+  onClick: () => void;
+  className?: string;
+  base?: string;
+  drags: Record<string, { x: number; y: number }>;
+  onDrag: (id: string, pos: { x: number; y: number }) => void;
+  suppressRef: { current: boolean };
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const moveRef = useRef<{
+    startX: number;
+    startY: number;
+    rect: DOMRect;
+    parent: DOMRect;
+    moved: boolean;
+  } | null>(null);
+  const [active, setActive] = useState(false);
+  const d = drags[note.id];
+
+  function onWinMove(e: PointerEvent) {
+    const m = moveRef.current;
+    if (!m) return;
+    let dx = e.clientX - m.startX;
+    let dy = e.clientY - m.startY;
+    if (!m.moved) {
+      if (Math.hypot(dx, dy) < 6) return;
+      m.moved = true;
+    }
+    const minX = m.parent.left + 8 - m.rect.left;
+    const maxX = m.parent.right - m.rect.right - 8;
+    const minY = m.parent.top + 8 - m.rect.top;
+    const maxY = m.parent.bottom - m.rect.bottom - 8;
+    dx = Math.min(Math.max(dx, minX), maxX);
+    dy = Math.min(Math.max(dy, minY), maxY);
+    onDrag(note.id, { x: dx, y: dy });
+  }
+
+  function onWinUp(e: PointerEvent) {
+    const m = moveRef.current;
+    if (m && m.moved) {
+      suppressRef.current = true;
+    }
+    moveRef.current = null;
+    setActive(false);
+    window.removeEventListener("pointermove", onWinMove);
+    window.removeEventListener("pointerup", onWinUp);
+    window.removeEventListener("pointercancel", onWinUp);
+  }
+
+  return (
+    <div
+      ref={ref}
+      onPointerDown={(e) => {
+        const el = ref.current;
+        if (!el) return;
+        suppressRef.current = false;
+        moveRef.current = {
+          startX: e.clientX,
+          startY: e.clientY,
+          rect: el.getBoundingClientRect(),
+          parent: el.parentElement!.getBoundingClientRect(),
+          moved: false,
+        };
+        setActive(true);
+        window.addEventListener("pointermove", onWinMove);
+        window.addEventListener("pointerup", onWinUp);
+        window.addEventListener("pointercancel", onWinUp);
+      }}
+      className={`absolute touch-none select-none ${className ?? ""} ${active ? "z-30 cursor-grabbing" : ""}`}
+      style={{
+        transform: `${base ?? ""} translate(${d?.x ?? 0}px, ${d?.y ?? 0}px)`,
+        transition: active ? "none" : "transform 0.2s ease",
+      }}
+    >
+      <NoteButton
+        note={note}
+        onClick={() => {
+          if (suppressRef.current) {
+            suppressRef.current = false;
+            return;
+          }
+          onClick();
+        }}
+        rot={rot}
+      />
+    </div>
   );
 }
 
@@ -122,9 +207,11 @@ export default function StickyNoteWall({ notes: initial }: { notes: VisitorNote[
   const [posting, setPosting] = useState(false);
   const [error, setError] = useState("");
   const [pinned, setPinned] = useState(false);
+  const [drags, setDrags] = useState<Record<string, { x: number; y: number }>>({});
   const carouselRef = useRef<HTMLDivElement>(null);
   const closeReaderRef = useRef<HTMLButtonElement>(null);
   const composerRef = useRef<HTMLDivElement>(null);
+  const suppressClick = useRef(false);
 
   const featured = notes.find((n) => n.color !== "ink") ?? notes[0];
   const inkNote = notes.find((n) => n.color === "ink");
@@ -217,29 +304,33 @@ export default function StickyNoteWall({ notes: initial }: { notes: VisitorNote[
     }
   }
 
+  function handleDrag(id: string, pos: { x: number; y: number }) {
+    setDrags((p) => ({ ...p, [id]: pos }));
+  }
+
   const secondaryLayout = [
-    "left-5 top-6 w-44 z-10",
-    "right-5 top-24 w-40 z-10",
-    "bottom-6 left-20 w-44 z-10",
+    "left-4 top-8 w-36 z-10",
+    "right-4 top-20 w-36 z-10",
+    "bottom-8 left-16 w-36 z-10",
   ];
 
   return (
     <MotionConfig reducedMotion="user">
-      <section className="mx-auto w-full max-w-[1100px] px-4 sm:px-6 lg:px-8" aria-label="Guestbook">
+      <section className="mx-auto w-full max-w-[720px] px-4 sm:px-6 lg:px-8" aria-label="Guestbook">
         <motion.div
-          className="panel px-5 py-10 sm:px-8 sm:py-12 lg:px-12 lg:py-14"
+          className="panel px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-12"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
         >
-          <div className="grid grid-cols-1 gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center lg:gap-16">
+          <div className="grid grid-cols-1 gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center lg:gap-12">
             <div className="min-w-0">
               <span className="kicker">Guestbook</span>
-              <h2 className="mt-4 text-[clamp(40px,5vw,64px)] font-normal leading-[1.02] tracking-[-0.05em]">
+              <h2 className="mt-4 text-[clamp(40px,4.5vw,56px)] font-normal leading-[1.05] tracking-[-0.05em]">
                 Leave Something Behind.
               </h2>
-              <p className="mt-5 max-w-[420px] text-[15px] leading-[1.7] text-sub">
+              <p className="mt-5 max-w-[380px] text-[15px] leading-[1.7] text-sub">
                 You made it this far. Leave me a thought, idea, feedback, or just say hi.
               </p>
 
@@ -267,19 +358,33 @@ export default function StickyNoteWall({ notes: initial }: { notes: VisitorNote[
               </p>
             </div>
 
-            <div>
+            <div className="min-w-0">
               {/* Desktop / tablet stage */}
               {featured && (
-                <div className="note-wall relative hidden h-[420px] overflow-hidden rounded-[16px] border border-line lg:block">
+                <div className="note-wall relative hidden h-[360px] overflow-hidden rounded-[16px] border border-line lg:block">
                   {featured && (
-                    <div className="absolute left-1/2 top-1/2 z-20 w-60 -translate-x-1/2 -translate-y-1/2">
-                      <NoteButton note={featured} onClick={() => setReaderIndex(notes.indexOf(featured))} rot={-1.5} drift />
-                    </div>
+                    <DragNote
+                      note={featured}
+                      onClick={() => setReaderIndex(notes.indexOf(featured))}
+                      rot={-1.5}
+                      className="left-1/2 top-1/2 z-20 w-44"
+                      base="translate(-50%, -50%)"
+                      drags={drags}
+                      onDrag={handleDrag}
+                      suppressRef={suppressClick}
+                    />
                   )}
                   {secondaries.map((n, i) => (
-                    <div key={n.id} className={`absolute ${secondaryLayout[i % secondaryLayout.length]}`}>
-                      <NoteButton note={n} onClick={() => setReaderIndex(notes.indexOf(n))} rot={[-2.5, 2, -1][i % 3]} />
-                    </div>
+                    <DragNote
+                      key={n.id}
+                      note={n}
+                      onClick={() => setReaderIndex(notes.indexOf(n))}
+                      rot={[-2.5, 2, -1][i % 3]}
+                      className={secondaryLayout[i % secondaryLayout.length]}
+                      drags={drags}
+                      onDrag={handleDrag}
+                      suppressRef={suppressClick}
+                    />
                   ))}
                 </div>
               )}
