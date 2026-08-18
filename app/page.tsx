@@ -1,41 +1,55 @@
-import HomeIntro from "@/components/HomeIntro";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import Hero from "@/components/Hero";
+import TrustStrip from "@/components/TrustStrip";
+import AboutPanel from "@/components/AboutPanel";
+import ExperienceAccordion from "@/components/ExperienceAccordion";
 import CategoryStacks from "@/components/CategoryStacks";
 import RestoreScroll from "@/components/RestoreScroll";
+import FeaturedWork from "@/components/FeaturedWork";
 import { getContent } from "@/lib/content";
 
 export default async function HomePage() {
   const content = await getContent();
-
+  const featured = content.caseStudies
+    .filter((c) => c.featured && c.published)
+    .sort((a, b) => a.featured_order - b.featured_order);
   return (
-    <div className="mx-auto w-full max-w-[650px] px-4 sm:px-0">
+    <div className="grid gap-3 pb-16 pt-3 md:gap-4">
       <RestoreScroll />
-      <HomeIntro
+      <Hero
         name={content.hero.name}
         title={content.hero.title}
         headline={content.hero.headline}
         intro={content.hero.intro}
         available={content.hero.available}
         email={content.contact.email}
-        location={content.contact.location}
         socials={content.socials.items}
       />
+      <TrustStrip items={content.trust} />
+      <AboutPanel about={content.about} contact={content.contact} socials={content.socials.items} />
 
-      <div className="mt-16 sm:mt-24">
-        <CategoryStacks categories={content.homeCategories} />
-      </div>
+      <section className="grid gap-3">
+        <div className="px-0.5">
+          <span className="kicker">Working experience</span>
+        </div>
+        <ExperienceAccordion items={content.experience} />
+      </section>
 
-      <section className="mt-16 border-t border-line py-16 sm:mt-24 sm:py-20">
-        <p className="kicker">Contact</p>
-        <p className="mt-5 max-w-[52ch] text-[15px] leading-[1.75] text-sub">
-          Have a product, problem, or idea in mind? I&rsquo;m open to selected collaborations and
-          conversations about better digital experiences.
-        </p>
-        <a
-          href={`mailto:${content.contact.email}`}
-          className="mt-6 inline-block border-b border-ink pb-0.5 text-[14px] text-ink no-underline transition-colors hover:text-sub hover:border-sub"
-        >
-          {content.contact.email}
-        </a>
+      <CategoryStacks categories={content.homeCategories} />
+
+      <section className="grid gap-3">
+        <div className="flex items-end justify-between gap-4 px-0.5">
+          <span className="kicker">Selected work</span>
+          <Link
+            href="/work"
+            className="border-b border-line-strong pb-1 text-[13px] text-sub no-underline transition-colors hover:border-ink hover:text-ink"
+          >
+            View all projects
+            <ArrowRight size={13} className="ml-1 inline" aria-hidden="true" />
+          </Link>
+        </div>
+        <FeaturedWork caseStudies={featured} />
       </section>
     </div>
   );

@@ -8,43 +8,38 @@ export default function CategoryGallery({ cat }: { cat: HomeCategory }) {
   const sorted = [...images].sort((a, b) => a.sort - b.sort);
 
   return (
-    <div className="mx-auto w-full max-w-[650px] px-4 pb-20 pt-8 sm:px-0">
+    <div className="grid gap-3 pb-16 pt-3 md:gap-4">
       <Link
         href="/"
-        className="group flex w-fit items-center gap-1.5 text-[13px] text-sub no-underline transition-colors hover:text-ink"
+        className="flex w-fit items-center gap-1.5 px-0.5 text-[13px] text-sub no-underline transition-colors hover:text-ink"
       >
-        <ArrowLeft
-          size={14}
-          className="transition-transform duration-200 group-hover:-translate-x-0.5"
-          aria-hidden="true"
-        />
+        <ArrowLeft size={14} aria-hidden="true" />
         Back to home
       </Link>
 
-      <div className="pt-12 sm:pt-16">
-        <p className="kicker">Work</p>
-        <h1 className="mt-4 text-[26px] font-medium tracking-[-0.02em] text-ink sm:text-[30px]">
-          {cat.label}
-        </h1>
+      <div className="grid gap-4 px-0.5 pt-6 sm:pt-8">
+        <span className="kicker">Design exploration</span>
+        <h1 className="text-[clamp(34px,5vw,64px)] font-normal leading-none tracking-[-0.06em]">{cat.label}</h1>
       </div>
 
       {sorted.length > 0 ? (
-        <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <div className="columns-1 gap-3 space-y-3 sm:columns-2 md:gap-4 md:space-y-4 lg:columns-3">
           {sorted.map((img, i) => (
-            <figure key={img.id ?? i} className="m-0">
-              <div className="overflow-hidden border border-line bg-panel">
-                <Media
-                  src={img.image_url}
-                  alt={img.alt_text || `${cat.label} visual ${i + 1}`}
-                  label={cat.label}
-                  imgClassName="h-auto w-full"
-                />
-              </div>
+            <figure
+              key={img.id ?? i}
+              className="break-inside-avoid overflow-hidden rounded-[14px] border border-line bg-panel sm:rounded-[18px]"
+            >
+              <Media
+                src={img.image_url}
+                alt={img.alt_text || `${cat.label} visual ${i + 1}`}
+                label={cat.label}
+                imgClassName="h-auto w-full"
+              />
             </figure>
           ))}
         </div>
       ) : (
-        <p className="mt-12 text-sm text-sub">Belum ada gambar untuk kategori ini.</p>
+        <p className="px-0.5 text-sm text-sub">Belum ada gambar untuk kategori ini.</p>
       )}
     </div>
   );

@@ -78,8 +78,6 @@ export type AboutContent = {
   tools: string;
   capabilities: string[];
   industries: string[];
-  education: { school: string; degree: string; period: string }[];
-  certifications: string[];
 };
 
 export type ContactContent = {
@@ -600,10 +598,6 @@ export const DEFAULTS: SiteContent = {
       "Figma, FigJam, Adobe tools, Photopea, Notion, and AI-assisted design and research tools. I work openly with product, engineering, and stakeholders to turn decisions into momentum.",
     capabilities,
     industries,
-    education: [
-      { school: "[Add institution]", degree: "[Add degree]", period: "—" },
-    ],
-    certifications: [],
   },
   contact: {
     email: "hello@hisyam.design",
