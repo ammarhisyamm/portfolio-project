@@ -3,10 +3,9 @@ import { ArrowRight } from "lucide-react";
 import Hero from "@/components/Hero";
 import TrustStrip from "@/components/TrustStrip";
 import AboutPanel from "@/components/AboutPanel";
-import ProjectGrid from "@/components/ProjectGrid";
-import PinnedFeature from "@/components/PinnedFeature";
-import HorizontalStory from "@/components/HorizontalStory";
 import ExperienceAccordion from "@/components/ExperienceAccordion";
+import DesignExploration from "@/components/DesignExploration";
+import ProjectGrid from "@/components/ProjectGrid";
 import { projects } from "@/lib/projects";
 
 export default function HomePage() {
@@ -23,6 +22,8 @@ export default function HomePage() {
         <ExperienceAccordion />
       </section>
 
+      <DesignExploration />
+
       <section className="grid gap-5">
         <div className="flex items-end justify-between gap-4 px-0.5">
           <span className="kicker">Selected work</span>
@@ -36,9 +37,6 @@ export default function HomePage() {
         </div>
         <ProjectGrid projects={projects.slice(0, 4)} />
       </section>
-
-      <PinnedFeature project={projects[0]} />
-      <HorizontalStory projects={projects.slice(1, 5)} />
     </div>
   );
 }

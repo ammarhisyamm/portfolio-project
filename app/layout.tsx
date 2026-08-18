@@ -4,6 +4,7 @@ import Providers from "@/components/Providers";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import PageTransition from "@/components/PageTransition";
+import MobileTabBar from "@/components/MobileTabBar";
 
 export const metadata: Metadata = {
   title: {
@@ -19,11 +20,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         <Providers>
-          <div className="mx-auto max-w-shell px-5 md:px-8">
+          <div className="mx-auto max-w-shell px-5 pb-24 md:px-8 md:pb-0">
             <SiteHeader />
             <PageTransition>{children}</PageTransition>
             <SiteFooter />
           </div>
+          <MobileTabBar />
         </Providers>
       </body>
     </html>

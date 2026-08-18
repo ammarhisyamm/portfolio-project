@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Reveal from "@/components/Reveal";
-import WorkArchive from "@/components/WorkArchive";
+import WorkCanvas from "@/components/WorkCanvas";
+import { projects } from "@/lib/projects";
 
 export const metadata: Metadata = { title: "Work" };
 
@@ -14,7 +15,7 @@ export default function WorkPage() {
         </h1>
       </Reveal>
 
-      <WorkArchive />
+      <WorkCanvas projects={projects} />
     </div>
   );
 }
