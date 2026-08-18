@@ -13,7 +13,6 @@ import {
   X,
 } from "lucide-react";
 import type { Project } from "@/lib/projects";
-import { useProject } from "./ProjectContext";
 import Media from "./Media";
 
 const STORAGE_KEY = "hisyam.canvas.nodes.v1";
@@ -62,7 +61,6 @@ type Controls = {
 
 export default function WorkCanvas({ projects }: { projects: Project[] }) {
   const reduce = useReducedMotion();
-  const { open: openCaseStudy } = useProject();
 
   const viewportElRef = useRef<HTMLDivElement>(null);
   const nodeRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -395,14 +393,6 @@ export default function WorkCanvas({ projects }: { projects: Project[] }) {
                         imgClassName="h-full w-full object-cover pointer-events-none select-none transition-transform duration-500 ease-out group-hover:scale-[1.02]"
                       />
                     </div>
-                    <div className="border-t border-line px-3.5 py-2.5">
-                      <span className="block truncate text-[12px] font-medium tracking-[-0.01em]">
-                        {p.title}
-                      </span>
-                      <span className="mt-0.5 block font-mono text-[9px] uppercase tracking-[0.06em] text-muted">
-                        {p.category} · {p.year}
-                      </span>
-                    </div>
                   </div>
                 </motion.div>
               );
@@ -433,24 +423,6 @@ export default function WorkCanvas({ projects }: { projects: Project[] }) {
             <Undo2 size={15} />
           </IconBtn>
         </div>
-      </div>
-
-      <div className="panel p-5">
-        <span className="kicker">All projects</span>
-        <ul className="mt-4 grid list-none grid-cols-1 gap-1 sm:grid-cols-2" style={{ padding: 0 }}>
-          {projects.map((p) => (
-            <li key={p.slug}>
-              <button
-                type="button"
-                onClick={() => actions.current.openGallery(p.slug)}
-                className="flex w-full items-center justify-between gap-3 rounded-[10px] px-3 py-2.5 text-left text-[13px] text-sub transition-colors hover:bg-bg hover:text-ink"
-              >
-                <span>{p.title}</span>
-                <span className="font-mono text-[10px] text-muted">{p.year}</span>
-              </button>
-            </li>
-          ))}
-        </ul>
       </div>
 
       <AnimatePresence>
@@ -519,28 +491,6 @@ export default function WorkCanvas({ projects }: { projects: Project[] }) {
                     </div>
                   </>
                 )}
-              </div>
-
-              <div className="p-5 sm:p-6">
-                <p className="font-mono text-[10px] uppercase tracking-[0.06em] text-white/50">
-                  {activeProject.category} · {activeProject.year}
-                </p>
-                <h3 className="mt-2 text-[22px] font-medium tracking-[-0.03em] text-white sm:text-[24px]">
-                  {activeProject.title}
-                </h3>
-                <p className="mt-2 max-w-[560px] text-[13.5px] leading-relaxed text-white/60">
-                  {activeProject.desc}
-                </p>
-                <button
-                  type="button"
-                  onClick={() => {
-                    openCaseStudy(activeProject.slug);
-                    closeGallery();
-                  }}
-                  className="mt-5 inline-flex min-h-11 items-center justify-center rounded-[12px] bg-white px-5 text-sm font-medium text-black transition-transform hover:scale-[1.02] active:scale-[0.98]"
-                >
-                  View case study
-                </button>
               </div>
             </motion.div>
           </motion.div>
