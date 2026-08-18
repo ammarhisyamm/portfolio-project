@@ -10,12 +10,12 @@ import { projects } from "@/lib/projects";
 
 export default function HomePage() {
   return (
-    <div className="grid gap-5 pb-16 pt-4 md:gap-[22px]">
+    <div className="grid gap-3 pb-16 pt-3 md:gap-4">
       <Hero />
       <TrustStrip />
       <AboutPanel />
 
-      <section className="grid gap-5">
+      <section className="grid gap-3">
         <div className="px-0.5">
           <span className="kicker">Working experience</span>
         </div>
@@ -24,7 +24,7 @@ export default function HomePage() {
 
       <DesignExploration />
 
-      <section className="grid gap-5">
+      <section className="grid gap-3">
         <div className="flex items-end justify-between gap-4 px-0.5">
           <span className="kicker">Selected work</span>
           <Link

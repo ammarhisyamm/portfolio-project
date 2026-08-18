@@ -22,7 +22,7 @@ function Group() {
 export default function TrustStrip() {
   return (
     <div className="panel overflow-hidden">
-      <div className="flex items-center justify-between gap-4 border-b border-line px-6 py-4 sm:px-8">
+      <div className="flex items-center justify-between gap-4 border-b border-line px-5 py-4 sm:px-8">
         <p className="m-0 text-sm leading-normal text-sub">
           Experience across product, UX/UI, and digital experiences.
         </p>

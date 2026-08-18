@@ -20,7 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         <Providers>
-          <div className="mx-auto max-w-shell px-5 pb-24 md:px-8 md:pb-0">
+          <div className="mx-auto max-w-shell px-4 pb-24 sm:px-6 md:pb-0 lg:px-12">
             <SiteHeader />
             <PageTransition>{children}</PageTransition>
             <SiteFooter />

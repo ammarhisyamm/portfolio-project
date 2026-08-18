@@ -4,7 +4,7 @@ import { ArrowUpRight, ArrowUp } from "lucide-react";
 
 export default function SiteFooter() {
   return (
-    <footer className="panel mb-9 mt-4 grid gap-8 p-6 sm:p-10 lg:grid-cols-[1.4fr_auto] lg:gap-14">
+    <footer className="panel mb-9 mt-3 grid gap-8 p-5 sm:p-8 lg:grid-cols-[1.4fr_auto] lg:gap-14 lg:p-10">
       <div>
         <p className="mb-3.5 font-mono text-[11px] uppercase tracking-[0.02em] text-sub">
           Have a thoughtful problem to solve?

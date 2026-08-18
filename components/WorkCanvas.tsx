@@ -58,21 +58,21 @@ export default function WorkCanvas({ projects }: { projects: Project[] }) {
   }, []);
 
   const group = (key: string) => (
-    <div key={key} className="flex items-start gap-8 px-8 pt-16">
+    <div key={key} className="flex items-start gap-8 px-8 pt-10">
       {projects.map((p, i) => (
         <figure key={p.slug} className={`w-64 shrink-0 sm:w-80 ${OFFSETS[i % OFFSETS.length]}`}>
           <button
             type="button"
             onClick={() => open(p.slug)}
             aria-label={`View ${p.title} case study`}
-            className="group w-full cursor-pointer overflow-hidden rounded-card border border-line bg-panel text-left transition-colors duration-300 hover:border-line-strong hover:shadow-soft"
+            className="group w-full cursor-pointer overflow-hidden rounded-[18px] border border-line bg-panel text-left transition-all duration-300 hover:border-line-strong hover:shadow-soft sm:rounded-[22px] lg:rounded-[24px]"
           >
             <div className="aspect-[4/3] w-full overflow-hidden border-b border-line bg-bg">
               <Media
                 src={p.image}
                 alt={`Visual for ${p.title}`}
                 label={p.year}
-                imgClassName="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                imgClassName="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
               />
             </div>
             <div className="flex items-center justify-between gap-3 p-4">
@@ -90,9 +90,9 @@ export default function WorkCanvas({ projects }: { projects: Project[] }) {
   );
 
   return (
-    <div className="overflow-hidden rounded-panel border border-line bg-panel">
-      <div className="flex items-center justify-between gap-4 border-b border-line px-5 py-3.5">
-        <span className="font-mono text-[11px] uppercase tracking-[0.02em] text-sub">
+    <div className="overflow-hidden rounded-[18px] border border-line bg-panel sm:rounded-[22px] lg:rounded-[24px]">
+      <div className="flex items-center justify-between gap-4 border-b border-line px-5 py-3">
+        <span className="font-mono text-[11px] uppercase tracking-[0.02em] text-muted">
           Design canvas
         </span>
         <span className="hidden font-mono text-[11px] text-muted sm:block">

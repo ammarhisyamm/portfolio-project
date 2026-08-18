@@ -10,7 +10,7 @@ type RevealProps = {
   y?: number;
 };
 
-export default function Reveal({ children, className, y = 28 }: RevealProps) {
+export default function Reveal({ children, className, y = 16 }: RevealProps) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -21,7 +21,7 @@ export default function Reveal({ children, className, y = 28 }: RevealProps) {
     const tween = gsap.to(el, {
       opacity: 1,
       y: 0,
-      duration: 0.9,
+      duration: 0.7,
       ease: "power3.out",
       scrollTrigger: { trigger: el, start: "top 88%" },
     });

@@ -16,7 +16,7 @@ export default function MobileTabBar() {
 
   return (
     <nav aria-label="Mobile navigation" className="fixed inset-x-0 bottom-4 z-40 px-5 md:hidden">
-      <div className="mx-auto flex max-w-[420px] items-center justify-around gap-1 rounded-card border border-line bg-panel/90 px-2 py-2 shadow-soft backdrop-blur">
+      <div className="mx-auto flex max-w-[420px] items-center justify-around gap-1 rounded-[18px] border border-line bg-panel px-2 py-2 shadow-soft">
         {TABS.map(({ href, label, Icon }) => {
           const active =
             href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(href);

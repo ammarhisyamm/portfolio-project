@@ -5,20 +5,20 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        bg: "#f4f4f1",
+        bg: "#f5f5f5",
         panel: "#ffffff",
-        ink: "#16161a",
-        sub: "#5f5f5a",
-        muted: "#a3a39d",
-        line: "#e6e6e2",
-        "line-strong": "#d8d8d3",
+        ink: "#161616",
+        sub: "#686868",
+        muted: "#929292",
+        line: "#e9e9e9",
+        "line-strong": "#e4e4e4",
         accent: "#3da06a",
         "accent-soft": "#e7f4ec",
         "accent-ink": "#2c7a4c",
       },
       borderRadius: {
-        panel: "28px",
-        card: "20px",
+        panel: "24px",
+        card: "18px",
         chip: "12px",
       },
       fontFamily: {
@@ -26,10 +26,10 @@ const config: Config = {
         mono: ['"SFMono-Regular"', "ui-monospace", "Menlo", "Consolas", "monospace"],
       },
       boxShadow: {
-        soft: "0 1px 2px rgba(22,22,26,.04), 0 12px 32px -8px rgba(22,22,26,.08)",
+        soft: "0 1px 2px rgba(22,22,22,.04), 0 8px 24px -12px rgba(22,22,22,.06)",
       },
       maxWidth: {
-        shell: "1280px",
+        shell: "1180px",
       },
       keyframes: {
         "pulse-dot": {

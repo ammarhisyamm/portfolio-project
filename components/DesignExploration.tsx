@@ -17,7 +17,7 @@ function Frame() {
     <div className="flex items-center gap-6 pr-6">
       {SHOTS.map((label) => (
         <figure key={label} className="w-60 shrink-0 sm:w-72">
-          <div className="aspect-[4/3] overflow-hidden rounded-card border border-line bg-bg">
+          <div className="aspect-[4/3] overflow-hidden rounded-[18px] border border-line bg-bg sm:rounded-[22px] lg:rounded-[24px]">
             <div className="media-ph h-full w-full" role="img" aria-label={`${label} placeholder`}>
               <ImageIcon size={28} strokeWidth={1.4} aria-hidden="true" />
               <span>Design shot</span>
@@ -34,7 +34,7 @@ function Frame() {
 
 export default function DesignExploration() {
   return (
-    <section className="grid gap-5">
+    <section className="grid gap-3">
       <div className="flex items-end justify-between gap-4 px-0.5">
         <span className="kicker">Design exploration</span>
         <span className="hidden font-mono text-[10px] uppercase tracking-[0.06em] text-muted sm:block">
