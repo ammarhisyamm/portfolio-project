@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Hisyam is a Jakarta-based senior product designer creating useful digital experiences." />
+    <meta name="theme-color" content="#f8f8f6" />
+    <title>Hisyam — Product designer</title>
+    <link rel="preconnect" href="https://images.unsplash.com" />
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <div class="site-shell">
+      <header class="topbar" aria-label="Main navigation">
+        <button class="menu-toggle" aria-expanded="false" aria-controls="site-nav"><span>Menu</span><i></i></button>
+        <a class="wordmark" href="#home" aria-label="Hisyam home">Hisyam<span>.</span></a>
+        <nav id="site-nav">
+          <a href="#home" data-route="home">(01) Home</a>
+          <a href="#about" data-route="about">(02) About</a>
+          <a href="#work" data-route="work">(03) Work</a>
+        </nav>
+        <a class="availability" href="mailto:hello@hisyam.design"><b></b> Available</a>
+      </header>
+      <main id="app"></main>
+      <footer class="footer">
+        <div><p class="footer-kicker">Have a thoughtful problem to solve?</p><a class="footer-title" href="mailto:hello@hisyam.design">Let’s work together <span>↗</span></a></div>
+        <div class="footer-meta"><a href="mailto:hello@hisyam.design">hello@hisyam.design</a><a href="#">LinkedIn</a><a href="#">Behance</a><button class="back-top">Back to top ↑</button></div>
+        <small>© <span id="year"></span> Hisyam. Jakarta, Indonesia.</small>
+      </footer>
+    </div>
+    <dialog class="project-dialog" aria-label="Project case study"><button class="dialog-close" aria-label="Close project">×</button><div id="dialog-content"></div></dialog>
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>
