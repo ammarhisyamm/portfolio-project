@@ -76,7 +76,7 @@ export default async function CaseStudyPage({ params }: Props) {
 
         <Reveal className="panel grid gap-5 p-5 sm:p-8">
           {meta && <span className="kicker">{meta}</span>}
-          <h1 className="text-[clamp(30px,4vw,48px)] font-normal leading-[1.05] tracking-[-0.06em]">
+          <h1 className="text-[clamp(26px,4vw,32px)] font-normal leading-[1.08] tracking-[-0.05em]">
             {cs.hero_headline || cs.title}
           </h1>
           {cs.hero_description && (
@@ -124,7 +124,7 @@ export default async function CaseStudyPage({ params }: Props) {
           <span className="kicker">Next case study</span>
           <div className="flex flex-wrap items-end justify-between gap-6">
             <div className="grid gap-3">
-              <h2 className="text-[clamp(28px,4vw,52px)] font-normal leading-none tracking-[-0.06em]">
+              <h2 className="text-[clamp(24px,4vw,32px)] font-normal leading-[1.1] tracking-[-0.05em]">
                 {next.title}
               </h2>
               {next.short_description && (

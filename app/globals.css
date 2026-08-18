@@ -78,10 +78,15 @@ html.lenis body {
 }
 .marquee-track {
   width: max-content;
+  will-change: transform;
   animation: marquee var(--marquee-duration, 40s) linear infinite;
 }
 .marquee:hover .marquee-track {
   animation-play-state: paused;
+}
+.marquee-fade {
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 12%, #000 88%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 12%, #000 88%, transparent 100%);
 }
 @media (prefers-reduced-motion: reduce) {
   .marquee-track {

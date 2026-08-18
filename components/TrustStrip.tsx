@@ -24,24 +24,16 @@ function Group({ items }: { items: TrustItem[] }) {
   );
 }
 
-export default function TrustStrip({ items }: { items: TrustItem[] }) {
+export default function TrustStrip({ items, label = "Trusted by teams at" }: { items: TrustItem[]; label?: string }) {
   const DUPLICATED = [...items, ...items];
   return (
-    <div className="panel overflow-hidden">
-      <div className="flex items-center justify-between gap-4 border-b border-line px-5 py-4 sm:px-8">
-        <p className="m-0 text-sm leading-normal text-sub">
-          Experience across product, UX/UI, and digital experiences.
-        </p>
-        <span className="hidden font-mono text-[10px] uppercase tracking-[0.06em] text-muted sm:block">
-          Scroll ↻
-        </span>
-      </div>
-      <div
-        className="marquee relative overflow-hidden py-7"
-        style={{ "--marquee-duration": "70s" } as CSSProperties}
-        aria-hidden="true"
-      >
-        <div className="marquee-track flex">
+    <div>
+      <p className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted">{label}</p>
+      <div className="marquee-fade relative mt-4 overflow-hidden" aria-hidden="true">
+        <div
+          className="marquee-track flex"
+          style={{ "--marquee-duration": "110s" } as CSSProperties}
+        >
           {DUPLICATED.map((_, i) => (
             <Group key={i} items={items} />
           ))}

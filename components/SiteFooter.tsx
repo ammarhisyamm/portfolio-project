@@ -10,14 +10,14 @@ export default function SiteFooter({ footer }: { footer: FooterContent }) {
         <p className="mb-3.5 font-mono text-[11px] uppercase tracking-[0.02em] text-sub">
           {footer.note}
         </p>
-        <h2 className="text-[clamp(30px,4vw,52px)] font-normal leading-none tracking-[-0.06em]">
+        <h2 className="text-[clamp(24px,4vw,32px)] font-normal leading-[1.1] tracking-[-0.05em]">
           <a
             href={`mailto:${footer.email}`}
-            className="group inline-flex items-baseline gap-2 no-underline"
+            className="group inline-flex items-center gap-2.5 no-underline"
           >
             {footer.heading}
             <ArrowUpRight
-              size={32}
+              size={24}
               className="inline-block text-muted transition-transform duration-300 ease-out group-hover:translate-x-1 group-hover:-translate-y-1"
               aria-hidden="true"
             />

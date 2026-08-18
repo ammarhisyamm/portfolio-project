@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import Hero from "@/components/Hero";
-import TrustStrip from "@/components/TrustStrip";
 import AboutPanel from "@/components/AboutPanel";
 import ExperienceAccordion from "@/components/ExperienceAccordion";
 import CategoryStacks from "@/components/CategoryStacks";
@@ -25,8 +24,8 @@ export default async function HomePage() {
         available={content.hero.available}
         email={content.contact.email}
         socials={content.socials.items}
+        trust={content.trust}
       />
-      <TrustStrip items={content.trust} />
       <AboutPanel about={content.about} contact={content.contact} socials={content.socials.items} />
 
       <ExperienceAccordion items={content.experience} />

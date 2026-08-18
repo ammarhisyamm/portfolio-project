@@ -19,7 +19,7 @@ export default function CategoryGallery({ cat }: { cat: HomeCategory }) {
 
       <div className="panel p-5 sm:p-8">
         <span className="kicker">Design exploration</span>
-        <h1 className="mt-2 text-[clamp(30px,4.5vw,48px)] font-normal leading-none tracking-[-0.06em]">
+        <h1 className="mt-2 text-[clamp(24px,4vw,32px)] font-normal leading-[1.1] tracking-[-0.05em]">
           {cat.label}
         </h1>
       </div>

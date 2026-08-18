@@ -4,9 +4,10 @@ import { useEffect, useRef } from "react";
 import { ArrowRight } from "lucide-react";
 import { gsap } from "@/lib/gsap";
 import { reducedMotion, splitWords } from "@/lib/utils";
-import type { SocialLink } from "@/lib/content";
+import type { SocialLink, TrustItem } from "@/lib/content";
 import Btn from "./Btn";
 import Socials from "./Socials";
+import TrustStrip from "./TrustStrip";
 
 type HeroProps = {
   name: string;
@@ -16,9 +17,10 @@ type HeroProps = {
   available: boolean;
   email: string;
   socials: SocialLink[];
+  trust: TrustItem[];
 };
 
-export default function Hero({ name, title, headline, intro, available, email, socials }: HeroProps) {
+export default function Hero({ name, title, headline, intro, available, email, socials, trust }: HeroProps) {
   const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -68,7 +70,7 @@ export default function Hero({ name, title, headline, intro, available, email, s
 
         <h2
           aria-label={headline}
-          className="text-[clamp(30px,4vw,48px)] font-normal leading-[1.05] tracking-[-0.055em]"
+          className="text-[clamp(26px,4vw,32px)] font-normal leading-[1.1] tracking-[-0.05em]"
         >
           {splitWords(headline).map((word, i) => (
             <span key={i} data-hero-word className="inline-block will-change-transform">
@@ -97,6 +99,12 @@ export default function Hero({ name, title, headline, intro, available, email, s
         </div>
         </div>
       </div>
+
+      {trust.length > 0 && (
+        <div className="mt-10 border-t border-line pt-6">
+          <TrustStrip items={trust} />
+        </div>
+      )}
     </section>
   );
 }
