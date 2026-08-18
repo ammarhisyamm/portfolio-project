@@ -5,6 +5,7 @@ import { ArrowRight } from "lucide-react";
 import { gsap } from "@/lib/gsap";
 import { reducedMotion, splitWords } from "@/lib/utils";
 import Btn from "./Btn";
+import Socials from "./Socials";
 
 const HEADLINE = "I design thoughtful digital products that make complex experiences feel simple.";
 
@@ -28,14 +29,19 @@ export default function Hero() {
 
   return (
     <section ref={ref} className="panel relative overflow-hidden p-5 sm:p-8 lg:p-10">
-      <div className="relative z-10 flex max-w-[880px] flex-col items-start gap-6">
-        <span
-          data-hero-fade
-          className="inline-flex items-center gap-2 rounded-full border border-line bg-panel px-3.5 py-1.5 text-xs font-medium text-sub"
-        >
-          <span className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-accent" />
-          Available for selected projects
-        </span>
+      <div className="relative z-10 flex w-full max-w-[880px] flex-col items-start gap-6">
+        <div className="flex w-full flex-wrap items-center justify-between gap-4">
+          <span
+            data-hero-fade
+            className="inline-flex items-center gap-2 rounded-full border border-line bg-panel px-3.5 py-1.5 text-xs font-medium text-sub"
+          >
+            <span className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-accent" />
+            Available for selected projects
+          </span>
+          <div data-hero-fade>
+            <Socials />
+          </div>
+        </div>
 
         <div data-hero-fade className="flex items-center gap-4">
           <div
