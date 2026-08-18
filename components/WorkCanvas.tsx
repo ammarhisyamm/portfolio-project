@@ -1,125 +1,599 @@
 "use client";
 
-import { useRef } from "react";
-import { useProject } from "./ProjectContext";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import {
+  Plus,
+  Minus,
+  Maximize2,
+  RotateCcw,
+  Undo2,
+  ChevronLeft,
+  ChevronRight,
+  X,
+} from "lucide-react";
 import type { Project } from "@/lib/projects";
+import { useProject } from "./ProjectContext";
 import Media from "./Media";
 
-const SCATTER = [
-  { x: 4, y: 8 },
-  { x: 27, y: 16 },
-  { x: 50, y: 6 },
-  { x: 69, y: 18 },
-  { x: 14, y: 44 },
-  { x: 40, y: 52 },
-  { x: 62, y: 44 },
-  { x: 80, y: 54 },
+const STORAGE_KEY = "hisyam.canvas.nodes.v1";
+
+const BASE_LAYOUT = [
+  { slug: "gadai-mulia", x: 140, y: 160, width: 420, rotation: -1.2 },
+  { slug: "synqra", x: 700, y: 110, width: 360, rotation: 1 },
+  { slug: "drawtopia", x: 1140, y: 320, width: 400, rotation: -0.8 },
+  { slug: "task-sharing", x: 320, y: 660, width: 320, rotation: 1.5 },
+  { slug: "threat-intelligence", x: 820, y: 720, width: 360, rotation: -1.5 },
+  { slug: "omnichannel", x: 1220, y: 800, width: 300, rotation: 1.2 },
+  { slug: "wedding-dashboard", x: 280, y: 1030, width: 300, rotation: -1 },
+  { slug: "english-learning", x: 660, y: 1100, width: 320, rotation: 0.6 },
 ];
 
-type DragState = {
-  slug: string | null;
-  moved: boolean;
-  startX: number;
-  startY: number;
-  origLeft: number;
-  origTop: number;
+const MIN_ZOOM = 0.35;
+const MAX_ZOOM = 2.5;
+const INITIAL_VIEW = { x: 0, y: 0, zoom: 0.8 };
+const DRAG_THRESHOLD = 6;
+
+function defaultPositions(): Record<string, { x: number; y: number }> {
+  return Object.fromEntries(BASE_LAYOUT.map((n) => [n.slug, { x: n.x, y: n.y }]));
+}
+
+function loadPositions(): Record<string, { x: number; y: number }> {
+  const base = defaultPositions();
+  if (typeof window === "undefined") return base;
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return base;
+    return { ...base, ...(JSON.parse(raw) as Record<string, { x: number; y: number }>) };
+  } catch {
+    return base;
+  }
+}
+
+type Controls = {
+  zoomCenter: (factor: number) => void;
+  fitAll: () => void;
+  resetView: () => void;
+  resetLayout: () => void;
+  closeGallery: () => void;
+  openGallery: (slug: string) => void;
+  stepGallery: (dir: 1 | -1) => void;
 };
 
 export default function WorkCanvas({ projects }: { projects: Project[] }) {
-  const refs = useRef<Record<string, HTMLDivElement | null>>({});
-  const drag = useRef<DragState>({
-    slug: null,
-    moved: false,
-    startX: 0,
-    startY: 0,
-    origLeft: 0,
-    origTop: 0,
-  });
-  const { open } = useProject();
+  const reduce = useReducedMotion();
+  const { open: openCaseStudy } = useProject();
 
-  const down = (slug: string) => (e: React.PointerEvent) => {
-    const el = refs.current[slug];
+  const viewportElRef = useRef<HTMLDivElement>(null);
+  const nodeRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const openedFrom = useRef<HTMLElement | null>(null);
+
+  const [viewport, setViewport] = useState(INITIAL_VIEW);
+  const viewportRef = useRef(viewport);
+  const [positions, setPositions] = useState<Record<string, { x: number; y: number }>>(() =>
+    loadPositions()
+  );
+  const positionsRef = useRef(positions);
+  const [selected, setSelected] = useState<string | null>(null);
+  const [gallerySlug, setGallerySlug] = useState<string | null>(null);
+  const [galleryIndex, setGalleryIndex] = useState(0);
+  const [spaceDown, setSpaceDown] = useState(false);
+  const [hover, setHover] = useState(false);
+
+  const spaceRef = useRef(false);
+  const pan = useRef<{ active: boolean; startX: number; startY: number; origX: number; origY: number } | null>(null);
+  const nodeDrag = useRef<{ slug: string | null; moved: boolean; startX: number; startY: number; origX: number; origY: number } | null>(null);
+
+  viewportRef.current = viewport;
+  positionsRef.current = positions;
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(positions));
+    } catch {
+      /* storage unavailable */
+    }
+  }, [positions]);
+
+  const bySlug = useCallback(
+    (slug: string) => projects.find((p) => p.slug === slug),
+    [projects]
+  );
+  const activeProject = gallerySlug ? bySlug(gallerySlug) : null;
+  const galleryImages = activeProject ? [activeProject.image] : [];
+
+  const zoomCenter = useCallback((factor: number) => {
+    const el = viewportElRef.current;
     if (!el) return;
-    drag.current = {
+    const cx = el.clientWidth / 2;
+    const cy = el.clientHeight / 2;
+    setViewport((v) => {
+      const zoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, v.zoom * factor));
+      const wx = (cx - v.x) / v.zoom;
+      const wy = (cy - v.y) / v.zoom;
+      return { x: cx - wx * zoom, y: cy - wy * zoom, zoom };
+    });
+  }, []);
+
+  const fitAll = useCallback(() => {
+    const el = viewportElRef.current;
+    if (!el) return;
+    const pos = positionsRef.current;
+    const xs = Object.values(pos).map((p) => p.x);
+    const ys = Object.values(pos).map((p) => p.y);
+    const minX = Math.min(...xs);
+    const minY = Math.min(...ys);
+    const maxX = Math.max(...xs);
+    const maxY = Math.max(...ys);
+    const pad = 90;
+    const w = maxX - minX + pad * 2;
+    const h = maxY - minY + pad * 2;
+    const zoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, Math.min((el.clientWidth - 40) / w, (el.clientHeight - 40) / h)));
+    const cx = el.clientWidth / 2;
+    const cy = el.clientHeight / 2;
+    setViewport({ x: cx - (minX - pad + w / 2) * zoom, y: cy - (minY - pad + h / 2) * zoom, zoom });
+  }, []);
+
+  const resetView = useCallback(() => {
+    setViewport(INITIAL_VIEW);
+  }, []);
+
+  const resetLayout = useCallback(() => {
+    setPositions(defaultPositions());
+    setViewport(INITIAL_VIEW);
+  }, []);
+
+  const closeGallery = useCallback(() => {
+    setGallerySlug(null);
+    const el = openedFrom.current;
+    if (el) {
+      el.focus();
+      openedFrom.current = null;
+    }
+  }, []);
+
+  const openGallery = useCallback((slug: string) => {
+    openedFrom.current = nodeRefs.current[slug] ?? null;
+    setGalleryIndex(0);
+    setSelected(slug);
+    setGallerySlug(slug);
+  }, []);
+
+  const stepGallery = useCallback(
+    (dir: 1 | -1) => {
+      if (galleryImages.length <= 1) return;
+      setGalleryIndex((i) => (i + dir + galleryImages.length) % galleryImages.length);
+    },
+    [galleryImages.length]
+  );
+
+  const actions = useRef<Controls>({ zoomCenter, fitAll, resetView, resetLayout, closeGallery, openGallery, stepGallery });
+  actions.current = { zoomCenter, fitAll, resetView, resetLayout, closeGallery, openGallery, stepGallery };
+
+  // Wheel zoom (native listener for reliable preventDefault)
+  useEffect(() => {
+    const el = viewportElRef.current;
+    if (!el) return;
+    const onWheel = (e: WheelEvent) => {
+      if (!e.ctrlKey && !e.metaKey) return;
+      e.preventDefault();
+      const rect = el.getBoundingClientRect();
+      const cx = e.clientX - rect.left;
+      const cy = e.clientY - rect.top;
+      const factor = Math.exp(-e.deltaY * 0.0015);
+      setViewport((v) => {
+        const zoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, v.zoom * factor));
+        const wx = (cx - v.x) / v.zoom;
+        const wy = (cy - v.y) / v.zoom;
+        return { x: cx - wx * zoom, y: cy - wy * zoom, zoom };
+      });
+    };
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, []);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const t = e.target as HTMLElement | null;
+      if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable)) return;
+
+      if (gallerySlug) {
+        if (e.key === "Escape") actions.current.closeGallery();
+        else if (e.key === "ArrowLeft") actions.current.stepGallery(-1);
+        else if (e.key === "ArrowRight") actions.current.stepGallery(1);
+        return;
+      }
+
+      if (e.code === "Space") {
+        if (hover) {
+          e.preventDefault();
+          spaceRef.current = true;
+          setSpaceDown(true);
+        }
+        return;
+      }
+      if (e.key === "+" || e.key === "=") actions.current.zoomCenter(1.25);
+      else if (e.key === "-") actions.current.zoomCenter(0.8);
+      else if (e.key === "0") actions.current.resetView();
+      else if (e.key === "1") actions.current.fitAll();
+      else if (e.key === "Escape") setSelected(null);
+      else if (
+        selected &&
+        (e.key === "ArrowUp" || e.key === "ArrowDown" || e.key === "ArrowLeft" || e.key === "ArrowRight")
+      ) {
+        e.preventDefault();
+        const step = e.shiftKey ? 40 : 12;
+        const dx = e.key === "ArrowLeft" ? -step : e.key === "ArrowRight" ? step : 0;
+        const dy = e.key === "ArrowUp" ? -step : e.key === "ArrowDown" ? step : 0;
+        setPositions((prev) => ({
+          ...prev,
+          [selected]: { x: prev[selected].x + dx, y: prev[selected].y + dy },
+        }));
+      }
+    };
+    const onKeyUp = (e: KeyboardEvent) => {
+      if (e.code === "Space") {
+        spaceRef.current = false;
+        setSpaceDown(false);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    window.addEventListener("keyup", onKeyUp);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("keyup", onKeyUp);
+    };
+  }, [gallerySlug, selected, hover]);
+
+  // Lock body scroll while gallery open
+  useEffect(() => {
+    if (!gallerySlug) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [gallerySlug]);
+
+  // Pan canvas (empty space, space+drag, or middle mouse)
+  const onViewportPointerDown = (e: React.PointerEvent) => {
+    if (e.button !== 0 && e.button !== 1) return;
+    const el = viewportElRef.current;
+    if (!el) return;
+    if (e.button === 1) e.preventDefault();
+    el.setPointerCapture(e.pointerId);
+    pan.current = {
+      active: true,
+      startX: e.clientX,
+      startY: e.clientY,
+      origX: viewportRef.current.x,
+      origY: viewportRef.current.y,
+    };
+    el.classList.add("cursor-grabbing");
+  };
+  const onViewportPointerMove = (e: React.PointerEvent) => {
+    if (!pan.current?.active) return;
+    setViewport((v) => ({
+      ...v,
+      x: pan.current!.origX + (e.clientX - pan.current!.startX),
+      y: pan.current!.origY + (e.clientY - pan.current!.startY),
+    }));
+  };
+  const endPan = () => {
+    if (pan.current?.active) viewportElRef.current?.classList.remove("cursor-grabbing");
+    pan.current = null;
+  };
+
+  // Node drag
+  const onNodePointerDown = (slug: string) => (e: React.PointerEvent) => {
+    if (spaceRef.current || e.button !== 0) return;
+    const el = nodeRefs.current[slug];
+    if (!el) return;
+    e.stopPropagation();
+    el.setPointerCapture(e.pointerId);
+    const pos = positionsRef.current[slug];
+    nodeDrag.current = {
       slug,
       moved: false,
       startX: e.clientX,
       startY: e.clientY,
-      origLeft: el.offsetLeft,
-      origTop: el.offsetTop,
+      origX: pos.x,
+      origY: pos.y,
     };
-    el.setPointerCapture(e.pointerId);
-    el.classList.add("cursor-grabbing");
     el.style.zIndex = "10";
   };
-
-  const move = (e: React.PointerEvent) => {
-    const d = drag.current;
-    const el = d.slug ? refs.current[d.slug] : null;
-    if (!el) return;
+  const onNodePointerMove = (e: React.PointerEvent) => {
+    const d = nodeDrag.current;
+    if (!d?.slug) return;
     const dx = e.clientX - d.startX;
     const dy = e.clientY - d.startY;
-    if (Math.abs(dx) + Math.abs(dy) > 5) d.moved = true;
-    el.style.left = `${d.origLeft + dx}px`;
-    el.style.top = `${d.origTop + dy}px`;
+    if (Math.abs(dx) + Math.abs(dy) > DRAG_THRESHOLD) d.moved = true;
+    const zoom = viewportRef.current.zoom;
+    setPositions((prev) => ({
+      ...prev,
+      [d.slug!]: { x: d.origX + dx / zoom, y: d.origY + dy / zoom },
+    }));
+  };
+  const onNodePointerUp = () => {
+    const d = nodeDrag.current;
+    if (!d?.slug) return;
+    const el = nodeRefs.current[d.slug];
+    if (el) el.style.zIndex = "";
+    if (!d.moved) actions.current.openGallery(d.slug);
+    nodeDrag.current = null;
   };
 
-  const up = () => {
-    const d = drag.current;
-    if (!d.slug) return;
-    const el = refs.current[d.slug];
-    if (el) {
-      el.classList.remove("cursor-grabbing");
-      el.style.zIndex = "";
-    }
-    if (!d.moved) open(d.slug);
-    drag.current = {
-      slug: null,
-      moved: false,
-      startX: 0,
-      startY: 0,
-      origLeft: 0,
-      origTop: 0,
-    };
-  };
+  const zoomPercent = Math.round(viewport.zoom * 100);
+
+  const nodeEntrance = (i: number) =>
+    reduce
+      ? null
+      : { initial: { opacity: 0, y: 12 }, animate: { opacity: 1, y: 0 }, transition: { delay: 0.05 * i, duration: 0.5, ease: [0.16, 1, 0.3, 1] as const } };
 
   return (
-    <div className="canvas-grid relative h-[60vh] overflow-hidden rounded-[18px] border border-line sm:h-[70vh] sm:rounded-[22px] lg:rounded-[24px]">
-      {projects.map((p, i) => {
-        const pos = SCATTER[i % SCATTER.length];
-        return (
-          <div
-            key={p.slug}
-            ref={(node) => {
-              refs.current[p.slug] = node;
-            }}
-            onPointerDown={down(p.slug)}
-            onPointerMove={move}
-            onPointerUp={up}
-            onPointerCancel={up}
-            role="button"
-            tabIndex={0}
-            aria-label={`Drag ${p.title}, or press Enter to view its case study`}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                open(p.slug);
-              }
-            }}
-            className="absolute w-52 cursor-grab touch-none select-none overflow-hidden rounded-[16px] border border-line bg-panel shadow-soft sm:w-64"
-            style={{ left: `${pos.x}%`, top: `${pos.y}%` }}
-          >
-            <div className="aspect-[4/3] w-full overflow-hidden bg-bg">
-              <Media
-                src={p.image}
-                alt={`Visual for ${p.title}`}
-                label={p.year}
-                imgClassName="h-full w-full object-cover pointer-events-none select-none"
-              />
-            </div>
+    <div className="grid gap-3 md:gap-4">
+      <div
+        ref={viewportElRef}
+        onPointerDown={onViewportPointerDown}
+        onPointerMove={onViewportPointerMove}
+        onPointerUp={endPan}
+        onPointerCancel={endPan}
+        onPointerEnter={() => setHover(true)}
+        onPointerLeave={() => setHover(false)}
+        onAuxClick={(e) => e.preventDefault()}
+        className="canvas-grid relative h-[68vh] min-h-[600px] cursor-grab touch-none select-none overflow-hidden rounded-[18px] border border-line sm:min-h-[720px] sm:rounded-[22px] lg:rounded-[24px]"
+      >
+        <div
+          className="absolute left-0 top-0 h-full w-full"
+          style={{ transform: `translate(${viewport.x}px, ${viewport.y}px) scale(${viewport.zoom})`, transformOrigin: "0 0" }}
+        >
+          <div className="pointer-events-none absolute" style={{ width: 4200, height: 3400 }}>
+            {projects.map((p, i) => {
+              const layout = BASE_LAYOUT[i % BASE_LAYOUT.length];
+              const pos = positions[p.slug] ?? { x: layout.x, y: layout.y };
+              const width = layout.width;
+              const isSelected = selected === p.slug;
+              const entrance = nodeEntrance(i);
+              return (
+                <motion.div
+                  key={p.slug}
+                  initial={entrance ? entrance.initial : false}
+                  animate={entrance ? entrance.animate : undefined}
+                  transition={entrance ? entrance.transition : undefined}
+                  style={{ left: pos.x, top: pos.y, width, zIndex: isSelected ? 5 : undefined }}
+                  className="absolute"
+                >
+                  <div
+                    ref={(node) => {
+                      nodeRefs.current[p.slug] = node;
+                    }}
+                    onPointerDown={onNodePointerDown(p.slug)}
+                    onPointerMove={onNodePointerMove}
+                    onPointerUp={onNodePointerUp}
+                    onPointerCancel={onNodePointerUp}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`${p.title}, ${p.category}, ${p.year}. Activate to view, drag to move.`}
+                    aria-selected={isSelected || undefined}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        actions.current.openGallery(p.slug);
+                      }
+                    }}
+                    style={{ transform: `rotate(${layout.rotation}deg)` }}
+                    className={`group cursor-move touch-none select-none overflow-hidden rounded-[14px] border border-line bg-panel shadow-soft transition-shadow duration-300 hover:shadow-soft ${
+                      spaceDown ? "cursor-grab" : "cursor-move"
+                    }`}
+                  >
+                    <div className="aspect-[4/3] w-full overflow-hidden bg-bg">
+                      <Media
+                        src={p.image}
+                        alt={`Visual for ${p.title}`}
+                        label={p.year}
+                        imgClassName="h-full w-full object-cover pointer-events-none select-none transition-transform duration-500 ease-out group-hover:scale-[1.02]"
+                      />
+                    </div>
+                    <div className="border-t border-line px-3.5 py-2.5">
+                      <span className="block truncate text-[12px] font-medium tracking-[-0.01em]">
+                        {p.title}
+                      </span>
+                      <span className="mt-0.5 block font-mono text-[9px] uppercase tracking-[0.06em] text-muted">
+                        {p.category} · {p.year}
+                      </span>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
-        );
-      })}
+        </div>
+
+        <span className="pointer-events-none absolute bottom-3 left-3 rounded-full border border-line bg-panel/85 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.06em] text-sub shadow-soft sm:hidden">
+          Drag to explore · Pinch to zoom
+        </span>
+
+        <div className="absolute right-3 top-3 z-10 flex items-center gap-0.5 rounded-[14px] border border-line bg-panel/90 p-1.5 shadow-soft sm:bottom-4 sm:right-4 sm:top-auto">
+          <IconBtn label="Zoom out" onClick={() => actions.current.zoomCenter(0.8)} disabled={viewport.zoom <= MIN_ZOOM}>
+            <Minus size={15} />
+          </IconBtn>
+          <span className="w-11 text-center font-mono text-[11px] tabular-nums text-sub">{zoomPercent}%</span>
+          <IconBtn label="Zoom in" onClick={() => actions.current.zoomCenter(1.25)} disabled={viewport.zoom >= MAX_ZOOM}>
+            <Plus size={15} />
+          </IconBtn>
+          <span className="mx-0.5 h-5 w-px bg-line" aria-hidden="true" />
+          <IconBtn label="Reset view (0)" onClick={actions.current.resetView}>
+            <RotateCcw size={15} />
+          </IconBtn>
+          <IconBtn label="Fit all projects (1)" onClick={actions.current.fitAll}>
+            <Maximize2 size={15} />
+          </IconBtn>
+          <IconBtn label="Reset layout" onClick={actions.current.resetLayout}>
+            <Undo2 size={15} />
+          </IconBtn>
+        </div>
+      </div>
+
+      <div className="panel p-5">
+        <span className="kicker">All projects</span>
+        <ul className="mt-4 grid list-none grid-cols-1 gap-1 sm:grid-cols-2" style={{ padding: 0 }}>
+          {projects.map((p) => (
+            <li key={p.slug}>
+              <button
+                type="button"
+                onClick={() => actions.current.openGallery(p.slug)}
+                className="flex w-full items-center justify-between gap-3 rounded-[10px] px-3 py-2.5 text-left text-[13px] text-sub transition-colors hover:bg-bg hover:text-ink"
+              >
+                <span>{p.title}</span>
+                <span className="font-mono text-[10px] text-muted">{p.year}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <AnimatePresence>
+        {activeProject && (
+          <motion.div
+            className="project-modal-overlay"
+            initial={reduce ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={reduce ? undefined : { opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={closeGallery}
+            role="presentation"
+          >
+            <motion.div
+              role="dialog"
+              aria-modal="true"
+              aria-label={`${activeProject.title} visual gallery`}
+              tabIndex={-1}
+              initial={reduce ? false : { opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={reduce ? undefined : { opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+              onClick={(e) => e.stopPropagation()}
+              className="project-modal"
+            >
+              <button
+                type="button"
+                onClick={closeGallery}
+                aria-label="Close gallery"
+                className="absolute right-3 top-3 z-10 grid h-9 w-9 place-items-center rounded-full border border-white/20 bg-black/40 text-white transition-colors hover:bg-black/70"
+              >
+                <X size={16} />
+              </button>
+
+              <div className="relative grid min-h-[260px] place-items-center bg-black/30">
+                <Media
+                  src={galleryImages[galleryIndex]}
+                  alt={`Visual for ${activeProject.title}`}
+                  label={activeProject.year}
+                  imgClassName="mx-auto h-auto max-h-[52vh] w-full object-contain"
+                />
+                {galleryImages.length > 1 && (
+                  <>
+                    <GalleryArrow
+                      side="left"
+                      label="Previous image"
+                      onClick={() => actions.current.stepGallery(-1)}
+                    />
+                    <GalleryArrow
+                      side="right"
+                      label="Next image"
+                      onClick={() => actions.current.stepGallery(1)}
+                    />
+                    <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1.5">
+                      {galleryImages.map((img, i) => (
+                        <button
+                          key={i}
+                          type="button"
+                          aria-label={`Show image ${i + 1}`}
+                          onClick={() => setGalleryIndex(i)}
+                          className={`h-1.5 rounded-full transition-all ${
+                            i === galleryIndex ? "w-5 bg-white" : "w-1.5 bg-white/40"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+
+              <div className="p-5 sm:p-6">
+                <p className="font-mono text-[10px] uppercase tracking-[0.06em] text-white/50">
+                  {activeProject.category} · {activeProject.year}
+                </p>
+                <h3 className="mt-2 text-[22px] font-medium tracking-[-0.03em] text-white sm:text-[24px]">
+                  {activeProject.title}
+                </h3>
+                <p className="mt-2 max-w-[560px] text-[13.5px] leading-relaxed text-white/60">
+                  {activeProject.desc}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    openCaseStudy(activeProject.slug);
+                    closeGallery();
+                  }}
+                  className="mt-5 inline-flex min-h-11 items-center justify-center rounded-[12px] bg-white px-5 text-sm font-medium text-black transition-transform hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  View case study
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
+  );
+}
+
+function IconBtn({
+  children,
+  label,
+  onClick,
+  disabled,
+}: {
+  children: React.ReactNode;
+  label: string;
+  onClick: () => void;
+  disabled?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      title={label}
+      disabled={disabled}
+      onClick={onClick}
+      className="grid h-8 w-8 place-items-center rounded-[10px] text-sub transition-colors hover:bg-bg hover:text-ink disabled:cursor-not-allowed disabled:opacity-40"
+    >
+      {children}
+    </button>
+  );
+}
+
+function GalleryArrow({
+  side,
+  label,
+  onClick,
+}: {
+  side: "left" | "right";
+  label: string;
+  onClick: () => void;
+}) {
+  const Icon = side === "left" ? ChevronLeft : ChevronRight;
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      onClick={onClick}
+      className="absolute top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-black/40 text-white transition-colors hover:bg-black/70"
+      style={side === "left" ? { left: 12 } : { right: 12 }}
+    >
+      <Icon size={18} />
+    </button>
   );
 }
