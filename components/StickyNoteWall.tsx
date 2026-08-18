@@ -5,17 +5,17 @@ import { AnimatePresence, MotionConfig, motion } from "motion/react";
 import { ArrowLeft, ArrowRight, Check, Plus, X } from "lucide-react";
 import type { VisitorNote } from "@/lib/notes";
 
-const COLORS: Record<string, { bg: string; border: string; text: string }> = {
-  cream: { bg: "#f6f1e3", border: "#e4d9bb", text: "#3a3423" },
-  yellow: { bg: "#f7ecc4", border: "#e4d48f", text: "#3d3620" },
-  pink: { bg: "#f3deda", border: "#e0bdb6", text: "#43241f" },
-  blue: { bg: "#dde7f2", border: "#b9cee3", text: "#20303f" },
-  sage: { bg: "#dfe8dc", border: "#bfd1ba", text: "#23331f" },
-  lavender: { bg: "#e6e0ef", border: "#cdc1e0", text: "#2e2740" },
-  ink: { bg: "#161616", border: "#000000", text: "#ffffff" },
+const COLORS: Record<string, { bg: string; ink: string; line: string; accent: string }> = {
+  cream: { bg: "#f2e8d5", ink: "#4a4033", line: "#dfd0b3", accent: "#c9b188" },
+  yellow: { bg: "#f1e4bb", ink: "#4d4326", line: "#ddca8c", accent: "#cbb472" },
+  coral: { bg: "#eabaa8", ink: "#4a2f26", line: "#d69b84", accent: "#c07f64" },
+  blue: { bg: "#dae0e9", ink: "#2b3542", line: "#b8c3d3", accent: "#93a3b8" },
+  sage: { bg: "#e0e7d6", ink: "#333d2c", line: "#c0ccb3", accent: "#9db08a" },
+  lavender: { bg: "#ddd6e7", ink: "#3a3346", line: "#c0b4d2", accent: "#9c8db8" },
+  charcoal: { bg: "#3b3b39", ink: "#f2ede2", line: "#2d2d2b", accent: "#c8b88e" },
 };
 
-const COLOR_KEYS = ["cream", "yellow", "pink", "blue", "sage", "lavender"] as const;
+const PICKER_KEYS = ["cream", "yellow", "coral", "lavender", "charcoal"] as const;
 
 function shortDate(iso: string): string {
   const d = new Date(iso);
@@ -23,231 +23,223 @@ function shortDate(iso: string): string {
   return d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
 }
 
-function NotePaper({ note, large }: { note: VisitorNote; large?: boolean }) {
-  const c = COLORS[note.color] ?? COLORS.cream;
-  const isDark = note.color === "ink";
+function postDate(iso: string): string {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return "";
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+}
+
+function pcColor(color: string) {
+  return COLORS[color] ?? COLORS.cream;
+}
+
+function FrontArt({ color }: { color: string }) {
+  const c = pcColor(color);
   return (
-    <div
-      className={`relative flex h-full w-full flex-col rounded-[14px] border p-4 shadow-soft transition-shadow duration-300 group-hover:shadow-[0_16px_36px_-16px_rgba(22,22,22,0.2)] ${
-        large ? "p-5 sm:p-6" : ""
-      }`}
-      style={{ background: c.bg, borderColor: c.border, color: c.text }}
-    >
-      <span
-        aria-hidden="true"
-        className={`absolute -top-2.5 left-1/2 h-3 w-8 -translate-x-1/2 rotate-2 ${isDark ? "bg-white/20" : "bg-white/55"}`}
-        style={{ clipPath: "polygon(4% 0, 96% 8%, 100% 100%, 0 94%)" }}
-      />
-      <p
-        className={`leading-relaxed ${large ? "text-[15px] sm:text-[16px]" : "text-[13px] line-clamp-5"}`}
-      >
-        {note.message}
-      </p>
-      <div className={`mt-auto flex items-center justify-between gap-2 ${large ? "pt-6" : "pt-3"}`}>
-        <span className="font-mono text-[10px] uppercase tracking-[0.06em] opacity-70">
-          — {note.name}
-        </span>
-        {note.created_at && (
-          <span className="font-mono text-[9px] tracking-[0.04em] opacity-45">
-            {shortDate(note.created_at)}
-          </span>
+    <svg viewBox="0 0 200 120" className="h-full w-full" aria-hidden="true">
+      <circle cx="150" cy="30" r="46" fill={c.accent} opacity="0.5" />
+      <path d="M150 10 a20 20 0 0 1 20 20" fill="none" stroke={c.ink} strokeOpacity="0.55" strokeWidth="2" strokeLinecap="round" />
+      <circle cx="150" cy="30" r="7" fill={c.ink} opacity="0.7" />
+      <circle cx="40" cy="92" r="16" fill="none" stroke={c.ink} strokeOpacity="0.5" strokeWidth="1.5" />
+      <path d="M20 22 Q 60 62 110 32 T 185 48" fill="none" stroke={c.ink} strokeOpacity="0.4" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function Stamp({ color }: { color: string }) {
+  const c = pcColor(color);
+  return (
+    <svg viewBox="0 0 52 64" className="h-14 w-11 shrink-0" aria-hidden="true">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <circle key={i} cx={7 + i * 8.5} cy="4" r="1.6" fill={c.ink} opacity="0.7" />
+      ))}
+      <rect x="1" y="8" width="50" height="55" rx="2" fill={c.bg} stroke={c.ink} strokeWidth="1.5" />
+      <circle cx="26" cy="30" r="11" fill="none" stroke={c.ink} strokeWidth="1.5" opacity="0.8" />
+      <path d="M20 34 l6 -9 l6 9 z" fill={c.ink} opacity="0.85" />
+      <text x="26" y="53" textAnchor="middle" fontSize="6.5" letterSpacing="1" fill={c.ink} opacity="0.85" fontFamily="ui-monospace, SFMono-Regular, Menlo, monospace">
+        HISYAM
+      </text>
+    </svg>
+  );
+}
+
+function Postmark({ color }: { color: string }) {
+  const c = pcColor(color);
+  return (
+    <svg viewBox="0 0 110 110" className="h-16 w-16" aria-hidden="true">
+      <circle cx="55" cy="55" r="42" fill="none" stroke={c.ink} strokeWidth="1.2" opacity="0.5" />
+      <circle cx="55" cy="55" r="36" fill="none" stroke={c.ink} strokeWidth="1" opacity="0.4" />
+      <path d="M30 42 Q 55 36 80 42" fill="none" stroke={c.ink} strokeWidth="1" opacity="0.45" />
+      <path d="M30 68 Q 55 74 80 68" fill="none" stroke={c.ink} strokeWidth="1" opacity="0.45" />
+      <text x="55" y="59" textAnchor="middle" fontSize="9" letterSpacing="1" fill={c.ink} opacity="0.6" fontFamily="ui-monospace, SFMono-Regular, Menlo, monospace">
+        H·D
+      </text>
+    </svg>
+  );
+}
+
+function FrontFace({ note, mini }: { note: VisitorNote; mini?: boolean }) {
+  const c = pcColor(note.color);
+  return (
+    <div className="pc-face rounded-[14px]" style={{ background: c.bg, color: c.ink }}>
+      <div className="pc-grain" />
+      <div className="relative flex h-full flex-col justify-between p-4 sm:p-5">
+        <div className="flex items-start justify-between gap-3">
+          <div className="h-20 w-28 sm:h-24 sm:w-32">
+            <FrontArt color={note.color} />
+          </div>
+          {!mini && <Stamp color={note.color} />}
+        </div>
+        {!mini && (
+          <div className="flex items-end justify-between gap-3">
+            <span className="font-mono text-[9px] uppercase tracking-[0.12em] opacity-70">HISYAM · DESIGN</span>
+            <span className="font-mono text-[8.5px] uppercase tracking-[0.1em] opacity-55">Jakarta, Indonesia</span>
+          </div>
         )}
       </div>
-
-      <span
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-2 bottom-2 flex justify-center opacity-0 transition-all duration-300 group-hover:opacity-100"
-      >
-        <span
-          className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.08em] ${
-            isDark ? "bg-white/90 text-ink" : "bg-ink/85 text-white"
-          }`}
-        >
-          Read note <ArrowRight size={10} aria-hidden="true" />
-        </span>
-      </span>
+      {!mini && (
+        <div className="pointer-events-none absolute right-6 top-5 -rotate-[10deg] opacity-70">
+          <Postmark color={note.color} />
+        </div>
+      )}
+      <div className="pc-perf" style={{ color: c.ink }} />
     </div>
   );
 }
 
-function NoteButton({
-  note,
-  onClick,
-  rot,
-}: {
-  note: VisitorNote;
-  onClick: () => void;
-  rot: number;
-}) {
+function BackFace({ note }: { note: VisitorNote }) {
+  const c = pcColor(note.color);
+  const site = note.website ? note.website.replace(/^https?:\/\//, "").replace(/\/$/, "") : "";
   return (
-    <motion.button
-      type="button"
-      onClick={onClick}
-      aria-label={`Read note from ${note.name}`}
-      className="group block w-full cursor-pointer text-left"
-      initial={{ opacity: 0, y: 16, rotate: rot * 1.6 }}
-      whileInView={{ opacity: 1, y: 0, rotate: rot }}
-      viewport={{ once: true, margin: "-40px" }}
-      whileHover={{ y: -4, rotate: rot * 0.25, scale: 1.02 }}
-      transition={{ type: "spring", stiffness: 300, damping: 24 }}
-    >
-      <NotePaper note={note} />
-    </motion.button>
+    <div className="pc-face pc-back rounded-[14px]" style={{ background: c.bg, color: c.ink }}>
+      <div className="pc-grain" />
+      <div className="relative flex h-full flex-col p-4 sm:p-5">
+        <div className="flex items-start justify-between gap-3">
+          <span className="font-mono text-[9px] uppercase tracking-[0.12em] opacity-60">HISYAM · DESIGN</span>
+          {note.created_at && (
+            <span className="font-mono text-[8.5px] uppercase tracking-[0.08em] opacity-55">{postDate(note.created_at)}</span>
+          )}
+        </div>
+        <p className="mt-3 flex-1 text-[15px] leading-[1.6] sm:text-[16px]">{note.message}</p>
+        <div className="mt-3 flex items-end justify-between gap-3">
+          <div className="min-w-0">
+            <div className="truncate text-[13px] font-medium tracking-[-0.01em]">— {note.name}</div>
+            {site && <div className="mt-0.5 truncate font-mono text-[8.5px] uppercase tracking-[0.08em] opacity-55">via {site}</div>}
+          </div>
+          <div className="text-right font-mono text-[8.5px] uppercase leading-[1.6] tracking-[0.08em] opacity-55">
+            To: H · Jakarta
+            <br />
+            ID · 10110
+          </div>
+        </div>
+      </div>
+      <div className="pc-perf" style={{ color: c.ink }} />
+    </div>
   );
 }
 
-function DragNote({
+function FeaturedPostcard({
   note,
-  rot,
-  onClick,
-  className,
-  base,
-  drags,
-  onDrag,
-  suppressRef,
+  index,
+  total,
+  flipped,
+  onFlip,
+  onPrev,
+  onNext,
 }: {
   note: VisitorNote;
-  rot: number;
-  onClick: () => void;
-  className?: string;
-  base?: string;
-  drags: Record<string, { x: number; y: number }>;
-  onDrag: (id: string, pos: { x: number; y: number }) => void;
-  suppressRef: { current: boolean };
+  index: number;
+  total: number;
+  flipped: boolean;
+  onFlip: () => void;
+  onPrev: () => void;
+  onNext: () => void;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const moveRef = useRef<{
-    startX: number;
-    startY: number;
-    rect: DOMRect;
-    parent: DOMRect;
-    moved: boolean;
-  } | null>(null);
-  const [active, setActive] = useState(false);
-  const d = drags[note.id];
-
-  function onWinMove(e: PointerEvent) {
-    const m = moveRef.current;
-    if (!m) return;
-    let dx = e.clientX - m.startX;
-    let dy = e.clientY - m.startY;
-    if (!m.moved) {
-      if (Math.hypot(dx, dy) < 6) return;
-      m.moved = true;
-    }
-    const minX = m.parent.left + 8 - m.rect.left;
-    const maxX = m.parent.right - m.rect.right - 8;
-    const minY = m.parent.top + 8 - m.rect.top;
-    const maxY = m.parent.bottom - m.rect.bottom - 8;
-    dx = Math.min(Math.max(dx, minX), maxX);
-    dy = Math.min(Math.max(dy, minY), maxY);
-    onDrag(note.id, { x: dx, y: dy });
-  }
-
-  function onWinUp(e: PointerEvent) {
-    const m = moveRef.current;
-    if (m && m.moved) {
-      suppressRef.current = true;
-    }
-    moveRef.current = null;
-    setActive(false);
-    window.removeEventListener("pointermove", onWinMove);
-    window.removeEventListener("pointerup", onWinUp);
-    window.removeEventListener("pointercancel", onWinUp);
-  }
-
   return (
-    <div
-      ref={ref}
-      onPointerDown={(e) => {
-        const el = ref.current;
-        if (!el) return;
-        suppressRef.current = false;
-        moveRef.current = {
-          startX: e.clientX,
-          startY: e.clientY,
-          rect: el.getBoundingClientRect(),
-          parent: el.parentElement!.getBoundingClientRect(),
-          moved: false,
-        };
-        setActive(true);
-        window.addEventListener("pointermove", onWinMove);
-        window.addEventListener("pointerup", onWinUp);
-        window.addEventListener("pointercancel", onWinUp);
-      }}
-      className={`absolute touch-none select-none ${className ?? ""} ${active ? "z-30 cursor-grabbing" : ""}`}
-      style={{
-        transform: `${base ?? ""} translate(${d?.x ?? 0}px, ${d?.y ?? 0}px)`,
-        transition: active ? "none" : "transform 0.2s ease",
-      }}
-    >
-      <NoteButton
-        note={note}
-        onClick={() => {
-          if (suppressRef.current) {
-            suppressRef.current = false;
-            return;
-          }
-          onClick();
-        }}
-        rot={rot}
-      />
+    <div>
+      <div className="flex items-center justify-between gap-3">
+        <span className="font-mono text-[10px] uppercase tracking-[0.06em] text-muted">
+          Postcard {index + 1} / {total}
+        </span>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={onPrev}
+            disabled={total <= 1}
+            aria-label="Previous postcard"
+            className="grid h-9 w-9 cursor-pointer place-items-center rounded-full border border-line text-sub transition-colors hover:text-ink disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            <ArrowLeft size={15} aria-hidden="true" />
+          </button>
+          <button
+            type="button"
+            onClick={onNext}
+            disabled={total <= 1}
+            aria-label="Next postcard"
+            className="grid h-9 w-9 cursor-pointer place-items-center rounded-full border border-line text-sub transition-colors hover:text-ink disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            <ArrowRight size={15} aria-hidden="true" />
+          </button>
+        </div>
+      </div>
+
+      <div className="pc-scene relative mt-4">
+        <button
+          type="button"
+          onClick={onFlip}
+          aria-pressed={flipped}
+          aria-label={`Postcard from ${note.name}, ${flipped ? "back" : "front"} — tap to flip`}
+          className="pc-btn group block w-full cursor-pointer rotate-[0.6deg] rounded-[18px] outline-none transition-transform duration-300 hover:-translate-y-1 hover:rotate-[0.15deg] focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-4"
+        >
+          <div className={`pc-inner ${flipped ? "pc-flipped" : ""}`} style={{ aspectRatio: "1.45 / 1" }}>
+            <FrontFace note={note} />
+            <BackFace note={note} />
+          </div>
+        </button>
+        <span className="pointer-events-none absolute bottom-3 left-1/2 z-10 -translate-x-1/2 rounded-full bg-ink/85 px-3 py-1 font-mono text-[9px] uppercase tracking-[0.08em] text-white opacity-0 transition-opacity duration-300 group-focus-within:opacity-100 group-hover:opacity-100">
+          {flipped ? "See front" : "Flip postcard"}
+        </span>
+      </div>
     </div>
   );
 }
 
 export default function StickyNoteWall({ notes: initial }: { notes: VisitorNote[] }) {
   const [notes, setNotes] = useState<VisitorNote[]>(initial);
+  const [featuredIdx, setFeaturedIdx] = useState(0);
+  const [flipped, setFlipped] = useState(false);
   const [composerOpen, setComposerOpen] = useState(false);
-  const [readerIndex, setReaderIndex] = useState<number | null>(null);
-  const [carIndex, setCarIndex] = useState(0);
+  const [sent, setSent] = useState(false);
   const [message, setMessage] = useState("");
   const [name, setName] = useState("");
-  const [color, setColor] = useState<string>("yellow");
+  const [website, setWebsite] = useState("");
+  const [color, setColor] = useState<string>("coral");
   const [posting, setPosting] = useState(false);
   const [error, setError] = useState("");
-  const [pinned, setPinned] = useState(false);
-  const [drags, setDrags] = useState<Record<string, { x: number; y: number }>>({});
-  const carouselRef = useRef<HTMLDivElement>(null);
-  const closeReaderRef = useRef<HTMLButtonElement>(null);
   const composerRef = useRef<HTMLDivElement>(null);
-  const suppressClick = useRef(false);
 
-  const featured = notes.find((n) => n.color !== "ink") ?? notes[0];
-  const inkNote = notes.find((n) => n.color === "ink");
-  const secondaries = [
-    inkNote,
-    ...notes.filter((n) => n.id !== featured?.id && n.id !== inkNote?.id).slice(0, 2),
-  ].filter(Boolean) as VisitorNote[];
   const count = notes.length;
+  const featured = notes[Math.min(featuredIdx, Math.max(count - 1, 0))];
+  const thumbnails = notes.slice(0, 3);
+
+  const goTo = useCallback((i: number) => {
+    setFeaturedIdx(i);
+    setFlipped(false);
+  }, []);
 
   const next = useCallback(() => {
-    setReaderIndex((i) => (i === null ? null : (i + 1) % Math.max(notes.length, 1)));
-  }, [notes.length]);
+    if (count === 0) return;
+    goTo((featuredIdx + 1) % count);
+  }, [count, featuredIdx, goTo]);
   const prev = useCallback(() => {
-    setReaderIndex((i) =>
-      i === null ? null : (i - 1 + Math.max(notes.length, 1)) % Math.max(notes.length, 1)
-    );
-  }, [notes.length]);
+    if (count === 0) return;
+    goTo((featuredIdx - 1 + count) % count);
+  }, [count, featuredIdx, goTo]);
 
   useEffect(() => {
-    const modalOpen = composerOpen || readerIndex !== null;
-    if (!modalOpen) return;
+    if (!composerOpen) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setComposerOpen(false);
-        setReaderIndex(null);
-      }
-      if (readerIndex !== null) {
-        if (e.key === "ArrowRight") {
-          e.preventDefault();
-          next();
-        }
-        if (e.key === "ArrowLeft") {
-          e.preventDefault();
-          prev();
-        }
-      }
+      if (e.key === "Escape") setComposerOpen(false);
     };
     window.addEventListener("keydown", onKey);
     const prevOverflow = document.body.style.overflow;
@@ -256,19 +248,7 @@ export default function StickyNoteWall({ notes: initial }: { notes: VisitorNote[
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = prevOverflow;
     };
-  }, [composerOpen, readerIndex, next, prev]);
-
-  useEffect(() => {
-    if (readerIndex !== null) closeReaderRef.current?.focus();
-  }, [readerIndex]);
-
-  function onCarouselScroll() {
-    const el = carouselRef.current;
-    if (!el) return;
-    const card = el.querySelector<HTMLElement>("[data-card]");
-    const step = card ? card.offsetWidth + 16 : el.clientWidth;
-    setCarIndex(Math.max(0, Math.min(notes.length - 1, Math.round(el.scrollLeft / step))));
-  }
+  }, [composerOpen]);
 
   function openComposer() {
     setError("");
@@ -284,35 +264,34 @@ export default function StickyNoteWall({ notes: initial }: { notes: VisitorNote[
       const res = await fetch("/api/notes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: message.trim(), name: name.trim(), color }),
+        body: JSON.stringify({
+          message: message.trim(),
+          name: name.trim(),
+          color,
+          website: website.trim(),
+          company: "",
+        }),
       });
       const d = await res.json();
       if (!res.ok || d.error) throw new Error(d.error ?? "Something went wrong");
       if (d.note) {
         setNotes((p) => [d.note as VisitorNote, ...p]);
-        setPinned(true);
-        window.setTimeout(() => setPinned(false), 4000);
+        setFeaturedIdx(0);
+        setFlipped(false);
+        setSent(true);
+        window.setTimeout(() => setSent(false), 5000);
       }
       setComposerOpen(false);
       setMessage("");
       setName("");
-      setColor("yellow");
+      setWebsite("");
+      setColor("coral");
     } catch (e) {
       setError((e as Error).message);
     } finally {
       setPosting(false);
     }
   }
-
-  function handleDrag(id: string, pos: { x: number; y: number }) {
-    setDrags((p) => ({ ...p, [id]: pos }));
-  }
-
-  const secondaryLayout = [
-    "left-4 top-8 w-36 z-10",
-    "right-4 top-20 w-36 z-10",
-    "bottom-8 left-16 w-36 z-10",
-  ];
 
   return (
     <MotionConfig reducedMotion="user">
@@ -327,20 +306,20 @@ export default function StickyNoteWall({ notes: initial }: { notes: VisitorNote[
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center lg:gap-12">
             <div className="min-w-0">
               <span className="kicker">Guestbook</span>
-              <h2 className="mt-4 text-[clamp(40px,4.5vw,56px)] font-normal leading-[1.05] tracking-[-0.05em]">
-                Leave Something Behind.
+              <h2 className="mt-4 text-[clamp(40px,4.5vw,56px)] font-[720] leading-[1.05] tracking-[-0.05em]">
+                Postcards from visitors.
               </h2>
               <p className="mt-5 max-w-[380px] text-[15px] leading-[1.7] text-sub">
-                You made it this far. Leave me a thought, idea, feedback, or just say hi.
+                A few kind words from people who stopped by.
               </p>
 
-              <div className="mt-8 hidden items-center gap-4 lg:flex">
+              <div className="mt-8 flex flex-col items-start gap-4">
                 <button type="button" onClick={openComposer} className="btn btn-primary">
                   <Plus size={15} aria-hidden="true" />
-                  Leave a note
+                  Send a postcard
                 </button>
                 <AnimatePresence>
-                  {pinned && (
+                  {sent && (
                     <motion.span
                       initial={{ opacity: 0, y: 4 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -348,166 +327,60 @@ export default function StickyNoteWall({ notes: initial }: { notes: VisitorNote[
                       className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.06em] text-accent-ink"
                     >
                       <Check size={13} aria-hidden="true" />
-                      Pinned. Thanks for stopping by.
+                      Postcard sent — thank you.
                     </motion.span>
                   )}
                 </AnimatePresence>
               </div>
-              <p className="mt-5 hidden font-mono text-[11px] uppercase tracking-[0.06em] text-muted lg:block">
-                {count} people have left something behind.
+              <p className="mt-5 font-mono text-[11px] uppercase tracking-[0.06em] text-muted">
+                {count} postcards have arrived.
               </p>
             </div>
 
             <div className="min-w-0">
-              {/* Desktop / tablet stage */}
               {featured && (
-                <div className="note-wall relative hidden h-[360px] overflow-hidden rounded-[16px] border border-line lg:block">
-                  {featured && (
-                    <DragNote
-                      note={featured}
-                      onClick={() => setReaderIndex(notes.indexOf(featured))}
-                      rot={-1.5}
-                      className="left-1/2 top-1/2 z-20 w-44"
-                      base="translate(-50%, -50%)"
-                      drags={drags}
-                      onDrag={handleDrag}
-                      suppressRef={suppressClick}
-                    />
-                  )}
-                  {secondaries.map((n, i) => (
-                    <DragNote
-                      key={n.id}
-                      note={n}
-                      onClick={() => setReaderIndex(notes.indexOf(n))}
-                      rot={[-2.5, 2, -1][i % 3]}
-                      className={secondaryLayout[i % secondaryLayout.length]}
-                      drags={drags}
-                      onDrag={handleDrag}
-                      suppressRef={suppressClick}
-                    />
-                  ))}
+                <FeaturedPostcard
+                  note={featured}
+                  index={featuredIdx}
+                  total={count}
+                  flipped={flipped}
+                  onFlip={() => setFlipped((f) => !f)}
+                  onPrev={prev}
+                  onNext={next}
+                />
+              )}
+
+              {thumbnails.length > 0 && (
+                <div className="mt-5 flex items-center gap-2.5">
+                  {thumbnails.map((n) => {
+                    const c = pcColor(n.color);
+                    const active = n.id === featured?.id;
+                    return (
+                      <button
+                        key={n.id}
+                        type="button"
+                        onClick={() => goTo(notes.indexOf(n))}
+                        aria-label={`Show postcard from ${n.name}`}
+                        aria-pressed={active}
+                        className={`relative block w-[76px] cursor-pointer overflow-hidden rounded-[8px] border transition-all duration-300 hover:-translate-y-0.5 sm:w-[84px] ${
+                          active ? "border-ink" : "border-line opacity-55 hover:opacity-100"
+                        }`}
+                        style={{ aspectRatio: "1.45 / 1" }}
+                      >
+                        <FrontFace note={n} mini />
+                      </button>
+                    );
+                  })}
                 </div>
               )}
 
-              {/* Mobile / tablet carousel */}
-              <div className="lg:hidden">
-                <div
-                  ref={carouselRef}
-                  onScroll={onCarouselScroll}
-                  className="scrollbar-hide flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-1 pb-2"
-                >
-                  {notes.length > 0 ? (
-                    notes.map((n) => (
-                      <div key={n.id} data-card className="w-[76%] shrink-0 snap-center">
-                        <NoteButton note={n} onClick={() => setReaderIndex(notes.indexOf(n))} rot={-1} />
-                      </div>
-                    ))
-                  ) : (
-                    <p className="px-2 py-8 text-sm text-sub">No notes yet — be the first to leave one.</p>
-                  )}
-                </div>
-
-                {notes.length > 0 && (
-                  <div className="mt-3 flex items-center justify-center gap-1 font-mono text-[11px] uppercase tracking-[0.06em] text-muted">
-                    {carIndex + 1} / {notes.length}
-                  </div>
-                )}
-
-                <div className="mt-5 flex flex-col items-center gap-3">
-                  <button type="button" onClick={openComposer} className="btn btn-primary">
-                    <Plus size={15} aria-hidden="true" />
-                    Leave a note
-                  </button>
-                  <AnimatePresence>
-                    {pinned && (
-                      <motion.span
-                        initial={{ opacity: 0, y: 4 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0 }}
-                        className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.06em] text-accent-ink"
-                      >
-                        <Check size={13} aria-hidden="true" />
-                        Pinned. Thanks for stopping by.
-                      </motion.span>
-                    )}
-                  </AnimatePresence>
-                  <p className="font-mono text-[11px] uppercase tracking-[0.06em] text-muted">
-                    {count} people have left something behind.
-                  </p>
-                </div>
-              </div>
+              {count === 0 && (
+                <p className="mt-4 text-sm text-sub">No postcards yet — be the first to send one.</p>
+              )}
             </div>
           </div>
         </motion.div>
       </section>
-
-      {/* Reader modal */}
-      <AnimatePresence>
-        {readerIndex !== null && notes[readerIndex] && (
-          <motion.div
-            className="note-modal-overlay"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setReaderIndex(null)}
-          >
-            <motion.div
-              ref={composerRef}
-              role="dialog"
-              aria-modal="true"
-              aria-label={`Note from ${notes[readerIndex].name}`}
-              className="note-modal"
-              initial={{ opacity: 0, y: 16, scale: 0.97 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 10, scale: 0.98 }}
-              transition={{ type: "spring", stiffness: 320, damping: 26 }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="flex items-center justify-between gap-4">
-                <span className="font-mono text-[10px] uppercase tracking-[0.06em] text-muted">
-                  Note {readerIndex + 1} of {notes.length}
-                </span>
-                <button
-                  ref={closeReaderRef}
-                  type="button"
-                  onClick={() => setReaderIndex(null)}
-                  aria-label="Close note"
-                  className="grid h-9 w-9 place-items-center rounded-full border border-line text-sub transition-colors hover:text-ink"
-                >
-                  <X size={16} />
-                </button>
-              </div>
-
-              <div className="mt-4">
-                <NotePaper note={notes[readerIndex]} large />
-              </div>
-
-              <div className="mt-5 flex items-center justify-between gap-3">
-                <button
-                  type="button"
-                  onClick={prev}
-                  disabled={notes.length <= 1}
-                  aria-label="Previous note"
-                  className="btn btn-secondary px-4 disabled:opacity-40"
-                >
-                  <ArrowLeft size={14} aria-hidden="true" />
-                  Previous
-                </button>
-                <button
-                  type="button"
-                  onClick={next}
-                  disabled={notes.length <= 1}
-                  aria-label="Next note"
-                  className="btn btn-secondary px-4 disabled:opacity-40"
-                >
-                  Next
-                  <ArrowRight size={14} aria-hidden="true" />
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* Composer modal */}
       <AnimatePresence>
@@ -520,9 +393,10 @@ export default function StickyNoteWall({ notes: initial }: { notes: VisitorNote[
             onClick={() => setComposerOpen(false)}
           >
             <motion.div
+              ref={composerRef}
               role="dialog"
               aria-modal="true"
-              aria-label="Leave a note"
+              aria-label="Send a postcard"
               className="note-modal"
               initial={{ opacity: 0, y: 16, scale: 0.97 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -532,14 +406,14 @@ export default function StickyNoteWall({ notes: initial }: { notes: VisitorNote[
             >
               <div className="flex items-center justify-between gap-4">
                 <div>
-                  <h3 className="text-[17px] font-medium tracking-[-0.02em]">Leave something behind</h3>
-                  <p className="mt-0.5 text-[12.5px] text-sub">Short and sweet — it goes straight on the wall.</p>
+                  <h3 className="text-[17px] font-medium tracking-[-0.02em]">Send a postcard</h3>
+                  <p className="mt-0.5 text-[12.5px] text-sub">Short and sweet — it goes on the wall.</p>
                 </div>
                 <button
                   type="button"
                   onClick={() => setComposerOpen(false)}
                   aria-label="Close"
-                  className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-line text-sub transition-colors hover:text-ink"
+                  className="grid h-9 w-9 shrink-0 cursor-pointer place-items-center rounded-full border border-line text-sub transition-colors hover:text-ink"
                 >
                   <X size={16} />
                 </button>
@@ -559,9 +433,9 @@ export default function StickyNoteWall({ notes: initial }: { notes: VisitorNote[
                 </label>
 
                 <div className="grid gap-2">
-                  <span className="kicker">Pick your mood</span>
+                  <span className="kicker">Pick your paper</span>
                   <div className="flex flex-wrap items-center gap-2.5">
-                    {COLOR_KEYS.map((k) => {
+                    {PICKER_KEYS.map((k) => {
                       const c = COLORS[k];
                       const active = color === k;
                       return (
@@ -569,15 +443,15 @@ export default function StickyNoteWall({ notes: initial }: { notes: VisitorNote[
                           key={k}
                           type="button"
                           onClick={() => setColor(k)}
-                          aria-label={`${k} note`}
+                          aria-label={`${k} postcard`}
                           aria-pressed={active}
-                          className={`grid h-8 w-8 place-items-center rounded-full border transition-transform hover:scale-110 ${
+                          className={`grid h-8 w-8 cursor-pointer place-items-center rounded-full border transition-transform hover:scale-110 ${
                             active ? "ring-2 ring-ink ring-offset-2 ring-offset-panel" : ""
                           }`}
-                          style={{ background: c.bg, borderColor: c.border }}
+                          style={{ background: c.bg, borderColor: c.line }}
                         >
                           {active && (
-                            <span className="grid h-3.5 w-3.5 place-items-center rounded-full" style={{ background: c.text }} />
+                            <span className="grid h-3.5 w-3.5 place-items-center rounded-full" style={{ background: c.ink }} />
                           )}
                         </button>
                       );
@@ -596,6 +470,28 @@ export default function StickyNoteWall({ notes: initial }: { notes: VisitorNote[
                   />
                 </label>
 
+                <label className="grid gap-1.5">
+                  <span className="kicker">Website or social (optional)</span>
+                  <input
+                    value={website}
+                    onChange={(e) => setWebsite(e.target.value)}
+                    maxLength={120}
+                    placeholder="https://…"
+                    className="field"
+                  />
+                </label>
+
+                <input
+                  type="text"
+                  name="company"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                  value=""
+                  onChange={() => {}}
+                  className="hidden"
+                />
+
                 {error && <p className="text-[12.5px] text-red-500">{error}</p>}
 
                 <button
@@ -604,7 +500,7 @@ export default function StickyNoteWall({ notes: initial }: { notes: VisitorNote[
                   disabled={posting || !message.trim()}
                   className="btn btn-primary disabled:cursor-not-allowed disabled:opacity-40"
                 >
-                  {posting ? "Pinning…" : "Pin it →"}
+                  {posting ? "Sending…" : "Send it →"}
                 </button>
               </div>
             </motion.div>

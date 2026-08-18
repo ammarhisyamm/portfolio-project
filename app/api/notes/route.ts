@@ -16,13 +16,14 @@ export async function POST(req: NextRequest) {
   }
 
   const rec = body as Record<string, unknown>;
-  if (clean(rec.website)) {
+  if (clean(rec.company)) {
     return NextResponse.json({ ok: true, note: null });
   }
 
   const message = clean(rec.message);
   const name = clean(rec.name) || "Anonymous";
   const color = clean(rec.color) || "cream";
+  const website = clean(rec.website);
 
   if (message.length < 1 || message.length > 240) {
     return NextResponse.json({ error: "Message must be 1–240 characters." }, { status: 400 });
@@ -30,11 +31,14 @@ export async function POST(req: NextRequest) {
   if (name.length > 40) {
     return NextResponse.json({ error: "Name is too long." }, { status: 400 });
   }
+  if (website.length > 120) {
+    return NextResponse.json({ error: "Link is too long." }, { status: 400 });
+  }
   if (!ALLOWED.has(color)) {
     return NextResponse.json({ error: "Invalid color." }, { status: 400 });
   }
 
-  const res = await insertNote({ message, name, color });
+  const res = await insertNote({ message, name, color, website });
   if (res.error) return NextResponse.json({ error: res.error }, { status: 500 });
   return NextResponse.json({ ok: true, note: res.note });
 }
