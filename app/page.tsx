@@ -6,23 +6,32 @@ import AboutPanel from "@/components/AboutPanel";
 import ExperienceAccordion from "@/components/ExperienceAccordion";
 import DesignExploration from "@/components/DesignExploration";
 import ProjectGrid from "@/components/ProjectGrid";
-import { projects } from "@/lib/projects";
+import { getContent } from "@/lib/content";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const content = await getContent();
   return (
     <div className="grid gap-3 pb-16 pt-3 md:gap-4">
-      <Hero />
-      <TrustStrip />
-      <AboutPanel />
+      <Hero
+        name={content.hero.name}
+        title={content.hero.title}
+        headline={content.hero.headline}
+        intro={content.hero.intro}
+        available={content.hero.available}
+        email={content.contact.email}
+        socials={content.socials.items}
+      />
+      <TrustStrip items={content.trust} />
+      <AboutPanel about={content.about} contact={content.contact} socials={content.socials.items} />
 
       <section className="grid gap-3">
         <div className="px-0.5">
           <span className="kicker">Working experience</span>
         </div>
-        <ExperienceAccordion />
+        <ExperienceAccordion items={content.experience} />
       </section>
 
-      <DesignExploration />
+      <DesignExploration items={content.exploration} />
 
       <section className="grid gap-3">
         <div className="flex items-end justify-between gap-4 px-0.5">
@@ -35,7 +44,7 @@ export default function HomePage() {
             <ArrowRight size={13} className="ml-1 inline" aria-hidden="true" />
           </Link>
         </div>
-        <ProjectGrid projects={projects.slice(0, 4)} />
+        <ProjectGrid projects={content.projects.slice(0, 4)} />
       </section>
     </div>
   );

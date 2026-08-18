@@ -1,12 +1,9 @@
 import type { CSSProperties } from "react";
-import { trustItems } from "@/lib/projects";
 
-const DUPLICATED = [...trustItems, ...trustItems];
-
-function Group() {
+function Group({ items }: { items: string[] }) {
   return (
     <div className="flex items-center gap-6 pr-6">
-      {trustItems.map((item) => (
+      {items.map((item) => (
         <span
           key={item}
           className="flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full border border-line bg-panel px-5 py-2.5 text-[13px] text-sub"
@@ -19,7 +16,8 @@ function Group() {
   );
 }
 
-export default function TrustStrip() {
+export default function TrustStrip({ items }: { items: string[] }) {
+  const DUPLICATED = [...items, ...items];
   return (
     <div className="panel overflow-hidden">
       <div className="flex items-center justify-between gap-4 border-b border-line px-5 py-4 sm:px-8">
@@ -37,7 +35,7 @@ export default function TrustStrip() {
       >
         <div className="marquee-track flex">
           {DUPLICATED.map((_, i) => (
-            <Group key={i} />
+            <Group key={i} items={items} />
           ))}
         </div>
       </div>

@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import Reveal from "@/components/Reveal";
 import WorkCanvas from "@/components/WorkCanvas";
-import { projects } from "@/lib/projects";
+import { getContent } from "@/lib/content";
 
 export const metadata: Metadata = { title: "Work" };
 
-export default function WorkPage() {
+export default async function WorkPage() {
+  const content = await getContent();
   return (
     <div className="grid gap-3 pb-16 pt-3 md:gap-4">
       <Reveal className="panel grid gap-6 p-5 sm:p-8 lg:p-10">
@@ -15,7 +16,7 @@ export default function WorkPage() {
         </h1>
       </Reveal>
 
-      <WorkCanvas projects={projects} />
+      <WorkCanvas projects={content.projects} />
     </div>
   );
 }

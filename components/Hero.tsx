@@ -4,12 +4,21 @@ import { useEffect, useRef } from "react";
 import { ArrowRight } from "lucide-react";
 import { gsap } from "@/lib/gsap";
 import { reducedMotion, splitWords } from "@/lib/utils";
+import type { SocialLink } from "@/lib/content";
 import Btn from "./Btn";
 import Socials from "./Socials";
 
-const HEADLINE = "I design thoughtful digital products that make complex experiences feel simple.";
+type HeroProps = {
+  name: string;
+  title: string;
+  headline: string;
+  intro: string;
+  available: boolean;
+  email: string;
+  socials: SocialLink[];
+};
 
-export default function Hero() {
+export default function Hero({ name, title, headline, intro, available, email, socials }: HeroProps) {
   const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -36,10 +45,10 @@ export default function Hero() {
             className="inline-flex items-center gap-2 rounded-full border border-line bg-panel px-3.5 py-1.5 text-xs font-medium text-sub"
           >
             <span className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-accent" />
-            Available for selected projects
+            {available ? "Available for selected projects" : "Currently booked"}
           </span>
           <div data-hero-fade>
-            <Socials />
+            <Socials items={socials} />
           </div>
         </div>
 
@@ -52,16 +61,16 @@ export default function Hero() {
             H
           </div>
           <div>
-            <h1 className="text-[22px] font-semibold tracking-[-0.04em] sm:text-[24px]">Hisyam</h1>
-            <p className="mt-0.5 text-[13px] text-sub">Senior UX/UI &amp; Product Designer</p>
+            <h1 className="text-[22px] font-semibold tracking-[-0.04em] sm:text-[24px]">{name}</h1>
+            <p className="mt-0.5 text-[13px] text-sub">{title}</p>
           </div>
         </div>
 
         <h2
-          aria-label={HEADLINE}
+          aria-label={headline}
           className="text-[clamp(30px,5vw,54px)] font-normal leading-[1.05] tracking-[-0.055em]"
         >
-          {splitWords(HEADLINE).map((word, i) => (
+          {splitWords(headline).map((word, i) => (
             <span key={i} data-hero-word className="inline-block will-change-transform">
               {word}
               {"\u00A0"}
@@ -70,12 +79,11 @@ export default function Hero() {
         </h2>
 
         <p data-hero-fade className="max-w-[560px] text-[15px] leading-relaxed text-sub">
-          I help teams turn ideas into clear, useful, and engaging experiences across fintech, SaaS,
-          marketplaces, dashboards, and AI-powered products.
+          {intro}
         </p>
 
         <div data-hero-fade className="flex w-full flex-wrap gap-3 sm:w-auto">
-          <Btn href="mailto:hello@hisyam.design">
+          <Btn href={`mailto:${email}`}>
             Let&rsquo;s work together
             <ArrowRight
               size={15}

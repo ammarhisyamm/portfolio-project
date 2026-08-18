@@ -25,7 +25,7 @@ const PROJECT_TYPES = [
   "Other",
 ];
 
-export default function ContactForm() {
+export default function ContactForm({ email }: { email: string }) {
   const {
     register,
     handleSubmit,
@@ -34,8 +34,11 @@ export default function ContactForm() {
   } = useForm<FormValues>({ resolver: zodResolver(schema) });
   const [sent, setSent] = useState(false);
 
-  const onSubmit = async (_values: FormValues) => {
+  const onSubmit = async (values: FormValues) => {
+    const subject = encodeURIComponent(`Project inquiry — ${values.projectType}`);
+    const body = encodeURIComponent(`${values.message}\n\n— ${values.name}\n${values.email}`);
     await new Promise((r) => setTimeout(r, 900));
+    window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
     setSent(true);
     reset();
     setTimeout(() => setSent(false), 5000);

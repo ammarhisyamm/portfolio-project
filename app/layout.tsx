@@ -5,6 +5,9 @@ import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import PageTransition from "@/components/PageTransition";
 import MobileTabBar from "@/components/MobileTabBar";
+import { getContent } from "@/lib/content";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: {
@@ -15,15 +18,16 @@ export const metadata: Metadata = {
     "Hisyam is a Jakarta-based senior UX/UI and product designer creating thoughtful digital products across fintech, SaaS, marketplaces, and AI-powered experiences.",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const content = await getContent();
   return (
     <html lang="en">
       <body>
-        <Providers>
+        <Providers projects={content.projects}>
           <div className="mx-auto max-w-shell px-4 pb-28 sm:px-6 md:pb-0 lg:px-12">
             <SiteHeader />
             <PageTransition>{children}</PageTransition>
-            <SiteFooter />
+            <SiteFooter footer={content.footer} />
           </div>
           <MobileTabBar />
         </Providers>

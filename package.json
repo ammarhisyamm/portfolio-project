@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
+    "@supabase/supabase-js": "^2.112.3",
     "gsap": "^3.12.5",
     "lenis": "^1.1.18",
     "lucide-react": "^0.469.0",

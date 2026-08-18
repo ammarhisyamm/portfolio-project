@@ -3,77 +3,14 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Plus } from "lucide-react";
+import type { ExperienceItem } from "@/lib/content";
 
-export const EXPERIENCE = [
-  {
-    company: "Serba Mulia Group",
-    role: "Product & UX/UI design",
-    period: "2021 — Present",
-    points: [
-      "Lead product design across the group's digital products and platforms.",
-      "Built and maintained a scalable design system shared by multiple teams.",
-      "Translated business goals into clear, usable product experiences.",
-      "Worked closely with product and engineering on design-to-development handoff.",
-    ],
-  },
-  {
-    company: "Peak Haven",
-    role: "Digital product design",
-    period: "2019 — 2021",
-    points: [
-      "Designed end-to-end digital experiences for hospitality and lifestyle products.",
-      "Ran discovery and user research to shape the product roadmap.",
-      "Delivered prototypes and specs that kept development teams moving fast.",
-    ],
-  },
-  {
-    company: "Gadai Mulia",
-    role: "Fintech product design",
-    period: "2017 — 2019",
-    points: [
-      "Designed a digital pawnbroking experience that made financial services more accessible.",
-      "Simplified complex transaction flows into clear, step-by-step journeys.",
-      "Contributed to the product's information architecture and visual system.",
-    ],
-  },
-  {
-    company: "Synqra",
-    role: "SaaS product design",
-    period: "2015 — 2017",
-    points: [
-      "Designed a meeting notes and workflow platform for teams.",
-      "Turned discussions into actionable work through structured flows and templates.",
-      "Collaborated with early customers to validate and refine the core experience.",
-    ],
-  },
-  {
-    company: "Drawtopia",
-    role: "AI creative platform",
-    period: "2013 — 2015",
-    points: [
-      "Designed an AI-assisted story-generation experience for creative users.",
-      "Explored interaction patterns for AI output and user control.",
-      "Built the visual system that gave the product its distinctive editorial feel.",
-    ],
-  },
-  {
-    company: "Base44",
-    role: "AI productivity tools",
-    period: "2011 — 2013",
-    points: [
-      "Designed AI-powered productivity tools for knowledge workers.",
-      "Prototyped and tested early concepts for AI-assisted workflows.",
-      "Helped define the product's design language and component library.",
-    ],
-  },
-];
-
-export default function ExperienceAccordion() {
+export default function ExperienceAccordion({ items }: { items: ExperienceItem[] }) {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
     <div className="panel p-5 sm:p-8">
-      {EXPERIENCE.map((job, i) => {
+      {items.map((job, i) => {
         const isOpen = open === i;
         return (
           <div key={job.company} className={`border-line ${i > 0 ? "border-t" : ""}`}>

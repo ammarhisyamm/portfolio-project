@@ -1,10 +1,15 @@
 import type { Metadata } from "next";
 import Reveal from "@/components/Reveal";
 import ContactForm from "@/components/ContactForm";
+import { getContent } from "@/lib/content";
 
 export const metadata: Metadata = { title: "Contact" };
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const content = await getContent();
+  const { contact, socials } = content;
+  const linkedin = socials.items.find((s) => s.type === "linkedin")?.href ?? "#";
+
   return (
     <div className="grid gap-3 pb-16 pt-3 md:gap-4">
       <Reveal className="panel grid gap-6 p-5 sm:p-8 lg:p-10">
@@ -22,7 +27,7 @@ export default function ContactPage() {
         <Reveal className="panel p-5 sm:p-8 md:col-span-8">
           <span className="kicker">Send a message</span>
           <div className="mt-6">
-            <ContactForm />
+            <ContactForm email={contact.email} />
           </div>
         </Reveal>
 
@@ -30,19 +35,19 @@ export default function ContactPage() {
           <span className="kicker">Elsewhere</span>
           <span className="mt-3 inline-flex w-max items-center gap-2 rounded-full border border-line bg-panel px-3.5 py-1.5 text-xs font-medium text-sub">
             <span className="h-1.5 w-1.5 rounded-full bg-accent" aria-hidden="true" />
-            Available for selected projects
+            {contact.available ? "Available for selected projects" : "Currently booked"}
           </span>
-          <a href="mailto:hello@hisyam.design" className="py-1.5 text-[13px] text-sub underline underline-offset-3 hover:text-ink">
-            hello@hisyam.design
+          <a href={`mailto:${contact.email}`} className="py-1.5 text-[13px] text-sub underline underline-offset-3 hover:text-ink">
+            {contact.email}
           </a>
-          <a href="#" className="py-1.5 text-[13px] text-sub underline underline-offset-3 hover:text-ink">
+          <a href={linkedin} className="py-1.5 text-[13px] text-sub underline underline-offset-3 hover:text-ink">
             LinkedIn
           </a>
-          <a href="#" className="py-1.5 text-[13px] text-sub underline underline-offset-3 hover:text-ink">
+          <a href={contact.whatsapp} className="py-1.5 text-[13px] text-sub underline underline-offset-3 hover:text-ink">
             WhatsApp
           </a>
           <p className="mt-5 border-t border-line pt-5 text-[13px] leading-relaxed text-sub">
-            Based in Jakarta, Indonesia. Working with teams around the world.
+            {contact.note}
           </p>
         </Reveal>
       </div>

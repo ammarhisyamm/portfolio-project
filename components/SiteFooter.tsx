@@ -1,20 +1,21 @@
 "use client";
 
 import { ArrowUpRight, ArrowUp } from "lucide-react";
+import type { FooterContent } from "@/lib/content";
 
-export default function SiteFooter() {
+export default function SiteFooter({ footer }: { footer: FooterContent }) {
   return (
     <footer className="panel mb-9 mt-3 grid gap-8 p-5 sm:p-8 lg:grid-cols-[1.4fr_auto] lg:gap-14 lg:p-10">
       <div>
         <p className="mb-3.5 font-mono text-[11px] uppercase tracking-[0.02em] text-sub">
-          Have a thoughtful problem to solve?
+          {footer.note}
         </p>
         <h2 className="text-[clamp(30px,4vw,52px)] font-normal leading-none tracking-[-0.06em]">
           <a
-            href="mailto:hello@hisyam.design"
+            href={`mailto:${footer.email}`}
             className="group inline-flex items-baseline gap-2 no-underline"
           >
-            Let&rsquo;s work together
+            {footer.heading}
             <ArrowUpRight
               size={32}
               className="inline-block text-muted transition-transform duration-300 ease-out group-hover:translate-x-1 group-hover:-translate-y-1"
@@ -24,15 +25,14 @@ export default function SiteFooter() {
         </h2>
       </div>
       <div className="flex flex-col items-start lg:justify-self-end">
-        <a href="mailto:hello@hisyam.design" className="py-1.5 text-[13px] text-sub no-underline hover:text-ink">
-          hello@hisyam.design
+        <a href={`mailto:${footer.email}`} className="py-1.5 text-[13px] text-sub no-underline hover:text-ink">
+          {footer.email}
         </a>
-        <a href="#" className="py-1.5 text-[13px] text-sub no-underline hover:text-ink">
-          LinkedIn
-        </a>
-        <a href="#" className="py-1.5 text-[13px] text-sub no-underline hover:text-ink">
-          Behance
-        </a>
+        {footer.links.map((link) => (
+          <a key={link.label} href={link.href} className="py-1.5 text-[13px] text-sub no-underline hover:text-ink">
+            {link.label}
+          </a>
+        ))}
         <button
           type="button"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}

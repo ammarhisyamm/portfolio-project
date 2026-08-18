@@ -1,4 +1,6 @@
-const ICONS = {
+import type { SocialLink } from "@/lib/content";
+
+const ICONS: Record<string, React.ReactNode> = {
   linkedin: (
     <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true">
       <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 1 1 0-4.125 2.062 2.062 0 0 1 0 4.125zM7.119 20.452H3.555V9h3.564v11.452z" />
@@ -21,24 +23,40 @@ const ICONS = {
   ),
 };
 
-const LINKS = [
-  { label: "LinkedIn", href: "#", icon: ICONS.linkedin },
-  { label: "Behance", href: "#", icon: ICONS.behance },
-  { label: "Dribbble", href: "#", icon: ICONS.dribbble },
-  { label: "GitHub", href: "#", icon: ICONS.github },
+const FALLBACK = (
+  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M7 17 17 7" />
+    <path d="M7 7h10v10" />
+  </svg>
+);
+
+const DEFAULT_ITEMS: SocialLink[] = [
+  { label: "LinkedIn", href: "#", type: "linkedin" },
+  { label: "Behance", href: "#", type: "behance" },
+  { label: "Dribbble", href: "#", type: "dribbble" },
+  { label: "GitHub", href: "#", type: "github" },
 ];
 
-export default function Socials({ className = "" }: { className?: string }) {
+export default function Socials({
+  items = DEFAULT_ITEMS,
+  className = "",
+}: {
+  items?: SocialLink[];
+  className?: string;
+}) {
+  const external = (href: string) => href.startsWith("http");
   return (
     <div className={`flex items-center gap-2 ${className}`}>
-      {LINKS.map(({ label, href, icon }) => (
+      {items.map(({ label, href, type }) => (
         <a
           key={label}
           href={href}
           aria-label={label}
+          target={external(href) ? "_blank" : undefined}
+          rel={external(href) ? "noreferrer" : undefined}
           className="grid h-9 w-9 place-items-center rounded-[10px] border border-line text-sub transition-colors duration-200 hover:border-line-strong hover:text-ink"
         >
-          {icon}
+          {ICONS[type] ?? FALLBACK}
         </a>
       ))}
     </div>

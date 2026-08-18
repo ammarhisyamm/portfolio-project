@@ -1,30 +1,22 @@
 import type { CSSProperties } from "react";
-import { Image as ImageIcon } from "lucide-react";
+import type { ExplorationItem } from "@/lib/content";
+import Media from "./Media";
 
-const SHOTS = [
-  "Exploration 01 — Mobile banking",
-  "Exploration 02 — Onboarding flow",
-  "Exploration 03 — Dashboard UI",
-  "Exploration 04 — Design tokens",
-  "Exploration 05 — Checkout journey",
-  "Exploration 06 — AI chat interface",
-  "Exploration 07 — Mobile menu",
-  "Exploration 08 — Data visualization",
-];
-
-function Frame() {
+function Frame({ items }: { items: ExplorationItem[] }) {
   return (
     <div className="flex items-center gap-6 pr-6">
-      {SHOTS.map((label) => (
-        <figure key={label} className="w-60 shrink-0 sm:w-72">
+      {items.map((shot) => (
+        <figure key={shot.label} className="w-60 shrink-0 sm:w-72">
           <div className="aspect-[4/3] overflow-hidden rounded-[18px] border border-line bg-bg sm:rounded-[22px] lg:rounded-[24px]">
-            <div className="media-ph h-full w-full" role="img" aria-label={`${label} placeholder`}>
-              <ImageIcon size={28} strokeWidth={1.4} aria-hidden="true" />
-              <span>Design shot</span>
-            </div>
+            <Media
+              src={shot.image}
+              alt={shot.label}
+              label={shot.label}
+              imgClassName="h-full w-full object-cover"
+            />
           </div>
           <figcaption className="mt-3 font-mono text-[10px] uppercase tracking-[0.06em] text-muted">
-            {label}
+            {shot.label}
           </figcaption>
         </figure>
       ))}
@@ -32,7 +24,7 @@ function Frame() {
   );
 }
 
-export default function DesignExploration() {
+export default function DesignExploration({ items }: { items: ExplorationItem[] }) {
   return (
     <section className="grid gap-3">
       <div className="flex items-end justify-between gap-4 px-0.5">
@@ -47,8 +39,8 @@ export default function DesignExploration() {
           style={{ "--marquee-duration": "120s" } as CSSProperties}
         >
           <div className="marquee-track flex">
-            <Frame />
-            <Frame />
+            <Frame items={items} />
+            <Frame items={items} />
           </div>
         </div>
       </div>
