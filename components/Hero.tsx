@@ -56,7 +56,7 @@ export default function Hero({ name, title, headline, intro, available, email, s
         <div data-hero-fade className="flex items-center gap-4">
           <div
             aria-hidden="true"
-            className="grid h-[74px] w-[74px] place-items-center rounded-[20px] border border-line bg-bg text-[30px] font-semibold tracking-tight text-ink"
+            className="grid h-12 w-12 place-items-center rounded-[16px] border border-line bg-bg text-[20px] font-semibold tracking-tight text-ink"
           >
             H
           </div>
@@ -68,7 +68,7 @@ export default function Hero({ name, title, headline, intro, available, email, s
 
         <h2
           aria-label={headline}
-          className="text-[clamp(30px,5vw,54px)] font-normal leading-[1.05] tracking-[-0.055em]"
+          className="text-[clamp(30px,4vw,48px)] font-normal leading-[1.05] tracking-[-0.055em]"
         >
           {splitWords(headline).map((word, i) => (
             <span key={i} data-hero-word className="inline-block will-change-transform">

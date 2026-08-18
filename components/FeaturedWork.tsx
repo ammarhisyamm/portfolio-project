@@ -33,15 +33,15 @@ export default function FeaturedWork({ caseStudies }: { caseStudies: CaseStudy[]
   if (caseStudies.length === 0) return null;
 
   return (
-    <div ref={ref} className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
-      {caseStudies.map((p) => (
+    <div ref={ref} className="grid grid-cols-1 gap-3">
+      {caseStudies.slice(0, 3).map((p) => (
         <Link
           key={p.slug}
           href={`/work/${p.slug}`}
           data-stagger
-          className="group flex h-full flex-col overflow-hidden rounded-[18px] border border-line bg-panel transition-all duration-300 hover:border-line-strong hover:shadow-soft sm:rounded-[22px] lg:rounded-[24px]"
+          className="group flex flex-col gap-4 overflow-hidden rounded-[18px] border border-line bg-panel p-3 transition-all duration-300 hover:border-line-strong hover:shadow-soft sm:flex-row sm:items-center sm:gap-5 sm:rounded-[22px] sm:p-4 lg:rounded-[24px]"
         >
-          <div className="relative aspect-[4/3] w-full overflow-hidden border-b border-line bg-bg">
+          <div className="relative aspect-[4/3] w-full shrink-0 overflow-hidden rounded-[14px] border border-line bg-bg sm:w-[200px]">
             <Media
               src={p.thumbnail}
               alt={p.thumbnail_alt || `Visual for ${p.title}`}
@@ -49,7 +49,7 @@ export default function FeaturedWork({ caseStudies }: { caseStudies: CaseStudy[]
               imgClassName="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
             />
           </div>
-          <div className="flex flex-1 flex-col gap-3 p-5">
+          <div className="flex min-w-0 flex-1 flex-col gap-2 px-1 pb-1 sm:px-2 sm:pb-0">
             <div className="flex items-center justify-between gap-3">
               <span className="font-mono text-[11px] uppercase tracking-[0.02em] text-muted">
                 {p.category}
