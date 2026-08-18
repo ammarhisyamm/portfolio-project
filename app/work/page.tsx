@@ -7,6 +7,15 @@ export const metadata: Metadata = { title: "Work" };
 
 export default async function WorkPage() {
   const content = await getContent();
+  const canvasItems = content.caseStudies
+    .filter((c) => c.published)
+    .map((c) => ({
+      slug: c.slug,
+      title: c.title,
+      category: c.category,
+      year: c.year,
+      image: c.thumbnail,
+    }));
   return (
     <div className="grid gap-3 pb-16 pt-3 md:gap-4">
       <Reveal className="panel grid gap-6 p-5 sm:p-8 lg:p-10">
@@ -16,7 +25,7 @@ export default async function WorkPage() {
         </h1>
       </Reveal>
 
-      <WorkCanvas projects={content.projects} />
+      <WorkCanvas items={canvasItems} />
     </div>
   );
 }

@@ -23,7 +23,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en">
       <body>
-        <Providers projects={content.projects}>
+        <Providers>
           <div className="mx-auto max-w-shell px-4 pb-28 sm:px-6 md:pb-0 lg:px-12">
             <SiteHeader />
             <PageTransition>{children}</PageTransition>

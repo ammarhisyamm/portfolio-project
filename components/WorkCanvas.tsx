@@ -12,20 +12,20 @@ import {
   ChevronRight,
   X,
 } from "lucide-react";
-import type { Project } from "@/lib/projects";
+import type { CanvasItem } from "@/lib/canvas";
 import Media from "./Media";
 
 const STORAGE_KEY = "hisyam.canvas.nodes.v1";
 
 const BASE_LAYOUT = [
-  { slug: "gadai-mulia", x: 140, y: 160, width: 420, rotation: -1.2 },
-  { slug: "synqra", x: 700, y: 110, width: 360, rotation: 1 },
-  { slug: "drawtopia", x: 1140, y: 320, width: 400, rotation: -0.8 },
-  { slug: "task-sharing", x: 320, y: 660, width: 320, rotation: 1.5 },
-  { slug: "threat-intelligence", x: 820, y: 720, width: 360, rotation: -1.5 },
-  { slug: "omnichannel", x: 1220, y: 800, width: 300, rotation: 1.2 },
-  { slug: "wedding-dashboard", x: 280, y: 1030, width: 300, rotation: -1 },
-  { slug: "english-learning", x: 660, y: 1100, width: 320, rotation: 0.6 },
+  { x: 140, y: 160, width: 420, rotation: -1.2 },
+  { x: 700, y: 110, width: 360, rotation: 1 },
+  { x: 1140, y: 320, width: 400, rotation: -0.8 },
+  { x: 320, y: 660, width: 320, rotation: 1.5 },
+  { x: 820, y: 720, width: 360, rotation: -1.5 },
+  { x: 1220, y: 800, width: 300, rotation: 1.2 },
+  { x: 280, y: 1030, width: 300, rotation: -1 },
+  { x: 660, y: 1100, width: 320, rotation: 0.6 },
 ];
 
 const MIN_ZOOM = 0.35;
@@ -33,17 +33,26 @@ const MAX_ZOOM = 2.5;
 const INITIAL_VIEW = { x: 0, y: 0, zoom: 0.8 };
 const DRAG_THRESHOLD = 6;
 
-function defaultPositions(): Record<string, { x: number; y: number }> {
-  return Object.fromEntries(BASE_LAYOUT.map((n) => [n.slug, { x: n.x, y: n.y }]));
+function defaultPositions(items: CanvasItem[]): Record<string, { x: number; y: number }> {
+  return Object.fromEntries(
+    items.map((it, i) => {
+      const layout = BASE_LAYOUT[i % BASE_LAYOUT.length];
+      return [it.slug, { x: layout.x, y: layout.y }];
+    })
+  );
 }
 
-function loadPositions(): Record<string, { x: number; y: number }> {
-  const base = defaultPositions();
+function loadPositions(items: CanvasItem[]): Record<string, { x: number; y: number }> {
+  const base = defaultPositions(items);
   if (typeof window === "undefined") return base;
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return base;
-    return { ...base, ...(JSON.parse(raw) as Record<string, { x: number; y: number }>) };
+    const saved = JSON.parse(raw) as Record<string, { x: number; y: number }>;
+    for (const it of items) {
+      if (saved[it.slug]) base[it.slug] = saved[it.slug];
+    }
+    return base;
   } catch {
     return base;
   }
@@ -59,7 +68,7 @@ type Controls = {
   stepGallery: (dir: 1 | -1) => void;
 };
 
-export default function WorkCanvas({ projects }: { projects: Project[] }) {
+export default function WorkCanvas({ items }: { items: CanvasItem[] }) {
   const reduce = useReducedMotion();
 
   const viewportElRef = useRef<HTMLDivElement>(null);
@@ -69,7 +78,7 @@ export default function WorkCanvas({ projects }: { projects: Project[] }) {
   const [viewport, setViewport] = useState(INITIAL_VIEW);
   const viewportRef = useRef(viewport);
   const [positions, setPositions] = useState<Record<string, { x: number; y: number }>>(() =>
-    loadPositions()
+    loadPositions(items)
   );
   const positionsRef = useRef(positions);
   const [selected, setSelected] = useState<string | null>(null);
@@ -94,11 +103,11 @@ export default function WorkCanvas({ projects }: { projects: Project[] }) {
   }, [positions]);
 
   const bySlug = useCallback(
-    (slug: string) => projects.find((p) => p.slug === slug),
-    [projects]
+    (slug: string) => items.find((p) => p.slug === slug),
+    [items]
   );
-  const activeProject = gallerySlug ? bySlug(gallerySlug) : null;
-  const galleryImages = activeProject ? [activeProject.image] : [];
+  const activeItem = gallerySlug ? bySlug(gallerySlug) : null;
+  const galleryImages = activeItem ? [activeItem.image] : [];
 
   const zoomCenter = useCallback((factor: number) => {
     const el = viewportElRef.current;
@@ -137,9 +146,9 @@ export default function WorkCanvas({ projects }: { projects: Project[] }) {
   }, []);
 
   const resetLayout = useCallback(() => {
-    setPositions(defaultPositions());
+    setPositions(defaultPositions(items));
     setViewport(INITIAL_VIEW);
-  }, []);
+  }, [items]);
 
   const closeGallery = useCallback(() => {
     setGallerySlug(null);
@@ -349,7 +358,7 @@ export default function WorkCanvas({ projects }: { projects: Project[] }) {
           style={{ transform: `translate(${viewport.x}px, ${viewport.y}px) scale(${viewport.zoom})`, transformOrigin: "0 0" }}
         >
           <div className="pointer-events-none absolute" style={{ width: 4200, height: 3400 }}>
-            {projects.map((p, i) => {
+            {items.map((p, i) => {
               const layout = BASE_LAYOUT[i % BASE_LAYOUT.length];
               const pos = positions[p.slug] ?? { x: layout.x, y: layout.y };
               const width = layout.width;
@@ -428,7 +437,7 @@ export default function WorkCanvas({ projects }: { projects: Project[] }) {
       </div>
 
       <AnimatePresence>
-        {activeProject && (
+        {activeItem && (
           <motion.div
             className="project-modal-overlay"
             initial={reduce ? false : { opacity: 0 }}
@@ -441,7 +450,7 @@ export default function WorkCanvas({ projects }: { projects: Project[] }) {
             <motion.div
               role="dialog"
               aria-modal="true"
-              aria-label={`${activeProject.title} visual gallery`}
+              aria-label={`${activeItem.title} visual gallery`}
               tabIndex={-1}
               initial={reduce ? false : { opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -462,8 +471,8 @@ export default function WorkCanvas({ projects }: { projects: Project[] }) {
               <div className="relative grid min-h-[260px] place-items-center bg-black/30">
                 <Media
                   src={galleryImages[galleryIndex]}
-                  alt={`Visual for ${activeProject.title}`}
-                  label={activeProject.year}
+                  alt={`Visual for ${activeItem.title}`}
+                  label={activeItem.year}
                   imgClassName="mx-auto h-auto max-h-[52vh] w-full object-contain"
                 />
                 {galleryImages.length > 1 && (
