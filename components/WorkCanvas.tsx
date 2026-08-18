@@ -1,13 +1,15 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import {
   Plus,
   Minus,
   Maximize2,
+  Minimize2,
   RotateCcw,
   Undo2,
+  X,
 } from "lucide-react";
 import type { CanvasItem } from "@/lib/canvas";
 import Media from "./Media";
@@ -84,6 +86,7 @@ export default function WorkCanvas({ items }: { items: CanvasItem[] }) {
   const [galleryIndex, setGalleryIndex] = useState(0);
   const [spaceDown, setSpaceDown] = useState(false);
   const [hover, setHover] = useState(false);
+  const [fullscreen, setFullscreen] = useState(false);
 
   const spaceRef = useRef(false);
   const pan = useRef<{ active: boolean; startX: number; startY: number; origX: number; origY: number } | null>(null);
@@ -148,6 +151,12 @@ export default function WorkCanvas({ items }: { items: CanvasItem[] }) {
     setViewport(INITIAL_VIEW);
   }, [items]);
 
+  const toggleFullscreen = () => {
+    const next = !fullscreen;
+    setFullscreen(next);
+    if (next) window.setTimeout(() => actions.current.fitAll(), 120);
+  };
+
   const closeGallery = useCallback(() => {
     setGallerySlug(null);
     const el = openedFrom.current;
@@ -195,7 +204,7 @@ export default function WorkCanvas({ items }: { items: CanvasItem[] }) {
     };
     el.addEventListener("wheel", onWheel, { passive: false });
     return () => el.removeEventListener("wheel", onWheel);
-  }, []);
+  }, [fullscreen]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -204,6 +213,11 @@ export default function WorkCanvas({ items }: { items: CanvasItem[] }) {
       if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable)) return;
 
       if (gallerySlug) return;
+
+      if (e.key === "Escape" && fullscreen) {
+        setFullscreen(false);
+        return;
+      }
 
       if (e.code === "Space") {
         if (hover) {
@@ -244,7 +258,17 @@ export default function WorkCanvas({ items }: { items: CanvasItem[] }) {
       window.removeEventListener("keydown", onKey);
       window.removeEventListener("keyup", onKeyUp);
     };
-  }, [gallerySlug, selected, hover]);
+  }, [gallerySlug, selected, hover, fullscreen]);
+
+  // Lock body scroll while full screen
+  useEffect(() => {
+    if (!fullscreen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [fullscreen]);
 
   // Pan canvas (empty space, space+drag, or middle mouse)
   const onViewportPointerDown = (e: React.PointerEvent) => {
@@ -323,104 +347,151 @@ export default function WorkCanvas({ items }: { items: CanvasItem[] }) {
       ? null
       : { initial: { opacity: 0, y: 12 }, animate: { opacity: 1, y: 0 }, transition: { delay: 0.05 * i, duration: 0.5, ease: [0.16, 1, 0.3, 1] as const } };
 
-  return (
-    <div className="grid gap-3 md:gap-4">
+  const controlsClass = fullscreen
+    ? "absolute bottom-4 right-4 top-auto z-10 flex items-center gap-0.5 rounded-[14px] border border-line bg-panel/90 p-1.5 shadow-soft"
+    : "absolute right-3 top-3 z-10 flex items-center gap-0.5 rounded-[14px] border border-line bg-panel/90 p-1.5 shadow-soft sm:bottom-4 sm:right-4 sm:top-auto";
+
+  const canvasArea = (
+    <div
+      ref={viewportElRef}
+      onPointerDown={onViewportPointerDown}
+      onPointerMove={onViewportPointerMove}
+      onPointerUp={endPan}
+      onPointerCancel={endPan}
+      onPointerEnter={() => setHover(true)}
+      onPointerLeave={() => setHover(false)}
+      onAuxClick={(e) => e.preventDefault()}
+      className={`canvas-grid relative cursor-grab touch-none select-none overflow-hidden ${
+        fullscreen
+          ? "h-full rounded-[18px]"
+          : "h-[68vh] min-h-[600px] rounded-[18px] border border-line sm:min-h-[720px] sm:rounded-[22px] lg:rounded-[24px]"
+      }`}
+    >
       <div
-        ref={viewportElRef}
-        onPointerDown={onViewportPointerDown}
-        onPointerMove={onViewportPointerMove}
-        onPointerUp={endPan}
-        onPointerCancel={endPan}
-        onPointerEnter={() => setHover(true)}
-        onPointerLeave={() => setHover(false)}
-        onAuxClick={(e) => e.preventDefault()}
-        className="canvas-grid relative h-[68vh] min-h-[600px] cursor-grab touch-none select-none overflow-hidden rounded-[18px] border border-line sm:min-h-[720px] sm:rounded-[22px] lg:rounded-[24px]"
+        className="absolute left-0 top-0 h-full w-full"
+        style={{ transform: `translate(${viewport.x}px, ${viewport.y}px) scale(${viewport.zoom})`, transformOrigin: "0 0" }}
       >
-        <div
-          className="absolute left-0 top-0 h-full w-full"
-          style={{ transform: `translate(${viewport.x}px, ${viewport.y}px) scale(${viewport.zoom})`, transformOrigin: "0 0" }}
-        >
-          <div className="pointer-events-none absolute" style={{ width: 4200, height: 3400 }}>
-            {items.map((p, i) => {
-              const layout = BASE_LAYOUT[i % BASE_LAYOUT.length];
-              const pos = positions[p.slug] ?? { x: layout.x, y: layout.y };
-              const width = layout.width;
-              const isSelected = selected === p.slug;
-              const entrance = nodeEntrance(i);
-              return (
-                <motion.div
-                  key={p.slug}
-                  initial={entrance ? entrance.initial : false}
-                  animate={entrance ? entrance.animate : undefined}
-                  transition={entrance ? entrance.transition : undefined}
-                  style={{ left: pos.x, top: pos.y, width, zIndex: isSelected ? 5 : undefined }}
-                  className="absolute"
+        <div className="pointer-events-none absolute" style={{ width: 4200, height: 3400 }}>
+          {items.map((p, i) => {
+            const layout = BASE_LAYOUT[i % BASE_LAYOUT.length];
+            const pos = positions[p.slug] ?? { x: layout.x, y: layout.y };
+            const width = layout.width;
+            const isSelected = selected === p.slug;
+            const entrance = nodeEntrance(i);
+            return (
+              <motion.div
+                key={p.slug}
+                initial={entrance ? entrance.initial : false}
+                animate={entrance ? entrance.animate : undefined}
+                transition={entrance ? entrance.transition : undefined}
+                style={{ left: pos.x, top: pos.y, width, zIndex: isSelected ? 5 : undefined }}
+                className="absolute"
+              >
+                <div
+                  ref={(node) => {
+                    nodeRefs.current[p.slug] = node;
+                  }}
+                  onPointerDown={onNodePointerDown(p.slug)}
+                  onPointerMove={onNodePointerMove}
+                  onPointerUp={onNodePointerUp}
+                  onPointerCancel={onNodePointerUp}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`${p.title}, ${p.category}, ${p.year}. Activate to view, drag to move.`}
+                  aria-selected={isSelected || undefined}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      actions.current.openGallery(p.slug);
+                    }
+                  }}
+                  style={{
+                    transform: `rotate(${layout.rotation}deg)`,
+                    boxShadow: "0 0 0 8px #ffffff, 0 22px 46px -22px rgba(22,22,22,0.32)",
+                  }}
+                  className={`group pointer-events-auto cursor-move touch-none select-none overflow-hidden rounded-[14px] bg-panel ${
+                    spaceDown ? "cursor-grab" : "cursor-move"
+                  }`}
                 >
-                  <div
-                    ref={(node) => {
-                      nodeRefs.current[p.slug] = node;
-                    }}
-                    onPointerDown={onNodePointerDown(p.slug)}
-                    onPointerMove={onNodePointerMove}
-                    onPointerUp={onNodePointerUp}
-                    onPointerCancel={onNodePointerUp}
-                    role="button"
-                    tabIndex={0}
-                    aria-label={`${p.title}, ${p.category}, ${p.year}. Activate to view, drag to move.`}
-                    aria-selected={isSelected || undefined}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        actions.current.openGallery(p.slug);
-                      }
-                    }}
-                    style={{
-                      transform: `rotate(${layout.rotation}deg)`,
-                      boxShadow: "0 0 0 8px #ffffff, 0 22px 46px -22px rgba(22,22,22,0.32)",
-                    }}
-                    className={`group pointer-events-auto cursor-move touch-none select-none overflow-hidden rounded-[14px] bg-panel ${
-                      spaceDown ? "cursor-grab" : "cursor-move"
-                    }`}
-                  >
-                    <div className="aspect-[4/3] w-full overflow-hidden bg-bg">
-                      <Media
-                        src={p.image}
-                        alt={`Visual for ${p.title}`}
-                        label={p.year}
-                        imgClassName="h-full w-full object-cover pointer-events-none select-none transition-transform duration-500 ease-out group-hover:scale-[1.02]"
-                      />
-                    </div>
+                  <div className="aspect-[4/3] w-full overflow-hidden bg-bg">
+                    <Media
+                      src={p.image}
+                      alt={`Visual for ${p.title}`}
+                      label={p.year}
+                      imgClassName="h-full w-full object-cover pointer-events-none select-none transition-transform duration-500 ease-out group-hover:scale-[1.02]"
+                    />
                   </div>
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
-
-        <span className="pointer-events-none absolute bottom-3 left-3 rounded-full border border-line bg-panel/85 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.06em] text-sub shadow-soft sm:hidden">
-          Drag to explore · Pinch to zoom
-        </span>
-
-        <div className="absolute right-3 top-3 z-10 flex items-center gap-0.5 rounded-[14px] border border-line bg-panel/90 p-1.5 shadow-soft sm:bottom-4 sm:right-4 sm:top-auto">
-          <IconBtn label="Zoom out" onClick={() => actions.current.zoomCenter(0.8)} disabled={viewport.zoom <= MIN_ZOOM}>
-            <Minus size={15} />
-          </IconBtn>
-          <span className="w-11 text-center font-mono text-[11px] tabular-nums text-sub">{zoomPercent}%</span>
-          <IconBtn label="Zoom in" onClick={() => actions.current.zoomCenter(1.25)} disabled={viewport.zoom >= MAX_ZOOM}>
-            <Plus size={15} />
-          </IconBtn>
-          <span className="mx-0.5 h-5 w-px bg-line" aria-hidden="true" />
-          <IconBtn label="Reset view (0)" onClick={actions.current.resetView}>
-            <RotateCcw size={15} />
-          </IconBtn>
-          <IconBtn label="Fit all projects (1)" onClick={actions.current.fitAll}>
-            <Maximize2 size={15} />
-          </IconBtn>
-          <IconBtn label="Reset layout" onClick={actions.current.resetLayout}>
-            <Undo2 size={15} />
-          </IconBtn>
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
+
+      <span className="pointer-events-none absolute bottom-3 left-3 rounded-full border border-line bg-panel/85 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.06em] text-sub shadow-soft sm:hidden">
+        Drag to explore · Pinch to zoom
+      </span>
+
+      <div className={controlsClass}>
+        <IconBtn label="Zoom out" onClick={() => actions.current.zoomCenter(0.8)} disabled={viewport.zoom <= MIN_ZOOM}>
+          <Minus size={15} />
+        </IconBtn>
+        <span className="w-11 text-center font-mono text-[11px] tabular-nums text-sub">{zoomPercent}%</span>
+        <IconBtn label="Zoom in" onClick={() => actions.current.zoomCenter(1.25)} disabled={viewport.zoom >= MAX_ZOOM}>
+          <Plus size={15} />
+        </IconBtn>
+        <span className="mx-0.5 h-5 w-px bg-line" aria-hidden="true" />
+        <IconBtn label="Reset view (0)" onClick={actions.current.resetView}>
+          <RotateCcw size={15} />
+        </IconBtn>
+        <IconBtn
+          label={fullscreen ? "Exit full screen" : "Full screen"}
+          onClick={toggleFullscreen}
+        >
+          {fullscreen ? <Minimize2 size={15} /> : <Maximize2 size={15} />}
+        </IconBtn>
+        <IconBtn label="Reset layout" onClick={actions.current.resetLayout}>
+          <Undo2 size={15} />
+        </IconBtn>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="grid gap-3 md:gap-4">
+      {!fullscreen && canvasArea}
+
+      <AnimatePresence>
+        {fullscreen && (
+          <motion.div
+            className="fixed inset-0 z-[120] bg-bg p-3 sm:p-5"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            role="presentation"
+          >
+            <motion.div
+              className="relative h-full"
+              initial={{ scale: 0.95, y: 14, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.95, y: 14, opacity: 0 }}
+              transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <button
+                type="button"
+                onClick={() => setFullscreen(false)}
+                aria-label="Close full screen"
+                title="Close full screen"
+                className="absolute right-4 top-4 z-20 grid h-10 w-10 place-items-center rounded-full border border-line bg-panel text-ink shadow-soft transition-colors hover:bg-bg"
+              >
+                <X size={18} />
+              </button>
+              {canvasArea}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <LightboxModal
         open={!!activeItem}
