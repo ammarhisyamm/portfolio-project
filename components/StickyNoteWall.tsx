@@ -29,8 +29,8 @@ function place(id: string) {
   const h3 = hashStr(id + "::r");
   const h4 = hashStr(id + "::s");
   return {
-    left: `${2 + h1 * 70}%`,
-    top: `${2 + h2 * 62}%`,
+    left: `${4 + h1 * 60}%`,
+    top: `${4 + h2 * 52}%`,
     rot: (h3 - 0.5) * 12,
     scale: 0.88 + h4 * 0.22,
   };
@@ -132,7 +132,7 @@ export default function StickyNoteWall({ notes: initial }: { notes: VisitorNote[
       </p>
 
       <div className="mt-8 overflow-hidden rounded-[14px] border border-line bg-bg shadow-[inset_0_1px_0_rgba(255,255,255,0.6),inset_0_0_60px_rgba(22,22,22,0.03)]">
-        <div className="note-wall hidden h-[560px] md:block">
+        <div className="note-wall relative hidden h-[560px] md:block">
           {notes.map((n, i) => {
             const pos = place(n.id);
             return (
