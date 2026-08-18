@@ -12,15 +12,6 @@ const BASES = [
   { left: "26%", top: "30%", width: "48%" },
 ];
 
-function saveScroll() {
-  try {
-    sessionStorage.setItem("hisyam.homeScroll", String(window.scrollY));
-    sessionStorage.setItem("hisyam.returnHome", "1");
-  } catch {
-    /* ignore */
-  }
-}
-
 export default function CategoryStacks({ categories }: { categories: HomeCategory[] }) {
   if (categories.length === 0) return null;
 
@@ -48,8 +39,7 @@ function CategoryStack({ cat }: { cat: HomeCategory }) {
 
   return (
     <Link
-      href={`/work/${cat.key}`}
-      onClick={saveScroll}
+      href="/work"
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       className="group block focus-visible:outline-2 focus-visible:outline-offset-4"
