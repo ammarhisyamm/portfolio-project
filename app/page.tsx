@@ -6,6 +6,7 @@ import AboutPanel from "@/components/AboutPanel";
 import ProjectGrid from "@/components/ProjectGrid";
 import PinnedFeature from "@/components/PinnedFeature";
 import HorizontalStory from "@/components/HorizontalStory";
+import ExperienceAccordion from "@/components/ExperienceAccordion";
 import { projects } from "@/lib/projects";
 
 export default function HomePage() {
@@ -14,6 +15,13 @@ export default function HomePage() {
       <Hero />
       <TrustStrip />
       <AboutPanel />
+
+      <section className="grid gap-5">
+        <div className="px-0.5">
+          <span className="kicker">Working experience</span>
+        </div>
+        <ExperienceAccordion />
+      </section>
 
       <section className="grid gap-5">
         <div className="flex items-end justify-between gap-4 px-0.5">
