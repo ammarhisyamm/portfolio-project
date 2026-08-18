@@ -1,19 +1,17 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import {
   Plus,
   Minus,
   Maximize2,
   RotateCcw,
   Undo2,
-  ChevronLeft,
-  ChevronRight,
-  X,
 } from "lucide-react";
 import type { CanvasItem } from "@/lib/canvas";
 import Media from "./Media";
+import LightboxModal from "./LightboxModal";
 
 const STORAGE_KEY = "hisyam.canvas.nodes.v1";
 
@@ -205,12 +203,7 @@ export default function WorkCanvas({ items }: { items: CanvasItem[] }) {
       const t = e.target as HTMLElement | null;
       if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable)) return;
 
-      if (gallerySlug) {
-        if (e.key === "Escape") actions.current.closeGallery();
-        else if (e.key === "ArrowLeft") actions.current.stepGallery(-1);
-        else if (e.key === "ArrowRight") actions.current.stepGallery(1);
-        return;
-      }
+      if (gallerySlug) return;
 
       if (e.code === "Space") {
         if (hover) {
@@ -252,16 +245,6 @@ export default function WorkCanvas({ items }: { items: CanvasItem[] }) {
       window.removeEventListener("keyup", onKeyUp);
     };
   }, [gallerySlug, selected, hover]);
-
-  // Lock body scroll while gallery open
-  useEffect(() => {
-    if (!gallerySlug) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = prev;
-    };
-  }, [gallerySlug]);
 
   // Pan canvas (empty space, space+drag, or middle mouse)
   const onViewportPointerDown = (e: React.PointerEvent) => {
@@ -391,8 +374,11 @@ export default function WorkCanvas({ items }: { items: CanvasItem[] }) {
                         actions.current.openGallery(p.slug);
                       }
                     }}
-                    style={{ transform: `rotate(${layout.rotation}deg)` }}
-                    className={`group pointer-events-auto cursor-move touch-none select-none overflow-hidden rounded-[14px] border border-line bg-panel shadow-soft transition-shadow duration-300 hover:shadow-soft ${
+                    style={{
+                      transform: `rotate(${layout.rotation}deg)`,
+                      boxShadow: "0 0 0 8px #ffffff, 0 22px 46px -22px rgba(22,22,22,0.32)",
+                    }}
+                    className={`group pointer-events-auto cursor-move touch-none select-none overflow-hidden rounded-[14px] bg-panel ${
                       spaceDown ? "cursor-grab" : "cursor-move"
                     }`}
                   >
@@ -436,77 +422,13 @@ export default function WorkCanvas({ items }: { items: CanvasItem[] }) {
         </div>
       </div>
 
-      <AnimatePresence>
-        {activeItem && (
-          <motion.div
-            className="project-modal-overlay"
-            initial={reduce ? false : { opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={reduce ? undefined : { opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            onClick={closeGallery}
-            role="presentation"
-          >
-            <motion.div
-              role="dialog"
-              aria-modal="true"
-              aria-label={`${activeItem.title} visual gallery`}
-              tabIndex={-1}
-              initial={reduce ? false : { opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={reduce ? undefined : { opacity: 0, scale: 0.98 }}
-              transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-              onClick={(e) => e.stopPropagation()}
-              className="project-modal"
-            >
-              <button
-                type="button"
-                onClick={closeGallery}
-                aria-label="Close gallery"
-                className="absolute right-3 top-3 z-10 grid h-9 w-9 place-items-center rounded-full border border-white/20 bg-black/40 text-white transition-colors hover:bg-black/70"
-              >
-                <X size={16} />
-              </button>
-
-              <div className="relative grid min-h-[260px] place-items-center bg-black/30">
-                <Media
-                  src={galleryImages[galleryIndex]}
-                  alt={`Visual for ${activeItem.title}`}
-                  label={activeItem.year}
-                  imgClassName="mx-auto h-auto max-h-[52vh] w-full object-contain"
-                />
-                {galleryImages.length > 1 && (
-                  <>
-                    <GalleryArrow
-                      side="left"
-                      label="Previous image"
-                      onClick={() => actions.current.stepGallery(-1)}
-                    />
-                    <GalleryArrow
-                      side="right"
-                      label="Next image"
-                      onClick={() => actions.current.stepGallery(1)}
-                    />
-                    <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1.5">
-                      {galleryImages.map((img, i) => (
-                        <button
-                          key={i}
-                          type="button"
-                          aria-label={`Show image ${i + 1}`}
-                          onClick={() => setGalleryIndex(i)}
-                          className={`h-1.5 rounded-full transition-all ${
-                            i === galleryIndex ? "w-5 bg-white" : "w-1.5 bg-white/40"
-                          }`}
-                        />
-                      ))}
-                    </div>
-                  </>
-                )}
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <LightboxModal
+        open={!!activeItem}
+        images={activeItem ? [{ src: activeItem.image, alt: `Visual for ${activeItem.title}` }] : []}
+        index={galleryIndex}
+        onIndexChange={setGalleryIndex}
+        onClose={closeGallery}
+      />
     </div>
   );
 }
@@ -532,29 +454,6 @@ function IconBtn({
       className="grid h-8 w-8 place-items-center rounded-[10px] text-sub transition-colors hover:bg-bg hover:text-ink disabled:cursor-not-allowed disabled:opacity-40"
     >
       {children}
-    </button>
-  );
-}
-
-function GalleryArrow({
-  side,
-  label,
-  onClick,
-}: {
-  side: "left" | "right";
-  label: string;
-  onClick: () => void;
-}) {
-  const Icon = side === "left" ? ChevronLeft : ChevronRight;
-  return (
-    <button
-      type="button"
-      aria-label={label}
-      onClick={onClick}
-      className="absolute top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-black/40 text-white transition-colors hover:bg-black/70"
-      style={side === "left" ? { left: 12 } : { right: 12 }}
-    >
-      <Icon size={18} />
     </button>
   );
 }
