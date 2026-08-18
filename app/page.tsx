@@ -6,7 +6,7 @@ import AboutPanel from "@/components/AboutPanel";
 import ProjectGrid from "@/components/ProjectGrid";
 import PinnedFeature from "@/components/PinnedFeature";
 import HorizontalStory from "@/components/HorizontalStory";
-import { projects, homeSpans } from "@/lib/projects";
+import { projects } from "@/lib/projects";
 
 export default function HomePage() {
   return (
@@ -26,7 +26,7 @@ export default function HomePage() {
             <ArrowRight size={13} className="ml-1 inline" aria-hidden="true" />
           </Link>
         </div>
-        <ProjectGrid projects={projects} spans={homeSpans} />
+        <ProjectGrid projects={projects.slice(0, 4)} />
       </section>
 
       <PinnedFeature project={projects[0]} />

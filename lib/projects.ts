@@ -94,17 +94,6 @@ export const projects: Project[] = [
 
 export const FILTERS = ["All", "Fintech", "SaaS", "Mobile", "Web", "AI", "Enterprise", "Marketplace", "Education"];
 
-export const homeSpans = [
-  "lg:col-span-7",
-  "lg:col-span-5",
-  "lg:col-span-4",
-  "lg:col-span-4",
-  "lg:col-span-4",
-  "lg:col-span-6",
-  "lg:col-span-6",
-  "lg:col-span-12",
-];
-
 export const trustItems = [
   "Serba Mulia Group",
   "Peak Haven",
