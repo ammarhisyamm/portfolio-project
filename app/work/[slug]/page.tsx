@@ -6,6 +6,7 @@ import { getContent, type CaseStudy } from "@/lib/content";
 import CaseStudyBlockView from "@/components/CaseStudyBlockView";
 import Media from "@/components/Media";
 import Reveal from "@/components/Reveal";
+import ReadingProgress from "@/components/ReadingProgress";
 import CategoryGallery from "@/components/CategoryGallery";
 
 export const dynamic = "force-dynamic";
@@ -65,6 +66,7 @@ export default async function CaseStudyPage({ params }: Props) {
 
   return (
     <div className="grid gap-3 pb-16 pt-3 md:gap-4">
+      <ReadingProgress />
       <div className="grid gap-3 md:gap-4">
         <Link
           href="/work"

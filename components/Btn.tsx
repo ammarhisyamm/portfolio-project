@@ -27,9 +27,8 @@ export default function Btn({
 }: BtnProps) {
   const classes = `group btn ${variant === "primary" ? "btn-primary" : "btn-secondary"} ${className}`;
   const motionProps = {
-    whileHover: { y: -2 },
-    whileTap: { scale: 0.97 },
-    transition: { type: "spring", stiffness: 400, damping: 22 },
+    whileTap: { scale: 0.98 },
+    transition: { type: "tween", duration: 0.2, ease: "easeOut" },
   } as const;
 
   if (href) {
