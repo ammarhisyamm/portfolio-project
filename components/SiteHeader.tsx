@@ -10,7 +10,9 @@ const LINKS = [
   { href: "/contact", label: "Contact" },
 ];
 
-export default function SiteHeader() {
+const LOGO_SHADOW = "inset 0 0 0 2px rgba(255,255,255,0.9), 0 10px 24px -12px rgba(22,22,22,0.22)";
+
+export default function SiteHeader({ logo }: { logo?: string }) {
   const pathname = usePathname();
 
   return (
@@ -19,14 +21,16 @@ export default function SiteHeader() {
         <div className="flex items-center">
           <Link
             href="/"
-            className="flex items-center gap-2.5 text-[15px] font-semibold tracking-[-0.05em] no-underline"
+            aria-label="Home"
+            className="grid h-8 w-8 place-items-center overflow-hidden rounded-[10px] bg-bg no-underline"
+            style={{ boxShadow: LOGO_SHADOW }}
           >
-            <span className="grid h-8 w-8 place-items-center rounded-[10px] border border-line bg-bg text-[13px] text-ink">
-              H
-            </span>
-            <span>
-              Hisyam<span className="text-muted">.</span>
-            </span>
+            {logo ? (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img src={logo} alt="" className="h-full w-full object-cover" />
+            ) : (
+              <span className="text-[13px] font-semibold tracking-[-0.05em] text-ink">H</span>
+            )}
           </Link>
         </div>
 

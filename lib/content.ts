@@ -96,6 +96,10 @@ export type FooterContent = {
   links: FooterLink[];
 };
 
+export type BrandingContent = {
+  logo: string;
+};
+
 export type TrustItem = {
   label: string;
   image: string;
@@ -141,6 +145,7 @@ export type SiteContent = {
     items: SocialLink[];
   };
   footer: FooterContent;
+  branding: BrandingContent;
 };
 
 const DEFAULT_HOME_CATEGORIES: HomeCategory[] = [
@@ -624,6 +629,9 @@ export const DEFAULTS: SiteContent = {
       { label: "Behance", href: "#" },
     ],
   },
+  branding: {
+    logo: "",
+  },
 };
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
@@ -750,6 +758,7 @@ export const getContent = cache(async (): Promise<SiteContent> => {
       contact: { ...DEFAULTS.contact, ...(site.contact ?? {}) },
       socials: { ...DEFAULTS.socials, ...(site.socials ?? {}) },
       footer: { ...DEFAULTS.footer, ...(site.footer ?? {}) },
+      branding: { ...DEFAULTS.branding, ...(site.branding ?? {}) },
     };
   } catch {
     return DEFAULTS;

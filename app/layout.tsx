@@ -25,7 +25,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body>
         <Providers>
           <div className="mx-auto w-full max-w-[720px] px-4 sm:px-6">
-            <SiteHeader />
+            <SiteHeader logo={content.branding.logo} />
             <PageTransition>{children}</PageTransition>
           </div>
           <div className="mx-auto w-full max-w-[720px] px-4 pb-28 sm:px-6 md:pb-0">

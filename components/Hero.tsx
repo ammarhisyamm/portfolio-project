@@ -18,9 +18,12 @@ type HeroProps = {
   email: string;
   socials: SocialLink[];
   trust: TrustItem[];
+  logo?: string;
 };
 
-export default function Hero({ name, title, headline, intro, available, email, socials, trust }: HeroProps) {
+const LOGO_SHADOW = "inset 0 0 0 2px rgba(255,255,255,0.9), 0 14px 32px -14px rgba(22,22,22,0.25)";
+
+export default function Hero({ name, title, headline, intro, available, email, socials, trust, logo }: HeroProps) {
   const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -58,12 +61,18 @@ export default function Hero({ name, title, headline, intro, available, email, s
         <div data-hero-fade className="flex items-center gap-4">
           <div
             aria-hidden="true"
-            className="grid h-12 w-12 place-items-center rounded-[16px] border border-line bg-bg text-[20px] font-semibold tracking-tight text-ink"
+            className="grid h-12 w-12 place-items-center overflow-hidden rounded-[16px] bg-bg"
+            style={{ boxShadow: LOGO_SHADOW }}
           >
-            H
+            {logo ? (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img src={logo} alt="" className="h-full w-full object-cover" />
+            ) : (
+              <span className="text-[20px] font-semibold tracking-tight text-ink">H</span>
+            )}
           </div>
           <div>
-            <h1 className="text-[22px] font-semibold tracking-[-0.04em] sm:text-[24px]">{name}</h1>
+            <h1 className="text-[22px] font-medium tracking-[-0.04em] sm:text-[24px]">{name}</h1>
             <p className="mt-0.5 text-[13px] text-sub">{title}</p>
           </div>
         </div>

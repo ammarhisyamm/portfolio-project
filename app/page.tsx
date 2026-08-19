@@ -25,6 +25,7 @@ export default async function HomePage() {
         email={content.contact.email}
         socials={content.socials.items}
         trust={content.trust}
+        logo={content.branding.logo}
       />
 
       <section className="panel p-5 sm:p-8">
