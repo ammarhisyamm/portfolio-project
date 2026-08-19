@@ -13,6 +13,7 @@ const schema = z.object({
   email: z.string().email("Please add a valid email."),
   projectType: z.string().min(1, "Please select a project type."),
   message: z.string().min(10, "Message should be at least 10 characters."),
+  company: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -33,12 +34,20 @@ export default function ContactForm({ email }: { email: string }) {
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({ resolver: zodResolver(schema) });
   const [sent, setSent] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
   const onSubmit = async (values: FormValues) => {
-    const subject = encodeURIComponent(`Project inquiry — ${values.projectType}`);
-    const body = encodeURIComponent(`${values.message}\n\n— ${values.name}\n${values.email}`);
-    await new Promise((r) => setTimeout(r, 900));
-    window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+    setFormError(null);
+    const res = await fetch("/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(values),
+    });
+    const data = (await res.json().catch(() => ({}))) as { error?: string };
+    if (!res.ok) {
+      setFormError(data.error || "Gagal mengirim. Coba lagi nanti.");
+      return;
+    }
     setSent(true);
     reset();
     setTimeout(() => setSent(false), 5000);
@@ -46,6 +55,10 @@ export default function ContactForm({ email }: { email: string }) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="grid gap-5">
+      <div className="sr-only" aria-hidden="true">
+        <label htmlFor="company">Company</label>
+        <input id="company" type="text" tabIndex={-1} autoComplete="off" {...register("company")} />
+      </div>
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
           <label htmlFor="name" className="mb-2 block  text-[11px] uppercase tracking-[0.02em] text-sub">
@@ -121,6 +134,11 @@ export default function ContactForm({ email }: { email: string }) {
         <Btn type="submit" disabled={isSubmitting}>
           {isSubmitting ? "Sending…" : "Send message"}
         </Btn>
+        {formError && (
+          <p className="text-sm text-red-500" role="alert">
+            {formError}
+          </p>
+        )}
         <AnimatePresence>
           {sent && (
             <motion.p
@@ -133,6 +151,9 @@ export default function ContactForm({ email }: { email: string }) {
             </motion.p>
           )}
         </AnimatePresence>
+        <a href={`mailto:${email}`} className="text-sm text-sub no-underline hover:text-ink">
+          or email directly
+        </a>
       </div>
     </form>
   );
