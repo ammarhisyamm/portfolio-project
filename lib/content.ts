@@ -51,6 +51,7 @@ export type ExperienceItem = {
   role: string;
   period: string;
   points: string[];
+  images: string[];
 };
 
 export type ExplorationItem = {
@@ -148,7 +149,7 @@ const DEFAULT_HOME_CATEGORIES: HomeCategory[] = [
   { id: "mobile", key: "mobile", label: "Mobile", sort: 2, images: [] },
 ];
 
-const DEFAULT_EXPERIENCE: ExperienceItem[] = [
+const DEFAULT_EXPERIENCE = [
   {
     company: "Serba Mulia Group",
     role: "Product & UX/UI design",
@@ -210,7 +211,7 @@ const DEFAULT_EXPERIENCE: ExperienceItem[] = [
       "Helped define the product's design language and component library.",
     ],
   },
-];
+].map((e) => ({ ...e, images: [] }));
 
 const DEFAULT_EXPLORATION: ExplorationItem[] = [
   "Exploration 01 — Mobile banking",
@@ -684,7 +685,7 @@ export const getContent = cache(async (): Promise<SiteContent> => {
       supabase.from("case_study_blocks").select("*").order("sort", { ascending: true }),
       supabase.from("home_categories").select("*").order("sort", { ascending: true }),
       supabase.from("category_images").select("*").order("sort", { ascending: true }),
-      supabase.from("experience").select("company,role,period,points").order("sort", { ascending: true }),
+      supabase.from("experience").select("company,role,period,points,images").order("sort", { ascending: true }),
       supabase.from("exploration").select("label,image_url").order("sort", { ascending: true }),
       supabase.from("trust").select("label,image_url").order("sort", { ascending: true }),
       supabase.from("site_content").select("key,value"),
@@ -734,6 +735,7 @@ export const getContent = cache(async (): Promise<SiteContent> => {
         role: r.role,
         period: r.period,
         points: r.points ?? [],
+        images: r.images ?? [],
       })),
       exploration: (x.data ?? []).map((r) => ({
         label: r.label,
