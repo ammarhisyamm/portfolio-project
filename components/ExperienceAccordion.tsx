@@ -58,8 +58,16 @@ export default function ExperienceAccordion({ items }: { items: ExperienceItem[]
                     className="overflow-hidden"
                   >
                     <div className="pb-5">
+                      <ul className="grid gap-2.5" style={{ listStyle: "none" }}>
+                        {job.points.map((point) => (
+                          <li key={point} className="flex gap-2.5 pl-1 text-[13.5px] leading-relaxed text-sub">
+                            <span className="mt-[9px] h-[5px] w-[5px] shrink-0 rounded-full bg-muted" aria-hidden="true" />
+                            {point}
+                          </li>
+                        ))}
+                      </ul>
                       {images.length > 0 && (
-                        <div className="mb-4 flex flex-wrap gap-2.5">
+                        <div className="mt-4 flex flex-wrap gap-2.5">
                           {images.slice(0, 3).map((src, imgIndex) => (
                             <button
                               key={src}
@@ -78,14 +86,6 @@ export default function ExperienceAccordion({ items }: { items: ExperienceItem[]
                           ))}
                         </div>
                       )}
-                      <ul className="grid gap-2.5" style={{ listStyle: "none" }}>
-                        {job.points.map((point) => (
-                          <li key={point} className="flex gap-2.5 pl-1 text-[13.5px] leading-relaxed text-sub">
-                            <span className="mt-[9px] h-[5px] w-[5px] shrink-0 rounded-full bg-muted" aria-hidden="true" />
-                            {point}
-                          </li>
-                        ))}
-                      </ul>
                     </div>
                   </motion.div>
                 )}
