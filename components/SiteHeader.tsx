@@ -6,17 +6,17 @@ import { usePathname } from "next/navigation";
 import { motion } from "motion/react";
 import Clock from "./Clock";
 
-const LINKS = [
-  { href: "/", label: "Home" },
-  { href: "/work", label: "Work" },
-  { href: "/contact", label: "Contact" },
-];
-
 const LOGO_SHADOW = "inset 0 0 0 2px rgba(255,255,255,0.9), 0 10px 24px -12px rgba(22,22,22,0.22)";
 
-export default function SiteHeader({ logo }: { logo?: string }) {
+export default function SiteHeader({ logo, workLabel }: { logo?: string; workLabel?: string }) {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
+
+  const LINKS = [
+    { href: "/", label: "Home" },
+    { href: "/playground", label: workLabel || "Playground" },
+    { href: "/contact", label: "Contact" },
+  ];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);

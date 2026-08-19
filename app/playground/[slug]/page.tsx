@@ -69,11 +69,11 @@ export default async function CaseStudyPage({ params }: Props) {
       <ReadingProgress />
       <div className="grid gap-3 md:gap-4">
         <Link
-          href="/work"
+          href="/playground"
           className="flex w-fit items-center gap-1.5 px-0.5 text-[13px] text-sub no-underline transition-colors hover:text-ink"
         >
           <ArrowLeft size={14} aria-hidden="true" />
-          Back to work
+          Back to {content.menu.workLabel.toLowerCase()}
         </Link>
 
         <Reveal className="panel grid gap-5 p-5 sm:p-8">
@@ -120,7 +120,7 @@ export default async function CaseStudyPage({ params }: Props) {
 
       {next && (
         <Link
-          href={`/work/${next.slug}`}
+          href={`/playground/${next.slug}`}
           className="group mt-4 flex flex-col gap-5 overflow-hidden rounded-[18px] border border-line bg-panel p-5 transition-colors duration-300 hover:border-line-strong sm:rounded-[22px] sm:p-8 lg:rounded-[24px] lg:p-10"
         >
           <span className="kicker">Next case study</span>

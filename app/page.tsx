@@ -1,5 +1,3 @@
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 import Hero from "@/components/Hero";
 import AboutPanel from "@/components/AboutPanel";
 import ExperienceAccordion from "@/components/ExperienceAccordion";
@@ -28,18 +26,9 @@ export default async function HomePage() {
         profilePhoto={content.branding.profilePhoto}
       />
 
-      <section className="panel p-5 sm:p-8">
-        <div className="flex items-end justify-between gap-4">
-          <span className="kicker">Selected work</span>
-          <Link
-            href="/work"
-            className="border-b border-line-strong pb-1 text-[13px] text-sub no-underline transition-colors hover:border-ink hover:text-ink"
-          >
-            View all projects
-            <ArrowRight size={13} className="ml-1 inline" aria-hidden="true" />
-          </Link>
-        </div>
-        <div className="mt-6">
+      <section className="pt-2">
+        <span className="kicker">Selected work</span>
+        <div className="mt-5">
           <FeaturedWork caseStudies={featured} />
         </div>
       </section>

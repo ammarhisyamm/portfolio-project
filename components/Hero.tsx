@@ -102,7 +102,7 @@ export default function Hero({ name, title, headline, intro, available, email, s
               aria-hidden="true"
             />
           </Btn>
-          <Btn href="/work" variant="secondary">
+          <Btn href="/playground" variant="secondary">
             View my projects
           </Btn>
         </div>

@@ -101,6 +101,10 @@ export type BrandingContent = {
   profilePhoto: string;
 };
 
+export type MenuContent = {
+  workLabel: string;
+};
+
 export type TrustItem = {
   label: string;
   image: string;
@@ -147,6 +151,7 @@ export type SiteContent = {
   };
   footer: FooterContent;
   branding: BrandingContent;
+  menu: MenuContent;
 };
 
 const DEFAULT_HOME_CATEGORIES: HomeCategory[] = [
@@ -634,6 +639,9 @@ export const DEFAULTS: SiteContent = {
     logo: "",
     profilePhoto: "",
   },
+  menu: {
+    workLabel: "Playground",
+  },
 };
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
@@ -761,6 +769,7 @@ export const getContent = cache(async (): Promise<SiteContent> => {
       socials: { ...DEFAULTS.socials, ...(site.socials ?? {}) },
       footer: { ...DEFAULTS.footer, ...(site.footer ?? {}) },
       branding: { ...DEFAULTS.branding, ...(site.branding ?? {}) },
+      menu: { ...DEFAULTS.menu, ...(site.menu ?? {}) },
     };
   } catch {
     return DEFAULTS;

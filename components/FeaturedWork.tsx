@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
 import { gsap } from "@/lib/gsap";
 import { reducedMotion } from "@/lib/utils";
 import type { CaseStudy } from "@/lib/content";
@@ -33,15 +32,15 @@ export default function FeaturedWork({ caseStudies }: { caseStudies: CaseStudy[]
   if (caseStudies.length === 0) return null;
 
   return (
-    <div ref={ref} className="grid grid-cols-1 gap-3">
+    <div ref={ref} className="grid gap-8">
       {caseStudies.slice(0, 3).map((p) => (
         <Link
           key={p.slug}
-          href={`/work/${p.slug}`}
+          href={`/playground/${p.slug}`}
           data-stagger
-          className="group flex flex-col gap-4 overflow-hidden rounded-[18px] border border-line bg-panel p-3 transition-all duration-300 hover:border-line-strong hover:shadow-soft sm:flex-row sm:items-center sm:gap-5 sm:rounded-[22px] sm:p-4 lg:rounded-[24px]"
+          className="group grid gap-3 no-underline"
         >
-          <div className="relative aspect-[4/3] w-full shrink-0 overflow-hidden rounded-[14px] border border-line bg-bg sm:w-[200px]">
+          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[18px] bg-bg sm:rounded-[24px]">
             <Media
               src={p.thumbnail}
               alt={p.thumbnail_alt || `Visual for ${p.title}`}
@@ -49,26 +48,9 @@ export default function FeaturedWork({ caseStudies }: { caseStudies: CaseStudy[]
               imgClassName="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
             />
           </div>
-          <div className="flex min-w-0 flex-1 flex-col gap-2 px-1 pb-1 sm:px-2 sm:pb-0">
-            <div className="flex items-center justify-between gap-3">
-              <span className="font-mono text-[11px] uppercase tracking-[0.02em] text-muted">
-                {p.category}
-              </span>
-              {p.year && (
-                <span className="flex items-center gap-1.5 font-mono text-[11px] text-muted">
-                  {p.year}
-                  <ArrowUpRight
-                    size={14}
-                    className="text-ink transition-transform duration-300 ease-out group-hover:translate-x-1 group-hover:-translate-y-1"
-                    aria-hidden="true"
-                  />
-                </span>
-              )}
-            </div>
-            <h3 className="text-[18px] font-medium leading-tight tracking-[-0.045em] sm:text-[21px]">
-              {p.title}
-            </h3>
-            <p className="text-[13.5px] leading-relaxed text-sub">{p.short_description}</p>
+          <div className="flex items-baseline justify-between gap-3 px-0.5">
+            <h3 className="text-[17px] font-medium leading-tight tracking-[-0.04em]">{p.title}</h3>
+            {p.year && <span className="font-mono text-[11px] text-muted">{p.year}</span>}
           </div>
         </Link>
       ))}

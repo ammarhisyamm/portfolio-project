@@ -28,11 +28,20 @@ export default function SiteFooter({ footer }: { footer: FooterContent }) {
         <a href={`mailto:${footer.email}`} className="py-1.5 text-[13px] text-sub no-underline hover:text-ink">
           {footer.email}
         </a>
-        {footer.links.map((link) => (
-          <a key={link.label} href={link.href} className="py-1.5 text-[13px] text-sub no-underline hover:text-ink">
-            {link.label}
-          </a>
-        ))}
+        {footer.links.map((link) => {
+          const external = link.href.startsWith("http");
+          return (
+            <a
+              key={link.label}
+              href={link.href}
+              target={external ? "_blank" : undefined}
+              rel={external ? "noreferrer" : undefined}
+              className="py-1.5 text-[13px] text-sub no-underline hover:text-ink"
+            >
+              {link.label}
+            </a>
+          );
+        })}
         <button
           type="button"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
