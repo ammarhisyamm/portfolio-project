@@ -26,11 +26,6 @@ export default async function HomePage() {
         socials={content.socials.items}
         trust={content.trust}
       />
-      <AboutPanel about={content.about} contact={content.contact} socials={content.socials.items} />
-
-      <ExperienceAccordion items={content.experience} />
-
-      <CategoryStacks categories={content.homeCategories} />
 
       <section className="panel p-5 sm:p-8">
         <div className="flex items-end justify-between gap-4">
@@ -47,6 +42,12 @@ export default async function HomePage() {
           <FeaturedWork caseStudies={featured} />
         </div>
       </section>
+
+      <ExperienceAccordion items={content.experience} />
+
+      <AboutPanel about={content.about} contact={content.contact} socials={content.socials.items} />
+
+      <CategoryStacks categories={content.homeCategories} />
     </div>
   );
 }
