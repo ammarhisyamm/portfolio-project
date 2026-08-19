@@ -69,11 +69,11 @@ export default async function CaseStudyPage({ params }: Props) {
       <ReadingProgress />
       <div className="grid gap-3 md:gap-4">
         <Link
-          href="/playground"
+          href="/"
           className="flex w-fit items-center gap-1.5 px-0.5 text-[13px] text-sub no-underline transition-colors hover:text-ink"
         >
           <ArrowLeft size={14} aria-hidden="true" />
-          Back to {content.menu.workLabel.toLowerCase()}
+          Back to home
         </Link>
 
         <Reveal className="panel grid gap-5 p-5 sm:p-8">

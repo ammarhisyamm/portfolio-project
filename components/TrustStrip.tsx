@@ -24,7 +24,7 @@ function Group({ items }: { items: TrustItem[] }) {
   );
 }
 
-export default function TrustStrip({ items, label = "Trusted by teams at" }: { items: TrustItem[]; label?: string }) {
+export default function TrustStrip({ items, label = "I've collaborated with 40+ clients" }: { items: TrustItem[]; label?: string }) {
   const DUPLICATED = [...items, ...items];
   return (
     <div>

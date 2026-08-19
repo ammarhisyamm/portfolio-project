@@ -26,7 +26,7 @@ export default async function HomePage() {
         profilePhoto={content.branding.profilePhoto}
       />
 
-      <section className="pt-2">
+      <section className="panel p-5 sm:p-8">
         <span className="kicker">Selected work</span>
         <div className="mt-5">
           <FeaturedWork caseStudies={featured} />
