@@ -99,7 +99,7 @@ export default function LightboxModal({ open, images, index, onIndexChange, onCl
         />
       </div>
 
-      <div className="absolute bottom-5 left-1/2 z-10 -translate-x-1/2 rounded-full bg-black/60 px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-[0.08em] text-white">
+      <div className="absolute bottom-5 left-1/2 z-10 -translate-x-1/2 rounded-full bg-black/60 px-3.5 py-1.5  text-[11px] uppercase tracking-[0.08em] text-white">
         {index + 1} / {count}
       </div>
     </div>

@@ -92,8 +92,8 @@ function FrontFace({ note, mini }: { note: VisitorNote; mini?: boolean }) {
         </div>
         {!mini && (
           <div className="flex items-end justify-between gap-3">
-            <span className="font-mono text-[9px] uppercase tracking-[0.12em] opacity-70">HISYAM · DESIGN</span>
-            <span className="font-mono text-[8.5px] uppercase tracking-[0.1em] opacity-55">Jakarta, Indonesia</span>
+            <span className=" text-[9px] uppercase tracking-[0.12em] opacity-70">HISYAM · DESIGN</span>
+            <span className=" text-[8.5px] uppercase tracking-[0.1em] opacity-55">Jakarta, Indonesia</span>
           </div>
         )}
       </div>
@@ -115,18 +115,18 @@ function BackFace({ note }: { note: VisitorNote }) {
       <div className="pc-grain" />
       <div className="relative flex h-full flex-col p-4 sm:p-5">
         <div className="flex items-start justify-between gap-3">
-          <span className="font-mono text-[9px] uppercase tracking-[0.12em] opacity-60">HISYAM · DESIGN</span>
+          <span className=" text-[9px] uppercase tracking-[0.12em] opacity-60">HISYAM · DESIGN</span>
           {note.created_at && (
-            <span className="font-mono text-[8.5px] uppercase tracking-[0.08em] opacity-55">{postDate(note.created_at)}</span>
+            <span className=" text-[8.5px] uppercase tracking-[0.08em] opacity-55">{postDate(note.created_at)}</span>
           )}
         </div>
         <p className="mt-3 flex-1 text-[15px] leading-[1.6] sm:text-[16px]">{note.message}</p>
         <div className="mt-3 flex items-end justify-between gap-3">
           <div className="min-w-0">
             <div className="truncate text-[13px] font-medium tracking-[-0.01em]">— {note.name}</div>
-            {site && <div className="mt-0.5 truncate font-mono text-[8.5px] uppercase tracking-[0.08em] opacity-55">via {site}</div>}
+            {site && <div className="mt-0.5 truncate  text-[8.5px] uppercase tracking-[0.08em] opacity-55">via {site}</div>}
           </div>
-          <div className="text-right font-mono text-[8.5px] uppercase leading-[1.6] tracking-[0.08em] opacity-55">
+          <div className="text-right  text-[8.5px] uppercase leading-[1.6] tracking-[0.08em] opacity-55">
             To: H · Jakarta
             <br />
             ID · 10110
@@ -158,7 +158,7 @@ function FeaturedPostcard({
   return (
     <div>
       <div className="flex items-center justify-between gap-3">
-        <span className="font-mono text-[10px] uppercase tracking-[0.06em] text-muted">
+        <span className=" text-[10px] uppercase tracking-[0.06em] text-muted">
           Postcard {index + 1} / {total}
         </span>
         <div className="flex items-center gap-2">
@@ -196,7 +196,7 @@ function FeaturedPostcard({
             <BackFace note={note} />
           </div>
         </button>
-        <span className="pointer-events-none absolute bottom-3 left-1/2 z-10 -translate-x-1/2 rounded-full bg-ink/85 px-3 py-1 font-mono text-[9px] uppercase tracking-[0.08em] text-white opacity-0 transition-opacity duration-300 group-focus-within:opacity-100 group-hover:opacity-100">
+        <span className="pointer-events-none absolute bottom-3 left-1/2 z-10 -translate-x-1/2 rounded-full bg-ink/85 px-3 py-1  text-[9px] uppercase tracking-[0.08em] text-white opacity-0 transition-opacity duration-300 group-focus-within:opacity-100 group-hover:opacity-100">
           {flipped ? "See front" : "Flip postcard"}
         </span>
       </div>
@@ -324,7 +324,7 @@ export default function StickyNoteWall({ notes: initial }: { notes: VisitorNote[
                       initial={{ opacity: 0, y: 4 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0 }}
-                      className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.06em] text-accent-ink"
+                      className="flex items-center gap-1.5  text-[11px] uppercase tracking-[0.06em] text-accent-ink"
                     >
                       <Check size={13} aria-hidden="true" />
                       Postcard sent — thank you.
@@ -332,7 +332,7 @@ export default function StickyNoteWall({ notes: initial }: { notes: VisitorNote[
                   )}
                 </AnimatePresence>
               </div>
-              <p className="mt-5 font-mono text-[11px] uppercase tracking-[0.06em] text-muted">
+              <p className="mt-5  text-[11px] uppercase tracking-[0.06em] text-muted">
                 {count} postcards have arrived.
               </p>
             </div>

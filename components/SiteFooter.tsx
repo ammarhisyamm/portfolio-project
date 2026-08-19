@@ -7,7 +7,7 @@ export default function SiteFooter({ footer }: { footer: FooterContent }) {
   return (
     <footer className="panel mb-9 mt-3 grid gap-8 p-5 sm:p-8 lg:grid-cols-[1.4fr_auto] lg:gap-14 lg:p-10">
       <div>
-        <p className="mb-3.5 font-mono text-[11px] uppercase tracking-[0.02em] text-sub">
+        <p className="mb-3.5  text-[11px] uppercase tracking-[0.02em] text-sub">
           {footer.note}
         </p>
         <h2 className="text-[clamp(24px,4vw,32px)] font-normal leading-[1.1] tracking-[-0.05em]">
@@ -50,7 +50,7 @@ export default function SiteFooter({ footer }: { footer: FooterContent }) {
           Back to top <ArrowUp size={11} className="inline" aria-hidden="true" />
         </button>
       </div>
-      <small className="border-t border-line pt-4 font-mono text-[10px] uppercase tracking-[0.04em] text-muted lg:col-span-2">
+      <small className="border-t border-line pt-4  text-[10px] uppercase tracking-[0.04em] text-muted lg:col-span-2">
         © {new Date().getFullYear()} Hisyam. Jakarta, Indonesia.
       </small>
     </footer>

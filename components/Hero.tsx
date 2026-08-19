@@ -68,7 +68,7 @@ export default function Hero({ name, title, headline, intro, available, email, s
               /* eslint-disable-next-line @next/next/no-img-element */
               <img src={profilePhoto} alt="" className="h-full w-full object-cover" />
             ) : (
-              <span className="text-[20px] font-semibold tracking-tight text-ink">H</span>
+              <span className="text-[20px] font-medium tracking-tight text-ink">H</span>
             )}
           </div>
           <div>

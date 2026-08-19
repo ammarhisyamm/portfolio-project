@@ -22,8 +22,7 @@ const config: Config = {
         chip: "12px",
       },
       fontFamily: {
-        sans: ['"Helvetica Neue"', "Helvetica", "Arial", "Inter", '"Segoe UI"', "sans-serif"],
-        mono: ['"SFMono-Regular"', "ui-monospace", "Menlo", "Consolas", "monospace"],
+        sans: ['var(--font-manrope)', "system-ui", "sans-serif"],
       },
       boxShadow: {
         soft: "0 1px 2px rgba(22,22,22,.04), 0 8px 24px -12px rgba(22,22,22,.06)",

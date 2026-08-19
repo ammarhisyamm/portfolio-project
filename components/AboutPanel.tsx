@@ -24,18 +24,18 @@ export default function AboutPanel({
           href={`mailto:${contact.email}`}
           className="flex items-center justify-between gap-4 border-b border-line py-3 text-[13px] no-underline hover:text-sub"
         >
-          <span className="font-mono text-[11px] uppercase text-muted">Email</span>
+          <span className=" text-[11px] uppercase text-muted">Email</span>
           {contact.email}
         </a>
         <a
           href={linkedin}
           className="flex items-center justify-between gap-4 border-b border-line py-3 text-[13px] no-underline"
         >
-          <span className="font-mono text-[11px] uppercase text-muted">Location</span>
+          <span className=" text-[11px] uppercase text-muted">Location</span>
           {contact.location}
         </a>
         <a href={linkedin} className="flex items-center justify-between gap-4 border-b border-line py-3 text-[13px] no-underline">
-          <span className="font-mono text-[11px] uppercase text-muted">LinkedIn</span>
+          <span className=" text-[11px] uppercase text-muted">LinkedIn</span>
           View profile
         </a>
         <Btn href="#" variant="secondary" className="mt-5 w-full">

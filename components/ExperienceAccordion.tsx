@@ -31,7 +31,7 @@ export default function ExperienceAccordion({ items }: { items: ExperienceItem[]
                   <span className="block truncate text-[17px] font-medium tracking-[-0.02em] sm:text-[19px]">
                     {job.company}
                   </span>
-                  <span className="mt-1 block font-mono text-[11px] uppercase tracking-[0.02em] text-muted">
+                  <span className="mt-1 block  text-[11px] uppercase tracking-[0.02em] text-muted">
                     {job.role} · {job.period}
                   </span>
                 </div>

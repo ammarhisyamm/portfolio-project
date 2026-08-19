@@ -28,7 +28,7 @@ export default async function HomePage() {
 
       <section className="panel p-5 sm:p-8">
         <span className="kicker">Selected work</span>
-        <div className="mt-5">
+        <div className="mt-8">
           <FeaturedWork caseStudies={featured} />
         </div>
       </section>

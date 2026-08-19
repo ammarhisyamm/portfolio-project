@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Manrope } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/Providers";
 import SiteHeader from "@/components/SiteHeader";
@@ -8,6 +9,8 @@ import MobileTabBar from "@/components/MobileTabBar";
 import { getContent } from "@/lib/content";
 
 export const dynamic = "force-dynamic";
+
+const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope", display: "swap" });
 
 const FALLBACK_ICON = `data:image/svg+xml,${encodeURIComponent(
   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect x="1" y="1" width="30" height="30" rx="9" fill="#f5f5f5" stroke="#161616" stroke-width="2"/><text x="16" y="21.5" font-family="ui-sans-serif, system-ui, sans-serif" font-size="15" font-weight="600" fill="#161616" text-anchor="middle">H</text></svg>`
@@ -29,7 +32,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <head>
         <link rel="icon" href={content.branding.logo || FALLBACK_ICON} />
       </head>
-      <body>
+      <body className={`${manrope.variable} font-sans`}>
         <Providers>
           <div className="mx-auto w-full max-w-[720px] px-4 sm:px-6">
             <SiteHeader logo={content.branding.logo} workLabel={content.menu.workLabel} />

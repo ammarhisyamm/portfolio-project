@@ -48,7 +48,7 @@ export default function ContactForm({ email }: { email: string }) {
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="grid gap-5">
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
-          <label htmlFor="name" className="mb-2 block font-mono text-[11px] uppercase tracking-[0.02em] text-sub">
+          <label htmlFor="name" className="mb-2 block  text-[11px] uppercase tracking-[0.02em] text-sub">
             Name
           </label>
           <input
@@ -62,7 +62,7 @@ export default function ContactForm({ email }: { email: string }) {
           {errors.name && <p className="mt-1.5 text-xs text-red-500">{errors.name.message}</p>}
         </div>
         <div>
-          <label htmlFor="email" className="mb-2 block font-mono text-[11px] uppercase tracking-[0.02em] text-sub">
+          <label htmlFor="email" className="mb-2 block  text-[11px] uppercase tracking-[0.02em] text-sub">
             Email
           </label>
           <input
@@ -78,7 +78,7 @@ export default function ContactForm({ email }: { email: string }) {
       </div>
 
       <div>
-        <label htmlFor="projectType" className="mb-2 block font-mono text-[11px] uppercase tracking-[0.02em] text-sub">
+        <label htmlFor="projectType" className="mb-2 block  text-[11px] uppercase tracking-[0.02em] text-sub">
           Project type
         </label>
         <select
@@ -103,7 +103,7 @@ export default function ContactForm({ email }: { email: string }) {
       </div>
 
       <div>
-        <label htmlFor="message" className="mb-2 block font-mono text-[11px] uppercase tracking-[0.02em] text-sub">
+        <label htmlFor="message" className="mb-2 block  text-[11px] uppercase tracking-[0.02em] text-sub">
           Message
         </label>
         <textarea

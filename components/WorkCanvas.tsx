@@ -428,7 +428,7 @@ export default function WorkCanvas({ items }: { items: CanvasItem[] }) {
         </div>
       </div>
 
-      <span className="pointer-events-none absolute bottom-3 left-3 rounded-full border border-line bg-panel/85 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.06em] text-sub shadow-soft sm:hidden">
+      <span className="pointer-events-none absolute bottom-3 left-3 rounded-full border border-line bg-panel/85 px-3 py-1.5  text-[10px] uppercase tracking-[0.06em] text-sub shadow-soft sm:hidden">
         Drag to explore · Pinch to zoom
       </span>
 
@@ -436,7 +436,7 @@ export default function WorkCanvas({ items }: { items: CanvasItem[] }) {
         <IconBtn label="Zoom out" onClick={() => actions.current.zoomCenter(0.8)} disabled={viewport.zoom <= MIN_ZOOM}>
           <Minus size={15} />
         </IconBtn>
-        <span className="w-11 text-center font-mono text-[11px] tabular-nums text-sub">{zoomPercent}%</span>
+        <span className="w-11 text-center  text-[11px] tabular-nums text-sub">{zoomPercent}%</span>
         <IconBtn label="Zoom in" onClick={() => actions.current.zoomCenter(1.25)} disabled={viewport.zoom >= MAX_ZOOM}>
           <Plus size={15} />
         </IconBtn>

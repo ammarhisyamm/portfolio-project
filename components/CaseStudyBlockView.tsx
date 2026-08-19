@@ -76,13 +76,13 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
       <div className="relative aspect-[16/9] w-full overflow-hidden rounded-[14px] border border-line bg-bg sm:rounded-[18px]">
         <Media src={src} alt={block.alt_text || block.caption || "Case study visual"} label={block.caption || "Media"} />
         {overlay && (
-          <span className="absolute left-3 top-3 rounded-full border border-white/20 bg-black/45 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.08em] text-white backdrop-blur">
+          <span className="absolute left-3 top-3 rounded-full border border-white/20 bg-black/45 px-3 py-1  text-[10px] uppercase tracking-[0.08em] text-white backdrop-blur">
             {overlay}
           </span>
         )}
       </div>
       {block.caption && (
-        <figcaption className="mt-2.5 font-mono text-[11px] leading-relaxed tracking-[0.02em] text-muted">
+        <figcaption className="mt-2.5  text-[11px] leading-relaxed tracking-[0.02em] text-muted">
           {block.caption}
         </figcaption>
       )}
@@ -105,7 +105,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
               {block.metrics.map((m, i) => (
                 <div key={i} className="rounded-[14px] border border-line bg-panel p-5 sm:rounded-[18px]">
                   <div className="text-[clamp(28px,3.6vw,46px)] font-medium leading-none tracking-[-0.05em]">{m.value}</div>
-                  <div className="mt-3 font-mono text-[11px] uppercase tracking-[0.02em] text-muted">{m.label}</div>
+                  <div className="mt-3  text-[11px] uppercase tracking-[0.02em] text-muted">{m.label}</div>
                 </div>
               ))}
             </div>
@@ -123,7 +123,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
                 {block.description || block.heading}
               </blockquote>
               {block.supporting_text && (
-                <figcaption className="font-mono text-[11px] uppercase tracking-[0.02em] text-muted">
+                <figcaption className=" text-[11px] uppercase tracking-[0.02em] text-muted">
                   — {block.supporting_text}
                 </figcaption>
               )}
@@ -150,7 +150,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
                     <Media src={m} alt={block.alt_text || `${block.heading || "Gallery"} ${i + 1}`} label={block.caption || "Media"} />
                   </div>
                   {block.caption && i === 0 && (
-                    <figcaption className="mt-2.5 font-mono text-[11px] leading-relaxed text-muted">{block.caption}</figcaption>
+                    <figcaption className="mt-2.5  text-[11px] leading-relaxed text-muted">{block.caption}</figcaption>
                   )}
                 </figure>
               ))}
@@ -166,7 +166,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
             <Media src={medias[0]} alt={block.alt_text || block.caption || "Full-width media"} label={block.caption || "Media"} />
           </div>
           {block.caption && (
-            <figcaption className="px-1 font-mono text-[11px] leading-relaxed text-muted">{block.caption}</figcaption>
+            <figcaption className="px-1  text-[11px] leading-relaxed text-muted">{block.caption}</figcaption>
           )}
         </figure>
       ) : null;
@@ -235,7 +235,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
               />
             </div>
             {block.caption && (
-              <figcaption className="mt-2.5 font-mono text-[11px] leading-relaxed text-muted">{block.caption}</figcaption>
+              <figcaption className="mt-2.5  text-[11px] leading-relaxed text-muted">{block.caption}</figcaption>
             )}
           </figure>
         </section>
@@ -259,7 +259,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
                 <div className="aspect-video w-full overflow-hidden rounded-[14px] border border-line bg-panel sm:rounded-[18px]">
                   <iframe src={url} title={block.heading || "Prototype"} className="h-full w-full" allowFullScreen />
                 </div>
-                {block.caption && <figcaption className="mt-2.5 font-mono text-[11px] text-muted">{block.caption}</figcaption>}
+                {block.caption && <figcaption className="mt-2.5  text-[11px] text-muted">{block.caption}</figcaption>}
               </figure>
               {medias[0] && (
                 <a

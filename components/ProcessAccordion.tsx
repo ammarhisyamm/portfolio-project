@@ -39,7 +39,7 @@ export default function ProcessAccordion() {
               className="flex w-full items-center justify-between gap-4 py-4 text-left"
             >
               <span className="text-[15px] font-medium">
-                <span className="mr-3 font-mono text-[11px] text-muted">0{i + 1}</span>
+                <span className="mr-3  text-[11px] text-muted">0{i + 1}</span>
                 {step.title}
               </span>
               <Plus

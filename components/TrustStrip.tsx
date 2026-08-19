@@ -14,7 +14,7 @@ function Group({ items }: { items: TrustItem[] }) {
               className="h-8 w-auto max-w-[150px] object-contain opacity-70 grayscale transition-opacity duration-300 hover:opacity-100"
             />
           ) : (
-            <span className="whitespace-nowrap font-mono text-[11px] uppercase tracking-[0.06em] text-muted">
+            <span className="whitespace-nowrap  text-[11px] uppercase tracking-[0.06em] text-muted">
               {logo.label}
             </span>
           )}
@@ -28,7 +28,7 @@ export default function TrustStrip({ items, label = "I've collaborated with 40+ 
   const DUPLICATED = [...items, ...items];
   return (
     <div>
-      <p className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted">{label}</p>
+      <p className=" text-[10px] uppercase tracking-[0.08em] text-muted">{label}</p>
       <div className="marquee-fade relative mt-4 overflow-hidden" aria-hidden="true">
         <div
           className="marquee-track flex"

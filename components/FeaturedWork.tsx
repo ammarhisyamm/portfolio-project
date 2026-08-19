@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 import { gsap } from "@/lib/gsap";
 import { reducedMotion } from "@/lib/utils";
 import type { CaseStudy } from "@/lib/content";
@@ -32,25 +33,49 @@ export default function FeaturedWork({ caseStudies }: { caseStudies: CaseStudy[]
   if (caseStudies.length === 0) return null;
 
   return (
-    <div ref={ref} className="grid gap-4">
-      {caseStudies.slice(0, 3).map((p) => (
+    <div ref={ref}>
+      {caseStudies.slice(0, 3).map((p, i) => (
         <Link
           key={p.slug}
           href={`/playground/${p.slug}`}
           data-stagger
-          className="group block overflow-hidden rounded-[18px] border border-line bg-panel no-underline transition-all duration-300 hover:border-line-strong hover:shadow-soft sm:rounded-[22px] lg:rounded-[24px]"
+          aria-label={`Open case study: ${p.title}`}
+          className={`group block no-underline focus-visible:outline-2 focus-visible:outline-offset-4 ${
+            i > 0 ? "border-t border-[#D9D9D9]" : ""
+          }`}
         >
-          <div className="relative aspect-[4/3] w-full overflow-hidden bg-bg">
-            <Media
-              src={p.thumbnail}
-              alt={p.thumbnail_alt || `Visual for ${p.title}`}
-              label={p.year || p.category}
-              imgClassName="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-            />
-          </div>
-          <div className="flex items-baseline justify-between gap-3 p-5 sm:p-6">
-            <h3 className="text-[17px] font-medium leading-tight tracking-[-0.04em]">{p.title}</h3>
-            {p.year && <span className="font-mono text-[11px] text-muted">{p.year}</span>}
+          <div className={`grid gap-5 sm:gap-6 ${i > 0 ? "pb-7 pt-7 sm:pb-9 sm:pt-9" : "pb-7 sm:pb-9"}`}>
+            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1.5">
+              <h3 className="flex items-center gap-2.5 text-[clamp(20px,3.2vw,26px)] font-medium leading-tight tracking-[-0.045em]">
+                {p.title}
+                <ArrowUpRight
+                  size={18}
+                  strokeWidth={1.6}
+                  className="shrink-0 text-ink opacity-0 transition-all duration-300 ease-out group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100"
+                  aria-hidden="true"
+                />
+              </h3>
+              {p.year && (
+                <span className="shrink-0 text-[12px] tracking-[0.02em] text-muted sm:text-[13px]">
+                  {p.year}
+                </span>
+              )}
+            </div>
+
+            <div className="relative aspect-[16/9] w-full overflow-hidden rounded-[16px] border border-line bg-bg sm:rounded-[20px]">
+              <Media
+                src={p.thumbnail}
+                alt={p.thumbnail_alt || `Visual for ${p.title}`}
+                label={p.year || p.category}
+                imgClassName="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02]"
+              />
+            </div>
+
+            {p.short_description && (
+              <p className="max-w-[560px] text-[15px] leading-relaxed text-sub">
+                {p.short_description}
+              </p>
+            )}
           </div>
         </Link>
       ))}

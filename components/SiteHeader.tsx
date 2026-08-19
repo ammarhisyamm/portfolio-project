@@ -43,7 +43,7 @@ export default function SiteHeader({ logo, workLabel }: { logo?: string; workLab
               /* eslint-disable-next-line @next/next/no-img-element */
               <img src={logo} alt="" className="h-full w-full object-cover" />
             ) : (
-              <span className="text-[13px] font-semibold tracking-[-0.05em] text-ink">H</span>
+              <span className="text-[13px] font-medium tracking-[-0.05em] text-ink">H</span>
             )}
           </Link>
         </div>
