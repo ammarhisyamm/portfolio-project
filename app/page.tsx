@@ -3,7 +3,7 @@ import AboutPanel from "@/components/AboutPanel";
 import ExperienceAccordion from "@/components/ExperienceAccordion";
 import CategoryStacks from "@/components/CategoryStacks";
 import RestoreScroll from "@/components/RestoreScroll";
-import FeaturedWork from "@/components/FeaturedWork";
+import SelectedWork from "@/components/SelectedWork";
 import { getContent } from "@/lib/content";
 
 export default async function HomePage() {
@@ -29,7 +29,7 @@ export default async function HomePage() {
       <section className="panel p-5 sm:p-8">
         <span className="kicker">Selected work</span>
         <div className="mt-8">
-          <FeaturedWork caseStudies={featured} />
+          <SelectedWork caseStudies={featured} />
         </div>
       </section>
 

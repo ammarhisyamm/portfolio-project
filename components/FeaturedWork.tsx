@@ -1,14 +1,19 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { gsap } from "@/lib/gsap";
 import { reducedMotion } from "@/lib/utils";
 import type { CaseStudy } from "@/lib/content";
 import Media from "./Media";
 
-export default function FeaturedWork({ caseStudies }: { caseStudies: CaseStudy[] }) {
+export default function FeaturedWork({
+  caseStudies,
+  onOpen,
+}: {
+  caseStudies: CaseStudy[];
+  onOpen: (cs: CaseStudy) => void;
+}) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -35,13 +40,14 @@ export default function FeaturedWork({ caseStudies }: { caseStudies: CaseStudy[]
   return (
     <div ref={ref}>
       {caseStudies.slice(0, 3).map((p, i) => (
-        <Link
+        <button
           key={p.slug}
-          href={`/playground/${p.slug}`}
-          data-stagger
+          type="button"
+          onClick={() => onOpen(p)}
           aria-label={`Open case study: ${p.title}`}
-          className={`group block no-underline focus-visible:outline-2 focus-visible:outline-offset-4 ${
-            i > 0 ? "border-t border-[#D9D9D9]" : ""
+          data-stagger
+          className={`group block w-full text-left no-underline focus-visible:outline-2 focus-visible:outline-offset-4 ${
+            i > 0 ? "border-t border-line" : ""
           }`}
         >
           <div className={`grid gap-5 sm:gap-6 ${i > 0 ? "pb-7 pt-7 sm:pb-9 sm:pt-9" : "pb-7 sm:pb-9"}`}>
@@ -62,7 +68,10 @@ export default function FeaturedWork({ caseStudies }: { caseStudies: CaseStudy[]
               )}
             </div>
 
-            <div className="relative aspect-[16/9] w-full overflow-hidden rounded-[16px] border border-line bg-bg sm:rounded-[20px]">
+            <div
+              className="relative aspect-[16/9] w-full overflow-hidden rounded-[16px] bg-bg sm:rounded-[20px]"
+              style={{ boxShadow: "inset 0 0 0 2px rgba(255,255,255,0.9), 0 1px 2px rgba(22,22,22,.04), 0 8px 24px -12px rgba(22,22,22,.06)" }}
+            >
               <Media
                 src={p.thumbnail}
                 alt={p.thumbnail_alt || `Visual for ${p.title}`}
@@ -77,7 +86,7 @@ export default function FeaturedWork({ caseStudies }: { caseStudies: CaseStudy[]
               </p>
             )}
           </div>
-        </Link>
+        </button>
       ))}
     </div>
   );
