@@ -18,12 +18,12 @@ type HeroProps = {
   email: string;
   socials: SocialLink[];
   trust: TrustItem[];
-  logo?: string;
+  profilePhoto?: string;
 };
 
 const LOGO_SHADOW = "inset 0 0 0 2px rgba(255,255,255,0.9), 0 14px 32px -14px rgba(22,22,22,0.25)";
 
-export default function Hero({ name, title, headline, intro, available, email, socials, trust, logo }: HeroProps) {
+export default function Hero({ name, title, headline, intro, available, email, socials, trust, profilePhoto }: HeroProps) {
   const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -64,9 +64,9 @@ export default function Hero({ name, title, headline, intro, available, email, s
             className="grid h-12 w-12 place-items-center overflow-hidden rounded-[16px] bg-bg"
             style={{ boxShadow: LOGO_SHADOW }}
           >
-            {logo ? (
+            {profilePhoto ? (
               /* eslint-disable-next-line @next/next/no-img-element */
-              <img src={logo} alt="" className="h-full w-full object-cover" />
+              <img src={profilePhoto} alt="" className="h-full w-full object-cover" />
             ) : (
               <span className="text-[20px] font-semibold tracking-tight text-ink">H</span>
             )}

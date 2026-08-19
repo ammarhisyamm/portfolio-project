@@ -98,6 +98,7 @@ export type FooterContent = {
 
 export type BrandingContent = {
   logo: string;
+  profilePhoto: string;
 };
 
 export type TrustItem = {
@@ -631,6 +632,7 @@ export const DEFAULTS: SiteContent = {
   },
   branding: {
     logo: "",
+    profilePhoto: "",
   },
 };
 
