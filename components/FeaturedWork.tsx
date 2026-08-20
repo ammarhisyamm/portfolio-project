@@ -69,7 +69,7 @@ export default function FeaturedWork({
             </div>
 
             <div
-              className="relative aspect-[16/9] w-full overflow-hidden rounded-[16px] border-2 border-white bg-bg sm:rounded-[20px]"
+              className="relative aspect-[16/9] w-full overflow-hidden rounded-[16px] border-8 border-white bg-bg sm:rounded-[20px]"
               style={{ boxShadow: "0 1px 2px rgba(22,22,22,.04), 0 8px 24px -12px rgba(22,22,22,.06)" }}
             >
               <Media
