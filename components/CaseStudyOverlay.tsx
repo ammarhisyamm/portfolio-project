@@ -61,6 +61,7 @@ export default function CaseStudyOverlay({
           aria-modal="true"
           aria-label={`${cs.title} case study`}
           className="fixed inset-0 z-[300] overflow-y-auto bg-bg"
+          data-lenis-prevent
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
