@@ -69,8 +69,8 @@ export default function FeaturedWork({
             </div>
 
             <div
-              className="relative aspect-[16/9] w-full overflow-hidden rounded-[16px] bg-bg sm:rounded-[20px]"
-              style={{ boxShadow: "inset 0 0 0 2px rgba(255,255,255,0.9), 0 1px 2px rgba(22,22,22,.04), 0 8px 24px -12px rgba(22,22,22,.06)" }}
+              className="relative aspect-[16/9] w-full overflow-hidden rounded-[16px] border-2 border-white bg-bg sm:rounded-[20px]"
+              style={{ boxShadow: "0 1px 2px rgba(22,22,22,.04), 0 8px 24px -12px rgba(22,22,22,.06)" }}
             >
               <Media
                 src={p.thumbnail}
