@@ -97,7 +97,7 @@ export default function ContactForm({ email }: { email: string }) {
         <select
           id="projectType"
           aria-invalid={!!errors.projectType}
-          className={`field ${errors.projectType ? "field-error" : ""}`}
+          className={`field field-select ${errors.projectType ? "field-error" : ""}`}
           defaultValue=""
           {...register("projectType")}
         >
