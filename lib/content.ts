@@ -79,6 +79,8 @@ export type AboutContent = {
   tools: string;
   capabilities: string[];
   industries: string[];
+  cvUrl: string;
+  cvLabel: string;
 };
 
 export type ContactContent = {
@@ -610,6 +612,8 @@ export const DEFAULTS: SiteContent = {
       "Figma, FigJam, Adobe tools, Photopea, Notion, and AI-assisted design and research tools. I work openly with product, engineering, and stakeholders to turn decisions into momentum.",
     capabilities,
     industries,
+    cvUrl: "",
+    cvLabel: "Download CV",
   },
   contact: {
     email: "hello@hisyam.design",

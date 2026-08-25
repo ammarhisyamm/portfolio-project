@@ -38,9 +38,15 @@ export default function AboutPanel({
           <span className=" text-[11px] uppercase text-muted">LinkedIn</span>
           View profile
         </a>
-        <Btn href="#" variant="secondary" className="mt-5 w-full">
-          Download CV
-        </Btn>
+        {about.cvUrl ? (
+          <Btn href={about.cvUrl} external variant="secondary" className="mt-5 w-full">
+            {about.cvLabel || "Download CV"}
+          </Btn>
+        ) : (
+          <Btn href="#" variant="secondary" className="mt-5 w-full">
+            {about.cvLabel || "Download CV"}
+          </Btn>
+        )}
       </div>
     </Reveal>
   );
