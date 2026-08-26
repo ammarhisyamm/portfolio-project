@@ -7,6 +7,7 @@ import type { ReactNode } from "react";
 type BtnProps = {
   href?: string;
   external?: boolean;
+  download?: string | boolean;
   onClick?: () => void;
   variant?: "primary" | "secondary";
   type?: "button" | "submit";
@@ -18,6 +19,7 @@ type BtnProps = {
 export default function Btn({
   href,
   external,
+  download,
   onClick,
   variant = "primary",
   type = "button",
@@ -32,6 +34,14 @@ export default function Btn({
   } as const;
 
   if (href) {
+    if (download !== undefined) {
+      const dl = typeof download === "string" ? download : undefined;
+      return (
+        <motion.a href={href} download={dl} className={classes} {...motionProps}>
+          {children}
+        </motion.a>
+      );
+    }
     if (external) {
       return (
         <motion.a href={href} target="_blank" rel="noreferrer" className={classes} {...motionProps}>

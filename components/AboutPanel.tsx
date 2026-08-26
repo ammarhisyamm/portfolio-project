@@ -39,7 +39,12 @@ export default function AboutPanel({
           View profile
         </a>
         {about.cvUrl ? (
-          <Btn href={about.cvUrl} external variant="secondary" className="mt-5 w-full">
+          <Btn
+            href={`${about.cvUrl}${about.cvUrl.includes("?") ? "&" : "?"}download=${encodeURIComponent((about.cvLabel || "CV").replace(/\s+/g, "_") + ".pdf")}`}
+            download={`${(about.cvLabel || "CV").replace(/\s+/g, "_")}.pdf`}
+            variant="secondary"
+            className="mt-5 w-full"
+          >
             {about.cvLabel || "Download CV"}
           </Btn>
         ) : (
