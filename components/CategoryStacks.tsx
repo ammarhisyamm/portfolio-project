@@ -3,16 +3,37 @@
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { X } from "lucide-react";
-import type { CategoryImage, HomeCategory } from "@/lib/content";
+import type { HomeCategory } from "@/lib/content";
 import Media from "./Media";
 import { PinterestGrid } from "./Lightbox";
 import LightboxModal from "./LightboxModal";
 
-const DOCUMENT_LAYOUTS = [
-  { left: "21%", top: "27%", width: "48%", rotate: -6, x: -14 },
-  { left: "31%", top: "25%", width: "47%", rotate: 5, x: 16 },
-  { left: "25%", top: "20%", width: "52%", rotate: 1, x: 1 },
-];
+type PreviewKind = "desktop" | "mobile" | "branding";
+
+const DOCUMENT_LAYOUTS: Record<PreviewKind, Array<{ left: string; top: string; width: string; rotate: number; x: number }>> = {
+  desktop: [
+    { left: "20%", top: "22%", width: "53%", rotate: -6, x: -13 },
+    { left: "30%", top: "20%", width: "51%", rotate: 5, x: 15 },
+    { left: "25%", top: "16%", width: "56%", rotate: 1, x: 1 },
+  ],
+  mobile: [
+    { left: "30%", top: "18%", width: "25%", rotate: -7, x: -26 },
+    { left: "45%", top: "17%", width: "25%", rotate: 7, x: 26 },
+    { left: "37%", top: "10%", width: "27%", rotate: 1, x: 1 },
+  ],
+  branding: [
+    { left: "25%", top: "17%", width: "31%", rotate: -8, x: -23 },
+    { left: "45%", top: "17%", width: "31%", rotate: 8, x: 23 },
+    { left: "34%", top: "11%", width: "34%", rotate: 1, x: 1 },
+  ],
+};
+
+function previewKindFor(category: HomeCategory): PreviewKind {
+  const value = `${category.key} ${category.label}`.toLowerCase();
+  if (value.includes("mobile")) return "mobile";
+  if (value.includes("graphic") || value.includes("brand")) return "branding";
+  return "desktop";
+}
 
 export default function CategoryStacks({ categories }: { categories: HomeCategory[] }) {
   const [feed, setFeed] = useState<HomeCategory | null>(null);
@@ -39,6 +60,8 @@ function CategoryStack({ cat, onOpen }: { cat: HomeCategory; onOpen: () => void 
     .sort((a, b) => a.sort - b.sort)
     .slice(0, 3);
   const count = published.length;
+  const kind = previewKindFor(cat);
+  const documentAspect = kind === "mobile" ? "aspect-[9/16] rounded-[14px] border-[3px] border-[#202124]" : kind === "branding" ? "aspect-[4/5] rounded-[7px]" : "aspect-[4/3] rounded-[7px]";
 
   return (
     <button
@@ -51,13 +74,14 @@ function CategoryStack({ cat, onOpen }: { cat: HomeCategory; onOpen: () => void 
       aria-label={`Open ${cat.label} image feed`}
       className={`group relative block w-full text-left focus-visible:outline-2 focus-visible:outline-offset-4 ${hover ? "z-20" : "z-0"}`}
     >
-      <div className="relative aspect-[4/3] w-full rounded-[18px] border border-line bg-[#f0f1f4] sm:rounded-[22px] lg:rounded-[24px]">
+      <div className="relative aspect-[4/3] w-full rounded-[18px] border border-[#eeeeee] bg-white sm:rounded-[22px] lg:rounded-[24px]">
         {previews.map((img, i) => {
-          const layout = DOCUMENT_LAYOUTS[i % DOCUMENT_LAYOUTS.length];
+          const layouts = DOCUMENT_LAYOUTS[kind];
+          const layout = layouts[i % layouts.length];
           return (
             <motion.div
               key={img.id ?? i}
-              className="absolute z-[1] overflow-hidden rounded-[7px] border border-white/90 bg-white shadow-[0_14px_28px_rgba(28,29,36,0.18)]"
+              className={`absolute z-[5] overflow-hidden border border-white/90 bg-white shadow-[0_14px_28px_rgba(28,29,36,0.16)] ${documentAspect}`}
               style={{ left: layout.left, top: layout.top, width: layout.width }}
                 animate={
                   hover
@@ -66,20 +90,18 @@ function CategoryStack({ cat, onOpen }: { cat: HomeCategory; onOpen: () => void 
               }
               transition={{ type: "spring", stiffness: 280, damping: 24, delay: hover ? i * 0.045 : 0 }}
             >
-              <div className="aspect-[4/3] w-full overflow-hidden">
+              <div className="h-full w-full overflow-hidden">
                 <Media src={img.image_url} alt={img.alt_text || cat.label} label={cat.label} imgClassName="h-full w-full object-cover select-none" />
               </div>
             </motion.div>
           );
         })}
-        <motion.div
-          className="pointer-events-none absolute inset-0 z-10"
-          animate={hover ? { scale: 1.03, y: 5 } : { scale: 1, y: 12 }}
-          transition={{ type: "spring", stiffness: 280, damping: 24 }}
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/images/exploration-folder-foreground.png" alt="" aria-hidden="true" className="h-full w-full select-none object-contain" />
-        </motion.div>
+        <div className="pointer-events-none absolute left-1/2 top-1/2 z-10 h-full w-auto -translate-x-1/2 -translate-y-[58%]">
+          <motion.div animate={hover ? { scale: 1.025, y: 3 } : { scale: 1, y: 0 }} transition={{ type: "spring", stiffness: 280, damping: 24 }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/images/exploration-folder-foreground.png" alt="" aria-hidden="true" className="h-full w-auto max-w-none select-none brightness-[8] saturate-0" />
+          </motion.div>
+        </div>
 
         {count > 0 && (
           <motion.span
