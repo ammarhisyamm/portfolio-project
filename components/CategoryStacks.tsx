@@ -9,9 +9,9 @@ import { PinterestGrid } from "./Lightbox";
 import LightboxModal from "./LightboxModal";
 
 const DOCUMENT_LAYOUTS = [
-  { left: "20%", top: "13%", width: "54%", rotate: -8, x: -22 },
-  { left: "31%", top: "10%", width: "51%", rotate: 7, x: 24 },
-  { left: "26%", top: "4%", width: "56%", rotate: 1, x: 2 },
+  { left: "21%", top: "27%", width: "48%", rotate: -6, x: -14 },
+  { left: "31%", top: "25%", width: "47%", rotate: 5, x: 16 },
+  { left: "25%", top: "20%", width: "52%", rotate: 1, x: 1 },
 ];
 
 export default function CategoryStacks({ categories }: { categories: HomeCategory[] }) {
@@ -59,9 +59,9 @@ function CategoryStack({ cat, onOpen }: { cat: HomeCategory; onOpen: () => void 
               key={img.id ?? i}
               className="absolute z-[1] overflow-hidden rounded-[7px] border border-white/90 bg-white shadow-[0_14px_28px_rgba(28,29,36,0.18)]"
               style={{ left: layout.left, top: layout.top, width: layout.width }}
-              animate={
-                hover
-                  ? { opacity: 1, x: layout.x, y: -10 - i * 12, rotate: layout.rotate }
+                animate={
+                  hover
+                  ? { opacity: 1, x: layout.x, y: -2 - i * 4, rotate: layout.rotate }
                   : { opacity: 0, x: 0, y: 42, rotate: 0 }
               }
               transition={{ type: "spring", stiffness: 280, damping: 24, delay: hover ? i * 0.045 : 0 }}
