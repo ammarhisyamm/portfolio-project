@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function DesignLabPage() {
   return (
-    <div className="grid gap-3 pb-16 pt-3 md:gap-4">
+    <div className="page-stack grid pb-16 pt-3">
       <section className="panel p-5 sm:p-8">
         <span className="kicker">Design Lab</span>
         <h1 className="mt-4 text-[clamp(26px,4vw,34px)] font-normal leading-[1.15] tracking-[-0.05em]">

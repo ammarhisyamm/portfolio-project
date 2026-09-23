@@ -12,7 +12,7 @@ export default async function HomePage() {
     .filter((c) => c.featured && c.published)
     .sort((a, b) => a.featured_order - b.featured_order);
   return (
-    <div className="grid gap-3 pb-16 pt-3 md:gap-4">
+    <div className="page-stack grid pb-16 pt-3">
       <RestoreScroll />
       <Hero
         name={content.hero.name}

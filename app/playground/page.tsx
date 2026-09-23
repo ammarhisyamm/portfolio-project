@@ -22,7 +22,7 @@ export default async function WorkPage() {
       image: x.image,
     }));
   return (
-    <div className="grid gap-3 pb-16 pt-3 md:gap-4">
+    <div className="page-stack grid pb-16 pt-3">
       <Reveal className="panel grid gap-6 p-5 sm:p-8 lg:p-10">
         <span className="kicker">{label}</span>
         <h1 className="max-w-[900px] text-[clamp(26px,4vw,32px)] font-normal leading-[1.08] tracking-[-0.05em]">

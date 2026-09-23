@@ -11,7 +11,9 @@
     text-rendering: optimizeLegibility;
   }
   body {
-    @apply bg-bg font-sans text-[15px] leading-normal text-ink;
+    @apply font-sans text-[15px] leading-normal text-ink;
+    background-color: var(--site-bg, #f5f5f5);
+    background-image: var(--site-bg-image, none);
   }
   ::selection {
     @apply bg-ink text-white;
@@ -23,7 +25,10 @@
 
 @layer components {
   .panel {
-    @apply rounded-[18px] border border-line bg-panel sm:rounded-[22px] lg:rounded-[24px];
+    @apply border bg-panel;
+    border-radius: var(--site-radius, 24px);
+    border-color: var(--site-border-color, #f4f4f4);
+    border-width: var(--site-border-width, 1px);
   }
   .kicker {
     @apply block  text-[11px] uppercase tracking-[0.02em] text-muted;
@@ -61,6 +66,16 @@
     @apply  text-[10px] uppercase tracking-[0.06em] text-[#a6a6a6];
   }
 }
+
+.page-stack { gap: var(--site-gap, 16px); min-width: 0; }
+.page-stack > * { min-width: 0; }
+.design-lab-launcher { position: fixed; right: 20px; bottom: 20px; z-index: 120; }
+.design-lab-trigger { display: inline-flex; align-items: center; gap: 8px; border: 1px solid #dcdcdc; border-radius: 999px; background: rgba(255,255,255,.92); padding: 10px 14px; color: #303030; font-size: 12px; box-shadow: 0 8px 24px rgba(22,22,22,.12); backdrop-filter: blur(12px); }
+.design-lab-trigger:hover { background: #fff; transform: translateY(-1px); }
+.design-lab-popover { position: absolute; right: 0; bottom: 52px; width: min(320px, calc(100vw - 32px)); border: 1px solid #dedede; border-radius: 18px; background: rgba(255,255,255,.97); padding: 18px; color: #161616; box-shadow: 0 18px 44px rgba(22,22,22,.16); }
+.design-lab-popover input[type="range"] { width: 100%; accent-color: #161616; }
+.design-lab-popover input[type="color"] { height: 28px; width: 42px; cursor: pointer; border: 0; background: transparent; }
+@media (max-width: 640px) { .design-lab-launcher { right: 16px; bottom: 88px; } }
 
 .github-grid {
   display: grid;

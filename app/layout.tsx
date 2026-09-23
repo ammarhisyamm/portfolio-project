@@ -6,6 +6,7 @@ import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import PageTransition from "@/components/PageTransition";
 import MobileTabBar from "@/components/MobileTabBar";
+import DesignLabLauncher from "@/components/DesignLabLauncher";
 import { getContent } from "@/lib/content";
 
 export const dynamic = "force-dynamic";
@@ -42,6 +43,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <SiteFooter footer={content.footer} />
           </div>
           <MobileTabBar workLabel={content.menu.workLabel} />
+          <DesignLabLauncher />
         </Providers>
       </body>
     </html>

@@ -14,10 +14,10 @@ export default async function AboutUsPage() {
   const username = githubUrl.match(/github\.com\/([^/?#]+)/i)?.[1] ?? "ammarhisyamm";
 
   return (
-    <div className="grid gap-3 pb-16 pt-3 md:gap-4">
+    <div className="page-stack grid pb-16 pt-3">
       <section className="panel p-5 sm:p-8">
         <span className="kicker">About Us</span>
-        <h1 className="mt-5 text-[clamp(26px,4vw,36px)] font-normal leading-[1.15] tracking-[-0.05em]">
+        <h1 className="mt-5 max-w-[640px] text-[clamp(26px,4vw,32px)] font-normal leading-[1.12] tracking-[-0.05em]">
           {about.introTitle}
         </h1>
         <p className="mt-5 max-w-[60ch] leading-relaxed text-sub">{about.introBody}</p>
