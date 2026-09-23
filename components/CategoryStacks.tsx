@@ -8,10 +8,10 @@ import Media from "./Media";
 import { PinterestGrid } from "./Lightbox";
 import LightboxModal from "./LightboxModal";
 
-const BASES = [
-  { left: "4%", top: "8%", width: "58%" },
-  { left: "auto", right: "4%", bottom: "7%", width: "56%" },
-  { left: "26%", top: "30%", width: "48%" },
+const DOCUMENT_LAYOUTS = [
+  { left: "20%", top: "13%", width: "54%", rotate: -8, x: -22 },
+  { left: "31%", top: "10%", width: "51%", rotate: 7, x: 24 },
+  { left: "26%", top: "4%", width: "56%", rotate: 1, x: 2 },
 ];
 
 export default function CategoryStacks({ categories }: { categories: HomeCategory[] }) {
@@ -35,10 +35,8 @@ export default function CategoryStacks({ categories }: { categories: HomeCategor
 function CategoryStack({ cat, onOpen }: { cat: HomeCategory; onOpen: () => void }) {
   const [hover, setHover] = useState(false);
   const published = cat.images.filter((i) => i.visible);
-  const primary = published.find((i) => i.is_primary) ?? published[0];
-  const supporting = published
-    .filter((i) => i !== primary)
-    .sort((a, b) => a.z_order - b.z_order)
+  const previews = published
+    .sort((a, b) => a.sort - b.sort)
     .slice(0, 3);
   const count = published.length;
 
@@ -48,55 +46,39 @@ function CategoryStack({ cat, onOpen }: { cat: HomeCategory; onOpen: () => void 
       onClick={onOpen}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
+      onFocus={() => setHover(true)}
+      onBlur={() => setHover(false)}
       aria-label={`Open ${cat.label} image feed`}
       className="group block w-full text-left focus-visible:outline-2 focus-visible:outline-offset-4"
     >
-      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[18px] border border-line bg-panel sm:rounded-[22px] lg:rounded-[24px]">
-        {supporting.map((img, i) => {
-          const base = BASES[i % BASES.length];
+      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[18px] border border-line bg-[#f0f1f4] sm:rounded-[22px] lg:rounded-[24px]">
+        {previews.map((img, i) => {
+          const layout = DOCUMENT_LAYOUTS[i % DOCUMENT_LAYOUTS.length];
           return (
             <motion.div
               key={img.id ?? i}
-              className="absolute"
-              style={{ ...base, zIndex: img.z_order + 1 }}
+              className="absolute z-[1] overflow-hidden rounded-[7px] border border-white/90 bg-white shadow-[0_14px_28px_rgba(28,29,36,0.18)]"
+              style={{ left: layout.left, top: layout.top, width: layout.width }}
               animate={
                 hover
-                  ? { x: img.offset_x * 1.8, y: img.offset_y * 1.8, rotate: img.rotation * 1.35 }
-                  : { x: img.offset_x, y: img.offset_y, rotate: img.rotation }
+                  ? { opacity: 1, x: layout.x, y: -10 - i * 12, rotate: layout.rotate }
+                  : { opacity: 0, x: 0, y: 42, rotate: 0 }
               }
-              transition={{ type: "spring", stiffness: 240, damping: 22 }}
+              transition={{ type: "spring", stiffness: 280, damping: 24, delay: hover ? i * 0.045 : 0 }}
             >
-              <div className="aspect-[4/3] w-full overflow-hidden rounded-lg border border-line bg-bg shadow-soft">
-                <Media
-                  src={img.image_url}
-                  alt={img.alt_text || cat.label}
-                  label={cat.label}
-                  imgClassName="h-full w-full object-cover select-none"
-                />
+              <div className="aspect-[4/3] w-full overflow-hidden">
+                <Media src={img.image_url} alt={img.alt_text || cat.label} label={cat.label} imgClassName="h-full w-full object-cover select-none" />
               </div>
             </motion.div>
           );
         })}
-
         <motion.div
-          className="absolute inset-0 z-10"
-          animate={hover ? { scale: 1.035 } : { scale: 1 }}
-          transition={{ type: "spring", stiffness: 240, damping: 24 }}
+          className="pointer-events-none absolute inset-0 z-10"
+          animate={hover ? { scale: 1.03, y: 5 } : { scale: 1, y: 12 }}
+          transition={{ type: "spring", stiffness: 280, damping: 24 }}
         >
-          {primary ? (
-            <div className="h-full w-full overflow-hidden rounded-[16px] border border-line bg-bg shadow-soft sm:rounded-[20px] lg:rounded-[22px]">
-              <Media
-                src={primary.image_url}
-                alt={primary.alt_text || cat.label}
-                label={cat.label}
-                imgClassName="h-full w-full object-cover select-none transition-transform duration-500 ease-out group-hover:scale-[1.05]"
-              />
-            </div>
-          ) : (
-            <div className="media-ph h-full w-full">
-              <span>{cat.label}</span>
-            </div>
-          )}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/images/exploration-folder-foreground.png" alt="" aria-hidden="true" className="h-full w-full select-none object-contain" />
         </motion.div>
 
         {count > 0 && (
