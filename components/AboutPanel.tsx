@@ -42,13 +42,13 @@ export default function AboutPanel({
           <Btn
             href={`${about.cvUrl}${about.cvUrl.includes("?") ? "&" : "?"}download=${encodeURIComponent((about.cvLabel || "CV").replace(/\s+/g, "_") + ".pdf")}`}
             download={`${(about.cvLabel || "CV").replace(/\s+/g, "_")}.pdf`}
-            variant="secondary"
-            className="mt-5 w-full"
+            variant="primary"
+            className="btn-cv-primary mt-5 w-full"
           >
             {about.cvLabel || "Download CV"}
           </Btn>
         ) : (
-          <Btn href="#" variant="secondary" className="mt-5 w-full">
+          <Btn href="#" variant="primary" className="btn-cv-primary mt-5 w-full">
             {about.cvLabel || "Download CV"}
           </Btn>
         )}
