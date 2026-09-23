@@ -14,6 +14,10 @@
     @apply font-sans text-[15px] leading-normal text-ink;
     background-color: var(--site-bg, #f5f5f5);
     background-image: var(--site-bg-image, none);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
   }
   ::selection {
     @apply bg-ink text-white;
@@ -86,7 +90,7 @@
 .design-lab-launcher { position: fixed; right: 20px; bottom: 20px; z-index: 120; }
 .design-lab-trigger { display: inline-flex; align-items: center; gap: 8px; border: 1px solid #dcdcdc; border-radius: 999px; background: rgba(255,255,255,.92); padding: 10px 14px; color: #303030; font-size: 12px; box-shadow: 0 8px 24px rgba(22,22,22,.12); backdrop-filter: blur(12px); }
 .design-lab-trigger:hover { background: #fff; transform: translateY(-1px); }
-.design-lab-panel { position: absolute; right: 0; bottom: 52px; width: min(360px, calc(100vw - 32px)); max-height: min(680px, calc(100vh - 96px)); overflow-y: auto; border: 1px solid #d9d9d9; border-radius: 18px; background: rgba(255,255,255,.98); padding: 20px 18px 18px; color: #161616; box-shadow: 0 18px 44px rgba(22,22,22,.16); }
+.design-lab-panel { position: absolute; right: 0; bottom: 52px; width: min(360px, calc(100vw - 32px)); max-height: min(680px, calc(100vh - 96px)); overflow: hidden auto; overscroll-behavior: contain; touch-action: pan-y; -webkit-overflow-scrolling: touch; scrollbar-gutter: stable; border: 1px solid #d9d9d9; border-radius: 18px; background: rgba(255,255,255,.98); padding: 20px 18px 18px; color: #161616; box-shadow: 0 18px 44px rgba(22,22,22,.16); }
 .design-lab-panel-header { display: flex; align-items: flex-start; justify-content: space-between; padding-bottom: 24px; }
 .design-lab-panel-header h2 { margin-top: 8px; font-size: 24px; font-weight: 600; letter-spacing: -.04em; }
 .design-lab-panel-header button { display: grid; place-items: center; padding: 4px; color: #656565; }
@@ -108,6 +112,17 @@
 .design-lab-check { display: flex; align-items: center; gap: 8px; margin-top: 14px; color: #666; font-size: 12px; }
 .design-lab-check input { accent-color: #161616; }
 .design-lab-select { justify-content: space-between; margin-top: 14px; }
+.design-lab-mode-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-bottom: 12px; border-radius: 10px; background: #f1f1f1; padding: 4px; }
+.design-lab-mode-tabs button { min-height: 32px; border-radius: 7px; color: #737373; font-size: 11px; text-transform: capitalize; }
+.design-lab-mode-tabs button.is-active { background: #fff; color: #161616; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+.design-lab-image-area { display: grid; gap: 9px; }
+.design-lab-image-upload { display: grid; min-height: 124px; place-content: center; gap: 8px; overflow: hidden; border: 1px dashed #cfcfcf; border-radius: 10px; background-color: #f4f4f4; background-position: center; background-size: cover; color: #686868; text-align: center; font-size: 12px; cursor: pointer; }
+.design-lab-image-upload:has(input:focus-visible) { outline: 2px solid #161616; outline-offset: 2px; }
+.design-lab-image-upload input { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.design-lab-image-meta { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: #626262; font-size: 11px; }
+.design-lab-image-meta span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.design-lab-image-meta button { color: #222; text-decoration: underline; text-underline-offset: 3px; }
+.design-lab-hint { margin-top: 10px; color: #777; font-size: 11px; line-height: 1.45; }
 .design-lab-panel-footer { display: flex; justify-content: space-between; gap: 12px; padding-top: 4px; color: #606060; font-size: 12px; }
 .design-lab-panel-footer button, .design-lab-panel-footer a { text-decoration: underline; text-underline-offset: 3px; }
 @media (max-width: 640px) { .design-lab-launcher { right: 16px; bottom: 88px; } .design-lab-panel { width: min(360px, calc(100vw - 16px)); } }
