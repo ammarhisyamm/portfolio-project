@@ -96,10 +96,10 @@ function CategoryStack({ cat, onOpen }: { cat: HomeCategory; onOpen: () => void 
             </motion.div>
           );
         })}
-        <div className="pointer-events-none absolute left-1/2 top-1/2 z-10 h-full w-auto -translate-x-1/2 -translate-y-[58%]">
-          <motion.div animate={hover ? { scale: 1.025, y: 3 } : { scale: 1, y: 0 }} transition={{ type: "spring", stiffness: 280, damping: 24 }}>
+        <div className="pointer-events-none absolute inset-0 z-10">
+          <motion.div className="h-full w-full" animate={hover ? { scale: 1.025, y: -8 } : { scale: 1, y: -12 }} transition={{ type: "spring", stiffness: 280, damping: 24 }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/images/exploration-folder-foreground.png" alt="" aria-hidden="true" className="h-full w-auto max-w-none select-none brightness-[8] saturate-0" />
+            <img src="/images/exploration-folder-foreground.png" alt="" aria-hidden="true" className="h-full w-full select-none object-contain opacity-90 saturate-[0.78] [filter:drop-shadow(0_14px_18px_rgba(22,22,22,0.18))]" />
           </motion.div>
         </div>
 
