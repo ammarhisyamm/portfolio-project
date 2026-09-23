@@ -49,9 +49,9 @@ function CategoryStack({ cat, onOpen }: { cat: HomeCategory; onOpen: () => void 
       onFocus={() => setHover(true)}
       onBlur={() => setHover(false)}
       aria-label={`Open ${cat.label} image feed`}
-      className="group block w-full text-left focus-visible:outline-2 focus-visible:outline-offset-4"
+      className={`group relative block w-full text-left focus-visible:outline-2 focus-visible:outline-offset-4 ${hover ? "z-20" : "z-0"}`}
     >
-      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[18px] border border-line bg-[#f0f1f4] sm:rounded-[22px] lg:rounded-[24px]">
+      <div className="relative aspect-[4/3] w-full rounded-[18px] border border-line bg-[#f0f1f4] sm:rounded-[22px] lg:rounded-[24px]">
         {previews.map((img, i) => {
           const layout = DOCUMENT_LAYOUTS[i % DOCUMENT_LAYOUTS.length];
           return (
