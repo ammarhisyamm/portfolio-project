@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { House, BriefcaseBusiness, Mail } from "lucide-react";
+import { House, UserRound, BriefcaseBusiness, Mail } from "lucide-react";
 
 const TABS = [
   { href: "/", label: "Home", Icon: House },
+  { href: "/about-us", label: "About Us", Icon: UserRound },
   { href: "/playground", label: "Playground", Icon: BriefcaseBusiness },
   { href: "/contact", label: "Contact", Icon: Mail },
 ];
@@ -18,7 +19,7 @@ export default function MobileTabBar({ workLabel }: { workLabel?: string }) {
     <nav aria-label="Mobile navigation" className="floating-bottom-nav md:hidden">
       {TABS.map(({ href, label: tabLabel, Icon }) => {
         const active =
-          href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(href);
+          href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`) || (href === "/playground" && pathname === "/design-lab");
         const displayLabel = href === "/playground" ? label : tabLabel;
         return (
           <Link

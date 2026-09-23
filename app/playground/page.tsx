@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Reveal from "@/components/Reveal";
+import Link from "next/link";
 import WorkCanvas from "@/components/WorkCanvas";
 import { getContent } from "@/lib/content";
 
@@ -27,6 +28,9 @@ export default async function WorkPage() {
         <h1 className="max-w-[900px] text-[clamp(26px,4vw,32px)] font-normal leading-[1.08] tracking-[-0.05em]">
           A selection of design explorations and interface studies.
         </h1>
+        <Link href="/design-lab" className="w-fit text-sm text-sub underline underline-offset-4 transition-colors hover:text-ink">
+          Open Design Lab ↗
+        </Link>
       </Reveal>
 
       <WorkCanvas items={canvasItems} />

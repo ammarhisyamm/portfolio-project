@@ -14,6 +14,7 @@ export default function SiteHeader({ logo, workLabel }: { logo?: string; workLab
 
   const LINKS = [
     { href: "/", label: "Home" },
+    { href: "/about-us", label: "About Us" },
     { href: "/playground", label: workLabel || "Playground" },
     { href: "/contact", label: "Contact" },
   ];
@@ -51,7 +52,7 @@ export default function SiteHeader({ logo, workLabel }: { logo?: string; workLab
         <nav className="hidden items-center gap-7 md:flex" aria-label="Primary">
           {LINKS.map(({ href, label }) => {
             const isActive =
-              href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(href);
+              href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`) || (href === "/playground" && pathname === "/design-lab");
             return (
               <Link
                 key={href}
