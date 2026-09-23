@@ -19,7 +19,7 @@ export default function MobileTabBar({ workLabel }: { workLabel?: string }) {
     <nav aria-label="Mobile navigation" className="floating-bottom-nav md:hidden">
       {TABS.map(({ href, label: tabLabel, Icon }) => {
         const active =
-          href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`) || (href === "/playground" && pathname === "/design-lab");
+          href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
         const displayLabel = href === "/playground" ? label : tabLabel;
         return (
           <Link

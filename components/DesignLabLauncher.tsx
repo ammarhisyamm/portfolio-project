@@ -118,7 +118,7 @@ export default function DesignLabLauncher() {
             <label className="design-lab-slider"><span>Weight <output>{values.border}px</output></span><input type="range" min="0" max="3" step="1" value={values.border} onChange={(event) => update("border", Number(event.target.value))} /></label>
             <div className="design-lab-select"><span>Inside</span><ChevronDown size={16} /></div>
           </section>
-          <footer className="design-lab-panel-footer"><button type="button" onClick={reset}>Reset styles</button><a href="/design-lab">Open full lab ↗</a></footer>
+          <footer className="design-lab-panel-footer"><button type="button" onClick={reset}>Reset styles</button></footer>
         </aside>
       )}
       <button type="button" className="design-lab-trigger" onClick={() => setOpen((current) => !current)} aria-expanded={open}><span aria-hidden="true">✦</span> Edit style</button>

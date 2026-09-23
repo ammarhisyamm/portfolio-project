@@ -52,7 +52,7 @@ export default function SiteHeader({ logo, workLabel }: { logo?: string; workLab
         <nav className="hidden items-center gap-7 md:flex" aria-label="Primary">
           {LINKS.map(({ href, label }) => {
             const isActive =
-              href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`) || (href === "/playground" && pathname === "/design-lab");
+              href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
             return (
               <Link
                 key={href}
