@@ -17,15 +17,16 @@ import LightboxModal from "./LightboxModal";
 
 const STORAGE_KEY = "hisyam.canvas.nodes.v1";
 
+const PREVIEW_WIDTH = 360;
 const BASE_LAYOUT = [
-  { x: 140, y: 160, width: 420, rotation: -1.2 },
-  { x: 700, y: 110, width: 360, rotation: 1 },
-  { x: 1140, y: 320, width: 400, rotation: -0.8 },
-  { x: 320, y: 660, width: 320, rotation: 1.5 },
-  { x: 820, y: 720, width: 360, rotation: -1.5 },
-  { x: 1220, y: 800, width: 300, rotation: 1.2 },
-  { x: 280, y: 1030, width: 300, rotation: -1 },
-  { x: 660, y: 1100, width: 320, rotation: 0.6 },
+  { x: 140, y: 160, rotation: -1.2 },
+  { x: 700, y: 110, rotation: 1 },
+  { x: 1140, y: 320, rotation: -0.8 },
+  { x: 320, y: 660, rotation: 1.5 },
+  { x: 820, y: 720, rotation: -1.5 },
+  { x: 1220, y: 800, rotation: 1.2 },
+  { x: 280, y: 1030, rotation: -1 },
+  { x: 660, y: 1100, rotation: 0.6 },
 ];
 
 const MIN_ZOOM = 0.35;
@@ -375,7 +376,6 @@ export default function WorkCanvas({ items }: { items: CanvasItem[] }) {
           {items.map((p, i) => {
             const layout = BASE_LAYOUT[i % BASE_LAYOUT.length];
             const pos = positions[p.slug] ?? { x: layout.x, y: layout.y };
-            const width = layout.width;
             const isSelected = selected === p.slug;
             const entrance = nodeEntrance(i);
             return (
@@ -384,7 +384,7 @@ export default function WorkCanvas({ items }: { items: CanvasItem[] }) {
                 initial={entrance ? entrance.initial : false}
                 animate={entrance ? entrance.animate : undefined}
                 transition={entrance ? entrance.transition : undefined}
-                style={{ left: pos.x, top: pos.y, width, zIndex: isSelected ? 5 : undefined }}
+                style={{ left: pos.x, top: pos.y, width: PREVIEW_WIDTH, zIndex: isSelected ? 5 : undefined }}
                 className="absolute"
               >
                 <div
@@ -405,22 +405,12 @@ export default function WorkCanvas({ items }: { items: CanvasItem[] }) {
                       actions.current.openGallery(p.slug);
                     }
                   }}
-                  style={{
-                    transform: `rotate(${layout.rotation}deg)`,
-                    boxShadow: "0 0 0 8px #ffffff, 0 22px 46px -22px rgba(22,22,22,0.32)",
-                  }}
-                  className={`group pointer-events-auto cursor-move touch-none select-none overflow-hidden rounded-[14px] bg-panel ${
+                  style={{ transform: `rotate(${layout.rotation}deg)` }}
+                  className={`group pointer-events-auto cursor-move touch-none select-none overflow-hidden rounded-[24px] bg-[#f1f2f6] p-2 shadow-[0_22px_46px_-22px_rgba(22,22,22,0.32)] ${
                     spaceDown ? "cursor-grab" : "cursor-move"
                   }`}
                 >
-                  <div className="aspect-[4/3] w-full overflow-hidden bg-bg">
-                    <Media
-                      src={p.image}
-                      alt={`Visual for ${p.title}`}
-                      label={p.year}
-                      imgClassName="h-full w-full object-cover pointer-events-none select-none transition-transform duration-500 ease-out group-hover:scale-[1.02]"
-                    />
-                  </div>
+                  <FolderPreview image={p.image} title={p.title} year={p.year} />
                 </div>
               </motion.div>
             );
@@ -500,6 +490,23 @@ export default function WorkCanvas({ items }: { items: CanvasItem[] }) {
         onIndexChange={setGalleryIndex}
         onClose={closeGallery}
       />
+    </div>
+  );
+}
+
+function FolderPreview({ image, title, year }: { image: string; title: string; year: string }) {
+  return (
+    <div className="relative aspect-square w-full overflow-hidden rounded-[18px] bg-[#f5f5f7]">
+      <div className="absolute left-[23%] top-[11%] z-[1] h-[54%] w-[56%] rotate-[-7deg] overflow-hidden rounded-[6px] border border-white/90 bg-white shadow-[0_10px_20px_rgba(28,29,36,0.18)]">
+        <Media
+          src={image}
+          alt={`Preview document for ${title}`}
+          label={year || title}
+          imgClassName="h-full w-full object-cover pointer-events-none select-none transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+        />
+      </div>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/images/exploration-folder-foreground.png" alt="" aria-hidden="true" className="pointer-events-none absolute inset-0 z-[2] h-full w-full select-none object-contain" />
     </div>
   );
 }

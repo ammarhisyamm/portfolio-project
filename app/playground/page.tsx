@@ -12,7 +12,6 @@ export default async function WorkPage() {
   const content = await getContent();
   const label = content.menu.workLabel;
   const canvasItems = content.exploration
-    .filter((x) => x.image)
     .map((x, i) => ({
       slug: `exploration-${i}`,
       title: x.label,
