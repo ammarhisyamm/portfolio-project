@@ -32,7 +32,10 @@
     @apply inline-flex min-h-12 items-center justify-center gap-2.5 whitespace-nowrap rounded-xl px-5 text-sm font-medium no-underline;
   }
   .btn-primary {
-    @apply border border-ink bg-ink text-white transition-colors hover:bg-[#262626] hover:shadow-soft;
+    @apply border border-[#101114] bg-[#1d1f23] text-white transition-all hover:-translate-y-0.5 hover:bg-[#2b2e34] hover:shadow-soft active:translate-y-0;
+    background-image: linear-gradient(180deg, #32343a 0%, #191a1e 100%);
+    box-shadow: 0 4px 0 #050506, 0 10px 18px rgba(0,0,0,.14), inset 0 1px 0 rgba(255,255,255,.14);
+    text-shadow: 0 1px 1px rgba(0,0,0,.35);
   }
   .btn-secondary {
     @apply border border-line-strong bg-panel text-ink transition-colors hover:bg-[#f7f7f7];
@@ -61,6 +64,22 @@
     @apply  text-[10px] uppercase tracking-[0.06em] text-[#a6a6a6];
   }
 }
+
+.btn-dark {
+  @apply inline-flex min-h-12 items-center justify-center gap-2.5 whitespace-nowrap rounded-xl border border-[#101114] px-5 text-sm font-medium text-white no-underline transition-all hover:-translate-y-0.5 active:translate-y-0;
+  background-image: linear-gradient(180deg, #32343a 0%, #191a1e 100%);
+  box-shadow: 0 4px 0 #050506, 0 10px 18px rgba(0,0,0,.14), inset 0 1px 0 rgba(255,255,255,.14);
+}
+
+.github-panel { border-radius: 18px; background: #11141a; padding: 24px; color: #f4f7fb; }
+.github-chart { overflow-x: auto; border: 1px solid #3c434d; border-radius: 12px; padding: 18px 18px 15px; }
+.github-months { display: grid; grid-template-columns: repeat(13, 1fr); min-width: 670px; margin-left: 30px; color: #aeb6c1; font-size: 10px; }
+.github-months span { text-align: center; }
+.github-grid { display: grid; grid-auto-flow: column; grid-auto-columns: 11px; grid-template-rows: repeat(7, 11px); gap: 4px; min-width: 670px; }
+.github-cell { display: block; width: 11px; height: 11px; border-radius: 3px; background: #1c222b; }
+.github-cell.level-1 { background: #0e5c2b; }.github-cell.level-2 { background: #16813c; }.github-cell.level-3 { background: #2aa452; }.github-cell.level-4 { background: #54d46b; }
+.github-legend { display: flex; align-items: center; justify-content: flex-end; gap: 5px; margin-top: 16px; color: #aeb6c1; font-size: 11px; }
+@media (max-width: 640px) { .github-panel { padding: 20px; border-radius: 16px; } .github-chart { margin-right: -20px; margin-left: -20px; border-right: 0; border-left: 0; border-radius: 0; } }
 
 /* Lenis smooth scrolling */
 html.lenis,

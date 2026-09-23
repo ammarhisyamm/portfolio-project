@@ -1,6 +1,7 @@
 import Btn from "./Btn";
 import Reveal from "./Reveal";
 import type { AboutContent, ContactContent, SocialLink } from "@/lib/content";
+import GitHubActivity from "./GitHubActivity";
 
 export default function AboutPanel({
   about,
@@ -12,6 +13,8 @@ export default function AboutPanel({
   socials: SocialLink[];
 }) {
   const linkedin = socials.find((s) => s.type === "linkedin")?.href ?? "#";
+  const githubProfile = socials.find((s) => s.type === "github")?.href;
+  const githubUsername = githubProfile?.match(/github\.com\/([^/?#]+)/i)?.[1] ?? "ammarhisyamm";
   return (
     <Reveal className="panel p-5 sm:p-8">
       <span className="kicker">About myself</span>
@@ -19,6 +22,19 @@ export default function AboutPanel({
         {about.introTitle}
       </p>
       <p className="leading-relaxed text-sub">{about.introBody}</p>
+      <div className="mt-8 grid gap-4 border-t border-line pt-6 sm:grid-cols-2">
+        <div>
+          <span className="kicker">Design philosophy</span>
+          <p className="mt-3 text-sm leading-relaxed text-sub">{about.philosophyTitle}</p>
+          <p className="mt-2 text-sm leading-relaxed text-sub">{about.philosophyBody}</p>
+        </div>
+        <div>
+          <span className="kicker">Background</span>
+          <div className="mt-3 space-y-2 text-sm leading-relaxed text-sub">
+            {about.background.map((item) => <p key={item}>{item}</p>)}
+          </div>
+        </div>
+      </div>
       <div className="mt-6 border-t border-line">
         <a
           href={`mailto:${contact.email}`}
@@ -53,6 +69,13 @@ export default function AboutPanel({
           </Btn>
         )}
       </div>
+      <div className="mt-8 border-t border-line pt-6">
+        <span className="kicker">Capabilities</span>
+        <div className="mt-4 grid grid-cols-1 gap-x-6 gap-y-2 text-sm text-sub sm:grid-cols-2">
+          {about.capabilities.map((capability) => <span key={capability}>{capability}</span>)}
+        </div>
+      </div>
+      <GitHubActivity username={githubUsername} />
     </Reveal>
   );
 }
