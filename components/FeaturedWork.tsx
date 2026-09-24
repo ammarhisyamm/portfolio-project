@@ -5,6 +5,7 @@ import { ArrowUpRight } from "lucide-react";
 import { gsap } from "@/lib/gsap";
 import { reducedMotion } from "@/lib/utils";
 import type { CaseStudy } from "@/lib/content";
+import { caseStudyCover } from "@/lib/case-study-visuals";
 import Media from "./Media";
 
 export default function FeaturedWork({
@@ -73,7 +74,7 @@ export default function FeaturedWork({
               style={{ boxShadow: "0 1px 2px rgba(22,22,22,.04), 0 8px 24px -12px rgba(22,22,22,.06)" }}
             >
               <Media
-                src={p.thumbnail}
+                src={p.thumbnail || caseStudyCover(p.slug)}
                 alt={p.thumbnail_alt || `Visual for ${p.title}`}
                 label={p.year || p.category}
                 imgClassName="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02]"

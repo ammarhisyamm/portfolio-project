@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { getContent, type CaseStudy } from "@/lib/content";
+import { caseStudyCover } from "@/lib/case-study-visuals";
 import CaseStudyBlockView from "@/components/CaseStudyBlockView";
 import Media from "@/components/Media";
 import Reveal from "@/components/Reveal";
@@ -62,7 +63,7 @@ export default async function CaseStudyPage({ params }: Props) {
   const info = projectInfo(cs);
 
   const meta = [cs.category, cs.year, cs.platform, cs.project_status].filter(Boolean).join(" · ");
-  const heroImage = cs.hero_image || cs.thumbnail;
+  const heroImage = cs.hero_image || cs.thumbnail || caseStudyCover(cs.slug);
 
   return (
     <div className="grid gap-3 pb-16 pt-3 md:gap-4">
@@ -137,10 +138,10 @@ export default async function CaseStudyPage({ params }: Props) {
               <ArrowRight size={18} aria-hidden="true" />
             </span>
           </div>
-          {next.thumbnail && (
+          {(next.thumbnail || caseStudyCover(next.slug)) && (
             <div className="aspect-[16/8] w-full overflow-hidden rounded-[14px] border border-line bg-bg sm:rounded-[18px]">
               <Media
-                src={next.thumbnail}
+                src={next.thumbnail || caseStudyCover(next.slug)}
                 alt={next.thumbnail_alt || `Visual for ${next.title}`}
                 label={next.title}
                 imgClassName="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]"

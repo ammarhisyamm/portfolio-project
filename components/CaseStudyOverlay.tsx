@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowLeft, X } from "lucide-react";
 import type { CaseStudy } from "@/lib/content";
+import { caseStudyCover } from "@/lib/case-study-visuals";
 import Media from "./Media";
 import CaseStudyBlockView from "./CaseStudyBlockView";
 
@@ -51,7 +52,7 @@ export default function CaseStudyOverlay({
   const info = cs ? projectInfo(cs) : [];
   const blocks = cs ? cs.blocks.filter((b) => b.visible) : [];
   const meta = cs ? [cs.category, cs.year, cs.platform, cs.project_status].filter(Boolean).join(" · ") : "";
-  const heroImage = cs ? cs.hero_image || cs.thumbnail : "";
+  const heroImage = cs ? cs.hero_image || cs.thumbnail || caseStudyCover(cs.slug) : "";
 
   return (
     <AnimatePresence>

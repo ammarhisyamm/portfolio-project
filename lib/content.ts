@@ -648,6 +648,87 @@ export const DEFAULTS: SiteContent = {
   },
 };
 
+const caseStudyBlock = (
+  block_type: string,
+  eyebrow: string,
+  heading: string,
+  description: string,
+  supporting_text = ""
+): CaseStudyBlock => ({
+  block_type,
+  eyebrow,
+  heading,
+  description,
+  supporting_text,
+  media: "",
+  caption: "",
+  alt_text: "",
+  metrics: [],
+  layout: "",
+  visible: true,
+});
+
+const PORTFOLIO_CASE_STUDIES: CaseStudy[] = [
+  {
+    slug: "nomory", title: "Nomory", published: true, featured: true, featured_order: -2,
+    year: "2026", category: "Consumer product - Food diary", industry: "Consumer lifestyle", platform: "Web PWA", project_status: "Live",
+    short_description: "A private food diary that turns everyday meal photos into memories worth returning to.",
+    hero_headline: "Making everyday meals easier to remember.",
+    hero_description: "Nomory helps people keep the context around a meal, not only the photo. Each entry can carry its date, time, type, place, and a note for later recall.",
+    hero_image: "", hero_image_alt: "", thumbnail: "", thumbnail_alt: "", client: "Independent product", role: "Product Design - UX/UI", timeline: "2026", scope: "Product strategy - UX/UI - Design system", team: "Independent", project_type: "Consumer product",
+    blocks: [
+      caseStudyBlock("INTRO", "The opportunity", "A food photo often loses the story around it.", "Gallery photos are easy to collect but difficult to revisit with meaning. Nomory reframes the meal as a small personal record: what it was, when it happened, where it was, and why it mattered.", "The design target was a private experience that feels lighter than logging and more useful than an unstructured camera roll."),
+      caseStudyBlock("CHALLENGE", "The design problem", "Capture has to be quick. Recall has to be rewarding.", "The core tension was avoiding a long diary form while retaining enough context for a memory to be useful months later. The entry flow therefore had to move from photo to saved memory without adding unnecessary decisions.", "The product also supports both local use and optional cloud sync, so the experience needs to communicate privacy and ownership without turning setup into a barrier."),
+      caseStudyBlock("USER_FLOW", "Product strategy", "Build one loop for capture now and recall later.", "The primary loop starts with a camera capture or upload, then lets the user add only the context they want: meal type, date, time, location, and notes. The memory then becomes available through Today, Calendar, Memories, and Search.", "This gives the product two equally important moments: a low-effort entry point and a richer way to return to the past."),
+      caseStudyBlock("INTERACTION_DESIGN", "Design decisions", "Make the saved meal feel personal, not transactional.", "The interaction model treats each meal photo as a keepsake rather than a database record. Visual hierarchy prioritizes the image and date, while supporting metadata stays available without taking over the screen.", "That choice makes the calendar and memory views feel like browsing an album, while still supporting structured search."),
+      caseStudyBlock("OUTCOME", "Current outcome", "A live diary with a complete capture-to-recall loop.", "Nomory is available as a web product with installable PWA support. It can be used locally without an account, while signed-in users can sync memories across devices.", "Portfolio performance metrics are intentionally not claimed here. The next product measure is whether saved meals lead to meaningful return visits over 7 and 30 days."),
+      caseStudyBlock("REFLECTION", "What comes next", "The smallest details may be the reason someone returns.", "Future exploration should test which optional prompts improve recall without slowing capture. The product can grow through better memory resurfacing, not by asking people to document more."),
+    ],
+  },
+  {
+    slug: "quriz", title: "Quriz", published: true, featured: true, featured_order: -1,
+    year: "2026", category: "Learning product - Quran practice", industry: "Education", platform: "Web", project_status: "Live",
+    short_description: "A focused Quran practice experience that supports daily consistency through short quizzes and thoughtful review.",
+    hero_headline: "Helping Quran practice become a repeatable daily habit.",
+    hero_description: "Quriz combines quick ayat-to-translation practice with recommendations, progress, and a dedicated path back to missed questions.",
+    hero_image: "", hero_image_alt: "", thumbnail: "", thumbnail_alt: "", client: "Independent product", role: "Product Design - UX/UI", timeline: "2026", scope: "Learning flows - UX/UI - Interaction design", team: "Independent", project_type: "Learning product",
+    blocks: [
+      caseStudyBlock("INTRO", "The opportunity", "Practice needs a clear next action.", "A study product can become intimidating when it asks users to plan too much before they begin. Quriz reduces the first step to a focused practice moment, then makes progress visible without turning the home screen into a dense dashboard.", "The product is built around consistency, not one-off completion."),
+      caseStudyBlock("CHALLENGE", "The design problem", "Make learning feel approachable without making it shallow.", "The interface needed to support a meaningful practice loop while keeping the decision load low. Users should be able to start a quiz quickly, understand what they answered correctly, and know what to do after a mistake.", "The design challenge was to use progress as encouragement, not pressure."),
+      caseStudyBlock("INFORMATION_ARCHITECTURE", "Product structure", "One home for practice, progress, and return paths.", "The primary navigation separates three jobs: start practice from Beranda, see momentum in Kemajuan, and manage identity in Profil. Within the home screen, recommendations direct people to Ayat Pilihan, Acak Surah, or the daily challenge.", "A dedicated review path for incorrect answers closes the learning loop instead of treating a quiz as a final score."),
+      caseStudyBlock("INTERACTION_DESIGN", "Key decision", "Turn mistakes into the next useful session.", "Rather than burying incorrect answers inside history, Quriz surfaces an explicit option to revisit them. This makes feedback actionable and helps the product stay focused on practice rather than passive tracking.", "Daily activity and streak language are kept close to the primary action so progress supports the habit without competing with it."),
+      caseStudyBlock("OUTCOME", "Current outcome", "A live learning loop from question to review.", "The live experience includes short quiz sessions, progress visibility, practice recommendations, and a return path for missed questions. The case study records the current product behavior without attributing unmeasured retention or learning gains.", "The next evidence to collect is task completion, repeat practice, and the proportion of users who return to review mistakes."),
+      caseStudyBlock("REFLECTION", "What comes next", "Consistency is a product behavior, not a badge.", "Further iterations should test how challenge cadence, reminder timing, and review prompts affect a sustainable practice rhythm."),
+    ],
+  },
+  {
+    slug: "jeam", title: "Jeam", published: true, featured: true, featured_order: -3,
+    year: "2024", category: "Mobile product - Fitness training", industry: "Health and fitness", platform: "Mobile", project_status: "Concept",
+    short_description: "A mobile fitness training concept designed around flexible routines, tailored guidance, and motivation between sessions.",
+    hero_headline: "A more personal path to everyday fitness.",
+    hero_description: "Jeam explores how a trainer-led fitness product can make personalized workout guidance feel flexible, encouraging, and easy to return to.",
+    hero_image: "", hero_image_alt: "", thumbnail: "", thumbnail_alt: "", client: "Concept project", role: "UI/UX Designer", timeline: "2024", scope: "Mobile UX - UI design - Product concept", team: "Collaborative project", project_type: "Fitness mobile app",
+    blocks: [
+      caseStudyBlock("INTRO", "The opportunity", "Fitness guidance should flex around real schedules.", "Jeam is a fitness trainer mobile concept that explores personalized programs, accessible sessions, and the motivation that helps people stay engaged between workouts.", "The work focuses on the mobile experience and product framing rather than making claims about a shipped service."),
+      caseStudyBlock("CHALLENGE", "The design problem", "Generic routines and rigid timing are easy to abandon.", "The concept starts from a familiar fitness tension: people need guidance that fits their goals and availability, but not another complex plan to manage. The interface has to make a program feel tailored while keeping the next workout easy to find.", "Motivation also needs to be supportive, not performative."),
+      caseStudyBlock("DESIGN_DIRECTION", "Product strategy", "Connect a clear plan with flexible sessions.", "The proposed experience centers on a personalized training path, on-demand workout sessions, and guidance that can adapt to a person’s level and preferences. Community and feedback are treated as optional support layers, not requirements before someone can start.", "This keeps the product useful for both beginners and people returning to a routine."),
+      caseStudyBlock("UI_DESIGN", "Interface direction", "Keep movement, progress, and coaching legible at a glance.", "The mobile visual system prioritizes active states, session information, and clear calls to action. High contrast and strong hierarchy help the most important decision stand out: what to do next.", "The final visual direction is documented in the original Behance project."),
+      caseStudyBlock("OUTCOME", "Current outcome", "A documented mobile product concept with a public design presentation.", "Jeam is presented as a concept case study. No product adoption or outcome metrics are claimed because a public measurement source was not available during this audit.", "The value of the work is the product framing and interface direction, not an invented business result."),
+      caseStudyBlock("REFLECTION", "What comes next", "Test the moments that decide whether a routine becomes a habit.", "A next validation step would compare onboarding confidence, first-session completion, and return behavior across different levels of program personalization."),
+    ],
+  },
+];
+
+function enrichPortfolioCaseStudies(caseStudies: CaseStudy[]) {
+  const sourceBySlug = new Map(caseStudies.map((study) => [study.slug, study]));
+  const enriched = PORTFOLIO_CASE_STUDIES.map((study) => {
+    const source = sourceBySlug.get(study.slug);
+    return source ? { ...source, ...study, id: source.id } : study;
+  });
+  const untouched = caseStudies.filter((study) => !PORTFOLIO_CASE_STUDIES.some((item) => item.slug === study.slug));
+  return [...enriched, ...untouched];
+}
+
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
 const supabaseAnon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
 const supabase =
@@ -700,7 +781,7 @@ function rowToBlock(r: Record<string, unknown>): CaseStudyBlock {
 }
 
 export const getContent = cache(async (): Promise<SiteContent> => {
-  if (!supabase) return DEFAULTS;
+  if (!supabase) return { ...DEFAULTS, caseStudies: enrichPortfolioCaseStudies(DEFAULTS.caseStudies) };
   try {
     const [cs, bl, hc, ci, e, x, t, s] = await Promise.all([
       supabase.from("case_studies").select("*").order("featured_order", { ascending: true }),
@@ -712,7 +793,9 @@ export const getContent = cache(async (): Promise<SiteContent> => {
       supabase.from("trust").select("label,image_url").order("sort", { ascending: true }),
       supabase.from("site_content").select("key,value"),
     ]);
-    if (cs.error || bl.error || hc.error || ci.error || e.error || x.error || t.error || s.error) return DEFAULTS;
+    if (cs.error || bl.error || hc.error || ci.error || e.error || x.error || t.error || s.error) {
+      return { ...DEFAULTS, caseStudies: enrichPortfolioCaseStudies(DEFAULTS.caseStudies) };
+    }
 
     const blocksByStudy: Record<string, CaseStudyBlock[]> = {};
     for (const b of bl.data ?? []) {
@@ -750,7 +833,9 @@ export const getContent = cache(async (): Promise<SiteContent> => {
     for (const row of s.data ?? []) site[row.key] = row.value;
 
     return {
-      caseStudies: (cs.data ?? []).map((r) => rowToCaseStudy(r, blocksByStudy[r.id] ?? [])),
+      caseStudies: enrichPortfolioCaseStudies(
+        (cs.data ?? []).map((r) => rowToCaseStudy(r, blocksByStudy[r.id] ?? []))
+      ),
       homeCategories,
       experience: (e.data ?? []).map((r) => ({
         company: r.company,
@@ -776,6 +861,6 @@ export const getContent = cache(async (): Promise<SiteContent> => {
       menu: { ...DEFAULTS.menu, ...(site.menu ?? {}) },
     };
   } catch {
-    return DEFAULTS;
+    return { ...DEFAULTS, caseStudies: enrichPortfolioCaseStudies(DEFAULTS.caseStudies) };
   }
 });
