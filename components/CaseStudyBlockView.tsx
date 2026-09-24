@@ -71,7 +71,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
     </div>
   );
 
-  const figure = (src: string, overlay?: string, className?: string) => (
+  const figure = (src: string, overlay?: string, className?: string, showCaption = true) => (
     <figure className={className}>
       <div className="relative aspect-[16/9] w-full overflow-hidden rounded-[14px] border border-line bg-bg sm:rounded-[18px]">
         <Media src={src} alt={block.alt_text || block.caption || "Case study visual"} label={block.caption || "Media"} />
@@ -81,7 +81,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
           </span>
         )}
       </div>
-      {block.caption && (
+      {showCaption && block.caption && (
         <figcaption className="mt-2.5  text-[11px] leading-relaxed tracking-[0.02em] text-muted">
           {block.caption}
         </figcaption>
@@ -297,8 +297,20 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
             </div>
           </div>
           {medias.length > 0 && (
-            <div className={`grid gap-3 md:gap-4 ${medias.length > 1 ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1"}`}>
-              {medias.map((m, i) => figure(m))}
+            <div className={`grid gap-3 md:gap-4 ${block.block_type === "USER_FLOW" && medias.length === 3 ? "grid-cols-1 sm:grid-cols-3" : medias.length > 1 ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1"}`}>
+              {medias.map((m, i) => {
+                const flowLabels = ["Capture a meal", "Keep the context", "Find it again"];
+                if (block.block_type !== "USER_FLOW" || medias.length !== 3) return figure(m, undefined, undefined, i === 0);
+                return (
+                  <div key={m} className="grid gap-2.5">
+                    {figure(m, undefined, undefined, false)}
+                    <span className="px-1 text-[12px] leading-relaxed text-sub">{flowLabels[i]}</span>
+                    {i === 0 && block.caption && (
+                      <span className="px-1 text-[11px] leading-relaxed text-muted sm:col-span-3">{block.caption}</span>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           )}
         </section>
