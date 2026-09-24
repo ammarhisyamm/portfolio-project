@@ -162,69 +162,56 @@ const DEFAULT_HOME_CATEGORIES: HomeCategory[] = [
   { id: "mobile", key: "mobile", label: "Mobile", sort: 2, images: [] },
 ];
 
-const DEFAULT_EXPERIENCE = [
+const CV_WORKING_EXPERIENCE: ExperienceItem[] = [
   {
     company: "Serba Mulia Group",
-    role: "Product & UX/UI design",
-    period: "2021 — Present",
+    role: "UI/UX Designer - Full Time",
+    period: "Nov 2024 - Present",
     points: [
-      "Lead product design across the group's digital products and platforms.",
-      "Built and maintained a scalable design system shared by multiple teams.",
-      "Translated business goals into clear, usable product experiences.",
-      "Worked closely with product and engineering on design-to-development handoff.",
+      "Led product design across 5+ business and internal platforms, including Promas, OCR CRM, Pajak Mas, Cashlux, and Synqra.",
+      "Redesigned Promas from research through a new design system for cashier, branch manager, and multi-branch workflows.",
+      "Built products from zero to one and managed design architecture across 10+ Figma projects.",
     ],
   },
   {
-    company: "Peak Haven",
-    role: "Digital product design",
-    period: "2019 — 2021",
+    company: "Let's Vibe Digital",
+    role: "UI/UX Designer - Freelance",
+    period: "May 2025 - Jul 2026",
     points: [
-      "Designed end-to-end digital experiences for hospitality and lifestyle products.",
-      "Ran discovery and user research to shape the product roadmap.",
-      "Delivered prototypes and specs that kept development teams moving fast.",
+      "Designed responsive web applications for Australian enterprise clients, including Big Rock Developments, RenoPlus, VV Construction, and VSCO Pty.",
+      "Delivered the end-to-end design process from visual direction and wireframes to responsive UI and stakeholder revisions.",
     ],
   },
   {
-    company: "Gadai Mulia",
-    role: "Fintech product design",
-    period: "2017 — 2019",
+    company: "Caraka Studio",
+    role: "UI/UX Designer - Full Time",
+    period: "Aug 2024 - Nov 2024",
     points: [
-      "Designed a digital pawnbroking experience that made financial services more accessible.",
-      "Simplified complex transaction flows into clear, step-by-step journeys.",
-      "Contributed to the product's information architecture and visual system.",
+      "Created three reusable mobile UI kits for Zenspace IoT, Sporty News, and TRVLEASE Travel, covering 210+ screens.",
+      "Delivered two full-cycle client projects from concepts and user flows to high-fidelity design and final delivery.",
     ],
   },
   {
-    company: "Synqra",
-    role: "SaaS product design",
-    period: "2015 — 2017",
+    company: "Serasi Autoraya",
+    role: "UI/UX Designer - Full Time",
+    period: "Feb 2024 - Jul 2024",
     points: [
-      "Designed a meeting notes and workflow platform for teams.",
-      "Turned discussions into actionable work through structured flows and templates.",
-      "Collaborated with early customers to validate and refine the core experience.",
-    ],
-  },
-  {
-    company: "Drawtopia",
-    role: "AI creative platform",
-    period: "2013 — 2015",
-    points: [
-      "Designed an AI-assisted story-generation experience for creative users.",
-      "Explored interaction patterns for AI output and user control.",
-      "Built the visual system that gave the product its distinctive editorial feel.",
-    ],
-  },
-  {
-    company: "Base44",
-    role: "AI productivity tools",
-    period: "2011 — 2013",
-    points: [
-      "Designed AI-powered productivity tools for knowledge workers.",
-      "Prototyped and tested early concepts for AI-assisted workflows.",
-      "Helped define the product's design language and component library.",
+      "Led qualitative research for SELOG, a B2B fleet logistics platform, through 10+ interviews and competitor analysis that generated 100+ actionable insights.",
+      "Designed the responsive SELOG experience across 14+ screens and a reusable design system with 25+ components.",
+      "Presented the product vision and design direction to the Board of Directors to align the digital transformation work.",
     ],
   },
 ].map((e) => ({ ...e, images: [] }));
+
+const DEFAULT_EXPERIENCE = CV_WORKING_EXPERIENCE;
+
+function cvExperience(items: ExperienceItem[]): ExperienceItem[] {
+  const sourceByCompany = new Map(items.map((item) => [item.company, item]));
+  return CV_WORKING_EXPERIENCE.map((item) => ({
+    ...item,
+    images: sourceByCompany.get(item.company)?.images?.filter(Boolean) ?? [],
+  }));
+}
 
 const DEFAULT_EXPLORATION: ExplorationItem[] = [
   "Exploration 01 — Mobile banking",
@@ -847,13 +834,15 @@ export const getContent = cache(async (): Promise<SiteContent> => {
         (cs.data ?? []).map((r) => rowToCaseStudy(r, blocksByStudy[r.id] ?? []))
       ),
       homeCategories,
-      experience: (e.data ?? []).map((r) => ({
-        company: r.company,
-        role: r.role,
-        period: r.period,
-        points: r.points ?? [],
-        images: r.images ?? [],
-      })),
+      experience: cvExperience(
+        (e.data ?? []).map((r) => ({
+          company: r.company,
+          role: r.role,
+          period: r.period,
+          points: r.points ?? [],
+          images: r.images ?? [],
+        }))
+      ),
       exploration: (x.data ?? []).map((r) => ({
         label: r.label,
         image: r.image_url ?? "",
