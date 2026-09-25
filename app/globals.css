@@ -33,6 +33,7 @@
     border-radius: var(--site-radius, 24px);
     border-color: var(--site-border-color, #f4f4f4);
     border-width: var(--site-border-width, 1px);
+    box-shadow: var(--site-panel-shadow, none);
   }
   .kicker {
     @apply block  text-[11px] uppercase tracking-[0.02em] text-muted;
@@ -177,11 +178,18 @@
 .design-lab-panel-header button { display: grid; place-items: center; padding: 4px; color: #656565; }
 .design-lab-section { border-top: 1px solid #dedede; padding: 24px 0; }
 .design-lab-section h3 { margin-bottom: 16px; font-size: 19px; font-weight: 600; letter-spacing: -.03em; }
-.design-lab-section-tools { display: flex; justify-content: flex-end; gap: 20px; margin-bottom: 16px; color: #333; }
 .design-lab-control-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .design-lab-field { display: grid; gap: 6px; min-width: 0; border-radius: 10px; background: #f4f4f4; padding: 10px 12px; }
 .design-lab-field span { overflow: hidden; color: #777; font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
 .design-lab-field input { width: 100%; border: 0; background: transparent; color: #222; font-size: 17px; outline: 0; }
+.design-lab-disclosure { border: 1px solid #dedede; border-radius: 12px; }
+.design-lab-disclosure summary { display: flex; min-height: 52px; cursor: pointer; list-style: none; align-items: center; gap: 10px; padding: 0 14px; color: #2d2d2d; font-size: 14px; }
+.design-lab-disclosure summary::-webkit-details-marker { display: none; }
+.design-lab-disclosure summary output { margin-left: auto; color: #666; }
+.design-lab-disclosure summary svg { transition: transform 180ms ease; }
+.design-lab-disclosure[open] summary { border-bottom: 1px solid #e4e4e4; }
+.design-lab-disclosure[open] summary svg { transform: rotate(180deg); }
+.design-lab-disclosure .design-lab-control-grid { padding: 12px; }
 .design-lab-slider { display: grid; gap: 9px; margin-top: 18px; color: #555; font-size: 12px; }
 .design-lab-slider span { display: flex; justify-content: space-between; }
 .design-lab-slider output { color: #222; }
@@ -193,6 +201,8 @@
 .design-lab-check { display: flex; align-items: center; gap: 8px; margin-top: 14px; color: #666; font-size: 12px; }
 .design-lab-check input { accent-color: #161616; }
 .design-lab-select { justify-content: space-between; margin-top: 14px; }
+.design-lab-select select { min-width: 136px; border: 0; background: transparent; color: #222; font: inherit; outline: 0; text-align: right; }
+.design-lab-shadow-grid { margin-top: 14px; }
 .design-lab-mode-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-bottom: 12px; border-radius: 10px; background: #f1f1f1; padding: 4px; }
 .design-lab-mode-tabs button { min-height: 32px; border-radius: 7px; color: #737373; font-size: 11px; text-transform: capitalize; }
 .design-lab-mode-tabs button.is-active { background: #fff; color: #161616; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
