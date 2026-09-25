@@ -19,7 +19,6 @@ import {
   Search,
   Sparkles,
   UserRoundCheck,
-  Wrench,
   type LucideIcon,
 } from "lucide-react";
 import GitHubActivity from "@/components/GitHubActivity";
@@ -109,12 +108,9 @@ export default async function AboutUsPage() {
       </section>
 
       <section className="panel p-5 sm:p-8" aria-labelledby="capabilities-title">
-        <div className="flex items-center gap-3">
-          <span className="about-section-icon"><Crosshair size={19} strokeWidth={1.8} aria-hidden="true" /></span>
-          <div>
-            <h2 id="capabilities-title" className="text-[clamp(22px,3vw,28px)] font-normal tracking-[-0.05em]">Capabilities</h2>
-            <p className="mt-1 text-sm text-sub">What I help with across the product lifecycle.</p>
-          </div>
+        <div>
+          <h2 id="capabilities-title" className="text-[clamp(22px,3vw,28px)] font-normal tracking-[-0.05em]">Capabilities</h2>
+          <p className="mt-1 text-sm text-sub">What I help with across the product lifecycle.</p>
         </div>
         <div className="mt-6 flex flex-wrap gap-2.5">
           {about.capabilities.map((item) => {
@@ -131,12 +127,9 @@ export default async function AboutUsPage() {
       </section>
 
       <section className="panel p-5 sm:p-8" aria-labelledby="industries-title">
-        <div className="flex items-center gap-3">
-          <span className="about-section-icon"><BarChart3 size={19} strokeWidth={1.8} aria-hidden="true" /></span>
-          <div>
-            <h2 id="industries-title" className="text-[clamp(22px,3vw,28px)] font-normal tracking-[-0.05em]">Industries</h2>
-            <p className="mt-1 text-sm text-sub">Domains I&apos;ve designed for.</p>
-          </div>
+        <div>
+          <h2 id="industries-title" className="text-[clamp(22px,3vw,28px)] font-normal tracking-[-0.05em]">Industries</h2>
+          <p className="mt-1 text-sm text-sub">Domains I&apos;ve designed for.</p>
         </div>
         <div className="mt-6 grid grid-cols-2 gap-2 sm:grid-cols-4">
           {about.industries.map((item) => {
@@ -147,12 +140,9 @@ export default async function AboutUsPage() {
       </section>
 
       <section className="panel p-5 sm:p-8" aria-labelledby="tools-title">
-        <div className="flex items-center gap-3">
-          <span className="about-section-icon"><Wrench size={19} strokeWidth={1.8} aria-hidden="true" /></span>
-          <div>
-            <h2 id="tools-title" className="text-[clamp(22px,3vw,28px)] font-normal tracking-[-0.05em]">Tools and collaboration</h2>
-            <p className="mt-1 text-sm text-sub">Tools I use to design, research, and collaborate.</p>
-          </div>
+        <div>
+          <h2 id="tools-title" className="text-[clamp(22px,3vw,28px)] font-normal tracking-[-0.05em]">Tools and collaboration</h2>
+          <p className="mt-1 text-sm text-sub">Tools I use to design, research, and collaborate.</p>
         </div>
         <div className="mt-6 flex flex-wrap gap-3" aria-label="Design and collaboration tools">
           {toolLogos.map((tool) => (
