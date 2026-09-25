@@ -33,7 +33,7 @@ export default function AboutPhotoCarousel({ items }: { items: AboutGalleryItem[
         </p>
       </div>
 
-      <div className="mx-auto mt-7 w-full max-w-[440px] [perspective:1200px]">
+      <div className="mx-auto mt-7 w-full [perspective:1200px]">
         <button
           key={index}
           type="button"
@@ -48,6 +48,7 @@ export default function AboutPhotoCarousel({ items }: { items: AboutGalleryItem[
               <img src={photo.image} alt={photo.alt || photo.title} className="h-full w-full object-cover" />
             </span>
             <span className="about-album-face about-album-back" aria-hidden={!flipped}>
+              <span className="about-postcard-frame" aria-hidden="true" />
               <span className="about-postcard-stamp" aria-hidden="true">AIR<br />MAIL</span>
               <span className="about-postcard-cancel" aria-hidden="true">HISYAM<br /><i>JAKARTA</i></span>
               <span className="about-postcard-copy">
@@ -60,7 +61,7 @@ export default function AboutPhotoCarousel({ items }: { items: AboutGalleryItem[
         </button>
       </div>
 
-      <div className="mx-auto mt-6 flex w-full max-w-[440px] items-center justify-between gap-3">
+      <div className="mx-auto mt-6 flex w-full items-center justify-between gap-3">
         <button type="button" onClick={() => goTo(index - 1)} disabled={photos.length < 2} aria-label="Previous photo" className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-line-strong text-ink transition-colors hover:bg-bg disabled:cursor-not-allowed disabled:opacity-40">
           <ArrowLeft size={17} aria-hidden="true" />
         </button>
