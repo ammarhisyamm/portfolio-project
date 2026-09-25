@@ -132,8 +132,9 @@
 .about-album-card-inner.is-flipped { transform: rotateY(180deg); }
 .about-album-face { position: absolute; inset: 0; display: flex; flex-direction: column; overflow: hidden; border: 1px solid #dfcfad; background: #f8f0df; box-shadow: 0 14px 36px rgba(40,35,28,.12), 0 2px 5px rgba(40,35,28,.06); backface-visibility: hidden; -webkit-backface-visibility: hidden; isolation: isolate; }
 .about-album-face::before { content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none; background: radial-gradient(circle at 8px 0, rgba(103,79,43,.34) 0 3px, transparent 3.5px) 0 0/16px 12px repeat-x, radial-gradient(circle at 8px 100%, rgba(103,79,43,.34) 0 3px, transparent 3.5px) 0 100%/16px 12px repeat-x, radial-gradient(circle at 0 8px, rgba(103,79,43,.34) 0 3px, transparent 3.5px) 0 0/12px 16px repeat-y, radial-gradient(circle at 100% 8px, rgba(103,79,43,.34) 0 3px, transparent 3.5px) 100% 0/12px 16px repeat-y; opacity: .7; }
-.about-album-front { padding: clamp(10px, 2.1vw, 22px); }
-.about-album-front img { position: relative; z-index: 1; height: 100%; width: 100%; border: 1px solid rgba(102,80,42,.28); border-radius: 1px; object-fit: cover; filter: saturate(.86) contrast(.98); }
+.about-album-front { padding: 0; border: 0; background: transparent url('/about-gallery/postcard-frame.png') center/100% 100% no-repeat; box-shadow: none; }
+.about-album-front::before { display: none; }
+.about-album-front img { position: absolute; inset: 8.4% 6.4%; z-index: 1; height: 83.2%; width: 87.2%; border: 1px solid rgba(102,80,42,.28); border-radius: 1px; object-fit: cover; filter: saturate(.86) contrast(.98); }
 .about-album-front::after { content: ""; position: absolute; inset: 10px; z-index: 3; pointer-events: none; border: 1px solid rgba(255,255,255,.34); opacity: 0; transition: opacity 220ms ease; }
 .about-album-card:hover .about-album-front::after, .about-album-card:focus-visible .about-album-front::after { opacity: 1; }
 .about-album-back { transform: rotateY(180deg); padding: 0; border: 0; background: transparent; box-shadow: none; }
