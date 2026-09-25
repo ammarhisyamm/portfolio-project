@@ -69,7 +69,7 @@ const toolLogos = [
   { name: "Miro", src: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/miro.svg" },
   { name: "GitHub", src: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/github.svg" },
   { name: "Jira", src: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/jira.svg" },
-  { name: "Jitter", src: "https://jitter.video/aw-cms/images/logo.svg" },
+  { name: "Jitter", src: "/about-gallery/jitter-logo.png" },
   { name: "Framer", src: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/framer.svg" },
   { name: "OpenCode", src: "https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/opencode.svg" },
   { name: "Whimsical", src: "https://whimsical.com/_next_public/brand/logo-color.svg" },
@@ -153,9 +153,9 @@ export default async function AboutUsPage() {
         </div>
         <div className="mt-6 flex flex-wrap gap-3" aria-label="Design and collaboration tools">
           {toolLogos.map((tool) => (
-            <span key={tool.name} className="about-tool-logo" data-name={tool.name} title={tool.name}>
+            <span key={tool.name} className="about-tool-logo" data-name={tool.name} title={tool.name} role="img" aria-label={tool.name} tabIndex={0}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={tool.src} alt={tool.name} />
+              <img src={tool.src} alt="" aria-hidden="true" />
             </span>
           ))}
         </div>
