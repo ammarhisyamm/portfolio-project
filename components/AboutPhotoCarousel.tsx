@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowLeft, ArrowRight, RotateCcw } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import type { AboutGalleryItem } from "@/lib/content";
 
 export default function AboutPhotoCarousel({ items }: { items: AboutGalleryItem[] }) {
@@ -40,28 +40,21 @@ export default function AboutPhotoCarousel({ items }: { items: AboutGalleryItem[
           onClick={() => setFlipped((value) => !value)}
           aria-label={flipped ? `Show photo: ${photo.title}` : `Read note for ${photo.title}`}
           aria-pressed={flipped}
-          className="about-album-card relative block aspect-[4/5] w-full cursor-pointer text-left focus-visible:outline-offset-4"
+          className="about-album-card relative block aspect-[16/9] w-full cursor-pointer text-left focus-visible:outline-offset-4"
         >
           <span className={`about-album-card-inner ${flipped ? "is-flipped" : ""}`}>
             <span className="about-album-face about-album-front">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={photo.image} alt={photo.alt || photo.title} className="h-[78%] w-full object-cover" />
-              <span className="flex min-h-0 flex-1 items-center justify-between gap-3 px-1 pt-4">
-                <span className="line-clamp-2 text-[clamp(16px,3vw,21px)] leading-tight tracking-[-0.04em] text-ink">
-                  {photo.title || "A moment to keep"}
-                </span>
-                <RotateCcw size={18} className="shrink-0 text-muted" aria-hidden="true" />
-              </span>
+              <img src={photo.image} alt={photo.alt || photo.title} className="h-full w-full object-cover" />
             </span>
             <span className="about-album-face about-album-back" aria-hidden={!flipped}>
-              <span className="text-[11px] uppercase tracking-[0.08em] text-muted">A note from the album</span>
-              <span className="mt-auto block text-[clamp(22px,5vw,34px)] leading-[1.16] tracking-[-0.05em] text-ink">
-                {photo.title || "A moment to keep"}
+              <span className="about-postcard-stamp" aria-hidden="true">AIR<br />MAIL</span>
+              <span className="about-postcard-cancel" aria-hidden="true">HISYAM<br /><i>JAKARTA</i></span>
+              <span className="about-postcard-copy">
+                <span className="text-[clamp(18px,3vw,28px)] leading-tight tracking-[-0.04em] text-ink">{photo.title || "A moment to keep"}</span>
+                <span className="mt-3 block max-w-[54ch] text-[clamp(12px,1.8vw,15px)] leading-[1.55] text-sub">{photo.note}</span>
               </span>
-              <span className="mt-5 block max-h-[45%] overflow-y-auto text-[clamp(13px,2.5vw,16px)] leading-[1.7] text-sub">
-                {photo.note}
-              </span>
-              <span className="mt-auto border-t border-line-strong pt-5 text-[11px] text-muted">Select to see the photo again</span>
+              <span className="about-postcard-sender">Hisyam</span>
             </span>
           </span>
         </button>
@@ -87,7 +80,6 @@ export default function AboutPhotoCarousel({ items }: { items: AboutGalleryItem[
           <ArrowRight size={17} aria-hidden="true" />
         </button>
       </div>
-      {photo.placeholder && <p className="mt-3 text-center text-[11px] text-muted">Sample photo. Replace it in the CMS.</p>}
     </section>
   );
 }
