@@ -173,6 +173,7 @@
 .about-tool-logo:hover::after { transform: translateX(208%) skewX(-18deg); }
 .about-tool-logo:hover img { opacity: 0; transform: scale(.86); }
 .about-tool-logo img { position: relative; z-index: 0; width: 100%; height: 100%; object-fit: contain; transition: opacity 160ms ease, transform 160ms ease; }
+.about-tool-logo[data-name="Whimsical"] img { filter: grayscale(1) contrast(1.25); }
 @media (prefers-reduced-motion: reduce) { .about-skill-chip, .about-industry-chip, .about-tool-logo, .about-skill-chip::after, .about-industry-chip::after, .about-tool-logo::after { transition: none; } }
 @media (prefers-reduced-motion: reduce) { .about-album-card-inner { transition: none; } }
 .design-lab-launcher { position: fixed; right: 20px; bottom: 20px; z-index: 120; }
