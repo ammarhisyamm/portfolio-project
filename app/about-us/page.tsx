@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import GitHubActivity from "@/components/GitHubActivity";
+import AboutPhotoCarousel from "@/components/AboutPhotoCarousel";
 import { getContent } from "@/lib/content";
 
 export const metadata: Metadata = {
@@ -30,6 +31,8 @@ export default async function AboutUsPage() {
           )}
         </div>
       </section>
+
+      <AboutPhotoCarousel items={about.gallery ?? []} />
 
       <section className="panel p-5 sm:p-8" aria-labelledby="approach-title">
         <span className="kicker">How I work</span>

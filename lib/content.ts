@@ -81,6 +81,15 @@ export type AboutContent = {
   industries: string[];
   cvUrl: string;
   cvLabel: string;
+  gallery: AboutGalleryItem[];
+};
+
+export type AboutGalleryItem = {
+  image: string;
+  alt: string;
+  title: string;
+  note: string;
+  placeholder: boolean;
 };
 
 export type ContactContent = {
@@ -601,6 +610,29 @@ export const DEFAULTS: SiteContent = {
     industries,
     cvUrl: "",
     cvLabel: "Download CV",
+    gallery: [
+      {
+        image: "/about-gallery/desk.jpg",
+        alt: "Sample album photo of a sketchbook and coffee by a window",
+        title: "A little space to notice",
+        note: "This is a sample photo and note. I'll replace it with a moment from my own album soon.",
+        placeholder: true,
+      },
+      {
+        image: "/about-gallery/walk.jpg",
+        alt: "Sample album photo of a quiet city street",
+        title: "Outside the screen",
+        note: "A small pause between projects. This sample frame is ready for a real photo and story from my gallery.",
+        placeholder: true,
+      },
+      {
+        image: "/about-gallery/coffee.jpg",
+        alt: "Sample album photo of coffee cups near a street window",
+        title: "The in-between moments",
+        note: "Some memories are ordinary in the best way. This sample will become a personal album note when I add my own photo.",
+        placeholder: true,
+      },
+    ],
   },
   contact: {
     email: "hello@hisyam.design",
