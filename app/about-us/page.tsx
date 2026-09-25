@@ -128,40 +128,39 @@ export default async function AboutUsPage() {
             );
           })}
         </div>
-        <div className="mt-8 grid gap-7 border-t border-line pt-7 sm:grid-cols-2">
-          <div className="min-w-0">
-            <div className="flex items-center gap-3">
-              <span className="about-section-icon"><BarChart3 size={19} strokeWidth={1.8} aria-hidden="true" /></span>
-              <div>
-                <h3 className="text-base font-medium tracking-[-0.03em]">Industries</h3>
-                <p className="mt-0.5 text-xs text-muted">Domains I&apos;ve designed for.</p>
-              </div>
-            </div>
-            <div className="mt-5 grid grid-cols-1 gap-2">
-              {about.industries.map((item) => {
-                const Icon = industryMeta[item.toLowerCase()] ?? Sparkles;
-                return <span key={item} className="about-industry-chip"><Icon size={15} strokeWidth={1.8} aria-hidden="true" />{item}</span>;
-              })}
-            </div>
+      </section>
+
+      <section className="panel p-5 sm:p-8" aria-labelledby="industries-title">
+        <div className="flex items-center gap-3">
+          <span className="about-section-icon"><BarChart3 size={19} strokeWidth={1.8} aria-hidden="true" /></span>
+          <div>
+            <h2 id="industries-title" className="text-[clamp(22px,3vw,28px)] font-normal tracking-[-0.05em]">Industries</h2>
+            <p className="mt-1 text-sm text-sub">Domains I&apos;ve designed for.</p>
           </div>
-          <div className="min-w-0 sm:border-l sm:border-line sm:pl-7">
-            <div className="flex items-center gap-3">
-              <span className="about-section-icon"><Wrench size={19} strokeWidth={1.8} aria-hidden="true" /></span>
-              <div>
-                <h3 className="text-base font-medium tracking-[-0.03em]">Tools and collaboration</h3>
-                <p className="mt-0.5 text-xs text-muted">Tools I use to design, research, and collaborate.</p>
-              </div>
-            </div>
-            <div className="mt-5 flex flex-wrap gap-2.5" aria-label="Design and collaboration tools">
-              {toolLogos.map((tool) => (
-                <span key={tool.name} className="about-tool-logo" title={tool.name}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={tool.src} alt={tool.name} />
-                </span>
-              ))}
-            </div>
-            <p className="mt-5 text-sm leading-relaxed text-sub">{about.tools}</p>
+        </div>
+        <div className="mt-6 grid grid-cols-2 gap-2 sm:grid-cols-4">
+          {about.industries.map((item) => {
+            const Icon = industryMeta[item.toLowerCase()] ?? Sparkles;
+            return <span key={item} className="about-industry-chip"><Icon size={15} strokeWidth={1.8} aria-hidden="true" />{item}</span>;
+          })}
+        </div>
+      </section>
+
+      <section className="panel p-5 sm:p-8" aria-labelledby="tools-title">
+        <div className="flex items-center gap-3">
+          <span className="about-section-icon"><Wrench size={19} strokeWidth={1.8} aria-hidden="true" /></span>
+          <div>
+            <h2 id="tools-title" className="text-[clamp(22px,3vw,28px)] font-normal tracking-[-0.05em]">Tools and collaboration</h2>
+            <p className="mt-1 text-sm text-sub">Tools I use to design, research, and collaborate.</p>
           </div>
+        </div>
+        <div className="mt-6 flex flex-wrap gap-3" aria-label="Design and collaboration tools">
+          {toolLogos.map((tool) => (
+            <span key={tool.name} className="about-tool-logo" data-name={tool.name} title={tool.name}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={tool.src} alt={tool.name} />
+            </span>
+          ))}
         </div>
       </section>
 
