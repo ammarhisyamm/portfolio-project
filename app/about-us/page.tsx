@@ -66,6 +66,13 @@ const toolLogos = [
   { name: "Adobe", src: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/adobe.svg" },
   { name: "Photopea", src: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/photopea.svg" },
   { name: "OpenAI", src: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/openai.svg" },
+  { name: "Miro", src: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/miro.svg" },
+  { name: "GitHub", src: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/github.svg" },
+  { name: "Jira", src: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/jira.svg" },
+  { name: "Jitter", src: "https://jitter.video/favicon.svg" },
+  { name: "Framer", src: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/framer.svg" },
+  { name: "OpenCode", src: "https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/opencode.svg" },
+  { name: "Whimsical", src: "https://cdn.brandfetch.io/whimsical.com/w/128/h/128/theme/light/icon" },
 ];
 
 export default async function AboutUsPage() {
