@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import type { CanvasItem } from "@/lib/canvas";
 import Media from "./Media";
-import LightboxModal from "./LightboxModal";
+import MuseumGallery from "./MuseumGallery";
 
 const STORAGE_KEY = "hisyam.canvas.nodes.v1";
 
@@ -65,7 +65,6 @@ type Controls = {
   resetLayout: () => void;
   closeGallery: () => void;
   openGallery: (slug: string) => void;
-  stepGallery: (dir: 1 | -1) => void;
 };
 
 export default function WorkCanvas({ items }: { items: CanvasItem[] }) {
@@ -102,13 +101,6 @@ export default function WorkCanvas({ items }: { items: CanvasItem[] }) {
       /* storage unavailable */
     }
   }, [positions]);
-
-  const bySlug = useCallback(
-    (slug: string) => items.find((p) => p.slug === slug),
-    [items]
-  );
-  const activeItem = gallerySlug ? bySlug(gallerySlug) : null;
-  const galleryImages = activeItem ? [activeItem.image] : [];
 
   const zoomCenter = useCallback((factor: number) => {
     const el = viewportElRef.current;
@@ -168,21 +160,13 @@ export default function WorkCanvas({ items }: { items: CanvasItem[] }) {
 
   const openGallery = useCallback((slug: string) => {
     openedFrom.current = nodeRefs.current[slug] ?? null;
-    setGalleryIndex(0);
+    setGalleryIndex(Math.max(0, items.findIndex((item) => item.slug === slug)));
     setSelected(slug);
     setGallerySlug(slug);
-  }, []);
+  }, [items]);
 
-  const stepGallery = useCallback(
-    (dir: 1 | -1) => {
-      if (galleryImages.length <= 1) return;
-      setGalleryIndex((i) => (i + dir + galleryImages.length) % galleryImages.length);
-    },
-    [galleryImages.length]
-  );
-
-  const actions = useRef<Controls>({ zoomCenter, fitAll, resetView, resetLayout, closeGallery, openGallery, stepGallery });
-  actions.current = { zoomCenter, fitAll, resetView, resetLayout, closeGallery, openGallery, stepGallery };
+  const actions = useRef<Controls>({ zoomCenter, fitAll, resetView, resetLayout, closeGallery, openGallery });
+  actions.current = { zoomCenter, fitAll, resetView, resetLayout, closeGallery, openGallery };
 
   // Wheel zoom (native listener for reliable preventDefault)
   useEffect(() => {
@@ -493,9 +477,9 @@ export default function WorkCanvas({ items }: { items: CanvasItem[] }) {
         )}
       </AnimatePresence>
 
-      <LightboxModal
-        open={!!activeItem}
-        images={activeItem ? [{ src: activeItem.image, alt: `Visual for ${activeItem.title}` }] : []}
+      <MuseumGallery
+        open={gallerySlug !== null}
+        items={items}
         index={galleryIndex}
         onIndexChange={setGalleryIndex}
         onClose={closeGallery}
