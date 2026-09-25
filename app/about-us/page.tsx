@@ -1,5 +1,27 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import {
+  BarChart3,
+  BookOpen,
+  BriefcaseBusiness,
+  Cloud,
+  Code2,
+  Crosshair,
+  FileSearch,
+  Heart,
+  Landmark,
+  Layers3,
+  MessageCircle,
+  MousePointer2,
+  Palette,
+  PanelsTopLeft,
+  Play,
+  Search,
+  Sparkles,
+  UserRoundCheck,
+  Wrench,
+  type LucideIcon,
+} from "lucide-react";
 import GitHubActivity from "@/components/GitHubActivity";
 import AboutPhotoCarousel from "@/components/AboutPhotoCarousel";
 import { getContent } from "@/lib/content";
@@ -8,6 +30,44 @@ export const metadata: Metadata = {
   title: "About Us",
   description: "Learn about Hisyam's background, design approach, capabilities, and recent work on GitHub.",
 };
+
+type ItemMeta = { icon: LucideIcon; tone: string };
+
+const capabilityMeta: Record<string, ItemMeta> = {
+  "product strategy": { icon: Crosshair, tone: "sky" },
+  "ux research": { icon: Search, tone: "violet" },
+  "user flows & ia": { icon: FileSearch, tone: "amber" },
+  "user flows and information architecture": { icon: FileSearch, tone: "amber" },
+  wireframing: { icon: PanelsTopLeft, tone: "slate" },
+  prototyping: { icon: Play, tone: "mint" },
+  "interaction design": { icon: MousePointer2, tone: "rose" },
+  "visual design": { icon: Palette, tone: "gold" },
+  "design systems": { icon: Layers3, tone: "blue" },
+  "usability testing": { icon: UserRoundCheck, tone: "lilac" },
+  "design handoff": { icon: Code2, tone: "slate" },
+  "design-to-development handoff": { icon: Code2, tone: "slate" },
+  "competitor analysis": { icon: BarChart3, tone: "mint" },
+};
+
+const industryMeta: Record<string, LucideIcon> = {
+  fintech: Landmark,
+  saas: Cloud,
+  marketplaces: BriefcaseBusiness,
+  education: BookOpen,
+  enterprise: BriefcaseBusiness,
+  communication: MessageCircle,
+  "ai products": Sparkles,
+  lifestyle: Heart,
+};
+
+const toolLogos = [
+  { name: "Figma", src: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/figma.svg" },
+  { name: "Notion", src: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/notion.svg" },
+  { name: "Slack", src: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/slack.svg" },
+  { name: "Adobe", src: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/adobe.svg" },
+  { name: "Photopea", src: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/photopea.svg" },
+  { name: "OpenAI", src: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/openai.svg" },
+];
 
 export default async function AboutUsPage() {
   const { about, socials } = await getContent();
@@ -49,18 +109,58 @@ export default async function AboutUsPage() {
       </section>
 
       <section className="panel p-5 sm:p-8" aria-labelledby="capabilities-title">
-        <h2 id="capabilities-title" className="text-[clamp(22px,3vw,28px)] font-normal tracking-[-0.05em]">Capabilities</h2>
-        <div className="mt-5 flex flex-wrap gap-2">
-          {about.capabilities.map((item) => <span key={item} className="rounded-full border border-line bg-bg px-3 py-2 text-xs text-sub">{item}</span>)}
-        </div>
-        <div className="mt-8 grid gap-6 border-t border-line pt-6 sm:grid-cols-2">
+        <div className="flex items-center gap-3">
+          <span className="about-section-icon"><Crosshair size={19} strokeWidth={1.8} aria-hidden="true" /></span>
           <div>
-            <h3 className="text-sm font-medium">Industries</h3>
-            <p className="mt-3 text-sm leading-relaxed text-sub">{about.industries.join(", ")}</p>
+            <h2 id="capabilities-title" className="text-[clamp(22px,3vw,28px)] font-normal tracking-[-0.05em]">Capabilities</h2>
+            <p className="mt-1 text-sm text-sub">What I help with across the product lifecycle.</p>
           </div>
-          <div>
-            <h3 className="text-sm font-medium">Tools and collaboration</h3>
-            <p className="mt-3 text-sm leading-relaxed text-sub">{about.tools}</p>
+        </div>
+        <div className="mt-6 flex flex-wrap gap-2.5">
+          {about.capabilities.map((item) => {
+            const meta = capabilityMeta[item.toLowerCase()] ?? { icon: Sparkles, tone: "slate" };
+            const Icon = meta.icon;
+            return (
+              <span key={item} className="about-skill-chip" data-tone={meta.tone}>
+                <Icon size={16} strokeWidth={1.9} aria-hidden="true" />
+                {item}
+              </span>
+            );
+          })}
+        </div>
+        <div className="mt-8 grid gap-7 border-t border-line pt-7 sm:grid-cols-2">
+          <div className="min-w-0">
+            <div className="flex items-center gap-3">
+              <span className="about-section-icon"><BarChart3 size={19} strokeWidth={1.8} aria-hidden="true" /></span>
+              <div>
+                <h3 className="text-base font-medium tracking-[-0.03em]">Industries</h3>
+                <p className="mt-0.5 text-xs text-muted">Domains I&apos;ve designed for.</p>
+              </div>
+            </div>
+            <div className="mt-5 grid grid-cols-1 gap-2">
+              {about.industries.map((item) => {
+                const Icon = industryMeta[item.toLowerCase()] ?? Sparkles;
+                return <span key={item} className="about-industry-chip"><Icon size={15} strokeWidth={1.8} aria-hidden="true" />{item}</span>;
+              })}
+            </div>
+          </div>
+          <div className="min-w-0 sm:border-l sm:border-line sm:pl-7">
+            <div className="flex items-center gap-3">
+              <span className="about-section-icon"><Wrench size={19} strokeWidth={1.8} aria-hidden="true" /></span>
+              <div>
+                <h3 className="text-base font-medium tracking-[-0.03em]">Tools and collaboration</h3>
+                <p className="mt-0.5 text-xs text-muted">Tools I use to design, research, and collaborate.</p>
+              </div>
+            </div>
+            <div className="mt-5 flex flex-wrap gap-2.5" aria-label="Design and collaboration tools">
+              {toolLogos.map((tool) => (
+                <span key={tool.name} className="about-tool-logo" title={tool.name}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={tool.src} alt={tool.name} />
+                </span>
+              ))}
+            </div>
+            <p className="mt-5 text-sm leading-relaxed text-sub">{about.tools}</p>
           </div>
         </div>
       </section>

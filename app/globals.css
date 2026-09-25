@@ -144,6 +144,29 @@
 .about-postcard-copy { position: absolute; top: 32%; left: 9%; z-index: 3; width: 58%; padding-right: 4%; }
 .about-postcard-copy::before { content: ""; position: absolute; inset: auto 0 -14px; border-bottom: 1px solid rgba(85,65,39,.2); box-shadow: 0 12px 0 rgba(85,65,39,.13), 0 24px 0 rgba(85,65,39,.11); }
 .about-postcard-sender { position: absolute; bottom: 12%; left: 9%; z-index: 3; color: #594733; font-family: Georgia, serif; font-size: clamp(18px, 3vw, 30px); font-style: italic; transform: rotate(-3deg); }
+.about-section-icon { display: grid; width: 34px; height: 34px; flex: 0 0 34px; place-items: center; border: 1px solid var(--site-border-color, #e8e8e8); border-radius: 10px; background: #f8f8f8; color: #3d3d3d; }
+.about-skill-chip, .about-industry-chip, .about-tool-logo { position: relative; isolation: isolate; overflow: hidden; }
+.about-skill-chip::after, .about-industry-chip::after, .about-tool-logo::after { content: ""; position: absolute; inset: -40% auto -40% -55%; z-index: 1; width: 34%; pointer-events: none; opacity: .62; transform: skewX(-22deg); background: linear-gradient(90deg, transparent, rgba(255,255,255,.8), transparent); transition: transform 430ms cubic-bezier(.2,.7,.2,1); }
+.about-skill-chip:hover::after, .about-industry-chip:hover::after, .about-tool-logo:hover::after { transform: translateX(520%) skewX(-22deg); }
+.about-skill-chip { display: inline-flex; min-width: 0; align-items: center; gap: 8px; border: 1px solid transparent; border-radius: 10px; padding: 9px 11px; color: #4f6070; font-size: 12px; font-weight: 500; line-height: 1.2; transition: transform 180ms ease, box-shadow 180ms ease; }
+.about-skill-chip:hover { box-shadow: 0 8px 18px rgba(26,35,48,.08); transform: translateY(-2px); }
+.about-skill-chip:active, .about-industry-chip:active, .about-tool-logo:active { transform: translateY(1px); }
+.about-skill-chip[data-tone="sky"] { border-color: #d9e8fb; background: #edf6ff; color: #4c7fbf; }
+.about-skill-chip[data-tone="violet"] { border-color: #e5dff8; background: #f5f2ff; color: #7862bc; }
+.about-skill-chip[data-tone="amber"] { border-color: #f4dfc9; background: #fff6ed; color: #b9793e; }
+.about-skill-chip[data-tone="slate"] { border-color: #e3e7ea; background: #f5f7f8; color: #62717f; }
+.about-skill-chip[data-tone="mint"] { border-color: #d5eee3; background: #effaf4; color: #4b9a76; }
+.about-skill-chip[data-tone="rose"] { border-color: #f2dbe2; background: #fff2f5; color: #b4677b; }
+.about-skill-chip[data-tone="gold"] { border-color: #f2e5bc; background: #fff9e8; color: #ad8632; }
+.about-skill-chip[data-tone="blue"] { border-color: #d5e2f5; background: #f0f5ff; color: #557ec5; }
+.about-skill-chip[data-tone="lilac"] { border-color: #e3dcfa; background: #f6f3ff; color: #836dcc; }
+.about-industry-chip { display: flex; min-width: 0; align-items: center; gap: 9px; border: 1px solid #e7e7e7; border-radius: 10px; background: #fafafa; padding: 9px 11px; color: #525252; font-size: 12px; transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease; }
+.about-industry-chip:hover { border-color: #d4d4d4; box-shadow: 0 8px 18px rgba(26,26,26,.07); transform: translateY(-2px); }
+.about-industry-chip svg { color: #666; }
+.about-tool-logo { display: grid; width: 46px; height: 46px; place-items: center; border: 1px solid #e6e6e6; border-radius: 11px; background: #fff; padding: 10px; transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease; }
+.about-tool-logo:hover { border-color: #d4d4d4; box-shadow: 0 8px 18px rgba(26,26,26,.09); transform: translateY(-2px); }
+.about-tool-logo img { width: 100%; height: 100%; object-fit: contain; }
+@media (prefers-reduced-motion: reduce) { .about-skill-chip, .about-industry-chip, .about-tool-logo, .about-skill-chip::after, .about-industry-chip::after, .about-tool-logo::after { transition: none; } }
 @media (prefers-reduced-motion: reduce) { .about-album-card-inner { transition: none; } }
 .design-lab-launcher { position: fixed; right: 20px; bottom: 20px; z-index: 120; }
 .design-lab-trigger { display: inline-flex; align-items: center; gap: 8px; border: 1px solid #dcdcdc; border-radius: 999px; background: rgba(255,255,255,.92); padding: 10px 14px; color: #303030; font-size: 12px; box-shadow: 0 8px 24px rgba(22,22,22,.12); backdrop-filter: blur(12px); }
