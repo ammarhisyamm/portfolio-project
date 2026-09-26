@@ -190,6 +190,7 @@
   color: #f4f0e9;
   background: #211d19;
   isolation: isolate;
+  animation: museum-gallery-in 280ms var(--museum-ease) both;
 }
 .museum-gallery-wall {
   position: absolute;
@@ -290,12 +291,17 @@
   background: #22201e;
   transition: filter 250ms var(--museum-ease);
 }
+.museum-gallery-artwork-shell {
+  width: 100%;
+  height: 100%;
+  animation: museum-art-slide-in 420ms var(--museum-ease) both;
+  will-change: transform, opacity, filter;
+}
 .museum-gallery-artwork {
   width: 100%;
   height: 100%;
   background: #22201e;
   transform-origin: var(--art-focus-x) var(--art-focus-y);
-  animation: museum-art-appear 200ms var(--museum-ease) both;
   transition: transform 250ms cubic-bezier(.77, 0, .175, 1);
 }
 .museum-gallery-art-image {
@@ -318,6 +324,7 @@
   color: #342f2b;
   box-shadow: 0 6px 18px rgba(0, 0, 0, .3);
   text-align: center;
+  animation: museum-copy-enter 360ms var(--museum-ease) both;
 }
 .museum-gallery-plaque-title { overflow: hidden; font-family: Georgia, serif; font-size: 13px; font-style: italic; text-overflow: ellipsis; white-space: nowrap; }
 .museum-gallery-plaque-meta { color: #766c5d; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; }
@@ -343,7 +350,7 @@
   background: linear-gradient(180deg, rgba(25, 23, 21, .94), rgba(20, 19, 18, .98));
   padding: 22px clamp(20px, 4vw, 60px) 24px;
 }
-.museum-gallery-details { display: grid; gap: 6px; min-width: 0; }
+.museum-gallery-details { display: grid; gap: 6px; min-width: 0; animation: museum-copy-enter 320ms var(--museum-ease) both; }
 .museum-gallery-footer-label { color: #c7ad85; font-size: 10px; letter-spacing: .16em; text-transform: uppercase; }
 .museum-gallery-details h2 { color: #f5f0e8; font-family: Georgia, serif; font-size: clamp(19px, 2vw, 25px); font-weight: 400; letter-spacing: -.025em; line-height: 1.15; }
 .museum-gallery-details p { max-width: 56ch; color: #bbb3a8; font-size: 12px; line-height: 1.5; }
@@ -357,7 +364,15 @@
 .museum-gallery-zoom button { width: 27px; height: 27px; border: 0; background: transparent; }
 .museum-gallery-zoom button:disabled { opacity: .3; cursor: not-allowed; }
 .museum-gallery-zoom output { min-width: 37px; color: #e7e4df; font-size: 11px; text-align: center; }
-@keyframes museum-art-appear { from { opacity: .55; } to { opacity: 1; } }
+@keyframes museum-gallery-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes museum-art-slide-in {
+  from { opacity: 0; transform: translate3d(var(--art-slide-from), 0, 0); filter: blur(5px); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); filter: blur(0); }
+}
+@keyframes museum-copy-enter {
+  from { opacity: 0; transform: translate3d(0, 8px, 0); filter: blur(4px); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); filter: blur(0); }
+}
 @media (max-width: 820px) {
   .museum-gallery-footer { grid-template-columns: 1fr; gap: 14px; }
 }
@@ -396,7 +411,8 @@
   .museum-gallery-plaque { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .museum-gallery-artwork { animation: none; transition: none; }
+  .museum-gallery, .museum-gallery-artwork-shell, .museum-gallery-details, .museum-gallery-plaque { animation: none; }
+  .museum-gallery-artwork { transition: none; }
   .museum-gallery-spotlight, .museum-gallery-wall, .museum-gallery-frame, .museum-gallery-art-viewport { transition: none; }
   .museum-gallery-icon-button, .museum-gallery-arrow, .museum-gallery-thumb, .museum-gallery-zoom button { transition: none; }
 }

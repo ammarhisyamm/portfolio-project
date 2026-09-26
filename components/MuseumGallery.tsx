@@ -18,6 +18,7 @@ export default function MuseumGallery({ open, items, index, onIndexChange, onClo
   const [lightsOn, setLightsOn] = useState(true);
   const [zoom, setZoom] = useState(100);
   const [ratios, setRatios] = useState<Record<string, number>>({});
+  const [slideDirection, setSlideDirection] = useState<1 | -1>(1);
   const closeRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const touchStart = useRef<{ x: number; y: number } | null>(null);
@@ -35,8 +36,19 @@ export default function MuseumGallery({ open, items, index, onIndexChange, onClo
     setRatios((current) => current[item.slug] === next ? current : { ...current, [item.slug]: next });
   }, [item]);
 
+  const selectArtwork = useCallback((nextIndex: number) => {
+    if (nextIndex === index || count < 2) return;
+    const forwardDistance = (nextIndex - index + count) % count;
+    const backwardDistance = (index - nextIndex + count) % count;
+    setSlideDirection(forwardDistance <= backwardDistance ? 1 : -1);
+    onIndexChange(nextIndex);
+  }, [count, index, onIndexChange]);
+
   const step = useCallback((direction: -1 | 1) => {
-    if (count > 1) onIndexChange((index + direction + count) % count);
+    if (count > 1) {
+      setSlideDirection(direction);
+      onIndexChange((index + direction + count) % count);
+    }
   }, [count, index, onIndexChange]);
 
   useEffect(() => {
@@ -96,12 +108,14 @@ export default function MuseumGallery({ open, items, index, onIndexChange, onClo
         <div className="museum-gallery-display" style={artStyle}>
           <div className="museum-gallery-frame" aria-live="polite">
             <div className="museum-gallery-art-viewport">
-              <div className="museum-gallery-artwork" key={item.slug} style={{ transform: `scale(${((item.cropZoom ?? 100) / 100) * (zoom / 100)})` }}>
-                <Media src={item.image} alt={item.title} label={item.title} imgClassName="museum-gallery-art-image" onNaturalSize={recordSize} />
+              <div className="museum-gallery-artwork-shell" key={item.slug} style={{ "--art-slide-from": `${slideDirection * 24}px` } as CSSProperties}>
+                <div className="museum-gallery-artwork" style={{ transform: `scale(${((item.cropZoom ?? 100) / 100) * (zoom / 100)})` }}>
+                  <Media src={item.image} alt={item.title} label={item.title} imgClassName="museum-gallery-art-image" onNaturalSize={recordSize} />
+                </div>
               </div>
             </div>
           </div>
-          <div className="museum-gallery-plaque">
+          <div className="museum-gallery-plaque" key={item.slug}>
             <span className="museum-gallery-plaque-title">{item.title}</span>
             <span className="museum-gallery-plaque-meta">Interface study · No. {String(index + 1).padStart(2, "0")}</span>
           </div>
@@ -110,7 +124,7 @@ export default function MuseumGallery({ open, items, index, onIndexChange, onClo
       </main>
 
       <footer className="museum-gallery-footer">
-        <div className="museum-gallery-details">
+        <div className="museum-gallery-details" key={item.slug}>
           <span className="museum-gallery-footer-label">On view · {String(index + 1).padStart(2, "0")}</span>
           <h2 aria-live="polite">{item.title}</h2>
           <p>{item.description || "An interface study exploring how visual clarity can make a digital moment feel more considered."}</p>
@@ -118,7 +132,7 @@ export default function MuseumGallery({ open, items, index, onIndexChange, onClo
         <div className="museum-gallery-footer-controls">
           <div className="museum-gallery-thumbs" aria-label="Choose artwork">
             {items.map((work, thumbIndex) => (
-              <button key={work.slug} type="button" className="museum-gallery-thumb" data-active={thumbIndex === index} aria-label={`View ${work.title}`} title={work.title} aria-current={thumbIndex === index ? "true" : undefined} onClick={() => onIndexChange(thumbIndex)}>
+              <button key={work.slug} type="button" className="museum-gallery-thumb" data-active={thumbIndex === index} aria-label={`View ${work.title}`} title={work.title} aria-current={thumbIndex === index ? "true" : undefined} onClick={() => selectArtwork(thumbIndex)}>
                 <Media src={work.image} alt="" label={work.title} imgClassName="h-full w-full object-cover" />
               </button>
             ))}
