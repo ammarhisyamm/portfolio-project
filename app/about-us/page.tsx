@@ -98,8 +98,6 @@ export default async function AboutUsPage() {
         </div>
       </section>
 
-      <AboutPhotoCarousel items={about.gallery ?? []} />
-
       <section className="panel p-5 sm:p-8" aria-labelledby="approach-title">
         <span className="kicker">How I work</span>
         <h2 id="approach-title" className="mt-4 text-[clamp(22px,3vw,28px)] font-normal tracking-[-0.05em]">
@@ -162,6 +160,8 @@ export default async function AboutUsPage() {
       </section>
 
       <GitHubActivity username={username} />
+
+      <AboutPhotoCarousel items={about.gallery ?? []} />
     </div>
   );
 }
