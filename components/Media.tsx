@@ -8,12 +8,13 @@ type MediaProps = {
   alt: string;
   label: string;
   imgClassName?: string;
+  onNaturalSize?: (width: number, height: number) => void;
 };
 
 const VIDEO_RE = /\.(mp4|webm|mov)(\?|#|$)/i;
 const CROP_RE = /[?&]crop=([\d.]+),([\d.]+),([\d.]+),([\d.]+)/;
 
-export default function Media({ src, alt, label, imgClassName }: MediaProps) {
+export default function Media({ src, alt, label, imgClassName, onNaturalSize }: MediaProps) {
   const [failed, setFailed] = useState(false);
   const [nat, setNat] = useState<{ w: number; h: number } | null>(null);
   if (!src || failed) return <MediaPlaceholder label={label} />;
@@ -42,7 +43,7 @@ export default function Media({ src, alt, label, imgClassName }: MediaProps) {
             autoPlay
             loop
             preload="metadata"
-            onLoadedMetadata={(e) => setNat({ w: e.currentTarget.videoWidth, h: e.currentTarget.videoHeight })}
+            onLoadedMetadata={(e) => { setNat({ w: e.currentTarget.videoWidth, h: e.currentTarget.videoHeight }); onNaturalSize?.(crop.sw, crop.sh); }}
             onError={() => setFailed(true)}
             style={style}
           />
@@ -51,7 +52,7 @@ export default function Media({ src, alt, label, imgClassName }: MediaProps) {
             src={src}
             alt={alt}
             loading="lazy"
-            onLoad={(e) => setNat({ w: e.currentTarget.naturalWidth, h: e.currentTarget.naturalHeight })}
+            onLoad={(e) => { setNat({ w: e.currentTarget.naturalWidth, h: e.currentTarget.naturalHeight }); onNaturalSize?.(crop.sw, crop.sh); }}
             onError={() => setFailed(true)}
             style={style}
           />
@@ -69,7 +70,7 @@ export default function Media({ src, alt, label, imgClassName }: MediaProps) {
         autoPlay
         loop
         preload="metadata"
-        onLoadedMetadata={(e) => setNat({ w: e.currentTarget.videoWidth, h: e.currentTarget.videoHeight })}
+        onLoadedMetadata={(e) => { setNat({ w: e.currentTarget.videoWidth, h: e.currentTarget.videoHeight }); onNaturalSize?.(e.currentTarget.videoWidth, e.currentTarget.videoHeight); }}
         onError={() => setFailed(true)}
         className={baseClassName}
       />
@@ -80,7 +81,7 @@ export default function Media({ src, alt, label, imgClassName }: MediaProps) {
       src={src}
       alt={alt}
       loading="lazy"
-      onLoad={(e) => setNat({ w: e.currentTarget.naturalWidth, h: e.currentTarget.naturalHeight })}
+      onLoad={(e) => { setNat({ w: e.currentTarget.naturalWidth, h: e.currentTarget.naturalHeight }); onNaturalSize?.(e.currentTarget.naturalWidth, e.currentTarget.naturalHeight); }}
       onError={() => setFailed(true)}
       className={baseClassName}
     />

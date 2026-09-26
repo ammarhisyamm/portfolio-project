@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
 import { ArrowLeft, ArrowRight, Lightbulb, LightbulbOff, Minus, Plus, X } from "lucide-react";
 import type { CanvasItem } from "@/lib/canvas";
@@ -17,11 +17,23 @@ type Props = {
 export default function MuseumGallery({ open, items, index, onIndexChange, onClose }: Props) {
   const [lightsOn, setLightsOn] = useState(true);
   const [zoom, setZoom] = useState(100);
+  const [ratios, setRatios] = useState<Record<string, number>>({});
   const closeRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const touchStart = useRef<{ x: number; y: number } | null>(null);
   const count = items.length;
   const item = items[index];
+  const ratio = item ? (item.frameRatio ?? ratios[item.slug] ?? 4 / 3) : 4 / 3;
+  const artStyle = {
+    "--art-ratio": ratio,
+    "--art-focus-x": `${item?.focalX ?? 50}%`,
+    "--art-focus-y": `${item?.focalY ?? 50}%`,
+  } as CSSProperties;
+  const recordSize = useCallback((width: number, height: number) => {
+    if (!item || !width || !height) return;
+    const next = Math.min(1.9, Math.max(.85, width / height));
+    setRatios((current) => current[item.slug] === next ? current : { ...current, [item.slug]: next });
+  }, [item]);
 
   const step = useCallback((direction: -1 | 1) => {
     if (count > 1) onIndexChange((index + direction + count) % count);
@@ -62,7 +74,7 @@ export default function MuseumGallery({ open, items, index, onIndexChange, onClo
     <div className="museum-gallery" data-lights={lightsOn ? "on" : "off"} role="dialog" aria-modal="true" aria-label="Design exploration gallery" ref={dialogRef}>
       <div className="museum-gallery-wall" aria-hidden="true" />
       <header className="museum-gallery-topbar">
-        <span className="museum-gallery-count">Gallery <span aria-hidden="true">/</span> {String(index + 1).padStart(2, "0")} of {String(count).padStart(2, "0")}</span>
+        <span className="museum-gallery-count">Design explorations <span aria-hidden="true">/</span> {String(index + 1).padStart(2, "0")} of {String(count).padStart(2, "0")}</span>
         <div className="museum-gallery-top-actions">
           <button type="button" className="museum-gallery-icon-button museum-gallery-light-button" onClick={() => setLightsOn((value) => !value)} aria-label={lightsOn ? "Turn gallery light off" : "Turn gallery light on"} aria-pressed={lightsOn} title={lightsOn ? "Turn light off" : "Turn light on"}>
             {lightsOn ? <Lightbulb size={19} strokeWidth={1.7} /> : <LightbulbOff size={19} strokeWidth={1.7} />}
@@ -79,22 +91,19 @@ export default function MuseumGallery({ open, items, index, onIndexChange, onClo
         if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.4) step(dx < 0 ? 1 : -1);
         touchStart.current = null;
       }}>
-        <div className="museum-gallery-lamp" aria-hidden="true"><span /></div>
-        <div className="museum-gallery-beam" aria-hidden="true" />
+        <div className="museum-gallery-spotlight" aria-hidden="true" />
         {count > 1 && <button type="button" className="museum-gallery-arrow museum-gallery-arrow-prev" onClick={() => step(-1)} aria-label="Previous artwork"><ArrowLeft size={21} strokeWidth={1.6} /></button>}
-        <div className="museum-gallery-display">
+        <div className="museum-gallery-display" style={artStyle}>
           <div className="museum-gallery-frame" aria-live="polite">
             <div className="museum-gallery-art-viewport">
-              <div className="museum-gallery-artwork" key={item.slug} style={{ transform: `scale(${zoom / 100})` }}>
-                <Media src={item.image} alt={item.title} label={item.title} imgClassName="h-full w-full object-contain" />
+              <div className="museum-gallery-artwork" key={item.slug} style={{ transform: `scale(${((item.cropZoom ?? 100) / 100) * (zoom / 100)})` }}>
+                <Media src={item.image} alt={item.title} label={item.title} imgClassName="museum-gallery-art-image" onNaturalSize={recordSize} />
               </div>
             </div>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img className="museum-gallery-frame-image" src="/images/museum-frame.png" alt="" aria-hidden="true" />
           </div>
           <div className="museum-gallery-plaque">
             <span className="museum-gallery-plaque-title">{item.title}</span>
-            <span className="museum-gallery-plaque-meta">{[item.category, item.year].filter(Boolean).join(" · ")}</span>
+            <span className="museum-gallery-plaque-meta">Interface study · No. {String(index + 1).padStart(2, "0")}</span>
           </div>
         </div>
         {count > 1 && <button type="button" className="museum-gallery-arrow museum-gallery-arrow-next" onClick={() => step(1)} aria-label="Next artwork"><ArrowRight size={21} strokeWidth={1.6} /></button>}
@@ -102,14 +111,14 @@ export default function MuseumGallery({ open, items, index, onIndexChange, onClo
 
       <footer className="museum-gallery-footer">
         <div className="museum-gallery-details">
-          <span className="museum-gallery-footer-label">Currently on view</span>
-          <h2>{item.title}</h2>
-          <span>{[item.category, item.year].filter(Boolean).join(" · ")}</span>
+          <span className="museum-gallery-footer-label">On view · {String(index + 1).padStart(2, "0")}</span>
+          <h2 aria-live="polite">{item.title}</h2>
+          <p>{item.description || "An interface study exploring how visual clarity can make a digital moment feel more considered."}</p>
         </div>
         <div className="museum-gallery-footer-controls">
           <div className="museum-gallery-thumbs" aria-label="Choose artwork">
             {items.map((work, thumbIndex) => (
-              <button key={work.slug} type="button" className="museum-gallery-thumb" data-active={thumbIndex === index} aria-label={`View ${work.title}`} aria-current={thumbIndex === index ? "true" : undefined} onClick={() => onIndexChange(thumbIndex)}>
+              <button key={work.slug} type="button" className="museum-gallery-thumb" data-active={thumbIndex === index} aria-label={`View ${work.title}`} title={work.title} aria-current={thumbIndex === index ? "true" : undefined} onClick={() => onIndexChange(thumbIndex)}>
                 <Media src={work.image} alt="" label={work.title} imgClassName="h-full w-full object-cover" />
               </button>
             ))}

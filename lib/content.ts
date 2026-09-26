@@ -57,6 +57,11 @@ export type ExperienceItem = {
 export type ExplorationItem = {
   label: string;
   image: string;
+  description?: string;
+  focalX?: number;
+  focalY?: number;
+  cropZoom?: number;
+  frameRatio?: number | null;
 };
 
 export type SocialLink = {
@@ -818,7 +823,7 @@ export const getContent = cache(async (): Promise<SiteContent> => {
       supabase.from("home_categories").select("*").order("sort", { ascending: true }),
       supabase.from("category_images").select("*").order("sort", { ascending: true }),
       supabase.from("experience").select("company,role,period,points,images").order("sort", { ascending: true }),
-      supabase.from("exploration").select("label,image_url").order("sort", { ascending: true }),
+      supabase.from("exploration").select("label,image_url,description,focal_x,focal_y,crop_zoom,frame_ratio").order("sort", { ascending: true }),
       supabase.from("trust").select("label,image_url").order("sort", { ascending: true }),
       supabase.from("site_content").select("key,value"),
     ]);
@@ -878,6 +883,11 @@ export const getContent = cache(async (): Promise<SiteContent> => {
       exploration: (x.data ?? []).map((r) => ({
         label: r.label,
         image: r.image_url ?? "",
+        description: r.description ?? "",
+        focalX: r.focal_x ?? 50,
+        focalY: r.focal_y ?? 50,
+        cropZoom: r.crop_zoom ?? 100,
+        frameRatio: r.frame_ratio === null ? null : Number(r.frame_ratio),
       })),
       trust: (t.data ?? []).map((r) => ({
         label: r.label,

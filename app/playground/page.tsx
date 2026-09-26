@@ -19,6 +19,11 @@ export default async function WorkPage() {
       category: "Exploration",
       year: "",
       image: x.image,
+      description: x.description,
+      focalX: x.focalX,
+      focalY: x.focalY,
+      cropZoom: x.cropZoom,
+      frameRatio: x.frameRatio,
     }));
   return (
     <div className="page-stack grid pb-16 pt-3">
