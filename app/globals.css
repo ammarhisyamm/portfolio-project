@@ -280,6 +280,7 @@
   aspect-ratio: var(--art-ratio);
   border: clamp(33px, 5.4vw, 76px) solid transparent;
   border-image: url('/images/museum-ornate-frame.png') 183 190 197 190 / 1 / 0 stretch;
+  transform: translate3d(0, clamp(-126px, -10vh, -44px), 0);
   filter: drop-shadow(0 17px 14px rgba(0, 0, 0, .55)) drop-shadow(0 4px 3px rgba(0, 0, 0, .35));
   transition: filter 250ms var(--museum-ease);
 }
@@ -386,6 +387,7 @@
   .museum-gallery-frame {
     width: min(calc(min(39dvh, 350px) * var(--art-ratio)), calc(100vw - 100px));
     border-width: clamp(24px, 6.5vw, 35px);
+    transform: translate3d(0, clamp(-68px, -7vh, -24px), 0);
   }
   .museum-gallery-plaque { min-width: min(220px, 70%); padding: 7px 10px; }
   .museum-gallery-plaque-title { font-size: 11px; }
@@ -399,15 +401,15 @@
   .museum-gallery-zoom { align-self: flex-end; }
 }
 @media (max-height: 600px) and (min-width: 641px) {
-  .museum-gallery-frame { width: min(calc(35dvh * var(--art-ratio)), calc(100vw - 220px)); border-width: 34px; }
+  .museum-gallery-frame { width: min(calc(35dvh * var(--art-ratio)), calc(100vw - 220px)); border-width: 34px; transform: translate3d(0, -34px, 0); }
   .museum-gallery-plaque { display: none; }
 }
 @media (max-height: 650px) and (max-width: 640px) {
   .museum-gallery-stage { padding: 6px 9px 38px; }
-  .museum-gallery-frame { width: min(calc(27dvh * var(--art-ratio)), calc(100vw - 100px)); }
+  .museum-gallery-frame { width: min(calc(27dvh * var(--art-ratio)), calc(100vw - 100px)); transform: translate3d(0, -26px, 0); }
 }
 @media (max-height: 500px) and (max-width: 640px) {
-  .museum-gallery-frame { width: min(calc(23dvh * var(--art-ratio)), calc(100vw - 100px)); border-width: 22px; }
+  .museum-gallery-frame { width: min(calc(23dvh * var(--art-ratio)), calc(100vw - 100px)); border-width: 22px; transform: translate3d(0, -16px, 0); }
   .museum-gallery-plaque { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
