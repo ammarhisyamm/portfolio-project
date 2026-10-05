@@ -4,6 +4,7 @@ import ExperienceAccordion from "@/components/ExperienceAccordion";
 import CategoryStacks from "@/components/CategoryStacks";
 import RestoreScroll from "@/components/RestoreScroll";
 import SelectedWork from "@/components/SelectedWork";
+import HomeEntrance from "@/components/HomeEntrance";
 import { getContent } from "@/lib/content";
 
 export default async function HomePage() {
@@ -12,32 +13,35 @@ export default async function HomePage() {
     .filter((c) => c.featured && c.published)
     .sort((a, b) => a.featured_order - b.featured_order);
   return (
-    <div className="page-stack grid pb-16 pt-3">
-      <RestoreScroll />
-      <Hero
-        name={content.hero.name}
-        title={content.hero.title}
-        headline={content.hero.headline}
-        intro={content.hero.intro}
-        available={content.hero.available}
-        email={content.contact.email}
-        socials={content.socials.items}
-        trust={content.trust}
-        profilePhoto={content.branding.profilePhoto}
-      />
+    <>
+      <HomeEntrance />
+      <div className="page-stack grid pb-16 pt-3">
+        <RestoreScroll />
+        <Hero
+          name={content.hero.name}
+          title={content.hero.title}
+          headline={content.hero.headline}
+          intro={content.hero.intro}
+          available={content.hero.available}
+          email={content.contact.email}
+          socials={content.socials.items}
+          trust={content.trust}
+          profilePhoto={content.branding.profilePhoto}
+        />
 
-      <section className="panel p-5 sm:p-8">
-        <span className="kicker">Selected work</span>
-        <div className="mt-8">
-          <SelectedWork caseStudies={featured} />
-        </div>
-      </section>
+        <section className="panel p-5 sm:p-8">
+          <span className="kicker">Selected work</span>
+          <div className="mt-8">
+            <SelectedWork caseStudies={featured} />
+          </div>
+        </section>
 
-      <ExperienceAccordion items={content.experience} />
+        <ExperienceAccordion items={content.experience} />
 
-      <AboutPanel about={content.about} contact={content.contact} socials={content.socials.items} />
+        <AboutPanel about={content.about} contact={content.contact} socials={content.socials.items} />
 
-      <CategoryStacks categories={content.homeCategories} />
-    </div>
+        <CategoryStacks categories={content.homeCategories} />
+      </div>
+    </>
   );
 }
