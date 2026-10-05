@@ -29,4 +29,4 @@ Rare first-session introduction: delight, explanation, spatial consistency. CSS 
 - Entry +1200ms: dissolve into actual Home and replay its text reveal.
 - Entry +1800ms: remove overlay and restore page interaction.
 
-Enter/Space activates the ribbon, Escape or Skip intro bypasses the scene. Tab stays in the modal; background is inert and scrolling locked only while the intro is present. Reduced motion uses a 200ms dissolve without camera movement. Once per browser tab/session; append `?entrance=1` to replay for review.
+Enter/Space activates the ribbon; Escape remains a keyboard bypass. There is no visible Skip control or top header. The opened doorway contains only warm diffuse light, without branding, captions, or work thumbnails. Tab stays in the modal; background is inert and scrolling locked only while the intro is present. Reduced motion uses a 200ms dissolve without camera movement. Once per browser tab/session; append `?entrance=1` to replay for review.

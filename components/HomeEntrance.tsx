@@ -20,9 +20,7 @@ function CuttingScissors() {
   </svg>;
 }
 
-type EntranceArtwork = { title: string; image: string };
-
-export default function HomeEntrance({ artworks = [] }: { artworks?: EntranceArtwork[] }) {
+export default function HomeEntrance() {
   const [visible, setVisible] = useState(false);
   const [phase, setPhase] = useState<Phase>("idle");
   const [note, setNote] = useState<number | null>(null);
@@ -79,6 +77,7 @@ export default function HomeEntrance({ artworks = [] }: { artworks?: EntranceArt
       if (event.key === "Escape") { event.preventDefault(); finish(); }
       if (event.key !== "Tab") return;
       const items = Array.from(dialogRef.current?.querySelectorAll<HTMLButtonElement>("button:not([disabled])") ?? []);
+      if (items.length === 0) { event.preventDefault(); return; }
       const first = items[0], last = items[items.length - 1];
       if (event.shiftKey && (document.activeElement === first || document.activeElement === dialogRef.current)) { event.preventDefault(); last?.focus(); }
       else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
@@ -138,14 +137,6 @@ export default function HomeEntrance({ artworks = [] }: { artworks?: EntranceArt
       <div className="home-entrance-portal">
         <button ref={doorwayRef} type="button" className="entrance-inner-room" onClick={stepInside} disabled={phase !== "open"} aria-label="Step inside the studio" aria-hidden={phase !== "open"}>
           <span className="entrance-inner-light" aria-hidden="true" />
-          <span>Hisyam Design</span>
-          <span className="entrance-inner-caption">Selected work, on view.</span>
-          {artworks.length > 0 && <span className="entrance-inner-gallery" aria-hidden="true">{artworks.map((artwork, i) => <span className="entrance-inner-artwork" key={artwork.title} style={{ transitionDelay: `${i * 80}ms` }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={artwork.image} alt="" decoding="async" />
-            <span>{artwork.title}</span>
-          </span>)}</span>}
-          <span className="entrance-inner-enter">Enter the portfolio ↗</span>
         </button>
         <div className="home-entrance-door home-entrance-door-left" aria-hidden="true" />
         <div className="home-entrance-door home-entrance-door-right" aria-hidden="true" />
@@ -159,8 +150,6 @@ export default function HomeEntrance({ artworks = [] }: { artworks?: EntranceArt
       </div>
       <div className="entrance-field-notes">{NOTES.map((item, i) => <div className="entrance-note" key={item.label}><button type="button" disabled={phase !== "idle"} aria-expanded={note === i} aria-controls={`studio-note-${i}`} onClick={() => setNote(note === i ? null : i)}><span aria-hidden="true">+</span>{item.label}</button>{note === i && <div id={`studio-note-${i}`} className="entrance-note-card"><strong>{item.title}</strong><p>{item.text}</p></div>}</div>)}</div>
     </div>
-    <header className="home-entrance-header"><span>Hisyam Design</span><span>Welcome / 01</span></header>
     <div className="entrance-status" role="status" aria-live="polite">{phase === "idle" ? <><span className="entrance-status-line" />Hover over the ribbon. Click to cut.<span className="entrance-status-touch">Tap the ribbon to enter.</span></> : phase === "cutting" ? "A small opening ceremony…" : phase === "released" ? "The ribbon is cut." : phase === "opening" ? "The doors are opening…" : phase === "open" ? "Scroll to step inside — or click the doorway." : "Welcome in."}</div>
-    <button type="button" className="home-entrance-skip" onClick={finish}>Skip intro <span aria-hidden="true">↗</span></button>
   </div>, document.body);
 }
