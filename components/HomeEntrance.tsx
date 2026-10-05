@@ -4,7 +4,7 @@ import { Scissors } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
-const SEEN_KEY = "hisyam.home-entrance.seen";
+const SEEN_KEY = "hisyam.home-entrance.seen.v2";
 
 type EntrancePhase = "idle" | "cutting" | "open";
 
