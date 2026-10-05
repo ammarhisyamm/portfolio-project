@@ -116,6 +116,10 @@ export default function HomeEntrance() {
         <div className="home-entrance-ribbon home-entrance-ribbon-left" />
         <div className="home-entrance-ribbon home-entrance-ribbon-right" />
         <div className="home-entrance-ribbon-knot" />
+        <span className="home-entrance-scissor-swipe" aria-hidden="true">
+          <Scissors size={42} strokeWidth={1.35} />
+        </span>
+        <div className="home-entrance-cut-spray" />
       </div>
 
       <button
