@@ -14,7 +14,7 @@ export default async function HomePage() {
     .sort((a, b) => a.featured_order - b.featured_order);
   return (
     <>
-      <HomeEntrance />
+      <HomeEntrance artworks={featured.filter(work => work.hero_image).slice(0, 3).map(work => ({ title: work.title, image: work.hero_image }))} />
       <div className="page-stack grid pb-16 pt-3">
         <RestoreScroll />
         <Hero

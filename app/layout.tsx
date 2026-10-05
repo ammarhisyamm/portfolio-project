@@ -29,8 +29,10 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const content = await getContent();
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Cover the first visit before hydration; repeat visits never wait for the intro. */}
+        <script dangerouslySetInnerHTML={{ __html: `try{if(location.pathname==='/'&&(new URLSearchParams(location.search).get('entrance')==='1'||sessionStorage.getItem('hisyam.home-entrance.seen.v3')!=='1'))document.documentElement.setAttribute('data-studio-pending','true')}catch(e){if(location.pathname==='/')document.documentElement.setAttribute('data-studio-pending','true')}` }} />
         <link rel="icon" href={content.branding.logo || FALLBACK_ICON} />
       </head>
       <body className={`${manrope.variable} font-sans`}>

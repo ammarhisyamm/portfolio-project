@@ -28,17 +28,23 @@ export default function Hero({ name, title, headline, intro, available, email, s
 
   useEffect(() => {
     if (reducedMotion()) return;
-    const ctx = gsap.context(() => {
-      gsap.set("[data-hero-word]", { yPercent: 40, opacity: 0 });
-      gsap.set("[data-hero-fade]", { opacity: 0, y: 14 });
-      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-      tl.to("[data-hero-word]", { yPercent: 0, opacity: 1, duration: 0.8, stagger: 0.035 }, 0.05).to(
-        "[data-hero-fade]",
-        { opacity: 1, y: 0, duration: 0.6, stagger: 0.08 },
-        0.45
-      );
-    }, ref);
-    return () => ctx.revert();
+    let ctx: gsap.Context;
+    const reveal = () => {
+      ctx?.revert();
+      ctx = gsap.context(() => {
+        gsap.set("[data-hero-word]", { yPercent: 40, opacity: 0 });
+        gsap.set("[data-hero-fade]", { opacity: 0, y: 14 });
+        const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+        tl.to("[data-hero-word]", { yPercent: 0, opacity: 1, duration: 0.8, stagger: 0.035 }, 0.05).to(
+          "[data-hero-fade]",
+          { opacity: 1, y: 0, duration: 0.6, stagger: 0.08 },
+          0.45
+        );
+      }, ref);
+    };
+    reveal();
+    window.addEventListener("studio:entered", reveal);
+    return () => { window.removeEventListener("studio:entered", reveal); ctx?.revert(); };
   }, []);
 
   return (
