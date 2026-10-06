@@ -169,14 +169,14 @@ html[data-studio-pending="true"]::after { content: "Preparing the studio…"; po
 .entrance-ribbon-piece { position: absolute; inset: 0; background: url('/images/studio-ribbon-v4.webp') center / 100% auto no-repeat; filter: drop-shadow(0 2px 1px #0008); pointer-events: none; }
 .entrance-ribbon-left { clip-path: polygon(0 0,var(--cut-position) 0,var(--cut-position) 100%,0 100%); transform-origin: 0% 50%; }
 .entrance-ribbon-right { clip-path: polygon(var(--cut-position) 0,100% 0,100% 100%,var(--cut-position) 100%); transform-origin: 100% 50%; }
-.entrance-ribbon-target { position: absolute; top: 50%; left: 0; width: 100%; height: max(44px, 32%); transform: translateY(-50%); z-index: 5; border: 0; padding: 0; background: transparent; border-radius: 4px; outline: none; touch-action: manipulation; pointer-events: auto; }
-.entrance-ribbon-focus { position: absolute; inset: 0; border: 1px solid #f9d8a5; border-radius: 4px; opacity: 0; transition: opacity 150ms ease; pointer-events: none; }
+.entrance-ribbon-target { position: absolute; top: -100%; left: 0; width: 100%; height: 300%; transform: none; z-index: 5; border: 0; padding: 0; background: transparent; border-radius: 0; outline: none; touch-action: manipulation; pointer-events: auto; }
+.entrance-ribbon-focus { position: absolute; top: 44%; left: 0; width: 100%; height: 12%; border: 1px solid #f9d8a5; border-radius: 4px; opacity: 0; transition: opacity 150ms ease; pointer-events: none; }
 .entrance-ribbon-target:focus-visible .entrance-ribbon-focus { opacity: .9; }
-.entrance-scissors-position { position: absolute; left: 68%; top: 50%; display: block; width: clamp(95px, 22vw, 138px); aspect-ratio: 150 / 110; pointer-events: none; }
+.entrance-scissors-position { position: absolute; left: 68%; top: 50%; display: block; width: clamp(108px, 23vw, 158px); aspect-ratio: 180 / 120; pointer-events: none; }
 /* Pivot is above the fabric; the blade tips straddle it, then close vertically. */
-.entrance-scissors { position: absolute; inset: 0; display: block; opacity: 0; transform: translate(-46%, -85%) rotate(90deg); transform-origin: 46% 50%; filter: drop-shadow(0 4px 3px #0009); transition: opacity 150ms ease; }
+.entrance-scissors { position: absolute; inset: 0; display: block; opacity: 0; transform: translate(-49%, -85%) rotate(90deg); transform-origin: 49% 50%; filter: drop-shadow(0 3px 2px #000c) drop-shadow(0 0 4px #f4d8a522); transition: opacity 190ms ease; }
 .entrance-scissors svg { width: 100%; height: 100%; overflow: visible; }
-.entrance-scissor-arm { transform-origin: 69px 55px; }
+.entrance-scissor-arm { transform-origin: 88px 60px; }
 .entrance-scissor-upper { transform: rotate(-26deg); }
 .entrance-scissor-lower { transform: rotate(26deg); }
 .entrance-ribbon-target:focus-visible .entrance-scissors { opacity: 1; }
@@ -195,9 +195,10 @@ html[data-studio-pending="true"]::after { content: "Preparing the studio…"; po
 .entrance-status-touch { display: none; }
 .home-entrance button:focus-visible { outline: 1px solid #e6c18a; outline-offset: 5px; }
 .home-entrance .entrance-ribbon-target:focus-visible { outline: none; }
-.home-entrance[data-started="true"] .entrance-scissors { animation: entrance-scissor-cut 1900ms var(--entrance-travel) both; }
-.home-entrance[data-started="true"] .entrance-scissor-upper { animation: entrance-snip-upper 1400ms var(--entrance-travel) both; }
-.home-entrance[data-started="true"] .entrance-scissor-lower { animation: entrance-snip-lower 1400ms var(--entrance-travel) both; }
+.home-entrance[data-phase="cutting"] .entrance-scissors { opacity: 1; }
+.home-entrance[data-phase="cutting"] .entrance-scissors-position { animation: entrance-scissor-sweep 3400ms var(--entrance-travel) both; }
+.home-entrance[data-phase="cutting"] .entrance-scissor-upper { animation: entrance-snip-upper 3400ms var(--entrance-travel) both; }
+.home-entrance[data-phase="cutting"] .entrance-scissor-lower { animation: entrance-snip-lower 3400ms var(--entrance-travel) both; }
 .home-entrance[data-released="true"] .entrance-ribbon-left { animation: entrance-ribbon-left 1100ms var(--entrance-travel) both; }
 .home-entrance[data-released="true"] .entrance-ribbon-right { animation: entrance-ribbon-right 1100ms var(--entrance-travel) both; }
 .home-entrance[data-released="true"] .entrance-fibres i { animation: entrance-fibre 650ms var(--entrance-ease) both; }
@@ -213,13 +214,16 @@ html[data-studio-pending="true"]::after { content: "Preparing the studio…"; po
 .home-entrance[data-phase="fading"] { opacity: 0; pointer-events: none; }
 .home-entrance[data-phase="fading"] .entrance-status { opacity: 0; }
 @keyframes entrance-note-in { from { opacity: 0; transform: translateY(5px) scale(.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
-@keyframes entrance-scissor-cut {
-  0% { opacity: 1; transform: translate(-46%, -85%) rotate(90deg); }
-  24%, 75% { opacity: 1; transform: translate(-46%, -85%) rotate(90deg); }
-  100% { opacity: 0; transform: translate(-46%, -115%) rotate(82deg); }
+@keyframes entrance-scissor-sweep {
+  0% { opacity: 1; transform: translateX(var(--sweep-from, 0px)); }
+  12% { opacity: 1; transform: translateX(var(--sweep-from, 0px)); }
+  43% { opacity: 1; transform: translateX(var(--sweep-near, 0px)); }
+  76% { opacity: 1; transform: translateX(var(--sweep-far, 0px)); }
+  91% { opacity: 1; transform: translateX(var(--sweep-from, 0px)); }
+  100% { opacity: 0; transform: translateX(var(--sweep-from, 0px)); }
 }
-@keyframes entrance-snip-upper { 0%, 30% { transform: rotate(-26deg); } 60% { transform: rotate(-16deg); } 100% { transform: rotate(0); } }
-@keyframes entrance-snip-lower { 0%, 30% { transform: rotate(26deg); } 60% { transform: rotate(16deg); } 100% { transform: rotate(0); } }
+@keyframes entrance-snip-upper { 0%, 78% { transform: rotate(-26deg); } 86% { transform: rotate(-10deg); } 91%, 96% { transform: rotate(0); } 100% { transform: rotate(-12deg); } }
+@keyframes entrance-snip-lower { 0%, 78% { transform: rotate(26deg); } 86% { transform: rotate(10deg); } 91%, 96% { transform: rotate(0); } 100% { transform: rotate(12deg); } }
 @keyframes entrance-ribbon-left {
   0% { transform: translate(0,0) rotate(0) skewY(0); opacity: 1; }
   18% { transform: translate(-1%,2%) rotate(3deg) skewY(2deg); opacity: 1; }
@@ -234,7 +238,7 @@ html[data-studio-pending="true"]::after { content: "Preparing the studio…"; po
 }
 @keyframes entrance-fibre { 0% { opacity: .85; transform: translate(0,0) rotate(0); } 100% { opacity: 0; transform: translate(var(--dx),var(--dy)) rotate(var(--turn)); } }
 @media (hover: hover) and (pointer: fine) {
-  .entrance-ribbon-target:enabled:hover { cursor: none; }
+  .entrance-ribbon-target:enabled:hover { cursor: crosshair; }
   .entrance-ribbon-target:enabled:hover .entrance-scissors { opacity: 1; }
   .entrance-note > button:hover { color: #f2dfbf; }
 }
@@ -252,7 +256,7 @@ html[data-studio-pending="true"]::after { content: "Preparing the studio…"; po
   .entrance-note > button { font-size: 9px; gap: 7px; max-width: 145px; }
   .entrance-note-card { width: min(240px, 78vw); }
   .entrance-status { bottom: 5.5%; }
-  .entrance-scissors-position { width: 95px; }
+  .entrance-scissors-position { width: 112px; }
 }
 @media (max-height: 540px) {
   .home-entrance-copy { top: 35px; }

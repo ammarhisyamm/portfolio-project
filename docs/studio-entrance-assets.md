@@ -28,9 +28,9 @@ Use case: stylized-concept. Asset: ONE photorealistic empty studio museum interi
 ## Motion intent
 Rare first-session introduction: delight, explanation, spatial consistency. CSS transforms and opacity; custom ease-out, drawer, and on-screen travel curves from the animate skill. No added animation dependencies. The ceremony opens the doorway, then waits for the visitor to step inside.
 
-- Hover over ribbon: scissors follow horizontally with the existing Motion spring (duration .5s, bounce .2); blades stay over the fabric, away from the seal. Clicking freezes the actual current position and places the fabric split and particles at the same coordinate, without snapping the scissors elsewhere.
-- 0–1400ms: one deliberate, continuous snip. Open blade arms close through the flat band around a shared pivot; the tool remains visible briefly after cutting, then withdraws upward.
-- On the snip's CSS `animationend`: release the fabric, disperse small thread particles, then let both ribbon pieces sag and fall over 1100ms. A guarded 1800ms timeout is a recovery path only.
+- Hover anywhere over the closed doors: scissors follow horizontally along the ribbon with the existing Motion spring (duration .5s, bounce .2), staying clear of the wax seal. The doors remain click-to-cut; hover alone never starts the ceremony.
+- On click: hold briefly at the chosen point, make a slow sweep toward one end and across to the other, then return for a tactile final snip at the selected point. Brushed steel blades and champagne-brass handles keep the tool legible against the dark doors. Total sweep 3400ms.
+- At the snip's CSS `animationend`: reveal the split at the chosen position, release the fabric, disperse small thread particles, then let both ribbon pieces sag and fall over 1100ms. A guarded 3700ms timeout is a recovery path only.
 - Cut completion +850ms: independently hinged leaves start opening over 1300ms.
 - Cut completion +2150ms: doorway is fully open. Scroll down, swipe up, or activate the doorway to enter.
 - On entry: camera pushes through the doorway over 1800ms.

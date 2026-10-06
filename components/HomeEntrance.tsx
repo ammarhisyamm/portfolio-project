@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type CSSProperties, type PointerEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type MouseEvent as ReactMouseEvent, type PointerEvent } from "react";
 import { createPortal, preload } from "react-dom";
 import { animate, type AnimationPlaybackControls } from "motion";
 
@@ -11,13 +11,27 @@ const NOTES = [
   { label: "Behind these doors", title: "Take a closer look.", text: "Explore selected projects, or visit the Playground for interface studies in the gallery." },
 ];
 
-// Separate arms share a pivot: the blades actually close across the ribbon.
+// Brushed-steel blades, champagne-brass handles, and a layered central rivet.
 function CuttingScissors() {
-  return <svg viewBox="0 0 150 110" fill="none" aria-hidden="true">
-    <defs><linearGradient id="entrance-steel" x1="35" y1="25" x2="120" y2="75" gradientUnits="userSpaceOnUse"><stop stopColor="#fff4df" /><stop offset=".45" stopColor="#b4b5b3" /><stop offset=".65" stopColor="#fff" /><stop offset="1" stopColor="#777b7b" /></linearGradient></defs>
-    <g className="entrance-scissor-arm entrance-scissor-upper"><path d="M67 55 140 49 133 57 70 62Z" fill="url(#entrance-steel)" stroke="#e9dfce" strokeWidth=".6" /><path d="M69 57 44 64" stroke="#b99866" strokeWidth="8" /><ellipse cx="28" cy="67" rx="19" ry="11" stroke="#c4a575" strokeWidth="6" /></g>
-    <g className="entrance-scissor-arm entrance-scissor-lower"><path d="M67 55 137 60 129 51 70 48Z" fill="url(#entrance-steel)" stroke="#e9dfce" strokeWidth=".6" /><path d="M69 55 44 46" stroke="#a88755" strokeWidth="8" /><ellipse cx="28" cy="43" rx="19" ry="11" stroke="#af8953" strokeWidth="6" /></g>
-    <circle cx="69" cy="55" r="5" fill="#c9ab76" stroke="#f3d9ac" /><path d="m67 55 4-1" stroke="#6e563a" />
+  return <svg viewBox="0 0 180 120" fill="none" aria-hidden="true">
+    <defs>
+      <linearGradient id="entrance-steel" x1="68" y1="48" x2="166" y2="75" gradientUnits="userSpaceOnUse"><stop stopColor="#fff" /><stop offset=".17" stopColor="#c9c9c4" /><stop offset=".34" stopColor="#f8f4eb" /><stop offset=".58" stopColor="#8e918e" /><stop offset=".76" stopColor="#f5f2e9" /><stop offset="1" stopColor="#777a79" /></linearGradient>
+      <linearGradient id="entrance-brass" x1="18" y1="29" x2="74" y2="60" gradientUnits="userSpaceOnUse"><stop stopColor="#f6e6c3" /><stop offset=".28" stopColor="#a88048" /><stop offset=".5" stopColor="#ead3a2" /><stop offset=".72" stopColor="#80603b" /><stop offset="1" stopColor="#d7b578" /></linearGradient>
+      <radialGradient id="entrance-rivet" cx="0" cy="0" r="1" gradientTransform="matrix(0 8 -8 0 88 59)" gradientUnits="userSpaceOnUse"><stop stopColor="#fff3d4" /><stop offset=".42" stopColor="#bf9b64" /><stop offset=".72" stopColor="#715536" /><stop offset="1" stopColor="#ead2a4" /></radialGradient>
+    </defs>
+    <g className="entrance-scissor-arm entrance-scissor-upper">
+      <path d="m84 60 80-15 4 4-75 20-9-9Z" fill="url(#entrance-steel)" stroke="#f7f0e4" strokeWidth=".8" />
+      <path d="m95 61 60-12" stroke="#fff" strokeOpacity=".72" strokeWidth="1" />
+      <path d="m88 59-31 6" stroke="url(#entrance-brass)" strokeWidth="10" />
+      <ellipse cx="34" cy="70" rx="23" ry="15" stroke="#493522" strokeWidth="10" /><ellipse cx="34" cy="70" rx="23" ry="15" stroke="url(#entrance-brass)" strokeWidth="7" /><ellipse cx="34" cy="70" rx="17" ry="10" stroke="#f1d7a8" strokeOpacity=".5" strokeWidth="1" />
+    </g>
+    <g className="entrance-scissor-arm entrance-scissor-lower">
+      <path d="m84 60 78 16 2-5-73-20-7 9Z" fill="url(#entrance-steel)" stroke="#f7f0e4" strokeWidth=".8" />
+      <path d="m95 60 58 13" stroke="#fff" strokeOpacity=".68" strokeWidth="1" />
+      <path d="m88 61-31-9" stroke="url(#entrance-brass)" strokeWidth="10" />
+      <ellipse cx="34" cy="43" rx="23" ry="15" stroke="#493522" strokeWidth="10" /><ellipse cx="34" cy="43" rx="23" ry="15" stroke="url(#entrance-brass)" strokeWidth="7" /><ellipse cx="34" cy="43" rx="17" ry="10" stroke="#f1d7a8" strokeOpacity=".5" strokeWidth="1" />
+    </g>
+    <circle cx="88" cy="60" r="8" fill="#37291b" /><circle cx="88" cy="60" r="6.5" fill="url(#entrance-rivet)" stroke="#f4dfb8" strokeWidth=".8" /><path d="m85 60 6 0" stroke="#725631" strokeWidth="1" />
   </svg>;
 }
 
@@ -30,6 +44,8 @@ export default function HomeEntrance() {
   const ribbonRef = useRef<HTMLButtonElement>(null);
   const doorwayRef = useRef<HTMLButtonElement>(null);
   const scissorsRef = useRef<HTMLSpanElement>(null);
+  const hoverPosition = useRef(68);
+  const pendingCutPosition = useRef(68);
   const timers = useRef<number[]>([]);
   const busy = useRef(false);
   const revealed = useRef(false);
@@ -114,24 +130,39 @@ export default function HomeEntrance() {
   const releaseRibbon = () => {
     if (cutCompleted.current || !busy.current) return;
     cutCompleted.current = true;
+    setCutPosition(pendingCutPosition.current);
     setPhase("released");
     // The animation's actual completion releases the fabric, not a second clock.
     timers.current.push(window.setTimeout(() => setPhase("opening"), 850));
     timers.current.push(window.setTimeout(() => setPhase("open"), 2150));
   };
 
-  const cut = () => {
+  const cut = (event: ReactMouseEvent<HTMLButtonElement>) => {
     if (busy.current) return;
     busy.current = true;
     setNote(null);
     pointerAnimation.current?.stop();
     const scissors = scissorsRef.current;
     const width = ribbonRef.current?.getBoundingClientRect().width ?? 1;
+    const rect = ribbonRef.current?.getBoundingClientRect();
+    let selectedPosition = hoverPosition.current;
+    // Pointer clicks (including touch-generated clicks) can cut wherever they
+    // land on the door; keyboard activation keeps the last/default position.
+    if (event.detail > 0 && rect) {
+      selectedPosition = Math.max(8, Math.min(92, (event.clientX - rect.left) / rect.width * 100));
+      if (selectedPosition > 42 && selectedPosition < 58) selectedPosition = selectedPosition < 50 ? 42 : 58;
+    }
+    pendingCutPosition.current = selectedPosition;
     if (scissors) {
-      const matrix = new DOMMatrixReadOnly(getComputedStyle(scissors).transform);
-      // Freeze at the current spring position: no jump back to an arbitrary cut.
-      scissors.style.transform = `translateX(${matrix.m41}px)`;
-      setCutPosition(68 + matrix.m41 / width * 100);
+      // Freeze the pointer-follow spring and sweep to both ends before returning
+      // for the final snip at the selected point.
+      const startX = width * (selectedPosition - 68) / 100;
+      scissors.style.transform = `translateX(${startX}px)`;
+      const near = selectedPosition < 50 ? 92 : 8;
+      const far = selectedPosition < 50 ? 8 : 92;
+      scissors.style.setProperty("--sweep-from", `${startX}px`);
+      scissors.style.setProperty("--sweep-near", `${width * (near - 68) / 100}px`);
+      scissors.style.setProperty("--sweep-far", `${width * (far - 68) / 100}px`);
     }
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setPhase("fading");
@@ -140,7 +171,7 @@ export default function HomeEntrance() {
     }
     setPhase("cutting");
     // Safety fallback for browsers that suppress animationend (e.g. background tabs).
-    timers.current.push(window.setTimeout(releaseRibbon, 1800));
+    timers.current.push(window.setTimeout(releaseRibbon, 3700));
   };
 
   const stepInside = () => {
@@ -154,8 +185,12 @@ export default function HomeEntrance() {
   const followRibbon = (event: PointerEvent<HTMLButtonElement>) => {
     if (busy.current || event.pointerType !== "mouse" || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const rect = event.currentTarget.getBoundingClientRect();
-    // Keep the blades over the flat band and away from the wax seal.
-    const x = Math.max(rect.width * .60, Math.min(event.clientX - rect.left, rect.width * .84)) - rect.width * .68;
+    // Hover can happen anywhere on the doors; scissors stay on the ribbon and
+    // avoid the wax seal's center so the visual target still feels physical.
+    let position = Math.max(8, Math.min(92, (event.clientX - rect.left) / rect.width * 100));
+    if (position > 42 && position < 58) position = position < 50 ? 42 : 58;
+    hoverPosition.current = position;
+    const x = rect.width * (position - 68) / 100;
     pointerAnimation.current?.stop();
     if (scissorsRef.current) pointerAnimation.current = animate(scissorsRef.current, { transform: `translateX(${x}px)` }, { type: "spring", duration: .5, bounce: .2 });
   };
@@ -187,7 +222,7 @@ export default function HomeEntrance() {
         <div className="entrance-ribbon-stage">
         <div className="entrance-ribbon-piece entrance-ribbon-left" aria-hidden="true" />
         <div className="entrance-ribbon-piece entrance-ribbon-right" aria-hidden="true" />
-        <button ref={ribbonRef} className="entrance-ribbon-target" type="button" onClick={cut} onPointerMove={followRibbon} onPointerLeave={resetScissors} aria-label="Cut the ribbon and enter the studio" disabled={phase !== "idle"}>
+        <button ref={ribbonRef} className="entrance-ribbon-target" type="button" onClick={cut} onPointerMove={followRibbon} onPointerLeave={resetScissors} onAnimationEnd={event => { if (event.animationName === "entrance-scissor-sweep") releaseRibbon(); }} aria-label="Cut the ribbon to open the doors" disabled={phase !== "idle"}>
           <span className="entrance-ribbon-focus" />
           <span ref={scissorsRef} className="entrance-scissors-position"><span className="entrance-scissors"><CuttingScissors /></span></span>
         </button>
@@ -196,6 +231,6 @@ export default function HomeEntrance() {
       </div>
       <div className="entrance-field-notes">{NOTES.map((item, i) => <div className="entrance-note" key={item.label}><button type="button" disabled={phase !== "idle"} aria-expanded={note === i} aria-controls={`studio-note-${i}`} onClick={() => setNote(note === i ? null : i)}><span aria-hidden="true">+</span>{item.label}</button>{note === i && <div id={`studio-note-${i}`} className="entrance-note-card"><strong>{item.title}</strong><p>{item.text}</p></div>}</div>)}</div>
     </div>
-    <div className="entrance-status" role="status" aria-live="polite">{phase === "idle" ? <><span className="entrance-status-line" />Hover over the ribbon. Click to cut.<span className="entrance-status-touch">Tap the ribbon to enter.</span></> : phase === "cutting" ? "A small opening ceremony…" : phase === "released" ? "The ribbon is cut." : phase === "opening" ? "The doors are opening…" : phase === "open" ? "Scroll to step inside — or click the doorway." : "Welcome in."}</div>
+    <div className="entrance-status" role="status" aria-live="polite">{phase === "idle" ? <><span className="entrance-status-line" />Hover over the doors. Click to cut.<span className="entrance-status-touch">Tap the doors to cut the ribbon.</span></> : phase === "cutting" ? "A small opening ceremony…" : phase === "released" ? "The ribbon is cut." : phase === "opening" ? "The doors are opening…" : phase === "open" ? "Scroll to step inside — or click the doorway." : "Welcome in."}</div>
   </div>, document.body);
 }
