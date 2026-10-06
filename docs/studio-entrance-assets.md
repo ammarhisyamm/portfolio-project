@@ -3,11 +3,19 @@
 Generated with the built-in image generation tool, one asset per call. WebP derivatives retain transparency on the door and ribbon. Original generated PNGs are retained in the Codex generated-images directory.
 
 ## Files
+- `public/images/studio-doors-v4.webp`: one closed door pair, 1400 × 1167, alpha. The two leaf backgrounds use the same image, split at its meeting seam. CSS excludes transparent margins from the measured source bounds (x110–1264, y14–1129 on 1374 × 1145); visible pair aspect is 1.035, not the canvas's 1.2. The walnut jamb and stone threshold stay fixed while leaves swing.
+- `public/images/studio-ribbon-v4.webp`: thin, flat, uniform crimson band and centered h wax seal, 1400 × 467, alpha. Rendered at its native 3:1 ratio, without gathering or vertical stretching.
 - `public/images/studio-door-v3.webp`: single independent door leaf, 500 × 1000, alpha.
 - `public/images/studio-ribbon-v3.webp`: intact crimson silk ribbon + h seal, 1400 × 467, alpha. Two CSS clipping regions separate at 62% of the width; the seal remains on the left piece.
 - `public/images/studio-room-v3.webp`: studio room, 1920 × 1081.
 
 ## Exact generation prompts
+### Door pair v4
+Use case: stylized-concept. ONE isolated closed DOUBLE door pair animation asset, straight-on orthographic frontal view. Image 1 is material reference only, image 2 is lighting and interior style reference only. Two symmetrical dark walnut museum door LEAVES, perfectly meeting flush at a narrow center seam, pair overall width:height 1.2:1. Slim antique brass inset line surrounds each leather-textured dark brown central panel; subtle substantial walnut recessed bevels, elegant warm material matching the dark studio room. These should look like architectural doors, NOT two ornate picture frames, not detached objects. The two door leaves share a continuous plane, just a fine central dark seam, no center pillar, no gap, no protruding golden central frame. Warm overhead light, upper edge subtly illuminated, lower panels shaded. No separate outer door jamb/frame: only two actual moving leaves, all outside edges visible with minimal 1% transparent margins. No floor, no background, no shadows outside the silhouette, no room, no ribbon, no wax seal, no handles, no typography. Genuine transparent background. Use the whole canvas for one pair of doors, NOT a sprite sheet, not multiple variants. The complete pair will be split precisely at the 50% center seam and each half hinged separately.
+
+### Flat ribbon v4
+Use case: precise-object-edit. Input image is the edit target: ceremonial crimson ribbon with lowercase h wax seal for a museum website entrance. Create an improved SINGLE isolated ribbon animation asset with genuine transparency. Keep deep red woven silk material and centered round wax seal embossed lowercase serif 'h'. Change ribbon to a very thin perfectly straight, flat, taut horizontal band of uniform width, no gathers, no bow, no folds around the seal. Landscape canvas 3:1. Ribbon spans 98% canvas width, band occupies ONLY 12% of canvas height, seal diameter ONLY 30% of canvas height, exactly centered, circular not oval. Place band at vertical center. Understated soft warm overhead light, deeper crimson instead of bright neon red, subtle fine fabric weave and delicate top edge highlight. Seal simple realistic red wax with restrained sheen. Entirely transparent above and below and behind. No doors, room, scissors, lettering other than the h, particles, collage, or other objects. Edges clean for independent CSS clipping into left and right segments. Do not enlarge band or seal. Flatter and slimmer than original.
+
 ### Door
 Use case: stylized-concept. Create ONE production web animation asset: a single closed museum door leaf, not a pair, using attached reference only for dark walnut/leather and antique brass inset trim material. Straight-on orthographic view, tall rectangular 1:2 shape, all four edges visible, centered with tiny transparent margins. Finely textured dark brown inset leather panel, substantial bevelled walnut border, elegant thin aged gold rectangular moulding. Warm restrained realistic lighting. NO ribbon, NO wax seal, NO handles, NO hinges outside silhouette, NO text, NO room, NO floor, NO cast shadow outside object. Genuine transparent background. The one door panel should fill nearly the entire portrait canvas so it can be duplicated as two independently swinging door leaves.
 
@@ -20,13 +28,18 @@ Use case: stylized-concept. Asset: ONE photorealistic empty studio museum interi
 ## Motion intent
 Rare first-session introduction: delight, explanation, spatial consistency. CSS transforms and opacity; custom ease-out, drawer, and on-screen travel curves from the animate skill. No added animation dependencies. The ceremony opens the doorway, then waits for the visitor to step inside.
 
-- Hover over ribbon: scissors follow the pointer locally; touch uses the same ribbon target with a tap instruction.
-- 0–1100ms: two blade movements, ending in a fully closed snip.
-- 1100ms: ribbon parts separate, small thread particles disperse.
-- 1850ms: independently hinged door leaves open over 1300ms.
-- 3150ms: doorway is fully open. Scroll down, swipe up, or activate the doorway to enter.
+- Hover over ribbon: scissors follow horizontally with the existing Motion spring (duration .5s, bounce .2); blades stay over the fabric, away from the seal. Clicking freezes the actual current position and places the fabric split and particles at the same coordinate, without snapping the scissors elsewhere.
+- 0–1400ms: one deliberate, continuous snip. Open blade arms close through the flat band around a shared pivot; the tool remains visible briefly after cutting, then withdraws upward.
+- On the snip's CSS `animationend`: release the fabric, disperse small thread particles, then let both ribbon pieces sag and fall over 1100ms. A guarded 1800ms timeout is a recovery path only.
+- Cut completion +850ms: independently hinged leaves start opening over 1300ms.
+- Cut completion +2150ms: doorway is fully open. Scroll down, swipe up, or activate the doorway to enter.
 - On entry: camera pushes through the doorway over 1800ms.
 - Entry +1200ms: dissolve into actual Home and replay its text reveal.
 - Entry +1800ms: remove overlay and restore page interaction.
 
 Enter/Space activates the ribbon; Escape remains a keyboard bypass. There is no visible Skip control or top header. The opened doorway contains only warm diffuse light, without branding, captions, or work thumbnails. Tab stays in the modal; background is inert and scrolling locked only while the intro is present. Reduced motion uses a 200ms dissolve without camera movement. Once per browser tab/session; append `?entrance=1` to replay for review.
+
+## Verification — 6 October 2026
+Vercel production build/type checking passed on the preview. Browser checks covered 1280 × 720, 390 × 844, 320 × 568 and 844 × 390: no intro content collisions, the compact ribbon target remains at least 44px tall, and the sill stays on the room's floor horizon. Captured the blade closing, separated ribbon and visible hinged leaves at timeline checkpoints. Both click-to-enter and wheel-to-enter reached Home; `inert` and the scroll lock were restored. Enter activates the ribbon and Escape exits safely. Browser console error scan was clean. Reduced-motion and coarse-pointer branches were checked in source; real-device touch feel still merits a hands-on check.
+
+Local `next build` could not complete because the existing local Next edge-runtime dependency throws `import_load.load is not a function`; the clean Vercel install compiled and passed type checks instead. No unrelated dependencies were changed.
