@@ -173,7 +173,9 @@ export default function HomeEntrance() {
     <div className="entrance-scene">
       <div className="home-entrance-room" aria-hidden="true" />
       <div className="home-entrance-vignette" aria-hidden="true" />
-      <div className="home-entrance-copy"><p className="home-entrance-kicker">A quiet room for considered digital work</p><h1 id="studio-welcome">Welcome to the studio.</h1><p>A space for the work, the experiments,<br />and the thinking in between.</p></div>
+      <div className="home-entrance-copy">
+        <h1 id="studio-welcome">Welcome to my portfolio.</h1>
+      </div>
       <div className="home-entrance-portal">
         <div className="entrance-jamb" aria-hidden="true" />
         <div className="entrance-threshold" aria-hidden="true" />
