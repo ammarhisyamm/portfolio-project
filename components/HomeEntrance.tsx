@@ -54,15 +54,25 @@ export default function HomeEntrance() {
   }, [revealHome]);
 
   useEffect(() => {
+    let cancelled = false;
     let seen = false;
     try { seen = sessionStorage.getItem(SEEN_KEY) === "1"; } catch { /* Still allow entry. */ }
     const replay = new URLSearchParams(window.location.search).get("entrance") === "1";
     if (replay || !seen) {
-      ["studio-room-v3", "studio-doors-v4", "studio-ribbon-v4"].forEach(asset => preload(`/images/${asset}.webp`, { as: "image" }));
+      document.documentElement.setAttribute("data-studio-pending", "true");
+      const assets = ["studio-room-v3", "studio-doors-v4", "studio-ribbon-v4"].map(asset => `/images/${asset}.webp`);
+      assets.forEach(src => preload(src, { as: "image" }));
+      // Reveal one complete scene, never a ribbon floating over unloaded doors.
+      Promise.all(assets.map(src => new Promise<void>(resolve => {
+        const image = new Image();
+        image.onload = () => { image.decode().catch(() => {}).then(() => resolve()); };
+        image.onerror = () => resolve(); // A failed asset must not trap the visitor.
+        image.src = src;
+      }))).then(() => { if (!cancelled) setVisible(true); });
     }
-    setVisible(replay || !seen);
     if (seen && !replay) document.documentElement.removeAttribute("data-studio-pending");
     return () => {
+      cancelled = true;
       pointerAnimation.current?.stop();
       timers.current.forEach(window.clearTimeout);
       document.documentElement.removeAttribute("data-studio-pending");
