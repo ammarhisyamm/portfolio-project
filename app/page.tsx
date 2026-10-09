@@ -5,6 +5,7 @@ import CategoryStacks from "@/components/CategoryStacks";
 import RestoreScroll from "@/components/RestoreScroll";
 import SelectedWork from "@/components/SelectedWork";
 import HomeEntrance from "@/components/HomeEntrance";
+import MuseumExperience from "@/components/MuseumExperience";
 import { getContent } from "@/lib/content";
 
 export default async function HomePage() {
@@ -15,6 +16,7 @@ export default async function HomePage() {
   return (
     <>
       <HomeEntrance />
+      <MuseumExperience content={content} />
       <div className="page-stack grid pb-16 pt-3">
         <RestoreScroll />
         <Hero

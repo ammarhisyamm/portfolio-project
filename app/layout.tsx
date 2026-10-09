@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
 import "./globals.css";
+import "./museum.css";
 import Providers from "@/components/Providers";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
@@ -37,6 +38,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body className={`${manrope.variable} font-sans`}>
         <Providers>
+          <div data-portfolio-shell>
           <div className="mx-auto w-full max-w-[720px] px-4 sm:px-6">
             <SiteHeader logo={content.branding.logo} workLabel={content.menu.workLabel} />
             <PageTransition>{children}</PageTransition>
@@ -46,6 +48,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           </div>
           <MobileTabBar workLabel={content.menu.workLabel} />
           <DesignLabLauncher />
+          </div>
         </Providers>
       </body>
     </html>
