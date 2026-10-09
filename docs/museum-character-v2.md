@@ -25,4 +25,6 @@ Create ONE premium game character animation pose reference sheet, four equally s
 
 ## Verification
 
-Typecheck the Three.js modules, verify the remote Next.js build, then inspect desktop/mobile render output, shader console logs, movement, room navigation, light toggle, exhibit selection, CMS collection and classic-view cleanup.
+Verified on 2026-10-09: strict isolated TypeScript check of the Three.js modules passed; the remote Next.js 15.5.23 build, lint and full type validation passed. Desktop (1280 x 720) and portrait mobile (390 x 844) renders were visually checked. The shader/browser error and warning scan was empty. Guided room travel, light dimming/restoration, collection access, keyboard inspection and the Nomory CMS case-study flow worked. Shift+W changed the player's minimap position; the mobile joystick also changed the player's position. No horizontal overflow or left heading/rail remained on mobile. Switching to classic view left zero museum canvases and removed the museum root attribute. Desktop HDR output uses two-sample multisampling; the floor-contact shade anchors the visitor's feet. The final room includes a curved vault and recessed side-wall bays.
+
+No new database schema, CMS content, route structure or dependencies were introduced. Generated sheets are not downloaded during museum initialization.
