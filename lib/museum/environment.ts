@@ -53,6 +53,21 @@ export function createMuseumEnvironment(scene: THREE.Scene, marbleMap: THREE.Tex
   box(-14, 5.5, -10, 1, 11, 48, wall);
   box(14, 1.3, -10, 1, 2.6, 48, wall);
   box(0, 5.5, -34, 29, 11, 1, wall);
+  box(0, 5.5, 14, 29, 11, .5, wall);
+  // The room has an entrance when the player turns around, not an empty sky.
+  // These are physical door leaves and outer moldings, coherent with the intro.
+  box(0, .14, 12.9, 7.1, .28, 1.8);
+  for (const x of [-1.25, 1.25]) {
+    box(x, 3.95, 13.32, 2.47, 7.4, .22, black);
+    for (const dx of [-1.1, 1.1]) box(x + dx, 3.95, 13.18, .026, 7.02, .025, brass);
+    for (const y of [.46, 7.45]) box(x, y, 13.18, 2.22, .026, .025, brass);
+    for (const dx of [-.99, .99]) box(x + dx, 3.95, 13.16, .018, 6.79, .018, darkBrass);
+    cylinder(x < 0 ? -.14 : .14, 3.68, 13.09, .021, .021, .31, brass);
+  }
+  for (const x of [-2.68, 2.68]) { box(x, 3.95, 13.23, .32, 7.6, .4); box(x, 3.95, 13, .032, 7.7, .032, brass); }
+  box(0, 7.75, 13.2, 5.75, .32, .4);
+  const entryArch = new THREE.Mesh(new THREE.TorusGeometry(2.7, .19, 10, 48, Math.PI), marble); entryArch.position.set(0, 7.74, 13.3); architecture.add(entryArch);
+  const entryRim = new THREE.Mesh(new THREE.TorusGeometry(2.7, .032, 8, 48, Math.PI), brass); entryRim.position.set(0, 7.74, 13.08); architecture.add(entryRim);
   box(0, 12.5, -10, 29, .6, 48, black).castShadow = false;
   const vault = new THREE.Mesh(new THREE.CylinderGeometry(14, 14, 48, 48, 1, true, Math.PI / 2, Math.PI), new THREE.MeshStandardMaterial({ color: "#756b57", map: stoneMap, roughness: .9, side: THREE.BackSide }));
   vault.rotation.x = Math.PI / 2; vault.scale.z = .25; vault.position.set(0, 9, -10); architecture.add(vault);

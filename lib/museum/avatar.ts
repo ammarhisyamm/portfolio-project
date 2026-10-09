@@ -58,10 +58,11 @@ export function createMuseumAvatar() {
     points.setXYZ(i, x * .153 * jaw, y * .191, z * .137 * (z < 0 ? .95 : 1) + (z > .3 && y > -.5 && y < .12 ? .008 : 0));
   }
   faceGeometry.computeVertexNormals(); mesh(faceGeometry, skin, head, [0, 0, 0]);
-  sphere(head, skin, [0, -.137, .075], [.076, .053, .056]);
+  sphere(head, skin, [0, -.146, .073], [.063, .03, .037]);
   sphere(head, skin, [0, -.003, .14], [.017, .042, .026]); sphere(head, skin, [0, -.029, .16], [.024, .014, .023]);
-  sphere(head, lip, [0, -.085, .124], [.039, .006, .006]); sphere(head, skin, [0, -.095, .122], [.036, .006, .008]);
+  sphere(head, lip, [0, -.085, .137], [.036, .0035, .004]); sphere(head, skin, [0, -.095, .132], [.033, .005, .006]);
   for (const s of [-1, 1]) {
+    sphere(head, skin, [s * .098, -.054, .102], [.049, .033, .031]);
     sphere(head, skin, [s * .156, -.005, -.004], [.024, .043, .024]); sphere(head, lip, [s * .173, -.003, .006], [.004, .024, .011]);
     sphere(head, white, [s * .064, .024, .129], [.026, .018, .008]); sphere(head, iris, [s * .064, .024, .137], [.011, .012, .003]);
     sphere(head, pupil, [s * .064, .024, .14], [.005, .007, .002]); sphere(head, white, [s * .061, .029, .142], [.002, .002, .001]);
@@ -78,6 +79,11 @@ export function createMuseumAvatar() {
     tube(head, hairRidge, [[x, .138, .082], [x - .021, .211 + Math.sin(t * Math.PI) * .011, .063], [x + .036, .218, -.026]], .002);
   }
   for (let i = 0; i < 5; i++) tube(head, hair, [[-.13 + i * .034, .14, .071], [-.089 + i * .025, .18, .147], [.018 + i * .019, .108 + i * .01, .112]], .019 - i * .001);
+  for (let i = 0; i < 4; i++) {
+    const x = -.125 + i * .026;
+    tube(head, hair, [[x, .12, .12], [x - .009, .21 + i * .01, .125], [x + .083, .239 + i * .002, .038], [x + .136, .18, -.054]], .018);
+    tube(head, hairRidge, [[x, .143, .135], [x - .007, .228 + i * .008, .116], [x + .081, .254 + i * .001, .032]], .002);
+  }
   for (const s of [-1, 1]) sphere(head, hair, [s * .141, .07, -.04], [.026, .067, .09]);
   sphere(head, hair, [0, .05, -.072], [.152, .146, .086]);
   for (let i = 0; i < 13; i++) {
