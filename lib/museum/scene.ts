@@ -21,7 +21,7 @@ type Config = {
 };
 
 const destinations: Record<MuseumRoom, [number, number, number]> = {
-  work: [-1.8, 1.2, 0], process: [-2, -16, 0], playground: [2.5, 2.5, Math.PI / 2], about: [-2.5, 2.5, -Math.PI / 2], contact: [8, -16, 0],
+  work: [-1.8, 1.2, 0], process: [-2, -20.3, 0], playground: [5.5, 2.5, Math.PI / 2], about: [-5.5, 2.5, -Math.PI / 2], contact: [8.2, -20.3, 0],
 };
 const moveKeys = new Set(["KeyW", "KeyA", "KeyS", "KeyD", "ArrowUp", "ArrowLeft", "ArrowDown", "ArrowRight", "ShiftLeft", "ShiftRight"]);
 
@@ -37,7 +37,7 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.1;
   renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.shadowMap.type = THREE.PCFShadowMap;
   renderer.domElement.setAttribute("aria-label", "Interactive 3D museum. Use WASD or the arrow keys to walk, drag to look around, and E to inspect a nearby display.");
   renderer.domElement.tabIndex = 0;
   mount.appendChild(renderer.domElement);
@@ -95,7 +95,7 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
   }
   function releaseKeys() { keys.clear(); joystick.set(0, 0); sprint = false; dragging = null; }
   function onKeyDown(event: KeyboardEvent) {
-    if (paused || event.metaKey || event.ctrlKey || event.altKey || (event.target instanceof HTMLElement && event.target.closest("button,a,input,textarea,select,[role='dialog']"))) return;
+    if (paused || event.metaKey || event.ctrlKey || event.altKey || (event.target instanceof HTMLElement && event.target.closest("input,textarea,select,[contenteditable='true'],dialog,[role='dialog']"))) return;
     if (moveKeys.has(event.code)) { event.preventDefault(); keys.add(event.code); destination = null; }
     if (event.code === "KeyE" && focus && !event.repeat) { event.preventDefault(); config.onInteract(focus); }
   }

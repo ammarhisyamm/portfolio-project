@@ -93,6 +93,9 @@ export default function MuseumExperience({ content }: { content: SiteContent }) 
     const previous = document.activeElement as HTMLElement | null;
     const panel = studyLayer.current.querySelector<HTMLElement>("[role=dialog]");
     if (!panel) return;
+    const siblings = Array.from(studyLayer.current.parentElement?.children ?? []).filter((element): element is HTMLElement => element instanceof HTMLElement && element !== studyLayer.current);
+    const previousInert = siblings.map(element => element.inert);
+    siblings.forEach(element => { element.inert = true; });
     const focusables = () => Array.from(panel.querySelectorAll<HTMLElement>("button,a[href],input,textarea,[tabindex='0']")).filter(element => !element.hasAttribute("disabled"));
     focusables()[0]?.focus({ preventScroll: true });
     const onTab = (event: KeyboardEvent) => {
@@ -102,7 +105,7 @@ export default function MuseumExperience({ content }: { content: SiteContent }) 
       else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
     };
     panel.addEventListener("keydown", onTab);
-    return () => { panel.removeEventListener("keydown", onTab); previous?.focus({ preventScroll: true }); };
+    return () => { panel.removeEventListener("keydown", onTab); siblings.forEach((element, index) => { element.inert = previousInert[index]; }); previous?.focus({ preventScroll: true }); };
   }, [study]);
 
   function changeView(museum: boolean) {
