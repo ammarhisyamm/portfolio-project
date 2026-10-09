@@ -2,25 +2,28 @@ import * as THREE from "three";
 import { Reflector } from "three/addons/objects/Reflector.js";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import { canvasTexture, haloTexture, stoneTexture, titleTexture } from "./materials";
+import { createLightShaft } from "./light-shafts";
 
 export type Obstacle = { x: number; z: number; halfX: number; halfZ: number };
 
 export function createMuseumEnvironment(scene: THREE.Scene, marbleMap: THREE.Texture, mobile: boolean) {
   const architecture = new THREE.Group();
   scene.add(architecture);
-  const marble = new THREE.MeshStandardMaterial({ map: marbleMap, color: "#a4a093", metalness: .18, roughness: .3 });
-  const brass = new THREE.MeshStandardMaterial({ color: "#b79a62", metalness: .84, roughness: .27 });
+  const marble = new THREE.MeshStandardMaterial({ map: marbleMap, color: "#9c9487", metalness: .12, roughness: .34 });
+  const brass = new THREE.MeshStandardMaterial({ color: "#a47b3e", metalness: .78, roughness: .32 });
   const darkBrass = new THREE.MeshStandardMaterial({ color: "#68502d", metalness: .76, roughness: .44 });
   const stoneMap = stoneTexture(); stoneMap.wrapS = stoneMap.wrapT = THREE.RepeatWrapping;
   const wall = new THREE.MeshStandardMaterial({ color: "#746c5d", map: stoneMap, roughness: .86 });
   const black = new THREE.MeshStandardMaterial({ color: "#211e1a", roughness: .9 });
   const lamps: THREE.PointLight[] = [];
   const halos: THREE.Sprite[] = [];
-  const beams: THREE.Mesh[] = [];
+  const beams: THREE.Mesh<THREE.BoxGeometry, THREE.ShaderMaterial>[] = [];
+  const spots: THREE.SpotLight[] = [];
+  let lightAmount = 1, lightTarget = 1;
   const obstacles: Obstacle[] = [];
   const glowMap = haloTexture();
   const glowMaterial = new THREE.SpriteMaterial({ map: glowMap, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false });
-  const flame = new THREE.MeshBasicMaterial({ color: "#ffe5b2", toneMapped: false });
+  const flame = new THREE.MeshBasicMaterial({ color: new THREE.Color("#ffe5b2").multiplyScalar(3), toneMapped: false });
 
   function box(x: number, y: number, z: number, w: number, h: number, d: number, material: THREE.Material = marble, parent: THREE.Group = architecture) {
     const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), material);
@@ -37,7 +40,7 @@ export function createMuseumEnvironment(scene: THREE.Scene, marbleMap: THREE.Tex
   }
   const floorMap = marbleMap.clone(); floorMap.needsUpdate = true;
   floorMap.wrapS = floorMap.wrapT = THREE.RepeatWrapping; floorMap.repeat.set(7, 11);
-  const floorMaterial = new THREE.MeshStandardMaterial({ map: floorMap, color: "#9c9587", roughness: .26, metalness: .25, transparent: !mobile, opacity: mobile ? 1 : .78 });
+  const floorMaterial = new THREE.MeshStandardMaterial({ map: floorMap, color: "#9c9587", roughness: .31, metalness: .16, transparent: !mobile, opacity: mobile ? 1 : .82 });
   const floor = new THREE.Mesh(new THREE.PlaneGeometry(29, 48), floorMaterial);
   floor.rotation.x = -Math.PI / 2; floor.position.set(0, .016, -10); floor.receiveShadow = true; scene.add(floor);
   let reflection: Reflector | null = null;
@@ -66,6 +69,7 @@ export function createMuseumEnvironment(scene: THREE.Scene, marbleMap: THREE.Tex
       cylinder(x, 8.83, z, .8, .53, .35, marble);
       box(x, 9.06, z, 1.58, .22, 1.6);
       ring(x, .72, z, .6, .034); ring(x, 8.66, z, .52, .036);
+      for (const y of [.62, .9, 8.55, 8.95]) ring(x, y, z, y > 8 ? .58 : .67, .022);
       for (const offset of [-.2, 0, .2]) box(x + offset, 4.68, z + .49, .027, 7.56, .024, darkBrass);
       obstacles.push({ x, z, halfX: .8, halfZ: .8 });
     }
@@ -73,6 +77,12 @@ export function createMuseumEnvironment(scene: THREE.Scene, marbleMap: THREE.Tex
     arch.scale.y = .28; arch.position.set(0, 9.05, z); architecture.add(arch);
     const rim = new THREE.Mesh(new THREE.TorusGeometry(12.25, .047, 6, 52, Math.PI), brass);
     rim.scale.y = .28; rim.position.set(0, 9.1, z + .38); architecture.add(rim);
+    for (const offset of [-.46, .46]) {
+      const molding = new THREE.Mesh(new THREE.TorusGeometry(12.2, .11, 8, 64, Math.PI), darkBrass);
+      molding.scale.y = .28; molding.position.set(0, 9.05, z + offset); architecture.add(molding);
+      const edge = new THREE.Mesh(new THREE.TorusGeometry(12.2, .025, 6, 64, Math.PI), brass);
+      edge.scale.y = .28; edge.position.set(0, 9.14, z + offset * 1.2); architecture.add(edge);
+    }
     box(0, 12.3, z, 28, .4, .45);
   }
 
@@ -109,12 +119,20 @@ export function createMuseumEnvironment(scene: THREE.Scene, marbleMap: THREE.Tex
   for (const z of [-27, -17, -4, 8]) windowBay(13.45, z, -Math.PI / 2);
   windowBay(0, -33.35, 0, 5.4);
 
-  const sun = new THREE.DirectionalLight("#fff0d1", 3.5);
+  const sun = new THREE.DirectionalLight("#ffe3b5", 3.25);
   sun.position.set(12, 19, -18); sun.target.position.set(-2, 0, -4); scene.add(sun, sun.target);
   sun.castShadow = true; sun.shadow.mapSize.set(mobile ? 512 : 1536, mobile ? 512 : 1536);
   Object.assign(sun.shadow.camera, { left: -23, right: 23, top: 25, bottom: -25, near: 1, far: 65 });
   sun.shadow.bias = -.0005; sun.shadow.normalBias = .04;
-  const ambient = new THREE.HemisphereLight("#f7e6c8", "#383022", 1.05); scene.add(ambient);
+  const ambient = new THREE.HemisphereLight("#e4dfd5", "#242225", .68); scene.add(ambient);
+  const rimLight = new THREE.DirectionalLight("#c4d1df", .65);
+  rimLight.position.set(-8, 7, 13); scene.add(rimLight);
+  // Local pools of light give exhibits depth without flattening the entire room.
+  for (const [x, z] of [[-7.5, -7.7], [-2.5, -7.7], [2.5, -7.7], [7.5, -7.7], [-2, -25]]) {
+    const spot = new THREE.SpotLight("#ffd49a", 48, 13, .42, .7, 2);
+    spot.position.set(x + 1.1, 7.3, z + 2.5); spot.target.position.set(x, 1.6, z);
+    scene.add(spot, spot.target); spots.push(spot);
+  }
 
   function lantern(x: number, z: number, height = 3.3, light = false) {
     cylinder(x, height - .42, z, .04, .055, .8, brass);
@@ -127,17 +145,21 @@ export function createMuseumEnvironment(scene: THREE.Scene, marbleMap: THREE.Tex
   }
   for (const z of [-23, -8, 7]) { lantern(-11.35, z, 4.4, true); lantern(11.35, z, 4.4); }
 
-  // Warm shafts have volume, but never sit in front of readable exhibit labels.
-  if (!mobile) for (const z of [-17, -4, 8]) {
-    const beam = new THREE.Mesh(new THREE.ConeGeometry(2.15, 15, 20, 1, true), new THREE.MeshBasicMaterial({ color: "#edbd79", transparent: true, opacity: .025, side: THREE.DoubleSide, depthWrite: false, blending: THREE.AdditiveBlending }));
-    beam.position.set(8, 5.3, z - 1); beam.rotation.z = -.48; scene.add(beam); beams.push(beam);
+  // GPU ray-marched, feathered shafts replace the visibly flat cone surfaces.
+  for (const z of mobile ? [-17] : [-17, -4, 8]) {
+    const beam = createLightShaft(new THREE.Vector3(13.15, 9, z), new THREE.Vector3(3.6, .25, z + 3.6), 2.3, mobile);
+    scene.add(beam); beams.push(beam);
   }
 
   function oliveTree(x: number, z: number) {
     cylinder(x, .5, z, .53, .36, 1, marble);
     ring(x, .95, z, .53, .025);
     cylinder(x, 2.4, z, .045, .14, 3.2, black);
-    const leafMat = new THREE.MeshStandardMaterial({ color: "#63573a", roughness: .95 });
+    const leafMat = new THREE.MeshStandardMaterial({ color: "#4d5939", roughness: .92 });
+    for (let i = 0; i < 5; i++) {
+      const branch = cylinder(x, 2.7 + i * .18, z, .022, .045, 1.25, black);
+      branch.rotation.z = (i % 2 ? -1 : 1) * .65; branch.rotation.y = i * 1.6;
+    }
     const leaves = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 5, 4), leafMat, mobile ? 65 : 145);
     const dummy = new THREE.Object3D();
     for (let i = 0; i < leaves.count; i++) {
@@ -156,8 +178,12 @@ export function createMuseumEnvironment(scene: THREE.Scene, marbleMap: THREE.Tex
     box(x, .76, z, 1.05, 1.52, 1.05); box(x, 1.57, z, 1.23, .13, 1.23, brass);
     const shoulders = new THREE.Mesh(new THREE.SphereGeometry(1, 16, 12), sculpture); shoulders.scale.set(.47, .27, .26); shoulders.position.set(x, 1.92, z); architecture.add(shoulders);
     cylinder(x, 2.18, z, .11, .15, .32, sculpture);
-    const head = new THREE.Mesh(new THREE.SphereGeometry(1, 20, 16), sculpture); head.scale.set(.25, .36, .26); head.position.set(x, 2.58, z); architecture.add(head);
+    const head = new THREE.Mesh(new THREE.SphereGeometry(1, 20, 16), sculpture); head.scale.set(.22, .32, .23); head.position.set(x, 2.58, z); architecture.add(head);
     box(x, 2.59, z + .26, .075, .14, .075, sculpture);
+    for (const s of [-1, 1]) {
+      box(x + s * .09, 2.68, z + .207, .1, .027, .04, sculpture).rotation.z = -s * .13;
+      const cheek = new THREE.Mesh(new THREE.SphereGeometry(1, 12, 10), sculpture); cheek.scale.set(.073, .11, .05); cheek.position.set(x + s * .12, 2.5, z + .17); architecture.add(cheek);
+    }
     obstacles.push({ x, z, halfX: .7, halfZ: .7 });
   }
   box(-7.2, .63, 10, 4, .22, 1.1, black);
@@ -166,13 +192,34 @@ export function createMuseumEnvironment(scene: THREE.Scene, marbleMap: THREE.Tex
   ring(0, 8.4, -11, 1.6, .045);
   cylinder(0, 10.3, -11, .032, .032, 3.8, brass);
   for (let i = 0; i < 8; i++) { const a = i / 8 * Math.PI * 2; lantern(Math.cos(a) * 1.6, -11 + Math.sin(a) * 1.6, 8.5); }
+  ring(0, 8.24, -11, 1.25, .028);
+  for (let i = 0; i < 8; i++) {
+    const a = i / 8 * Math.PI * 2;
+    const arm = box(Math.cos(a) * .8, 8.38, -11 + Math.sin(a) * .8, 1.6, .026, .026, brass); arm.rotation.y = -a;
+  }
+
+  // An apse beyond the walkable floor, with shallow steps and a hanging banner.
+  for (let i = 0; i < 3; i++) box(0, .15 + i * .21, -31.2 - i * .6, 7.2 - i * .6, .3, 2.7 - i * .5);
+  box(0, 1.05, -32, 1.15, 1.4, 1.15);
+  const statue = new THREE.Group(); statue.position.set(0, 1.74, -32); architecture.add(statue);
+  const statueMaterial = new THREE.MeshStandardMaterial({ color: "#d2c4a7", roughness: .78 });
+  for (const s of [-1, 1]) cylinder(s * .15, .55, 0, .105, .13, 1.1, statueMaterial, statue);
+  const drape = new THREE.Mesh(new THREE.ConeGeometry(.42, 1.1, 18), statueMaterial); drape.position.y = 1.1; statue.add(drape);
+  cylinder(0, 1.61, 0, .1, .12, .2, statueMaterial, statue);
+  const statueHead = new THREE.Mesh(new THREE.SphereGeometry(.19, 24, 18), statueMaterial); statueHead.scale.y = 1.35; statueHead.position.y = 1.92; statue.add(statueHead);
+  for (const s of [-1, 1]) { const arm = cylinder(s * .31, 1.14, 0, .077, .065, .8, statueMaterial, statue); arm.rotation.z = s * .23; }
+  const bannerShape = new THREE.Shape(); bannerShape.moveTo(-.72, 0); bannerShape.lineTo(.72, 0); bannerShape.lineTo(.72, -2.1); bannerShape.lineTo(0, -2.64); bannerShape.lineTo(-.72, -2.1); bannerShape.closePath();
+  const banner = new THREE.Mesh(new THREE.ShapeGeometry(bannerShape), new THREE.MeshStandardMaterial({ color: "#17181a", side: THREE.DoubleSide, roughness: .98 })); banner.position.set(0, 9.1, -16); architecture.add(banner);
+  box(0, 9.12, -16, 1.6, .035, .035, brass);
+  const bannerMap = canvasTexture(256, 256, ctx => { ctx.strokeStyle = "#ad8549"; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(128, 128, 100, 0, Math.PI * 2); ctx.stroke(); ctx.fillStyle = "#ad8549"; ctx.font = "140px Georgia"; ctx.textAlign = "center"; ctx.fillText("h", 128, 172); });
+  const bannerMark = new THREE.Mesh(new THREE.PlaneGeometry(1.05, 1.05), new THREE.MeshStandardMaterial({ map: bannerMap, transparent: true, roughness: .7, metalness: .35 })); bannerMark.position.set(0, 7.86, -15.98); architecture.add(bannerMark);
 
   const emblem = canvasTexture(1024, 1024, ctx => {
     ctx.strokeStyle = "#a68a54"; ctx.lineWidth = 3;
     for (const r of [455, 421, 345]) { ctx.beginPath(); ctx.arc(512, 512, r, 0, Math.PI * 2); ctx.stroke(); }
     ctx.fillStyle = "#ab915f"; ctx.font = "italic 480px Georgia"; ctx.textAlign = "center"; ctx.fillText("h", 512, 658);
   });
-  const seal = new THREE.Mesh(new THREE.PlaneGeometry(6.2, 6.2), new THREE.MeshBasicMaterial({ map: emblem, transparent: true, depthWrite: false, toneMapped: false }));
+  const seal = new THREE.Mesh(new THREE.PlaneGeometry(6.2, 6.2), new THREE.MeshStandardMaterial({ map: emblem, transparent: true, depthWrite: false, metalness: .55, roughness: .48, opacity: .8 }));
   seal.rotation.x = -Math.PI / 2; seal.position.set(0, .025, 1); scene.add(seal);
 
   for (const [title, sub, x, z, rotation] of [
@@ -211,13 +258,16 @@ export function createMuseumEnvironment(scene: THREE.Scene, marbleMap: THREE.Tex
 
   return {
     marble, brass, obstacles,
-    setLights(on: boolean) {
-      sun.intensity = on ? 3.5 : .35;
-      ambient.intensity = on ? 1.05 : .52;
-      lamps.forEach(light => { light.intensity = on ? 22 : 0; });
-      halos.forEach(halo => { halo.visible = on; });
-      beams.forEach(beam => { beam.visible = on; });
+    setLights(on: boolean) { lightTarget = on ? 1 : 0; },
+    update(delta: number, reduced: boolean) {
+      lightAmount = reduced ? lightTarget : THREE.MathUtils.damp(lightAmount, lightTarget, 10, delta);
+      sun.intensity = .3 + lightAmount * 2.95; ambient.intensity = .34 + lightAmount * .34;
+      rimLight.intensity = .25 + lightAmount * .4;
+      lamps.forEach(light => { light.intensity = lightAmount * 22; });
+      spots.forEach(light => { light.intensity = lightAmount * 48; });
+      halos.forEach(halo => { halo.material.opacity = lightAmount; });
+      beams.forEach(beam => { beam.material.uniforms.intensity.value = lightAmount * .65; });
     },
-    dispose() { reflection?.dispose(); floorMap.dispose(); glowMap.dispose(); stoneMap.dispose(); windowMap.dispose(); emblem.dispose(); },
+    dispose() { reflection?.dispose(); floorMap.dispose(); glowMap.dispose(); stoneMap.dispose(); windowMap.dispose(); emblem.dispose(); bannerMap.dispose(); },
   };
 }

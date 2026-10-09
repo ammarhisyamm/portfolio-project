@@ -142,24 +142,19 @@ export default function MuseumExperience({ content }: { content: SiteContent }) 
       <nav className="museum-world-nav" aria-label="Museum rooms">{MUSEUM_ROOMS.map(item => <button type="button" key={item.id} aria-current={room === item.id ? "location" : undefined} disabled={!ready} onClick={() => visit(item.id)}>{item.label}<span aria-hidden="true" /></button>)}</nav>
       <div className="museum-world-utilities">
         {data.available && <span className="museum-world-available"><i aria-hidden="true" />Available for work</span>}
+        <button type="button" title="Browse the collection" aria-label="Browse the collection" disabled={!ready} onClick={() => setCollection(true)}><Layers size={17} aria-hidden="true" /></button>
         <button type="button" title={lights ? "Dim the lights" : "Turn on the lights"} aria-label={lights ? "Dim the lights" : "Turn on the lights"} aria-pressed={lights} onClick={() => { controller.current?.setLights(!lights); setLights(!lights); }} disabled={!ready}><Lightbulb size={17} /></button>
         <button type="button" title={firstPerson ? "Show character" : "First-person camera"} aria-label={firstPerson ? "Show character" : "First-person camera"} aria-pressed={firstPerson} onClick={() => { controller.current?.setPerspective(!firstPerson); setFirstPerson(!firstPerson); }} disabled={!ready}><Camera size={18} /></button>
         <button type="button" className="museum-classic-toggle" onClick={() => changeView(false)}><BookOpen size={16} aria-hidden="true" /><span>Classic view</span></button>
       </div>
     </header>
-    <div className="museum-room-copy" key={room}>
-      <span className="museum-room-number">{currentRoom.number}</span>
-      <h1>{currentRoom.label}</h1><p>{currentRoom.description}</p>
-      <button type="button" className="museum-collection-trigger" disabled={!ready} onClick={() => setCollection(true)}><Layers size={14} aria-hidden="true" />Browse the collection<ArrowRight size={14} aria-hidden="true" /></button>
-    </div>
-    <nav className="museum-room-rail" aria-label="Gallery destinations">{MUSEUM_ROOMS.map(item => <button type="button" key={item.id} onClick={() => visit(item.id)} aria-label={`Walk to ${item.label}`} aria-current={room === item.id ? "location" : undefined} disabled={!ready}><span>{item.number}</span><i>{item.label}</i></button>)}</nav>
     <div className="museum-game-guide" aria-label="Movement controls">
       <div><span className="museum-key-group">{["W", "A", "S", "D"].map(key => <kbd key={key}>{key}</kbd>)}</span><span>Move</span></div>
       <div><Mouse size={19} strokeWidth={1.3} aria-hidden="true" /><span>Drag to look around</span></div>
       <div><kbd>E</kbd><span>Inspect a display</span><kbd className="museum-run-key">Shift</kbd><span>Run</span></div>
     </div>
     <div className="museum-interaction-prompt" aria-live="polite">
-      {focused ? <button type="button" onClick={() => choose(focused.id)}><kbd>E</kbd><span>{focused.title}</span><ArrowRight size={17} aria-hidden="true" /></button> : <span>Walk toward a display, or click its artwork.</span>}
+      {focused ? <button type="button" onClick={() => controller.current?.select(focused.id)}><kbd>E</kbd><span>{focused.title}</span><ArrowRight size={17} aria-hidden="true" /></button> : <span>Walk toward a display, or click its artwork.</span>}
     </div>
     <div className="museum-mini-map" aria-label="Museum map">
       <span className="museum-map-heading">The museum</span>

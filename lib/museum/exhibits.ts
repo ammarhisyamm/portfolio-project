@@ -18,7 +18,7 @@ export function createMuseumExhibits(scene: THREE.Scene, exhibits: MuseumExhibit
   const displays: ExhibitDisplay[] = [], targets: THREE.Object3D[] = [], obstacles: Obstacle[] = [];
   const counters: Partial<Record<MuseumRoom, number>> = {};
   const loading: Promise<void>[] = [];
-  const warm = new THREE.MeshBasicMaterial({ color: "#edc788", toneMapped: false });
+  const warm = new THREE.MeshBasicMaterial({ color: new THREE.Color("#edc788").multiplyScalar(2.4), toneMapped: false });
   const glass = new THREE.MeshPhysicalMaterial({ color: "#e4c790", roughness: .07, metalness: .02, clearcoat: 1, transparent: true, opacity: .075, side: THREE.DoubleSide, depthWrite: false });
   function box(parent: THREE.Group, size: [number, number, number], pos: [number, number, number], material: THREE.Material, rounded = false) {
     const mesh = new THREE.Mesh(rounded ? new RoundedBoxGeometry(...size, 2, .018) : new THREE.BoxGeometry(...size), material);
@@ -30,7 +30,7 @@ export function createMuseumExhibits(scene: THREE.Scene, exhibits: MuseumExhibit
     const slot = slots[exhibit.room][index]; if (!slot) continue;
     const [x, z, rotation] = slot;
     const group = new THREE.Group(); group.position.set(x, 0, z); group.rotation.y = rotation; scene.add(group);
-    const frame = new THREE.MeshStandardMaterial({ color: "#c3a269", metalness: .8, roughness: .3, emissive: "#bd8b48", emissiveIntensity: 0 });
+    const frame = new THREE.MeshStandardMaterial({ color: "#a17b42", metalness: .78, roughness: .32, emissive: "#bd8b48", emissiveIntensity: 0 });
     const base = box(group, [3.6, .98, 1.58], [0, .5, 0], marble, true);
     base.userData.exhibitId = exhibit.id; targets.push(base);
     box(group, [3.74, .1, 1.7], [0, .08, 0], frame);

@@ -4,7 +4,7 @@ html[data-museum-view="true"] [data-portfolio-shell] { visibility: hidden; }
 .museum-world { --museum-ink:#f1e5d1; --museum-gold:#d1a86a; position:fixed; inset:0; z-index:230; isolation:isolate; overflow:hidden; background:#211b13; color:var(--museum-ink); font-family:var(--font-manrope),Arial,sans-serif; }
 .museum-renderer,.museum-renderer canvas { position:absolute; inset:0; width:100%; height:100%; display:block; touch-action:none; }
 .museum-renderer canvas { outline:none; cursor:grab; }
-.museum-world-shade { position:absolute; inset:0; pointer-events:none; background:linear-gradient(180deg,rgba(10,7,4,.45),transparent 23%,transparent 65%,rgba(10,7,4,.52)),linear-gradient(90deg,rgba(10,7,4,.38),transparent 38%); }
+.museum-world-shade { position:absolute; inset:0; pointer-events:none; background:linear-gradient(180deg,rgba(10,7,4,.32),transparent 18%,transparent 76%,rgba(10,7,4,.4)); }
 .museum-world button,.museum-world a { -webkit-tap-highlight-color:transparent; }
 .museum-world button:focus-visible,.museum-world a:focus-visible,.museum-renderer canvas:focus-visible { outline:2px solid #efc887; outline-offset:4px; }
 .museum-world button:disabled { opacity:.45; cursor:wait; }
