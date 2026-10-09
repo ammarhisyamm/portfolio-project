@@ -54,6 +54,15 @@ export function createMuseumEnvironment(scene: THREE.Scene, marbleMap: THREE.Tex
   box(14, 1.3, -10, 1, 2.6, 48, wall);
   box(0, 5.5, -34, 29, 11, 1, wall);
   box(0, 12.5, -10, 29, .6, 48, black).castShadow = false;
+  const vault = new THREE.Mesh(new THREE.CylinderGeometry(14, 14, 48, 48, 1, true, Math.PI / 2, Math.PI), new THREE.MeshStandardMaterial({ color: "#756b57", map: stoneMap, roughness: .9, side: THREE.BackSide }));
+  vault.rotation.x = Math.PI / 2; vault.scale.z = .25; vault.position.set(0, 9, -10); architecture.add(vault);
+  // Recessed wall bays and slim gilded reveals carry the architectural rhythm
+  // into the side rooms instead of leaving a single unbroken flat wall.
+  for (const z of [-29, -22, -15, -8, -1, 6]) {
+    for (const dz of [-1.8, 1.8]) box(-13.38, 4.6, z + dz, .034, 6.9, .034, darkBrass);
+    for (const y of [1.15, 8.05]) box(-13.38, y, z, .034, .034, 3.64, brass);
+    box(-13.36, 4.6, z - 1.82, .04, 6.9, .012, brass);
+  }
   for (const x of [-13.65, 13.65]) {
     box(x, .32, -10, .32, .64, 48);
     box(x, .66, -10, .35, .055, 48, brass);
