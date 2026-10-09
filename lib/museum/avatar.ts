@@ -1,12 +1,14 @@
 import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
-import { canvasTexture } from "./materials";
+import { canvasTexture, haloTexture } from "./materials";
 
 /** A real articulated mesh. The generated turnaround supplies art direction,
  * not a rigged GLB. Geometry and animation stay local and fully three-dimensional. */
 export function createMuseumAvatar() {
   const root = new THREE.Group(), body = new THREE.Group(); root.add(body);
+  const contact = new THREE.Mesh(new THREE.PlaneGeometry(.92, .68), new THREE.MeshBasicMaterial({ map: haloTexture(), color: "#100c07", transparent: true, opacity: .36, depthWrite: false, toneMapped: false }));
+  contact.rotation.x = -Math.PI / 2; contact.position.set(0, .028, .02); root.add(contact);
   const textile = canvasTexture(256, 256, ctx => {
     ctx.fillStyle = "#777"; ctx.fillRect(0, 0, 256, 256); ctx.strokeStyle = "#aaa"; ctx.lineWidth = 1.3;
     for (let y = 0; y < 256; y += 8) for (let x = 0; x < 256; x += 6) { ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + 3, y + 5); ctx.lineTo(x + 6, y); ctx.stroke(); }
@@ -88,11 +90,11 @@ export function createMuseumAvatar() {
   const arms: { shoulder: THREE.Group; elbow: THREE.Group }[] = [];
   for (const s of [-1, 1]) {
     const hip = new THREE.Group(); hip.position.set(s * .113, 1.055, 0); body.add(hip);
-    mesh(new THREE.LatheGeometry([[.098, 0], [.111, -.06], [.103, -.24], [.093, -.36], [.085, -.47]].map(([r, y]) => new THREE.Vector2(r, y)), 24), trousers, hip, [0, 0, 0], [1, 1, .93]);
+    mesh(new THREE.LatheGeometry([[.098, 0], [.111, -.06], [.103, -.24], [.093, -.36], [.085, -.47]].reverse().map(([r, y]) => new THREE.Vector2(r, y)), 24), trousers, hip, [0, 0, 0], [1, 1, .93]);
     box(hip, trousers, [s * .085, -.25, .012], [.055, .17, .135], .016); box(hip, piping, [s * .104, -.21, .012], [.009, .022, .122], .003);
     const knee = new THREE.Group(); knee.position.y = -.47; hip.add(knee);
     sphere(knee, trousers, [0, -.018, 0], [.085, .059, .079]);
-    mesh(new THREE.LatheGeometry([[.085, 0], [.09, -.085], [.083, -.23], [.074, -.345], [.078, -.414]].map(([r, y]) => new THREE.Vector2(r, y)), 24), trousers, knee, [0, 0, 0], [1, 1, .92]); cuff(knee, rib, -.392, .08, .045);
+    mesh(new THREE.LatheGeometry([[.085, 0], [.09, -.085], [.083, -.23], [.074, -.345], [.078, -.414]].reverse().map(([r, y]) => new THREE.Vector2(r, y)), 24), trousers, knee, [0, 0, 0], [1, 1, .92]); cuff(knee, rib, -.392, .08, .045);
     const foot = new THREE.Group(); foot.position.set(0, -.42, .025); knee.add(foot);
     box(foot, sole, [0, -.117, .043], [.19, .057, .327], .028); box(foot, white, [0, -.066, .05], [.171, .1, .295], .039);
     sphere(foot, white, [0, -.058, .134], [.084, .057, .091]); box(foot, sole, [s * .081, -.062, .013], [.009, .025, .105], .003);
@@ -101,10 +103,10 @@ export function createMuseumAvatar() {
     legs.push({ hip, knee, foot });
     const shoulder = new THREE.Group(); shoulder.position.set(s * .27, 1.698, 0); body.add(shoulder);
     sphere(shoulder, knit, [s * .012, -.015, 0], [.09, .09, .085]);
-    mesh(new THREE.LatheGeometry([[.085, 0], [.088, -.065], [.078, -.19], [.068, -.315]].map(([r, y]) => new THREE.Vector2(r, y)), 24), knit, shoulder, [s * .019, 0, 0]);
+    mesh(new THREE.LatheGeometry([[.085, 0], [.088, -.065], [.078, -.19], [.068, -.315]].reverse().map(([r, y]) => new THREE.Vector2(r, y)), 24), knit, shoulder, [s * .019, 0, 0]);
     const elbow = new THREE.Group(); elbow.position.set(s * .025, -.315, 0); shoulder.add(elbow);
     sphere(elbow, knit, [0, 0, 0], [.069, .059, .066]);
-    mesh(new THREE.LatheGeometry([[.068, 0], [.073, -.05], [.068, -.16], [.061, -.278]].map(([r, y]) => new THREE.Vector2(r, y)), 24), knit, elbow, [0, 0, .007]); cuff(elbow, rib, -.267, .068, .058);
+    mesh(new THREE.LatheGeometry([[.068, 0], [.073, -.05], [.068, -.16], [.061, -.278]].reverse().map(([r, y]) => new THREE.Vector2(r, y)), 24), knit, elbow, [0, 0, .007]); cuff(elbow, rib, -.267, .068, .058);
     sphere(elbow, skin, [0, -.335, .006], [.044, .075, .031]); sphere(elbow, skin, [-s * .036, -.315, .028], [.016, .037, .019]);
     for (let i = 0; i < 4; i++) sphere(elbow, skin, [-.025 + i * .017, -.39, .01], [.009, .024, .01]);
     shoulder.rotation.z = s * .055; arms.push({ shoulder, elbow });

@@ -60,7 +60,8 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
   const avatar = createMuseumAvatar(); scene.add(avatar.root);
   // HDR-only bloom: readable CMS artwork stays below the threshold. Mobile
   // renders directly, avoiding the extra render targets and reflection pass.
-  const composer = mobile ? null : new EffectComposer(renderer);
+  const composer = mobile ? null : new EffectComposer(renderer, new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType, samples: 2 }));
+  composer?.setSize(mount.clientWidth, mount.clientHeight);
   const renderPass = composer ? new RenderPass(scene, camera) : null;
   const bloom = composer ? new UnrealBloomPass(new THREE.Vector2(mount.clientWidth, mount.clientHeight), .14, .42, 1.25) : null;
   const output = composer ? new OutputPass() : null;
