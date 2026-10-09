@@ -160,12 +160,13 @@ export function createMuseumEnvironment(scene: THREE.Scene, marbleMap: THREE.Tex
       const branch = cylinder(x, 2.7 + i * .18, z, .022, .045, 1.25, black);
       branch.rotation.z = (i % 2 ? -1 : 1) * .65; branch.rotation.y = i * 1.6;
     }
-    const leaves = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 5, 4), leafMat, mobile ? 65 : 145);
+    const leaves = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 5, 4), leafMat, mobile ? 140 : 320);
     const dummy = new THREE.Object3D();
     for (let i = 0; i < leaves.count; i++) {
       const a = i * 2.399, r = Math.sqrt((i % 37) / 37) * 1.35;
       dummy.position.set(x + Math.cos(a) * r, 2.45 + (i % 17) / 17 * 2, z + Math.sin(a) * r);
-      dummy.scale.set(.11, .19, .06); dummy.rotation.set(i, a, i * .23); dummy.updateMatrix(); leaves.setMatrixAt(i, dummy.matrix);
+      dummy.scale.set(.085, .23, .027); dummy.rotation.set(i, a, i * .23); dummy.updateMatrix(); leaves.setMatrixAt(i, dummy.matrix);
+      leaves.setColorAt(i, new THREE.Color(i % 3 ? "#637149" : "#84915c"));
     }
     leaves.castShadow = true; scene.add(leaves);
     obstacles.push({ x, z, halfX: .55, halfZ: .55 });

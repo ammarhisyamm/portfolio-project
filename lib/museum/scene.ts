@@ -62,7 +62,7 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
   // renders directly, avoiding the extra render targets and reflection pass.
   const composer = mobile ? null : new EffectComposer(renderer);
   const renderPass = composer ? new RenderPass(scene, camera) : null;
-  const bloom = composer ? new UnrealBloomPass(new THREE.Vector2(mount.clientWidth, mount.clientHeight), .24, .42, 1.25) : null;
+  const bloom = composer ? new UnrealBloomPass(new THREE.Vector2(mount.clientWidth, mount.clientHeight), .14, .42, 1.25) : null;
   const output = composer ? new OutputPass() : null;
   if (composer && renderPass && bloom && output) { composer.addPass(renderPass); composer.addPass(bloom); composer.addPass(output); }
   avatar.root.position.set(-1.8, 0, 1.2); avatar.root.rotation.y = Math.PI;
@@ -72,7 +72,7 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
   const velocity = new THREE.Vector3();
   const targetCamera = new THREE.Vector3(), gaze = new THREE.Vector3(), currentGaze = new THREE.Vector3();
   const raycaster = new THREE.Raycaster(), pointer = new THREE.Vector2();
-  let yaw = 0, pitch = .16, distance = mobile ? 6.5 : 5.8;
+  let yaw = 0, pitch = .09, distance = mobile ? 6.5 : 5.8;
   let room: MuseumRoom = "work", focus: string | null = null, hovered: string | null = null;
   let paused = false, disposed = false, sprint = false, firstPerson = false;
   let dragging: { id: number; x: number; y: number; moved: number } | null = null;
@@ -200,7 +200,7 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
     const side = firstPerson ? 0 : mobile ? .7 : 1.25;
     targetCamera.set(pos.x - Math.sin(yaw) * (firstPerson ? 0 : distance) + Math.cos(yaw) * side, firstPerson ? 1.95 : 2.85 + pitch * distance, pos.z + Math.cos(yaw) * (firstPerson ? 0 : distance) + Math.sin(yaw) * side);
     targetCamera.x = THREE.MathUtils.clamp(targetCamera.x, -12.9, 12.9); targetCamera.z = THREE.MathUtils.clamp(targetCamera.z, -31.7, 12.8);
-    gaze.set(pos.x + Math.sin(yaw) * 5, 1.64 - pitch * 1.8, pos.z - Math.cos(yaw) * 5);
+    gaze.set(pos.x + Math.sin(yaw) * 5, 2.16 - pitch * 1.8, pos.z - Math.cos(yaw) * 5);
     const cameraAlpha = reduce ? 1 : 1 - Math.exp(-delta * 9);
     camera.position.lerp(targetCamera, cameraAlpha); currentGaze.lerp(gaze, cameraAlpha); camera.lookAt(currentGaze);
     let closest: string | null = null, closestDistance = 4.9;
@@ -210,8 +210,8 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
     if (!reduce) dust.rotation.y = Math.sin(elapsed * .03) * .03;
     if (composer) composer.render(delta); else renderer.render(scene, camera);
   }
-  targetCamera.set(avatar.root.position.x + 1.25, 3.78, avatar.root.position.z + distance);
-  camera.position.copy(targetCamera); currentGaze.set(avatar.root.position.x, 1.5, avatar.root.position.z - 5); camera.lookAt(currentGaze);
+  targetCamera.set(avatar.root.position.x + 1.25, 3.37, avatar.root.position.z + distance);
+  camera.position.copy(targetCamera); currentGaze.set(avatar.root.position.x, 2, avatar.root.position.z - 5); camera.lookAt(currentGaze);
   renderer.setAnimationLoop(frame);
 
   function dispose() {

@@ -18,7 +18,7 @@ export function createMuseumExhibits(scene: THREE.Scene, exhibits: MuseumExhibit
   const displays: ExhibitDisplay[] = [], targets: THREE.Object3D[] = [], obstacles: Obstacle[] = [];
   const counters: Partial<Record<MuseumRoom, number>> = {};
   const loading: Promise<void>[] = [];
-  const warm = new THREE.MeshBasicMaterial({ color: new THREE.Color("#edc788").multiplyScalar(2.4), toneMapped: false });
+  const warm = new THREE.MeshBasicMaterial({ color: new THREE.Color("#e8b26d").multiplyScalar(1.7), toneMapped: false });
   const glass = new THREE.MeshPhysicalMaterial({ color: "#e4c790", roughness: .07, metalness: .02, clearcoat: 1, transparent: true, opacity: .075, side: THREE.DoubleSide, depthWrite: false });
   function box(parent: THREE.Group, size: [number, number, number], pos: [number, number, number], material: THREE.Material, rounded = false) {
     const mesh = new THREE.Mesh(rounded ? new RoundedBoxGeometry(...size, 2, .018) : new THREE.BoxGeometry(...size), material);

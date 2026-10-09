@@ -77,15 +77,22 @@ export function createMuseumAvatar() {
   }
   for (let i = 0; i < 5; i++) tube(head, hair, [[-.13 + i * .034, .14, .071], [-.089 + i * .025, .18, .147], [.018 + i * .019, .108 + i * .01, .112]], .019 - i * .001);
   for (const s of [-1, 1]) sphere(head, hair, [s * .141, .07, -.04], [.026, .067, .09]);
+  sphere(head, hair, [0, .05, -.072], [.152, .146, .086]);
+  for (let i = 0; i < 13; i++) {
+    const x = -.135 + i * .0225;
+    tube(head, hair, [[x, .185, -.086], [x + .018, .13, -.153], [x - .014, .028, -.145], [x * .76, -.073, -.096]], .009);
+    tube(head, hairRidge, [[x, .175, -.096], [x + .019, .127, -.159], [x - .013, .024, -.153]], .0018);
+  }
 
   const legs: { hip: THREE.Group; knee: THREE.Group; foot: THREE.Group }[] = [];
   const arms: { shoulder: THREE.Group; elbow: THREE.Group }[] = [];
   for (const s of [-1, 1]) {
     const hip = new THREE.Group(); hip.position.set(s * .113, 1.055, 0); body.add(hip);
-    mesh(new THREE.CapsuleGeometry(.099, .285, 8, 18), trousers, hip, [0, -.227, 0], [1, 1, .93]);
+    mesh(new THREE.LatheGeometry([[.098, 0], [.111, -.06], [.103, -.24], [.093, -.36], [.085, -.47]].map(([r, y]) => new THREE.Vector2(r, y)), 24), trousers, hip, [0, 0, 0], [1, 1, .93]);
     box(hip, trousers, [s * .085, -.25, .012], [.055, .17, .135], .016); box(hip, piping, [s * .104, -.21, .012], [.009, .022, .122], .003);
     const knee = new THREE.Group(); knee.position.y = -.47; hip.add(knee);
-    mesh(new THREE.CapsuleGeometry(.076, .28, 8, 18), trousers, knee, [0, -.202, 0], [1, 1, .92]); cuff(knee, rib, -.392, .08, .045);
+    sphere(knee, trousers, [0, -.018, 0], [.085, .059, .079]);
+    mesh(new THREE.LatheGeometry([[.085, 0], [.09, -.085], [.083, -.23], [.074, -.345], [.078, -.414]].map(([r, y]) => new THREE.Vector2(r, y)), 24), trousers, knee, [0, 0, 0], [1, 1, .92]); cuff(knee, rib, -.392, .08, .045);
     const foot = new THREE.Group(); foot.position.set(0, -.42, .025); knee.add(foot);
     box(foot, sole, [0, -.117, .043], [.19, .057, .327], .028); box(foot, white, [0, -.066, .05], [.171, .1, .295], .039);
     sphere(foot, white, [0, -.058, .134], [.084, .057, .091]); box(foot, sole, [s * .081, -.062, .013], [.009, .025, .105], .003);
@@ -93,9 +100,11 @@ export function createMuseumAvatar() {
     for (let i = 0; i < 5; i++) box(foot, sole, [0, .004 - i * .005, .015 + i * .022], [.073, .006, .008], .002).rotation.z = i % 2 ? .1 : -.1;
     legs.push({ hip, knee, foot });
     const shoulder = new THREE.Group(); shoulder.position.set(s * .27, 1.698, 0); body.add(shoulder);
-    mesh(new THREE.CapsuleGeometry(.086, .17, 8, 18), knit, shoulder, [s * .019, -.143, 0]);
+    sphere(shoulder, knit, [s * .012, -.015, 0], [.09, .09, .085]);
+    mesh(new THREE.LatheGeometry([[.085, 0], [.088, -.065], [.078, -.19], [.068, -.315]].map(([r, y]) => new THREE.Vector2(r, y)), 24), knit, shoulder, [s * .019, 0, 0]);
     const elbow = new THREE.Group(); elbow.position.set(s * .025, -.315, 0); shoulder.add(elbow);
-    mesh(new THREE.CapsuleGeometry(.071, .18, 8, 18), knit, elbow, [0, -.13, .007]); cuff(elbow, rib, -.267, .068, .058);
+    sphere(elbow, knit, [0, 0, 0], [.069, .059, .066]);
+    mesh(new THREE.LatheGeometry([[.068, 0], [.073, -.05], [.068, -.16], [.061, -.278]].map(([r, y]) => new THREE.Vector2(r, y)), 24), knit, elbow, [0, 0, .007]); cuff(elbow, rib, -.267, .068, .058);
     sphere(elbow, skin, [0, -.335, .006], [.044, .075, .031]); sphere(elbow, skin, [-s * .036, -.315, .028], [.016, .037, .019]);
     for (let i = 0; i < 4; i++) sphere(elbow, skin, [-.025 + i * .017, -.39, .01], [.009, .024, .01]);
     shoulder.rotation.z = s * .055; arms.push({ shoulder, elbow });
@@ -114,7 +123,7 @@ export function createMuseumAvatar() {
   }
   mesh(new THREE.TorusGeometry(.06, .013, 8, 24, Math.PI), leather, pack, [0, .262, .009]).scale.y = .6;
   const monogram = canvasTexture(128, 128, ctx => { ctx.fillStyle = "#b38b4d"; ctx.font = "76px Georgia"; ctx.textAlign = "center"; ctx.fillText("h", 64, 94); });
-  mesh(new THREE.PlaneGeometry(.084, .084), new THREE.MeshStandardMaterial({ map: monogram, transparent: true, roughness: .52, metalness: .55 }), pack, [0, -.13, -.164]).rotation.y = Math.PI;
+  mesh(new THREE.PlaneGeometry(.13, .13), new THREE.MeshStandardMaterial({ map: monogram, transparent: true, roughness: .52, metalness: .55 }), pack, [0, -.13, -.165]).rotation.y = Math.PI;
 
   // Merge static details per joint to avoid one draw call for every hair strand.
   function batch(group: THREE.Group) {
