@@ -31,7 +31,9 @@ const moveKeys = new Set(["KeyW", "KeyA", "KeyS", "KeyD", "ArrowUp", "ArrowLeft"
 
 export async function createMuseumScene(config: Config): Promise<MuseumController> {
   const { mount, signal, reducedMotion: reduce } = config;
-  const marbleImage = await loadImage("/museum/emperador-marble.webp");
+  const [marbleImage, knitImage] = await Promise.all([
+    loadImage("/museum/emperador-marble.webp"), loadImage("/museum/character-knit-v3.png"),
+  ]);
   if (signal.aborted) throw new DOMException("Cancelled", "AbortError");
   const mobile = window.matchMedia("(pointer: coarse)").matches || mount.clientWidth < 700;
   const renderer = new THREE.WebGLRenderer({ antialias: !mobile, powerPreference: "high-performance" });
@@ -57,7 +59,9 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
   const marbleMap = new THREE.Texture(marbleImage ?? undefined); marbleMap.colorSpace = THREE.SRGBColorSpace; marbleMap.needsUpdate = !!marbleImage; marbleMap.anisotropy = 4;
   const environment = createMuseumEnvironment(scene, marbleMap, mobile);
   const gallery = createMuseumExhibits(scene, config.data.exhibits, environment.marble, signal);
-  const avatar = createMuseumAvatar(); scene.add(avatar.root);
+  const knitMap = knitImage ? new THREE.Texture(knitImage) : undefined;
+  if (knitMap) knitMap.needsUpdate = true;
+  const avatar = createMuseumAvatar(knitMap); scene.add(avatar.root);
   // HDR-only bloom: readable CMS artwork stays below the threshold. Mobile
   // renders directly, avoiding the extra render targets and reflection pass.
   const composer = mobile ? null : new EffectComposer(renderer, new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType, samples: 2 }));
@@ -220,15 +224,16 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
     renderer.setAnimationLoop(null); resize.disconnect(); releaseKeys();
     window.removeEventListener("keydown", onKeyDown); window.removeEventListener("keyup", onKeyUp); window.removeEventListener("blur", releaseKeys);
     canvas.removeEventListener("pointerdown", onDown); canvas.removeEventListener("pointermove", onMove); canvas.removeEventListener("pointerup", onUp); canvas.removeEventListener("pointercancel", onCancel); canvas.removeEventListener("wheel", onWheel); canvas.removeEventListener("webglcontextlost", onContextLost);
-    const geometries = new Set<THREE.BufferGeometry>(), materials = new Set<THREE.Material>(), textures = new Set<THREE.Texture>();
+    const geometries = new Set<THREE.BufferGeometry>(), materials = new Set<THREE.Material>(), textures = new Set<THREE.Texture>(), skeletons = new Set<THREE.Skeleton>();
     scene.traverse(object => {
       if (object instanceof THREE.Mesh || object instanceof THREE.Points || object instanceof THREE.Sprite) {
+        if (object instanceof THREE.SkinnedMesh) skeletons.add(object.skeleton);
         if ("geometry" in object) geometries.add(object.geometry);
         const list = Array.isArray(object.material) ? object.material : [object.material];
         list.forEach(material => { materials.add(material); for (const value of Object.values(material)) if (value instanceof THREE.Texture) textures.add(value); });
       }
     });
-    environment.dispose(); geometries.forEach(geometry => geometry.dispose()); materials.forEach(material => material.dispose()); textures.forEach(texture => texture.dispose());
+    environment.dispose(); skeletons.forEach(skeleton => skeleton.dispose()); geometries.forEach(geometry => geometry.dispose()); materials.forEach(material => material.dispose()); textures.forEach(texture => texture.dispose());
     renderPass?.dispose(); bloom?.dispose(); output?.dispose(); composer?.dispose();
     environmentTarget.dispose(); renderer.dispose(); canvas.remove(); signal.removeEventListener("abort", dispose);
   }
