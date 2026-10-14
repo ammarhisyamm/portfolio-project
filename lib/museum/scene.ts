@@ -4,6 +4,7 @@ import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
+import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
 import { createMuseumAvatar } from "./avatar";
 import { createMuseumEnvironment } from "./environment";
 import { createMuseumExhibits } from "./exhibits";
@@ -44,15 +45,15 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
   renderer.setSize(mount.clientWidth, mount.clientHeight);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.02;
+  renderer.toneMappingExposure = 1.12;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFShadowMap;
   renderer.domElement.setAttribute("aria-label", "Interactive 3D museum. Use WASD or the arrow keys to walk, drag to look around, and E to inspect a nearby display.");
   renderer.domElement.tabIndex = 0;
   mount.appendChild(renderer.domElement);
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color("#211b13");
-  scene.fog = new THREE.FogExp2("#292117", .009);
+  scene.background = new THREE.Color("#1a120b");
+  scene.fog = new THREE.FogExp2("#26190e", .011);
   const camera = new THREE.PerspectiveCamera(mobile ? 63 : 52, mount.clientWidth / mount.clientHeight, .1, 85);
   const pmrem = new THREE.PMREMGenerator(renderer);
   const roomEnvironment = new RoomEnvironment();
@@ -71,9 +72,24 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
   const composer = mobile ? null : new EffectComposer(renderer, new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType, samples: 2 }));
   composer?.setSize(mount.clientWidth, mount.clientHeight);
   const renderPass = composer ? new RenderPass(scene, camera) : null;
-  const bloom = composer ? new UnrealBloomPass(new THREE.Vector2(mount.clientWidth, mount.clientHeight), .14, .42, 1.25) : null;
+  const bloom = composer ? new UnrealBloomPass(new THREE.Vector2(mount.clientWidth, mount.clientHeight), .3, .55, 1) : null;
+  // A warm grade (amber shadows, golden highlights) and a soft vignette give
+  // the halls the deep, candle-lit look of the concept frames.
+  const grade = composer ? new ShaderPass({
+    uniforms: { tDiffuse: { value: null }, vignette: { value: .38 } },
+    vertexShader: "varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }",
+    fragmentShader: `uniform sampler2D tDiffuse; uniform float vignette; varying vec2 vUv;
+      void main() {
+        vec4 c = texture2D(tDiffuse, vUv);
+        float l = dot(c.rgb, vec3(.2126, .7152, .0722));
+        c.rgb *= mix(vec3(1.02, .93, .8), vec3(1.06, .99, .88), smoothstep(0., 1., l));
+        vec2 d = vUv - .5;
+        c.rgb *= 1. - vignette * smoothstep(.12, .62, dot(d, d) * 2.);
+        gl_FragColor = c;
+      }`,
+  }) : null;
   const output = composer ? new OutputPass() : null;
-  if (composer && renderPass && bloom && output) { composer.addPass(renderPass); composer.addPass(bloom); composer.addPass(output); }
+  if (composer && renderPass && bloom && grade && output) { composer.addPass(renderPass); composer.addPass(bloom); composer.addPass(grade); composer.addPass(output); }
   // Visitors arrive just inside the doors, facing Nailong; the camera then
   // turns to the hall. With reduced motion they start facing the hall.
   avatar.root.position.set(0, 0, 6.4); avatar.root.rotation.y = reduce ? Math.PI : 0;
@@ -312,7 +328,7 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
       }
     });
     bubbles.forEach(texture => texture.dispose()); environment.dispose(); studio.dispose(); skeletons.forEach(skeleton => skeleton.dispose()); geometries.forEach(geometry => geometry.dispose()); materials.forEach(material => material.dispose()); textures.forEach(texture => texture.dispose());
-    renderPass?.dispose(); bloom?.dispose(); output?.dispose(); composer?.dispose();
+    renderPass?.dispose(); bloom?.dispose(); grade?.dispose(); output?.dispose(); composer?.dispose();
     environmentTarget.dispose(); renderer.dispose(); canvas.remove(); signal.removeEventListener("abort", dispose);
   }
   signal.addEventListener("abort", dispose, { once: true });
