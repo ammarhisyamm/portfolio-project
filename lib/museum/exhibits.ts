@@ -63,7 +63,9 @@ export function createMuseumExhibits(scene: THREE.Scene, exhibits: MuseumExhibit
       const width = exhibit.room === "contact" ? 2.5 : 1.7;
       const base = box(group, [width, .92, 1], [0, .46, 0], marble, true); base.userData.exhibitId = exhibit.id; targets.push(base);
       box(group, [width + .12, .08, 1.1], [0, .06, 0], frame);
+      // A glowing seam under a marble cap: an edge of light, not a lit slab.
       box(group, [width - .04, .04, .96], [0, .94, 0], warm);
+      box(group, [width, .03, 1], [0, .975, 0], marble, true);
       const stand = new THREE.Group(); stand.position.set(0, .96, -.18); stand.rotation.x = -.3; group.add(stand);
       box(stand, [width - .1, width * .78, .07], [0, width * .39, -.04], frame);
       const panel = new THREE.Mesh(new THREE.PlaneGeometry(width - .22, width * .7), panelMat);
