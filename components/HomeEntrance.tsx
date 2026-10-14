@@ -5,6 +5,7 @@ import { createPortal, preload } from "react-dom";
 import { animate, type AnimationPlaybackControls } from "motion";
 
 const SEEN_KEY = "hisyam.home-entrance.seen.v3";
+const CUT_DURATION = 2300, CLOSE_AT = .76;
 type Phase = "idle" | "cutting" | "released" | "opening" | "open" | "entering" | "fading";
 const NOTES = [
   { label: "A note from the studio", title: "Considered, not complicated.", text: "A collection of digital work, explorations, and the thinking behind them." },
@@ -53,6 +54,8 @@ export default function HomeEntrance() {
   const entryStarted = useRef(false);
   const pointerAnimation = useRef<AnimationPlaybackControls | null>(null);
   const cutCompleted = useRef(false);
+  const cutAnimations = useRef<Animation[]>([]);
+  const slitRef = useRef<HTMLSpanElement>(null);
 
   const revealHome = useCallback(() => {
     if (revealed.current) return;
@@ -62,6 +65,7 @@ export default function HomeEntrance() {
 
   const finish = useCallback(() => {
     pointerAnimation.current?.stop();
+    cutAnimations.current.forEach(animation => animation.cancel());
     timers.current.forEach(window.clearTimeout);
     timers.current = [];
     try { sessionStorage.setItem(SEEN_KEY, "1"); } catch { /* Storage may be blocked. */ }
@@ -90,6 +94,7 @@ export default function HomeEntrance() {
     return () => {
       cancelled = true;
       pointerAnimation.current?.stop();
+      cutAnimations.current.forEach(animation => animation.cancel());
       timers.current.forEach(window.clearTimeout);
       document.documentElement.removeAttribute("data-studio-pending");
     };
@@ -153,25 +158,67 @@ export default function HomeEntrance() {
       if (selectedPosition > 42 && selectedPosition < 58) selectedPosition = selectedPosition < 50 ? 42 : 58;
     }
     pendingCutPosition.current = selectedPosition;
-    if (scissors) {
-      // Freeze the pointer-follow spring and sweep to both ends before returning
-      // for the final snip at the selected point.
-      const startX = width * (selectedPosition - 68) / 100;
-      scissors.style.transform = `translateX(${startX}px)`;
-      const near = selectedPosition < 50 ? 92 : 8;
-      const far = selectedPosition < 50 ? 8 : 92;
-      scissors.style.setProperty("--sweep-from", `${startX}px`);
-      scissors.style.setProperty("--sweep-near", `${width * (near - 68) / 100}px`);
-      scissors.style.setProperty("--sweep-far", `${width * (far - 68) / 100}px`);
-    }
+    setCutPosition(selectedPosition);
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setPhase("fading");
       timers.current.push(window.setTimeout(finish, 200));
       return;
     }
     setPhase("cutting");
-    // Safety fallback for browsers that suppress animationend (e.g. background tabs).
-    timers.current.push(window.setTimeout(releaseRibbon, 3700));
+    if (scissors) snip(scissors, width * (selectedPosition - 68) / 100);
+    // Safety fallback for browsers that never resolve the animation (e.g. background tabs).
+    timers.current.push(window.setTimeout(releaseRibbon, CUT_DURATION + 600));
+  };
+
+  // A real cut, not a sweep: the open blades slide onto the fabric at the
+  // chosen point, squeeze shut (accelerating, like a hand), reopen, push a
+  // little deeper and close through. The slit grows with each bite and the
+  // ribbon gives under the blades; the final close releases the fabric.
+  const snip = (scissors: HTMLElement, x: number) => {
+    const upper = scissors.querySelector<SVGGElement>(".entrance-scissor-upper"), lower = scissors.querySelector<SVGGElement>(".entrance-scissor-lower");
+    const squeeze = "cubic-bezier(.55,0,.8,.35)", release = "cubic-bezier(.2,.75,.3,1)", settle = "cubic-bezier(.23,1,.32,1)";
+    const timing = { duration: CUT_DURATION, fill: "forwards" as const };
+    const blade = (sign: number) => [
+      { offset: 0, transform: `rotate(${sign * 18}deg)`, easing: settle },
+      { offset: .16, transform: `rotate(${sign * 31}deg)` },
+      { offset: .22, transform: `rotate(${sign * 31}deg)`, easing: squeeze },
+      { offset: .37, transform: `rotate(${sign * 3}deg)` },
+      { offset: .41, transform: `rotate(${sign * 2}deg)`, easing: release },
+      { offset: .53, transform: `rotate(${sign * 25}deg)` },
+      { offset: .57, transform: `rotate(${sign * 25}deg)`, easing: squeeze },
+      { offset: CLOSE_AT, transform: "rotate(0deg)" },
+      { offset: .82, transform: "rotate(0deg)", easing: release },
+      { offset: 1, transform: `rotate(${sign * 14}deg)` },
+    ];
+    const animations = [scissors.animate([
+      { offset: 0, opacity: 0, transform: `translate(${x - 30}px, -34px) rotate(-7deg)`, easing: settle },
+      { offset: .16, opacity: 1, transform: `translate(${x - 3}px, -11px) rotate(-1deg)`, easing: settle },
+      { offset: .22, opacity: 1, transform: `translate(${x}px, -9px) rotate(0deg)`, easing: squeeze },
+      { offset: .37, opacity: 1, transform: `translate(${x}px, -5px) rotate(0deg)` },
+      { offset: .45, opacity: 1, transform: `translate(${x}px, -5px) rotate(0deg)`, easing: settle },
+      { offset: .57, opacity: 1, transform: `translate(${x}px, 2px) rotate(.5deg)`, easing: squeeze },
+      { offset: CLOSE_AT, opacity: 1, transform: `translate(${x}px, 5px) rotate(0deg)` },
+      { offset: .84, opacity: 1, transform: `translate(${x}px, 4px) rotate(0deg)`, easing: "cubic-bezier(.5,0,.75,0)" },
+      { offset: 1, opacity: 0, transform: `translate(${x + 22}px, -42px) rotate(8deg)` },
+    ], timing)];
+    if (upper) animations.push(upper.animate(blade(-1), timing));
+    if (lower) animations.push(lower.animate(blade(1), timing));
+    if (slitRef.current) {
+      const bite = slitRef.current.animate([
+        { offset: 0, transform: "scaleY(0)" }, { offset: .26 / CLOSE_AT, transform: "scaleY(0)", easing: squeeze },
+        { offset: .37 / CLOSE_AT, transform: "scaleY(.55)" }, { offset: .57 / CLOSE_AT, transform: "scaleY(.55)", easing: squeeze },
+        { offset: 1, transform: "scaleY(1)" },
+      ], { duration: CUT_DURATION * CLOSE_AT, fill: "forwards" });
+      animations.push(bite);
+      bite.finished.then(releaseRibbon, () => {});
+    }
+    // The fabric gives a little under each bite, then springs back.
+    dialogRef.current?.querySelectorAll<HTMLElement>(".entrance-ribbon-piece").forEach(piece => animations.push(piece.animate([
+      { offset: 0, transform: "translateY(0)" }, { offset: .3, transform: "translateY(0)", easing: squeeze },
+      { offset: .37, transform: "translateY(1.5px) skewY(.4deg)", easing: release }, { offset: .47, transform: "translateY(0)" },
+      { offset: .66, transform: "translateY(0)", easing: squeeze }, { offset: CLOSE_AT, transform: "translateY(2px) skewY(.6deg)" },
+    ], { duration: CUT_DURATION * CLOSE_AT })));
+    cutAnimations.current = animations;
   };
 
   const stepInside = () => {
@@ -204,7 +251,7 @@ export default function HomeEntrance() {
   if (!visible) return null;
   const released = !["idle", "cutting"].includes(phase);
   const opened = ["opening", "open", "entering", "fading"].includes(phase);
-  return createPortal(<div ref={dialogRef} className="home-entrance" style={{ "--cut-position": `${cutPosition}%` } as CSSProperties} tabIndex={-1} data-phase={phase} data-started={phase !== "idle"} data-released={released} data-open={opened} role="dialog" aria-modal="true" aria-labelledby="studio-welcome" data-lenis-prevent onAnimationEnd={event => { if (event.animationName === "entrance-snip-upper") releaseRibbon(); }} onWheel={event => { if (event.deltaY > 5) stepInside(); }} onTouchStart={event => { touchStart.current = event.touches[0]?.clientY ?? 0; }} onTouchEnd={event => { if (touchStart.current - (event.changedTouches[0]?.clientY ?? touchStart.current) > 35) stepInside(); }}>
+  return createPortal(<div ref={dialogRef} className="home-entrance" style={{ "--cut-position": `${cutPosition}%` } as CSSProperties} tabIndex={-1} data-phase={phase} data-started={phase !== "idle"} data-released={released} data-open={opened} role="dialog" aria-modal="true" aria-labelledby="studio-welcome" data-lenis-prevent onWheel={event => { if (event.deltaY > 5) stepInside(); }} onTouchStart={event => { touchStart.current = event.touches[0]?.clientY ?? 0; }} onTouchEnd={event => { if (touchStart.current - (event.changedTouches[0]?.clientY ?? touchStart.current) > 35) stepInside(); }}>
     <div className="entrance-scene">
       <div className="home-entrance-room" aria-hidden="true" />
       <div className="home-entrance-vignette" aria-hidden="true" />
@@ -222,7 +269,8 @@ export default function HomeEntrance() {
         <div className="entrance-ribbon-stage">
         <div className="entrance-ribbon-piece entrance-ribbon-left" aria-hidden="true" />
         <div className="entrance-ribbon-piece entrance-ribbon-right" aria-hidden="true" />
-        <button ref={ribbonRef} className="entrance-ribbon-target" type="button" onClick={cut} onPointerMove={followRibbon} onPointerLeave={resetScissors} onAnimationEnd={event => { if (event.animationName === "entrance-scissor-sweep") releaseRibbon(); }} aria-label="Cut the ribbon to open the doors" disabled={phase !== "idle"}>
+        <span ref={slitRef} className="entrance-ribbon-slit" aria-hidden="true" />
+        <button ref={ribbonRef} className="entrance-ribbon-target" type="button" onClick={cut} onPointerMove={followRibbon} onPointerLeave={resetScissors} aria-label="Cut the ribbon to open the doors" disabled={phase !== "idle"}>
           <span className="entrance-ribbon-focus" />
           <span ref={scissorsRef} className="entrance-scissors-position"><span className="entrance-scissors"><CuttingScissors /></span></span>
         </button>

@@ -50,7 +50,8 @@ export function createMuseumEnvironment(scene: THREE.Scene, marbleMap: THREE.Tex
   }
 
   // Actual architectural volumes: a central nave, side bays, and arched windows.
-  box(-14, 5.5, -10, 1, 11, 48, wall);
+  // The west wall is split around a side door into the studio wing.
+  box(-14, 5.5, .3, 1, 11, 27.4, wall); box(-14, 5.5, -25.3, 1, 11, 17.4, wall); box(-14, 8.3, -15, 1, 5.4, 3.2, wall);
   box(14, 1.3, -10, 1, 2.6, 48, wall);
   box(0, 5.5, -34, 29, 11, 1, wall);
   box(0, 5.5, 14, 29, 11, .5, wall);
@@ -73,14 +74,16 @@ export function createMuseumEnvironment(scene: THREE.Scene, marbleMap: THREE.Tex
   vault.rotation.x = Math.PI / 2; vault.scale.z = .25; vault.position.set(0, 9, -10); architecture.add(vault);
   // Recessed wall bays and slim gilded reveals carry the architectural rhythm
   // into the side rooms instead of leaving a single unbroken flat wall.
-  for (const z of [-29, -22, -15, -8, -1, 6]) {
+  for (const z of [-29, -22, -8, -1, 6]) {
     for (const dz of [-1.8, 1.8]) box(-13.38, 4.6, z + dz, .034, 6.9, .034, darkBrass);
     for (const y of [1.15, 8.05]) box(-13.38, y, z, .034, .034, 3.64, brass);
     box(-13.36, 4.6, z - 1.82, .04, 6.9, .012, brass);
   }
+  for (const [x, z, length] of [[-13.65, .3, 27.4], [-13.65, -25.3, 17.4], [13.65, -10, 48]]) {
+    box(x, .32, z, .32, .64, length);
+    box(x, .66, z, .35, .055, length, brass);
+  }
   for (const x of [-13.65, 13.65]) {
-    box(x, .32, -10, .32, .64, 48);
-    box(x, .66, -10, .35, .055, 48, brass);
     box(x, 9.8, -10, .45, .3, 48);
     box(x, 9.58, -10, .5, .045, 48, brass);
   }
@@ -142,6 +145,16 @@ export function createMuseumEnvironment(scene: THREE.Scene, marbleMap: THREE.Tex
   }
   for (const z of [-27, -17, -4, 8]) windowBay(13.45, z, -Math.PI / 2);
   windowBay(0, -33.35, 0, 5.4);
+  // Side door: walnut reveals, a round brass-edged arch and a tiny plaque.
+  for (const dz of [-1.72, 1.72]) { box(-13.42, 2.8, -15 + dz, .3, 5.6, .26); box(-13.26, 2.8, -15 + dz * .93, .03, 5.5, .03, brass); }
+  box(-13.42, 5.66, -15, .3, .26, 3.7);
+  const doorArch = new THREE.Mesh(new THREE.TorusGeometry(1.6, .13, 8, 32, Math.PI), marble); doorArch.rotation.y = Math.PI / 2; doorArch.position.set(-13.42, 5.6, -15); architecture.add(doorArch);
+  const doorRim = new THREE.Mesh(new THREE.TorusGeometry(1.6, .025, 6, 32, Math.PI), brass); doorRim.rotation.y = Math.PI / 2; doorRim.position.set(-13.26, 5.6, -15); architecture.add(doorRim);
+  const doorPlaque = new THREE.Mesh(new THREE.PlaneGeometry(.9, .3), new THREE.MeshBasicMaterial({ map: canvasTexture(384, 128, ctx => {
+    ctx.fillStyle = "#1c1611"; ctx.fillRect(0, 0, 384, 128); ctx.strokeStyle = "#a98450"; ctx.lineWidth = 3; ctx.strokeRect(6, 6, 372, 116);
+    ctx.fillStyle = "#e0c391"; ctx.font = "italic 38px Georgia"; ctx.textAlign = "center"; ctx.fillText("the studio", 192, 62); ctx.fillStyle = "#a8977b"; ctx.font = "19px Arial"; ctx.fillText("curious visitors welcome", 192, 98);
+  }), toneMapped: false }));
+  doorPlaque.rotation.y = Math.PI / 2; doorPlaque.position.set(-13.25, 3.3, -17.65); architecture.add(doorPlaque);
 
   const sun = new THREE.DirectionalLight("#ffe3b5", 3.25);
   sun.position.set(12, 19, -18); sun.target.position.set(-2, 0, -4); scene.add(sun, sun.target);

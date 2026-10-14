@@ -2,7 +2,7 @@ export type Waypoint = { x: number; z: number };
 
 /** A small occupancy grid routes visitors around plinths instead of through them. */
 export function museumPath(start: Waypoint, end: Waypoint, blocked: (x: number, z: number) => boolean): Waypoint[] {
-  const step = .5, minX = -11, minZ = -29, width = 45, depth = 81;
+  const step = .5, minX = -29, minZ = -29, width = 81, depth = 81;
   const point = (id: number): Waypoint => ({ x: minX + (id % width) * step, z: minZ + Math.floor(id / width) * step });
   const idAt = (p: Waypoint) => Math.max(0, Math.min(depth - 1, Math.round((p.z - minZ) / step))) * width + Math.max(0, Math.min(width - 1, Math.round((p.x - minX) / step)));
   function nearest(p: Waypoint) {

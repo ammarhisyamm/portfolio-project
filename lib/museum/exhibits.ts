@@ -12,6 +12,7 @@ const slots: Record<MuseumRoom, [number, number, number][]> = {
   playground: [[8.7, 5.3, -Math.PI / 2], [8.7, .2, -Math.PI / 2], [8.7, -4.9, -Math.PI / 2]],
   about: [[-8.7, 5.3, Math.PI / 2], [-8.7, .2, Math.PI / 2], [-8.7, -4.9, Math.PI / 2]],
   contact: [[8.2, -25, 0]],
+  studio: [],
 };
 
 export function createMuseumExhibits(scene: THREE.Scene, exhibits: MuseumExhibit[], marble: THREE.Material, signal: AbortSignal) {
@@ -25,6 +26,7 @@ export function createMuseumExhibits(scene: THREE.Scene, exhibits: MuseumExhibit
     mesh.position.set(...pos); mesh.castShadow = true; mesh.receiveShadow = true; parent.add(mesh); return mesh;
   }
   for (const exhibit of exhibits) {
+    if (exhibit.secret) continue;
     const index = counters[exhibit.room] ?? 0;
     counters[exhibit.room] = index + 1;
     const slot = slots[exhibit.room][index]; if (!slot) continue;
