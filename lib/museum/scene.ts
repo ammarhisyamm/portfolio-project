@@ -8,10 +8,11 @@ import { createMuseumAvatar } from "./avatar";
 import { createMuseumEnvironment } from "./environment";
 import { createMuseumExhibits } from "./exhibits";
 import { createStudioCat } from "./cat";
+import { createNailong } from "./nailong";
 import { createStudioWing, inStudio, inStudioDoor } from "./studio";
-import { loadImage } from "./materials";
+import { canvasTexture, loadImage, wrapText } from "./materials";
 import { museumPath, type Waypoint } from "./navigation";
-import type { MuseumController, MuseumData, MuseumRoom } from "./types";
+import { MUSEUM_GUIDE, type MuseumController, type MuseumData, type MuseumRoom } from "./types";
 
 type Config = {
   mount: HTMLDivElement;
@@ -27,7 +28,7 @@ type Config = {
 };
 
 const destinations: Record<MuseumRoom, [number, number, number]> = {
-  work: [-1.8, 1.2, 0], process: [-2, -20.3, 0], playground: [5.5, 2.5, Math.PI / 2], about: [-5.5, 2.5, -Math.PI / 2], contact: [8.2, -20.3, 0], studio: [-17.2, -15, -Math.PI / 2],
+  work: [-4.4, -3.4, -Math.PI / 2], playground: [4.4, -3.4, Math.PI / 2], about: [-4.4, -22.6, -Math.PI / 2], process: [4.4, -22.6, Math.PI / 2], contact: [0, -23, 0], studio: [-17.2, -15, -Math.PI / 2],
 };
 const moveKeys = new Set(["KeyW", "KeyA", "KeyS", "KeyD", "ArrowUp", "ArrowLeft", "ArrowDown", "ArrowRight", "ShiftLeft", "ShiftRight"]);
 
@@ -73,11 +74,38 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
   const bloom = composer ? new UnrealBloomPass(new THREE.Vector2(mount.clientWidth, mount.clientHeight), .14, .42, 1.25) : null;
   const output = composer ? new OutputPass() : null;
   if (composer && renderPass && bloom && output) { composer.addPass(renderPass); composer.addPass(bloom); composer.addPass(output); }
-  avatar.root.position.set(-1.8, 0, 1.2); avatar.root.rotation.y = Math.PI;
+  // Visitors arrive just inside the doors, facing Nailong; the camera then
+  // turns to the hall. With reduced motion they start facing the hall.
+  avatar.root.position.set(0, 0, 6.4); avatar.root.rotation.y = reduce ? Math.PI : 0;
   const obstacles = [...environment.obstacles, ...gallery.obstacles, ...studio.obstacles];
   const cat = createStudioCat(scene, (x, z) => !inStudio(x, z) || obstacles.some(o => Math.abs(x - o.x) < o.halfX + .15 && Math.abs(z - o.z) < o.halfZ + .15));
   cat.root.scale.setScalar(.85);
   const targets = [...gallery.targets, ...studio.targets];
+  // Nailong keeps the doors, greets visitors and offers directions.
+  const guide = createNailong(); guide.root.scale.setScalar(1.15); guide.root.position.set(1.9, 0, 10.4); guide.root.rotation.y = Math.PI; scene.add(guide.root);
+  const guideHit = new THREE.Mesh(new THREE.SphereGeometry(.8, 8, 6), new THREE.MeshBasicMaterial({ visible: false }));
+  guideHit.position.y = .9; guideHit.userData.exhibitId = MUSEUM_GUIDE; guide.root.add(guideHit); targets.push(guideHit);
+  obstacles.push({ x: 1.9, z: 10.4, halfX: .55, halfZ: .55 });
+  const bubbles = new Map<string, THREE.Texture>();
+  const bubbleText = (text: string) => {
+    let texture = bubbles.get(text);
+    if (!texture) {
+      texture = canvasTexture(512, 208, ctx => {
+        ctx.fillStyle = "#fff7e6"; ctx.strokeStyle = "#d9b77e"; ctx.lineWidth = 4;
+        ctx.beginPath(); ctx.roundRect(6, 6, 500, 160, 40); ctx.moveTo(220, 164); ctx.lineTo(256, 202); ctx.lineTo(292, 164); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = "#fff7e6"; ctx.fillRect(222, 158, 68, 10);
+        ctx.fillStyle = "#3a2a17"; ctx.font = "34px Arial"; ctx.textAlign = "center"; wrapText(ctx, text, 256, 76, 440, 42, 2);
+      });
+      bubbles.set(text, texture);
+    }
+    return texture;
+  };
+  const bubble = new THREE.Sprite(new THREE.SpriteMaterial({ map: bubbleText("Hi there! Can I help you find something?"), transparent: true, opacity: 0, depthWrite: false, toneMapped: false }));
+  // Layer 1 keeps the bubble out of the floor reflection: the reflector clones the camera
+  // now, before layer 1 is enabled, so its copy only ever sees layer 0.
+  bubble.scale.set(2, .81, 1); bubble.position.set(1.9, 2.62, 10.4); bubble.layers.set(1); environment.reflection?.getReflectionCamera(camera); camera.layers.enable(1); scene.add(bubble);
+  let greetUntil = 0, happyUntil = 0, grumpyUntil = 0, asked = false, wasNear = false, intro = !reduce;
+  const pokes: number[] = [], guideTarget = new THREE.Vector3(), bubbleView = new THREE.Vector3();
   const hasCat = config.data.exhibits.some(item => item.id === "secret-cat");
   if (hasCat) { const hit = new THREE.Mesh(new THREE.SphereGeometry(.45, 8, 6), new THREE.MeshBasicMaterial({ visible: false })); hit.position.y = .35; hit.userData.exhibitId = "secret-cat"; cat.root.add(hit); targets.push(hit); }
   const keys = new Set<string>();
@@ -85,7 +113,7 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
   const velocity = new THREE.Vector3();
   const targetCamera = new THREE.Vector3(), gaze = new THREE.Vector3(), currentGaze = new THREE.Vector3();
   const raycaster = new THREE.Raycaster(), pointer = new THREE.Vector2();
-  let yaw = 0, pitch = .09, distance = mobile ? 6.5 : 5.8;
+  let yaw = reduce ? 0 : Math.PI, pitch = .09, distance = mobile ? 6.5 : 5.8;
   let room: MuseumRoom = "work", focus: string | null = null, hovered: string | null = null;
   let paused = false, disposed = false, sprint = false, firstPerson = false;
   let dragging: { id: number; x: number; y: number; moved: number } | null = null;
@@ -123,19 +151,24 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
     // Immediate keyboard feedback; never delay the CMS dialog for choreography.
     if (!reduce) avatar.inspect(elapsed);
     if (id === "secret-cat") cat.pet(elapsed);
+    if (id === MUSEUM_GUIDE) {
+      // Asking once is welcome; poking Nailong three times quickly is not.
+      pokes.push(elapsed); while (pokes.length && elapsed - pokes[0] > 6) pokes.shift();
+      if (pokes.length >= 3) { grumpyUntil = elapsed + 2.4; pokes.length = 0; } else { happyUntil = elapsed + 1.8; asked = true; }
+    }
     studio.markFound(id);
     if (composer) composer.render(0); else renderer.render(scene, camera);
     config.onInteract(id);
   }
   function onKeyDown(event: KeyboardEvent) {
     if (paused || event.metaKey || event.ctrlKey || event.altKey || (event.target instanceof HTMLElement && event.target.closest("input,textarea,select,[contenteditable='true'],dialog,[role='dialog']"))) return;
-    if (moveKeys.has(event.code)) { event.preventDefault(); keys.add(event.code); destination = null; }
+    if (moveKeys.has(event.code)) { event.preventDefault(); keys.add(event.code); destination = null; intro = false; }
     if (event.code === "KeyE" && focus && !event.repeat) { event.preventDefault(); interact(focus); }
   }
   function onKeyUp(event: KeyboardEvent) { keys.delete(event.code); }
   function onDown(event: PointerEvent) {
     if (paused || event.button !== 0) return;
-    canvas.focus({ preventScroll: true });
+    canvas.focus({ preventScroll: true }); intro = false;
     dragging = { id: event.pointerId, x: event.clientX, y: event.clientY, moved: 0 };
     canvas.setPointerCapture(event.pointerId);
   }
@@ -177,6 +210,8 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
     const delta = THREE.MathUtils.clamp((now - last) / 1000, 0, .045); last = now;
     if (paused || document.hidden) return;
     elapsed += delta;
+    // After a moment with Nailong, turn to face the hall (unless the visitor already took over).
+    if (intro && elapsed > 3.4) { intro = false; if (!destination && !keys.size) destination = { path: [], yaw: 0 }; }
     const forward = Number(keys.has("KeyW") || keys.has("ArrowUp")) - Number(keys.has("KeyS") || keys.has("ArrowDown")) - joystick.y;
     const sideways = Number(keys.has("KeyD") || keys.has("ArrowRight")) - Number(keys.has("KeyA") || keys.has("ArrowLeft")) + joystick.x;
     const running = sprint || keys.has("ShiftLeft") || keys.has("ShiftRight");
@@ -190,9 +225,12 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
         if (length > .001) { velocity.set(dx / length * 4, 0, dz / length * 4); avatar.root.position.x += dx / length * amount; avatar.root.position.z += dz / length * amount; actualSpeed = 4; }
         if (length < .06 || amount === length) destination.path.shift();
       } else {
-        yaw += Math.atan2(Math.sin(destination.yaw - yaw), Math.cos(destination.yaw - yaw)) * (reduce ? 1 : 1 - Math.exp(-delta * 6));
+        // Turn the view and the visitor together, so they end up facing the same way.
+        const ease = reduce ? 1 : 1 - Math.exp(-delta * 6), rotation = avatar.root.rotation, face = Math.PI - destination.yaw;
+        yaw += Math.atan2(Math.sin(destination.yaw - yaw), Math.cos(destination.yaw - yaw)) * ease;
+        rotation.y += Math.atan2(Math.sin(face - rotation.y), Math.cos(face - rotation.y)) * ease;
         velocity.set(0, 0, 0);
-        if (Math.abs(Math.atan2(Math.sin(destination.yaw - yaw), Math.cos(destination.yaw - yaw))) < .02) destination = null;
+        if (Math.abs(Math.atan2(Math.sin(destination.yaw - yaw), Math.cos(destination.yaw - yaw))) < .02 && Math.abs(Math.atan2(Math.sin(face - rotation.y), Math.cos(face - rotation.y))) < .05) destination = null;
       }
     } else {
       const length = Math.max(1, Math.hypot(forward, sideways));
@@ -204,7 +242,7 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
       if (!collision(avatar.root.position.x, nz)) avatar.root.position.z = nz;
       actualSpeed = Math.hypot(velocity.x, velocity.z);
       const { x, z } = avatar.root.position;
-      setRoom(x < -12.5 ? "studio" : z < -14 ? x > 5 ? "contact" : "process" : x < -5 ? "about" : x > 5 ? "playground" : "work");
+      setRoom(x < -12.5 ? "studio" : z < -20.5 && Math.abs(x) < 3 ? "contact" : z < -11 ? x < 0 ? "about" : "process" : x > 0 && z < 5 ? "playground" : "work");
     }
     if (actualSpeed > .08) {
       const angle = Math.atan2(velocity.x, velocity.z);
@@ -214,6 +252,19 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
     environment.update(delta, reduce);
     studio.update(delta, elapsed, avatar.root.position, focus, reduce);
     cat.update(elapsed, avatar.root.position, reduce);
+    const toGuide = Math.hypot(avatar.root.position.x - guide.root.position.x, avatar.root.position.z - guide.root.position.z), near = toGuide < 4.6;
+    if (near && !wasNear) { greetUntil = elapsed + 2.6; asked = false; }
+    wasNear = near;
+    guide.lookAt(near ? guideTarget.set(avatar.root.position.x, 1.9, avatar.root.position.z) : null);
+    guide.setGesture(elapsed < greetUntil || elapsed < happyUntil ? "wave" : "idle");
+    guide.setMood(elapsed < grumpyUntil ? "grumpy" : elapsed < happyUntil ? "happy" : near && elapsed < greetUntil ? "talk" : "neutral");
+    guide.update(elapsed, reduce);
+    bubble.material.map = bubbleText(elapsed < grumpyUntil ? "Hey! That tickles." : asked ? "This way! Follow the signs." : "Hi there! Can I help you find something?");
+    // Only speak into view: a bubble right beside the camera would fill the screen.
+    const view = bubbleView.copy(bubble.position).project(camera);
+    const speaking = near && camera.position.distanceTo(bubble.position) > 3.4 && view.z < 1 && Math.abs(view.x) < 1.15 && Math.abs(view.y) < 1.15;
+    bubble.material.opacity = reduce ? Number(speaking) : THREE.MathUtils.damp(bubble.material.opacity, speaking ? 1 : 0, 6, delta);
+    bubble.visible = bubble.material.opacity > .01;
     avatar.root.visible = !firstPerson;
     const pos = avatar.root.position;
     const side = firstPerson ? 0 : mobile ? .7 : 1.25;
@@ -233,13 +284,17 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
     let secretDistance = 1.9;
     for (const secret of studio.secrets) { const d = Math.hypot(secret.position.x - pos.x, secret.position.z - pos.z); if (d < secretDistance) { secretDistance = d; closest = secret.id; } }
     if (hasCat) { const d = Math.hypot(cat.position.x - pos.x, cat.position.z - pos.z); if (d < Math.min(secretDistance, 1.7)) closest = "secret-cat"; }
+    if (toGuide < 2.7) closest = MUSEUM_GUIDE;
     setFocus(hovered ?? closest);
     config.onPlayer(pos.x, pos.z, yaw);
     if (!reduce) dust.rotation.y = Math.sin(elapsed * .03) * .03;
     if (composer) composer.render(delta); else renderer.render(scene, camera);
   }
-  targetCamera.set(avatar.root.position.x + 1.25, 3.37, avatar.root.position.z + distance);
-  camera.position.copy(targetCamera); currentGaze.set(avatar.root.position.x, 2, avatar.root.position.z - 5); camera.lookAt(currentGaze);
+  {
+    const { x, z } = avatar.root.position, side = mobile ? .7 : 1.25;
+    targetCamera.set(x - Math.sin(yaw) * distance + Math.cos(yaw) * side, 2.85 + pitch * distance, z + Math.cos(yaw) * distance + Math.sin(yaw) * side);
+    camera.position.copy(targetCamera); currentGaze.set(x + Math.sin(yaw) * 5, 2.16 - pitch * 1.8, z - Math.cos(yaw) * 5); camera.lookAt(currentGaze); camera.updateMatrixWorld();
+  }
   renderer.setAnimationLoop(frame);
 
   function dispose() {
@@ -256,7 +311,7 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
         list.forEach(material => { materials.add(material); for (const value of Object.values(material)) if (value instanceof THREE.Texture) textures.add(value); });
       }
     });
-    environment.dispose(); studio.dispose(); skeletons.forEach(skeleton => skeleton.dispose()); geometries.forEach(geometry => geometry.dispose()); materials.forEach(material => material.dispose()); textures.forEach(texture => texture.dispose());
+    bubbles.forEach(texture => texture.dispose()); environment.dispose(); studio.dispose(); skeletons.forEach(skeleton => skeleton.dispose()); geometries.forEach(geometry => geometry.dispose()); materials.forEach(material => material.dispose()); textures.forEach(texture => texture.dispose());
     renderPass?.dispose(); bloom?.dispose(); output?.dispose(); composer?.dispose();
     environmentTarget.dispose(); renderer.dispose(); canvas.remove(); signal.removeEventListener("abort", dispose);
   }
@@ -265,9 +320,9 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
   return {
     visit(next) {
       if (paused) return;
-      const [x, z, direction] = destinations[next]; releaseKeys(); velocity.set(0, 0, 0);
+      const [x, z, direction] = destinations[next]; releaseKeys(); velocity.set(0, 0, 0); intro = false;
       const path = museumPath(avatar.root.position, { x, z }, collision);
-      if (reduce) { const end = path.at(-1); if (end) avatar.root.position.set(end.x, 0, end.z); yaw = direction; destination = null; }
+      if (reduce) { const end = path.at(-1); if (end) avatar.root.position.set(end.x, 0, end.z); yaw = direction; avatar.root.rotation.y = Math.PI - direction; destination = null; }
       else destination = { path, yaw: direction };
       setRoom(next);
     },

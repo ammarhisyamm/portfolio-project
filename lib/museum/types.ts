@@ -1,5 +1,8 @@
 export type MuseumRoom = "work" | "process" | "playground" | "about" | "contact" | "studio";
 
+/** Interaction id for Nailong, the doorkeeper who offers directions. */
+export const MUSEUM_GUIDE = "guide-nailong";
+
 export type MuseumExhibit = {
   id: string;
   room: MuseumRoom;
