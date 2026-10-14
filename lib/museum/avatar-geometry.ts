@@ -13,7 +13,7 @@ export function faceDepth(x: number, y: number) {
     detail -= .008 * bell(x, s * .09, .03) * bell(y, -.078, .034);
   }
   detail += .021 * bell(x, 0, .017) * bell(y, .012, .05);
-  detail += .051 * bell(x, 0, .023) * bell(y, -.022, .018);
+  detail += .036 * bell(x, 0, .024) * bell(y, -.02, .02);
   detail += .02 * (bell(x, -.023, .014) + bell(x, .023, .014)) * bell(y, -.031, .014);
   detail -= .011 * bell(x, 0, .026) * bell(y, -.043, .009);
   detail += .018 * bell(x, 0, .051) * bell(y, -.088, .026);
@@ -118,4 +118,53 @@ export function tailoredLimb(length: number, joint: number, radii: number[], fla
   g.setAttribute("skinIndex", new THREE.Uint16BufferAttribute(bones, 4));
   g.setAttribute("skinWeight", new THREE.Float32BufferAttribute(weights, 4));
   g.setIndex(indices); g.computeVertexNormals(); return g;
+}
+
+/** A short rolled curl that leaves the scalp, loops outward and tucks back in.
+ * Many small curls, rather than a few long swept locks, read as curly hair. */
+export function curlLock(origin: THREE.Vector3, flow: THREE.Vector3, normal: THREE.Vector3, length: number, radius: number, turns: number, width: number, seed: number) {
+  const side = new THREE.Vector3().crossVectors(flow, normal).normalize();
+  const points: number[][] = [];
+  for (let i = 0; i <= 9; i++) {
+    const t = i / 9, a = t * turns * Math.PI * 2 + seed;
+    const r = radius * (.35 + .65 * Math.sin(Math.PI * Math.min(1, t * 1.2)));
+    const p = origin.clone().addScaledVector(flow, t * length)
+      .addScaledVector(normal, (1 - Math.cos(a)) * r * .9 + .004)
+      .addScaledVector(side, Math.sin(a) * r * .55);
+    points.push([p.x, p.y, p.z]);
+  }
+  return hairLock(points, width, width * .58, seed);
+}
+
+/** Retro runner silhouette built on a smooth shoe "last": a sphere remapped
+ * to a flat sole, a heel-to-toe height curve and a tapered, rounded toe. */
+export function sneakerPart(from: number, to: number, bottom: number, height: (z: number) => number, inflate = 1, segments = 36) {
+  const geometry = new THREE.SphereGeometry(1, segments, Math.round(segments * .6));
+  const positions = geometry.getAttribute("position");
+  for (let i = 0; i < positions.count; i++) {
+    const x = positions.getX(i), y = positions.getY(i), z = positions.getZ(i);
+    const Z = THREE.MathUtils.lerp(from, to, (z + 1) / 2);
+    const Y = y > 0 ? bottom + y ** .8 * height(Z) * inflate : bottom + y * .006;
+    // Squarer plan view than an ellipsoid: a rounded toe box, not a point.
+    const plan = Math.pow(1 - Math.abs(z) ** 3.5, 1 / 3.5) / Math.max(.05, Math.sqrt(1 - z * z));
+    positions.setXYZ(i, x * plan * .074 * sneakerWidth(Z) * inflate, Y, Z);
+  }
+  geometry.computeVertexNormals();
+  return geometry;
+}
+
+const keyed = (keys: number[][], z: number) => {
+  for (let i = 1; i < keys.length; i++) if (z <= keys[i][0]) {
+    const t = THREE.MathUtils.smoothstep(z, keys[i - 1][0], keys[i][0]);
+    return THREE.MathUtils.lerp(keys[i - 1][1], keys[i][1], t);
+  }
+  return keys[keys.length - 1][1];
+};
+/** Upper height above the midsole: padded heel, collar dip, tongue, low toe box. */
+export const sneakerUpper = (z: number) => keyed([[-.14, .07], [-.11, .1], [-.06, .086], [.0, .1], [.08, .07], [.16, .045], [.22, .03]], z);
+
+export function sneakerWidth(z: number) {
+  const heel = z < -.05 ? 1 - .2 * Math.min(1, (-.05 - z) / .09) ** 2 : 1;
+  const toe = z > .1 ? 1 - .14 * Math.min(1, (z - .1) / .12) ** 2 : 1;
+  return heel * toe * (z > -.02 && z < .12 ? 1.03 : 1);
 }

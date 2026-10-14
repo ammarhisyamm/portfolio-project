@@ -7,6 +7,8 @@ import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
 import { createMuseumAvatar } from "./avatar";
 import { createMuseumEnvironment } from "./environment";
 import { createMuseumExhibits } from "./exhibits";
+import { createStudioCat } from "./cat";
+import { createStudioWing, inStudio, inStudioDoor } from "./studio";
 import { loadImage } from "./materials";
 import { museumPath, type Waypoint } from "./navigation";
 import type { MuseumController, MuseumData, MuseumRoom } from "./types";
@@ -25,7 +27,7 @@ type Config = {
 };
 
 const destinations: Record<MuseumRoom, [number, number, number]> = {
-  work: [-1.8, 1.2, 0], process: [-2, -20.3, 0], playground: [5.5, 2.5, Math.PI / 2], about: [-5.5, 2.5, -Math.PI / 2], contact: [8.2, -20.3, 0],
+  work: [-1.8, 1.2, 0], process: [-2, -20.3, 0], playground: [5.5, 2.5, Math.PI / 2], about: [-5.5, 2.5, -Math.PI / 2], contact: [8.2, -20.3, 0], studio: [-17.2, -15, -Math.PI / 2],
 };
 const moveKeys = new Set(["KeyW", "KeyA", "KeyS", "KeyD", "ArrowUp", "ArrowLeft", "ArrowDown", "ArrowRight", "ShiftLeft", "ShiftRight"]);
 
@@ -59,6 +61,7 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
   const marbleMap = new THREE.Texture(marbleImage ?? undefined); marbleMap.colorSpace = THREE.SRGBColorSpace; marbleMap.needsUpdate = !!marbleImage; marbleMap.anisotropy = 4;
   const environment = createMuseumEnvironment(scene, marbleMap, mobile);
   const gallery = createMuseumExhibits(scene, config.data.exhibits, environment.marble, signal);
+  const studio = createStudioWing(scene, config.data.exhibits, environment.brass, mobile, signal);
   const knitMap = knitImage ? new THREE.Texture(knitImage) : undefined;
   if (knitMap) knitMap.needsUpdate = true;
   const avatar = createMuseumAvatar(knitMap); scene.add(avatar.root);
@@ -71,7 +74,12 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
   const output = composer ? new OutputPass() : null;
   if (composer && renderPass && bloom && output) { composer.addPass(renderPass); composer.addPass(bloom); composer.addPass(output); }
   avatar.root.position.set(-1.8, 0, 1.2); avatar.root.rotation.y = Math.PI;
-  const obstacles = [...environment.obstacles, ...gallery.obstacles];
+  const obstacles = [...environment.obstacles, ...gallery.obstacles, ...studio.obstacles];
+  const cat = createStudioCat(scene, (x, z) => !inStudio(x, z) || obstacles.some(o => Math.abs(x - o.x) < o.halfX + .15 && Math.abs(z - o.z) < o.halfZ + .15));
+  cat.root.scale.setScalar(.85);
+  const targets = [...gallery.targets, ...studio.targets];
+  const hasCat = config.data.exhibits.some(item => item.id === "secret-cat");
+  if (hasCat) { const hit = new THREE.Mesh(new THREE.SphereGeometry(.45, 8, 6), new THREE.MeshBasicMaterial({ visible: false })); hit.position.y = .35; hit.userData.exhibitId = "secret-cat"; cat.root.add(hit); targets.push(hit); }
   const keys = new Set<string>();
   const joystick = new THREE.Vector2();
   const velocity = new THREE.Vector3();
@@ -95,7 +103,8 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
   scene.add(dust);
 
   function collision(x: number, z: number) {
-    return x < -11.2 || x > 11.2 || z < -29 || z > 11.2 || obstacles.some(obstacle => Math.abs(x - obstacle.x) < obstacle.halfX + .3 && Math.abs(z - obstacle.z) < obstacle.halfZ + .3);
+    const hall = x >= -11.2 && x <= 11.2 && z >= -29 && z <= 11.2;
+    return (!hall && !inStudio(x, z) && !inStudioDoor(x, z)) || obstacles.some(obstacle => Math.abs(x - obstacle.x) < obstacle.halfX + .3 && Math.abs(z - obstacle.z) < obstacle.halfZ + .3);
   }
   function setRoom(next: MuseumRoom) { if (room !== next) { room = next; config.onRoom(next); } }
   function setFocus(id: string | null) {
@@ -107,12 +116,14 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
     const rect = canvas.getBoundingClientRect();
     pointer.set((event.clientX - rect.left) / rect.width * 2 - 1, -(event.clientY - rect.top) / rect.height * 2 + 1);
     raycaster.setFromCamera(pointer, camera);
-    return raycaster.intersectObjects(gallery.targets, false)[0]?.object.userData.exhibitId as string | undefined;
+    return raycaster.intersectObjects(targets, false)[0]?.object.userData.exhibitId as string | undefined;
   }
   function releaseKeys() { keys.clear(); joystick.set(0, 0); sprint = false; dragging = null; }
   function interact(id: string) {
     // Immediate keyboard feedback; never delay the CMS dialog for choreography.
     if (!reduce) avatar.inspect(elapsed);
+    if (id === "secret-cat") cat.pet(elapsed);
+    studio.markFound(id);
     if (composer) composer.render(0); else renderer.render(scene, camera);
     config.onInteract(id);
   }
@@ -162,7 +173,8 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
 
   function frame(now: number) {
     if (disposed) return;
-    const delta = Math.min((now - last) / 1000, .045); last = now;
+    // rAF timestamps can precede the performance.now() taken at setup.
+    const delta = THREE.MathUtils.clamp((now - last) / 1000, 0, .045); last = now;
     if (paused || document.hidden) return;
     elapsed += delta;
     const forward = Number(keys.has("KeyW") || keys.has("ArrowUp")) - Number(keys.has("KeyS") || keys.has("ArrowDown")) - joystick.y;
@@ -192,7 +204,7 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
       if (!collision(avatar.root.position.x, nz)) avatar.root.position.z = nz;
       actualSpeed = Math.hypot(velocity.x, velocity.z);
       const { x, z } = avatar.root.position;
-      setRoom(z < -14 ? x > 5 ? "contact" : "process" : x < -5 ? "about" : x > 5 ? "playground" : "work");
+      setRoom(x < -12.5 ? "studio" : z < -14 ? x > 5 ? "contact" : "process" : x < -5 ? "about" : x > 5 ? "playground" : "work");
     }
     if (actualSpeed > .08) {
       const angle = Math.atan2(velocity.x, velocity.z);
@@ -200,16 +212,27 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
     }
     avatar.update(elapsed, actualSpeed, reduce, !!focus);
     environment.update(delta, reduce);
+    studio.update(delta, elapsed, avatar.root.position, focus, reduce);
+    cat.update(elapsed, avatar.root.position, reduce);
     avatar.root.visible = !firstPerson;
     const pos = avatar.root.position;
     const side = firstPerson ? 0 : mobile ? .7 : 1.25;
     targetCamera.set(pos.x - Math.sin(yaw) * (firstPerson ? 0 : distance) + Math.cos(yaw) * side, firstPerson ? 1.95 : 2.85 + pitch * distance, pos.z + Math.cos(yaw) * (firstPerson ? 0 : distance) + Math.sin(yaw) * side);
-    targetCamera.x = THREE.MathUtils.clamp(targetCamera.x, -12.9, 12.9); targetCamera.z = THREE.MathUtils.clamp(targetCamera.z, -31.7, 12.8);
+    // Keep the camera inside whichever room the visitor stands in.
+    if (pos.x < -14.6) {
+      targetCamera.x = THREE.MathUtils.clamp(targetCamera.x, -29.7, -14.9); targetCamera.z = THREE.MathUtils.clamp(targetCamera.z, -25.4, -4.6); targetCamera.y = Math.min(targetCamera.y, 5.9);
+    } else if (pos.x < -11.2) {
+      targetCamera.x = THREE.MathUtils.clamp(targetCamera.x, -29.7, 12.9); targetCamera.z = THREE.MathUtils.clamp(targetCamera.z, -16.3, -13.7); targetCamera.y = Math.min(targetCamera.y, 5.2);
+    } else { targetCamera.x = THREE.MathUtils.clamp(targetCamera.x, -12.9, 12.9); targetCamera.z = THREE.MathUtils.clamp(targetCamera.z, -31.7, 12.8); }
     gaze.set(pos.x + Math.sin(yaw) * 5, 2.16 - pitch * 1.8, pos.z - Math.cos(yaw) * 5);
     const cameraAlpha = reduce ? 1 : 1 - Math.exp(-delta * 9);
     camera.position.lerp(targetCamera, cameraAlpha); currentGaze.lerp(gaze, cameraAlpha); camera.lookAt(currentGaze);
     let closest: string | null = null, closestDistance = 4.9;
     for (const display of gallery.displays) { const d = Math.hypot(display.position.x - pos.x, display.position.z - pos.z); if (d < closestDistance) { closestDistance = d; closest = display.exhibit.id; } }
+    // Hidden finds only answer when the visitor is right next to them.
+    let secretDistance = 1.9;
+    for (const secret of studio.secrets) { const d = Math.hypot(secret.position.x - pos.x, secret.position.z - pos.z); if (d < secretDistance) { secretDistance = d; closest = secret.id; } }
+    if (hasCat) { const d = Math.hypot(cat.position.x - pos.x, cat.position.z - pos.z); if (d < Math.min(secretDistance, 1.7)) closest = "secret-cat"; }
     setFocus(hovered ?? closest);
     config.onPlayer(pos.x, pos.z, yaw);
     if (!reduce) dust.rotation.y = Math.sin(elapsed * .03) * .03;
@@ -233,7 +256,7 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
         list.forEach(material => { materials.add(material); for (const value of Object.values(material)) if (value instanceof THREE.Texture) textures.add(value); });
       }
     });
-    environment.dispose(); skeletons.forEach(skeleton => skeleton.dispose()); geometries.forEach(geometry => geometry.dispose()); materials.forEach(material => material.dispose()); textures.forEach(texture => texture.dispose());
+    environment.dispose(); studio.dispose(); skeletons.forEach(skeleton => skeleton.dispose()); geometries.forEach(geometry => geometry.dispose()); materials.forEach(material => material.dispose()); textures.forEach(texture => texture.dispose());
     renderPass?.dispose(); bloom?.dispose(); output?.dispose(); composer?.dispose();
     environmentTarget.dispose(); renderer.dispose(); canvas.remove(); signal.removeEventListener("abort", dispose);
   }
@@ -251,7 +274,7 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
     select(id) { if (!paused) interact(id); },
     move(x, y) { joystick.set(x, y); destination = null; },
     running(value) { sprint = value; },
-    setLights(enabled) { environment.setLights(enabled); },
+    setLights(enabled) { environment.setLights(enabled); studio.setLights(enabled); },
     setPaused(value) { paused = value; releaseKeys(); hovered = null; },
     setPerspective(value) { firstPerson = value; },
     dispose,
