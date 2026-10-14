@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { Reflector } from "three/addons/objects/Reflector.js";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
-import { canvasTexture, haloTexture, stoneTexture, titleTexture } from "./materials";
+import { canvasTexture, haloTexture, stoneTexture, titleTexture, wrapText } from "./materials";
 import { createLightShaft } from "./light-shafts";
 
 export type Obstacle = { x: number; z: number; halfX: number; halfZ: number };
@@ -40,7 +40,10 @@ export function createMuseumEnvironment(scene: THREE.Scene, marbleMap: THREE.Tex
   }
   const floorMap = marbleMap.clone(); floorMap.needsUpdate = true;
   floorMap.wrapS = floorMap.wrapT = THREE.RepeatWrapping; floorMap.repeat.set(7, 11);
-  const floorMaterial = new THREE.MeshStandardMaterial({ map: floorMap, color: "#9c9587", roughness: .31, metalness: .16, transparent: !mobile, opacity: mobile ? 1 : .82 });
+  const floorMaterial = new THREE.MeshStandardMaterial({ map: floorMap, color: "#9c9587", roughness: .36, metalness: .16, transparent: !mobile, opacity: mobile ? 1 : .82 });
+  // The studio-light environment reads as a white glare at grazing angles near
+  // the doors; the floor keeps only a hint of it (the reflector does the rest).
+  floorMaterial.envMap = scene.environment; floorMaterial.envMapIntensity = .1;
   const floor = new THREE.Mesh(new THREE.PlaneGeometry(29, 48), floorMaterial);
   floor.rotation.x = -Math.PI / 2; floor.position.set(0, .016, -10); floor.receiveShadow = true; scene.add(floor);
   let reflection: Reflector | null = null;
@@ -156,7 +159,7 @@ export function createMuseumEnvironment(scene: THREE.Scene, marbleMap: THREE.Tex
   }), toneMapped: false }));
   doorPlaque.rotation.y = Math.PI / 2; doorPlaque.position.set(-13.25, 3.3, -17.65); architecture.add(doorPlaque);
 
-  const sun = new THREE.DirectionalLight("#ffe3b5", 3.25);
+  const sun = new THREE.DirectionalLight("#ffe3b5", 2.8);
   sun.position.set(12, 19, -18); sun.target.position.set(-2, 0, -4); scene.add(sun, sun.target);
   sun.castShadow = true; sun.shadow.mapSize.set(mobile ? 512 : 1536, mobile ? 512 : 1536);
   Object.assign(sun.shadow.camera, { left: -23, right: 23, top: 25, bottom: -25, near: 1, far: 65 });
@@ -165,9 +168,10 @@ export function createMuseumEnvironment(scene: THREE.Scene, marbleMap: THREE.Tex
   const rimLight = new THREE.DirectionalLight("#c4d1df", .65);
   rimLight.position.set(-8, 7, 13); scene.add(rimLight);
   // Local pools of light give exhibits depth without flattening the entire room.
-  for (const [x, z] of [[-7.5, -7.7], [-2.5, -7.7], [2.5, -7.7], [7.5, -7.7], [-2, -25]]) {
-    const spot = new THREE.SpotLight("#ffd49a", 48, 13, .42, .7, 2);
-    spot.position.set(x + 1.1, 7.3, z + 2.5); spot.target.position.set(x, 1.6, z);
+  // One per gallery wall and one on the contact desk at the end of the axis.
+  for (const [x, z] of [[-8.6, -3.4], [8.6, -3.4], [-8.6, -22.6], [8.6, -22.6], [0, -26.6]]) {
+    const spot = new THREE.SpotLight("#ffd49a", 48, 13, x ? .55 : .42, .7, 2);
+    spot.position.set(x * .45, 7.6, z + (x ? 0 : 3)); spot.target.position.set(x, 1.6, z);
     scene.add(spot, spot.target); spots.push(spot);
   }
 
@@ -183,7 +187,7 @@ export function createMuseumEnvironment(scene: THREE.Scene, marbleMap: THREE.Tex
   for (const z of [-23, -8, 7]) { lantern(-11.35, z, 4.4, true); lantern(11.35, z, 4.4); }
 
   // GPU ray-marched, feathered shafts replace the visibly flat cone surfaces.
-  for (const z of mobile ? [-17] : [-17, -4, 8]) {
+  for (const z of mobile ? [-17] : [-17, -4]) {
     const beam = createLightShaft(new THREE.Vector3(13.15, 9, z), new THREE.Vector3(3.6, .25, z + 3.6), 2.3, mobile);
     scene.add(beam); beams.push(beam);
   }
@@ -208,11 +212,11 @@ export function createMuseumEnvironment(scene: THREE.Scene, marbleMap: THREE.Tex
     leaves.castShadow = true; scene.add(leaves);
     obstacles.push({ x, z, halfX: .55, halfZ: .55 });
   }
-  oliveTree(-9.6, -19.8); oliveTree(9.6, -29); oliveTree(-11.5, 10);
+  oliveTree(-11.3, -20.3); oliveTree(11.2, -29); oliveTree(-11.5, 10);
 
   // Small stone studies and furniture make the bays feel occupied.
   const sculpture = new THREE.MeshStandardMaterial({ color: "#c5b69b", roughness: .86 });
-  for (const [x, z] of [[-9.5, -29], [-10.8, -11.2], [10.8, 10]]) {
+  for (const [x, z] of [[-10.9, -29], [-10.8, -11.2], [10.8, 10]]) {
     box(x, .76, z, 1.05, 1.52, 1.05); box(x, 1.57, z, 1.23, .13, 1.23, brass);
     const shoulders = new THREE.Mesh(new THREE.SphereGeometry(1, 16, 12), sculpture); shoulders.scale.set(.47, .27, .26); shoulders.position.set(x, 1.92, z); architecture.add(shoulders);
     cylinder(x, 2.18, z, .11, .15, .32, sculpture);
@@ -224,9 +228,10 @@ export function createMuseumEnvironment(scene: THREE.Scene, marbleMap: THREE.Tex
     }
     obstacles.push({ x, z, halfX: .7, halfZ: .7 });
   }
-  box(-7.2, .63, 10, 4, .22, 1.1, black);
-  for (const x of [-8.8, -5.7]) cylinder(x, .3, 10, .06, .06, .6, brass);
-  obstacles.push({ x: -7.2, z: 10, halfX: 2.15, halfZ: .8 });
+  // A long museum bench down the middle of the second gallery, for looking both ways.
+  box(0, .44, -20.3, .62, .12, 3.2, black);
+  for (const z of [-21.6, -19]) box(0, .2, z, .5, .38, .14, brass);
+  obstacles.push({ x: 0, z: -20.3, halfX: .4, halfZ: 1.7 });
   ring(0, 8.4, -11, 1.6, .045);
   cylinder(0, 10.3, -11, .032, .032, 3.8, brass);
   for (let i = 0; i < 8; i++) { const a = i / 8 * Math.PI * 2; lantern(Math.cos(a) * 1.6, -11 + Math.sin(a) * 1.6, 8.5); }
@@ -258,18 +263,35 @@ export function createMuseumEnvironment(scene: THREE.Scene, marbleMap: THREE.Tex
     ctx.fillStyle = "#ab915f"; ctx.font = "italic 480px Georgia"; ctx.textAlign = "center"; ctx.fillText("h", 512, 658);
   });
   const seal = new THREE.Mesh(new THREE.PlaneGeometry(6.2, 6.2), new THREE.MeshStandardMaterial({ map: emblem, transparent: true, depthWrite: false, metalness: .55, roughness: .48, opacity: .8 }));
-  seal.rotation.x = -Math.PI / 2; seal.position.set(0, .025, 1); scene.add(seal);
+  seal.rotation.x = -Math.PI / 2; seal.position.set(0, .025, -3.4); scene.add(seal);
 
-  for (const [title, sub, x, z, rotation] of [
-    ["Selected\nWork", "Product design", -13.38, -5, Math.PI / 2],
-    ["Playground", "Studies and experiments", 13.38, 2, -Math.PI / 2],
-    ["About", "The person behind the work", -13.38, 7, Math.PI / 2],
-    ["Process", "Research. Decisions. Delivery.", -6, -33.35, 0],
-    ["Contact", "Start a conversation", 7, -33.35, 0],
-  ] as [string, string, number, number, number][]) {
-    const sign = new THREE.Mesh(new THREE.PlaneGeometry(3.6, 3.6), new THREE.MeshBasicMaterial({ map: titleTexture(title.replace("\n", " "), sub), toneMapped: false }));
-    sign.position.set(x, 4.8, z); sign.rotation.y = rotation; architecture.add(sign);
+  // Each gallery wall carries its title above the cases.
+  for (const [title, sub, number, x, z, rotation] of [
+    ["Selected Work", "Product design", "01", -13.38, -3.4, Math.PI / 2],
+    ["Process", "Research. Decisions. Delivery.", "02", 13.38, -22, -Math.PI / 2],
+    ["Playground", "Studies and experiments", "03", 13.38, 2, -Math.PI / 2],
+    ["About", "The person behind the work", "04", -13.38, -22.6, Math.PI / 2],
+    ["Contact", "Start a conversation", "05", 6.2, -33.35, 0],
+  ] as [string, string, string, number, number, number][]) {
+    const sign = new THREE.Mesh(new THREE.PlaneGeometry(3, 3), new THREE.MeshBasicMaterial({ map: titleTexture(title, sub, "", number), toneMapped: false }));
+    sign.position.set(x, 6.1, z); sign.rotation.y = rotation; architecture.add(sign);
   }
+  // Wayfinding totems at each threshold, readable from the central aisle.
+  function totem(x: number, z: number, rotation: number, lines: [string, string][]) {
+    const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = rotation; architecture.add(g);
+    box(0, .06, 0, .9, .12, .5, marble, g); box(0, 1.05, 0, .82, 1.9, .1, black, g); box(0, 2.02, 0, .86, .05, .14, brass, g);
+    const face = new THREE.Mesh(new THREE.PlaneGeometry(.74, 1.6), new THREE.MeshBasicMaterial({ toneMapped: false, map: canvasTexture(296, 640, ctx => {
+      ctx.fillStyle = "#1a1612"; ctx.fillRect(0, 0, 296, 640); ctx.strokeStyle = "#8a6c42"; ctx.lineWidth = 2; ctx.strokeRect(10, 10, 276, 620);
+      lines.forEach(([number, label], i) => {
+        ctx.fillStyle = "#c4a36d"; ctx.font = "22px Georgia"; ctx.fillText(number, 30, 80 + i * 150);
+        ctx.fillStyle = "#efe2cb"; ctx.font = "34px Georgia"; wrapText(ctx, label, 30, 122 + i * 150, 240, 38, 2);
+      });
+    }) }));
+    face.position.set(0, 1.08, .052); g.add(face);
+    obstacles.push({ x, z, halfX: .5, halfZ: .5 });
+  }
+  totem(-3.4, 4.2, 0, [["01  ←", "Selected Work"], ["03  →", "Playground"]]);
+  totem(3.4, -11.6, 0, [["04  ←", "About"], ["02  →", "Process"], ["05  ↑", "Contact"]]);
 
   // Merge repeating architectural materials to keep the renderer draw count low.
   architecture.updateMatrixWorld(true);
@@ -295,11 +317,11 @@ export function createMuseumEnvironment(scene: THREE.Scene, marbleMap: THREE.Tex
   }
 
   return {
-    marble, brass, obstacles,
+    marble, brass, obstacles, reflection,
     setLights(on: boolean) { lightTarget = on ? 1 : 0; },
     update(delta: number, reduced: boolean) {
       lightAmount = reduced ? lightTarget : THREE.MathUtils.damp(lightAmount, lightTarget, 10, delta);
-      sun.intensity = .3 + lightAmount * 2.95; ambient.intensity = .34 + lightAmount * .34;
+      sun.intensity = .3 + lightAmount * 2.5; ambient.intensity = .34 + lightAmount * .34;
       rimLight.intensity = .25 + lightAmount * .4;
       lamps.forEach(light => { light.intensity = lightAmount * 22; });
       spots.forEach(light => { light.intensity = lightAmount * 48; });

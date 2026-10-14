@@ -6,7 +6,7 @@ import Link from "next/link";
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, BookOpen, Camera, Footprints, Layers, Lightbulb, Mouse, RotateCcw, Sparkles, X } from "lucide-react";
 import type { CaseStudy, SiteContent } from "@/lib/content";
 import { museumContent } from "@/lib/museum/content";
-import { MUSEUM_ROOMS, type MuseumController, type MuseumExhibit, type MuseumRoom } from "@/lib/museum/types";
+import { MUSEUM_GUIDE, MUSEUM_ROOMS, type MuseumController, type MuseumExhibit, type MuseumRoom } from "@/lib/museum/types";
 import { caseStudyCover } from "@/lib/case-study-visuals";
 import CaseStudyOverlay from "./CaseStudyOverlay";
 
@@ -21,13 +21,15 @@ export default function MuseumExperience({ content }: { content: SiteContent }) 
   const [lights, setLights] = useState(true), [firstPerson, setFirstPerson] = useState(false);
   const [collection, setCollection] = useState(false), [selected, setSelected] = useState<MuseumExhibit | null>(null);
   const [study, setStudy] = useState<CaseStudy | null>(null), [error, setError] = useState(false);
-  const [found, setFound] = useState<string[]>([]);
+  const [found, setFound] = useState<string[]>([]), [guide, setGuide] = useState(false);
   const secretTotal = data.exhibits.filter(item => item.secret).length;
   const mountRef = useRef<HTMLDivElement>(null), controller = useRef<MuseumController | null>(null);
   const mapPlayer = useRef<HTMLSpanElement>(null), stick = useRef<HTMLSpanElement>(null);
   const dialog = useRef<HTMLDialogElement>(null), studyLayer = useRef<HTMLDivElement>(null);
   const paused = useRef(true), latestSelect = useRef<(id: string) => void>(() => {});
   const joystickPointer = useRef<number | null>(null);
+  // A room picked from Nailong's dialog waits until the dialog has closed and the scene runs again.
+  const pendingVisit = useRef<MuseumRoom | null>(null);
   const currentRoom = MUSEUM_ROOMS.find(item => item.id === room)!;
   const focused = data.exhibits.find(item => item.id === focusId);
   const published = content.caseStudies.filter(item => item.published).sort((a, b) => a.featured_order - b.featured_order);
@@ -47,6 +49,7 @@ export default function MuseumExperience({ content }: { content: SiteContent }) 
 
   const choose = useCallback((id: string) => {
     if (id === "work-collection") { setCollection(true); return; }
+    if (id === MUSEUM_GUIDE) { setGuide(true); return; }
     const exhibit = data.exhibits.find(item => item.id === id);
     if (!exhibit) return;
     setSelected(exhibit);
@@ -63,9 +66,10 @@ export default function MuseumExperience({ content }: { content: SiteContent }) 
   useEffect(() => { latestSelect.current = choose; }, [choose]);
 
   useEffect(() => {
-    paused.current = !entered || !!selected || collection || !!study;
+    paused.current = !entered || !!selected || collection || guide || !!study;
     controller.current?.setPaused(paused.current);
-  }, [entered, selected, collection, study]);
+    if (!paused.current && pendingVisit.current) { controller.current?.visit(pendingVisit.current); pendingVisit.current = null; }
+  }, [entered, selected, collection, guide, study]);
 
   useEffect(() => {
     if (!mounted || !active || !mountRef.current) return;
@@ -97,9 +101,9 @@ export default function MuseumExperience({ content }: { content: SiteContent }) 
 
   useEffect(() => {
     if (!dialog.current) return;
-    if ((selected || collection) && !dialog.current.open) dialog.current.showModal();
-    if (!selected && !collection && dialog.current.open) dialog.current.close();
-  }, [selected, collection]);
+    if ((selected || collection || guide) && !dialog.current.open) dialog.current.showModal();
+    if (!selected && !collection && !guide && dialog.current.open) dialog.current.close();
+  }, [selected, collection, guide]);
 
   useEffect(() => {
     if (!study || !studyLayer.current) return;
@@ -122,12 +126,12 @@ export default function MuseumExperience({ content }: { content: SiteContent }) 
   }, [study]);
 
   function changeView(museum: boolean) {
-    setSelected(null); setCollection(false); setStudy(null); setError(false); setActive(museum);
+    setSelected(null); setCollection(false); setGuide(false); setStudy(null); setError(false); setActive(museum);
     try { sessionStorage.setItem(VIEW_KEY, museum ? "museum" : "classic"); } catch { /* No persistent preference required. */ }
   }
   function visit(next: MuseumRoom) { controller.current?.visit(next); }
-  function inspectStudy(item: CaseStudy) { setSelected(null); setCollection(false); setStudy(item); }
-  function closeDialog() { setSelected(null); setCollection(false); }
+  function inspectStudy(item: CaseStudy) { setSelected(null); setCollection(false); setGuide(false); setStudy(item); }
+  function closeDialog() { setSelected(null); setCollection(false); setGuide(false); }
   function moveJoystick(event: PointerEvent<HTMLDivElement>) {
     if (joystickPointer.current !== event.pointerId) return;
     const rect = event.currentTarget.getBoundingClientRect();
@@ -167,12 +171,12 @@ export default function MuseumExperience({ content }: { content: SiteContent }) 
       <div><kbd>E</kbd><span>Inspect a display</span><kbd className="museum-run-key">Shift</kbd><span>Run</span></div>
     </div>
     <div className="museum-interaction-prompt" aria-live="polite">
-      {focused ? <button type="button" className={focused.secret ? "museum-secret-prompt" : undefined} onClick={() => controller.current?.select(focused.id)}><kbd>E</kbd>{focused.secret && <Sparkles size={15} aria-hidden="true" />}<span>{focused.secret ? found.includes(focused.id) ? focused.title : focused.id === "secret-cat" ? "Say hello to the cat" : "Something is hidden here" : focused.title}</span><ArrowRight size={17} aria-hidden="true" /></button> : <span>Walk toward a display, or click its artwork.</span>}
+      {focusId === MUSEUM_GUIDE ? <button type="button" className="museum-guide-prompt" onClick={() => controller.current?.select(MUSEUM_GUIDE)}><kbd>E</kbd><span>Ask Nailong for directions</span><ArrowRight size={17} aria-hidden="true" /></button> : focused ? <button type="button" className={focused.secret ? "museum-secret-prompt" : undefined} onClick={() => controller.current?.select(focused.id)}><kbd>E</kbd>{focused.secret && <Sparkles size={15} aria-hidden="true" />}<span>{focused.secret ? found.includes(focused.id) ? focused.title : focused.id === "secret-cat" ? "Say hello to the cat" : "Something is hidden here" : focused.title}</span><ArrowRight size={17} aria-hidden="true" /></button> : <span>Walk toward a display, or click its artwork.</span>}
     </div>
     <div className="museum-mini-map" aria-label="Museum map">
       <span className="museum-map-heading">The museum{secretTotal > 0 && <span className="museum-map-secrets"><Sparkles size={10} aria-hidden="true" />{found.filter(id => data.exhibits.some(item => item.id === id)).length}/{secretTotal} hidden finds</span>}</span>
       <div className="museum-map-plan">
-        <svg viewBox="0 0 240 200" aria-hidden="true"><g transform="translate(93 0) scale(.972 1) translate(-19 0)"><path d="M19 18H161V74 M19 85V174H161V18 M149 77H161 M19 128H31 M149 128H161 M19 172H66 M114 172H161" fill="none" stroke="currentColor" strokeWidth="1" /><path d="M47 106H133M69 29V45M95 29V45M124 29V45M31 143V151M149 143V151" fill="none" stroke="currentColor" strokeWidth="4" /><circle cx="90" cy="132" r="22" fill="none" stroke="currentColor" strokeWidth=".6" /></g><path d="M93 74H89V43H12V116H89V85H93" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="3 2" /><path d="M14 50V68M14 90V108M26 44H58M66 81H74" fill="none" stroke="currentColor" strokeWidth="3" /><circle cx="51" cy="80" r="12" fill="none" stroke="currentColor" strokeWidth=".6" /></svg>
+        <svg viewBox="0 0 240 200" aria-hidden="true"><path d="M149.6 170.8H95.3V85 M95.3 74.5V19.6H228.5V170.8H174.3" fill="none" stroke="currentColor" strokeWidth="1" /><path d="M105.7 144.8H218.2 M105.7 92.8H218.2 M105.7 44H218.2" fill="none" stroke="currentColor" strokeWidth=".4" strokeDasharray="2 3" /><path d="M144.2 31.6H179.7" fill="none" stroke="currentColor" strokeWidth="2" /><path d="M116.5 138.4h5.9v9.4h-5.9Z M116.5 122.2h5.9v9.4h-5.9Z M116.5 105.9h5.9v9.4h-5.9Z M116.5 74.7h5.9v9.4h-5.9Z M116.5 59.8h5.9v9.4h-5.9Z M116.5 44.8h5.9v9.4h-5.9Z M201.4 138.4h5.9v9.4h-5.9Z M201.4 122.2h5.9v9.4h-5.9Z M201.4 105.9h5.9v9.4h-5.9Z M201.4 74.7h5.9v9.4h-5.9Z M201.4 59.8h5.9v9.4h-5.9Z M201.4 44.8h5.9v9.4h-5.9Z M155.8 43.7h12.3v3.2h-12.3Z M137.8 158.6h4.9v5.5h-4.9Z" fill="currentColor" opacity=".55" />{(room === "studio" || found.length > 0) && <path d="M95.3 85H87.9V111.9H18.9V47.6H87.9V74.5H95.3" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="3 2" />}<circle className="museum-map-guide" cx="171.3" cy="162.3" r="2.6" /></svg>
         <span className="museum-map-player" ref={mapPlayer} aria-hidden="true" />
         {MUSEUM_ROOMS.filter(item => !item.hidden || room === item.id || found.length > 0).map(item => <button type="button" key={item.id} className={`museum-map-room museum-map-${item.id}`} aria-label={`Go to ${item.label}`} aria-current={room === item.id ? "location" : undefined} onClick={() => visit(item.id)} disabled={!ready}><i aria-hidden="true" /><span>{item.label}</span></button>)}
       </div>
@@ -184,8 +188,8 @@ export default function MuseumExperience({ content }: { content: SiteContent }) 
     </div>
     {!ready && <div className="museum-world-loading" role="status"><span className="museum-loading-monogram">h</span><h2>Opening the museum</h2><p>Preparing the room and hanging the collection.</p><span className="museum-loading-line" aria-hidden="true" /><button type="button" onClick={() => changeView(false)}>Open classic view<ArrowRight size={14} /></button></div>}
     <dialog ref={dialog} className="museum-exhibit-dialog" aria-labelledby="museum-dialog-title" onCancel={closeDialog} onClose={closeDialog}>
-      <div className="museum-dialog-top"><span>{collection ? "The collection" : selected?.secret ? `Hidden find · ${found.length} of ${secretTotal}` : currentRoom.label}</span><button type="button" aria-label="Close exhibit" onClick={closeDialog}><X size={20} /></button></div>
-      {collection ? <><h2 id="museum-dialog-title">A closer look at the work.</h2><p>Choose a project to explore the thinking, the decisions, and the final design.</p><div className="museum-collection-list">{published.map(item => <button type="button" key={item.slug} onClick={() => inspectStudy(item)}>{(item.thumbnail || item.hero_image || caseStudyCover(item.slug)) && <img src={item.thumbnail || item.hero_image || caseStudyCover(item.slug)} alt={item.thumbnail_alt || item.title} />}<span><strong>{item.title}</strong><small>{[item.category, item.year].filter(Boolean).join(" / ")}</small></span><ArrowRight size={18} aria-hidden="true" /></button>)}{!published.length && <p>New work will appear here as projects are published.</p>}</div></> : selected && <>
+      <div className="museum-dialog-top"><span>{guide ? "Nailong · Doorkeeper" : collection ? "The collection" : selected?.secret ? `Hidden find · ${found.length} of ${secretTotal}` : currentRoom.label}</span><button type="button" aria-label="Close exhibit" onClick={closeDialog}><X size={20} /></button></div>
+      {guide ? <><h2 id="museum-dialog-title">Hi! Can I help you find something?</h2><p>I keep an eye on the doors. Pick a room and I will point you the right way.</p><div className="museum-guide-rooms">{MUSEUM_ROOMS.filter(item => !item.hidden).map(item => <button type="button" key={item.id} onClick={() => { pendingVisit.current = item.id; closeDialog(); }}><span>{item.number}</span><span><strong>{item.label}</strong><small>{item.description}</small></span><ArrowRight size={17} aria-hidden="true" /></button>)}</div><p className="museum-guide-hint">{found.length > 0 || room === "studio" ? "You found the quiet room off the hall. Nice work." : "Psst… one door near About is easy to miss."}</p></> : collection ? <><h2 id="museum-dialog-title">A closer look at the work.</h2><p>Choose a project to explore the thinking, the decisions, and the final design.</p><div className="museum-collection-list">{published.map(item => <button type="button" key={item.slug} onClick={() => inspectStudy(item)}>{(item.thumbnail || item.hero_image || caseStudyCover(item.slug)) && <img src={item.thumbnail || item.hero_image || caseStudyCover(item.slug)} alt={item.thumbnail_alt || item.title} />}<span><strong>{item.title}</strong><small>{[item.category, item.year].filter(Boolean).join(" / ")}</small></span><ArrowRight size={18} aria-hidden="true" /></button>)}{!published.length && <p>New work will appear here as projects are published.</p>}</div></> : selected && <>
         <h2 id="museum-dialog-title">{selected.title}</h2><p className="museum-dialog-subtitle">{selected.subtitle}</p>
         {selected.image && <div className="museum-dialog-image"><img src={selected.image} alt={`${selected.title} exhibit`} /></div>}
         <p className="museum-dialog-description">{selected.description}</p>

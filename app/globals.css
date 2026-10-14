@@ -180,6 +180,15 @@ html[data-studio-pending="true"]::after { content: "Preparing the studio…"; po
 .entrance-scissor-upper { transform: rotate(-26deg); }
 .entrance-scissor-lower { transform: rotate(26deg); }
 .entrance-ribbon-target:focus-visible .entrance-scissors { opacity: 1; }
+/* Nailong, the doorkeeper, is a transparent WebGL layer standing in front of the doors. */
+.entrance-nailong { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.entrance-nailong-anchor { position: absolute; top: 0; left: 0; width: 0; height: 0; pointer-events: none; }
+.entrance-nailong-bubble { position: absolute; bottom: 12px; left: 0; width: max-content; max-width: min(230px, 46vw); margin: 0; padding: 10px 14px; transform: translateX(-38%); border: 1px solid #e9cf9f; border-radius: 16px; background: #fff7e6; color: #3a2a17; font-size: 12px; line-height: 1.4; box-shadow: 0 10px 24px #0007; animation: entrance-bubble-in 260ms var(--entrance-ease) both; }
+.entrance-nailong-bubble::after { content: ""; position: absolute; left: 38%; bottom: -7px; width: 12px; height: 12px; background: inherit; border: inherit; border-top: 0; border-left: 0; transform: rotate(45deg); }
+.home-entrance[data-phase="entering"] .entrance-nailong-anchor, .home-entrance[data-phase="fading"] .entrance-nailong-anchor { opacity: 0; }
+@keyframes entrance-bubble-in { from { opacity: 0; transform: translate(-38%, 6px) scale(.94); } to { opacity: 1; transform: translateX(-38%); } }
+.entrance-cut-mark { position: absolute; left: -1px; top: -16px; height: 32px; border-left: 2px dashed #f7deb0; opacity: 0; filter: drop-shadow(0 1px 2px #000a); transition: opacity 150ms ease; }
+.home-entrance[data-phase="idle"] .entrance-ribbon-target:focus-visible .entrance-cut-mark { opacity: .9; }
 .entrance-ribbon-slit { position: absolute; left: var(--cut-position); top: 44%; z-index: 4; width: 2px; height: 12%; margin-left: -1px; background: linear-gradient(#0c0504, #3b1012 70%, #0c0504); box-shadow: 0 0 2px #000a; transform: scaleY(0); transform-origin: 50% 0; pointer-events: none; transition: opacity 120ms ease; }
 .entrance-fibres { position: absolute; left: var(--cut-position); top: 50%; z-index: 6; pointer-events: none; }
 .entrance-fibres i { position: absolute; width: 2px; height: 5px; background: #b32630; opacity: 0; }
@@ -228,7 +237,7 @@ html[data-studio-pending="true"]::after { content: "Preparing the studio…"; po
 @keyframes entrance-fibre { 0% { opacity: .85; transform: translate(0,0) rotate(0); } 100% { opacity: 0; transform: translate(var(--dx),var(--dy)) rotate(var(--turn)); } }
 @media (hover: hover) and (pointer: fine) {
   .entrance-ribbon-target:enabled:hover { cursor: crosshair; }
-  .entrance-ribbon-target:enabled:hover .entrance-scissors { opacity: 1; }
+  .entrance-ribbon-target:enabled:hover .entrance-scissors, .entrance-ribbon-target:enabled:hover .entrance-cut-mark { opacity: 1; }
   .entrance-note > button:hover { color: #f2dfbf; }
 }
 @media (hover: none), (pointer: coarse) {
@@ -262,7 +271,7 @@ html[data-studio-pending="true"]::after { content: "Preparing the studio…"; po
   .entrance-inner-light { transition: opacity 200ms ease; }
   .entrance-scene, .home-entrance-door { transition: none; }
   .home-entrance[data-phase="fading"] .entrance-scene { transform: none; }
-  .entrance-note-card, .entrance-ribbon-piece, .entrance-fibres i, .entrance-scissor-arm, .entrance-scissors { animation: none !important; }
+  .entrance-note-card, .entrance-ribbon-piece, .entrance-fibres i, .entrance-scissor-arm, .entrance-scissors, .entrance-nailong-bubble { animation: none !important; }
   .home-entrance[data-phase="fading"] .entrance-ribbon-piece { opacity: 0; }
 }
 .about-album-card-inner { position: absolute; inset: 0; display: block; transform-style: preserve-3d; transition: transform 700ms cubic-bezier(.2,.7,.2,1); }
