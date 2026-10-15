@@ -57,6 +57,9 @@ const MOBILE = items("mobile", [
   ["grocery", "Grocery", "Commerce"],
 ]);
 
+/** The same shots grouped for the classic view's Website / Dashboard / Mobile categories. */
+export const SHOWCASE_GROUPS = { website: WEB, dashboard: DASHBOARD, mobile: MOBILE };
+
 export const DRIBBBLE = "https://dribbble.com/hisyamfakhrudin";
 
 export const SHOWCASE: MuseumExhibit[] = [

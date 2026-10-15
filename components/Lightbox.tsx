@@ -4,7 +4,7 @@ import { useState } from "react";
 import Media from "./Media";
 import LightboxModal from "./LightboxModal";
 
-export type PinterestImage = { id?: string; image_url: string; alt_text: string };
+export type PinterestImage = { id?: string; image_url: string; alt_text: string; thumb_url?: string };
 
 export function PinterestGrid({
   images,
@@ -25,7 +25,7 @@ export function PinterestGrid({
           className="group block w-full cursor-zoom-in break-inside-avoid overflow-hidden rounded-[14px] border border-line bg-panel text-left sm:rounded-[18px]"
         >
           <Media
-            src={img.image_url}
+            src={img.thumb_url || img.image_url}
             alt={img.alt_text || `Visual ${i + 1}`}
             label={`Visual ${i + 1}`}
             imgClassName="h-auto w-full transition-transform duration-500 ease-out group-hover:scale-[1.02]"

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { motion } from "motion/react";
 import { X } from "lucide-react";
 import type { HomeCategory } from "@/lib/content";
@@ -48,7 +49,8 @@ export default function CategoryStacks({ categories }: { categories: HomeCategor
         ))}
       </div>
 
-      {feed && <FeedOverlay cat={feed} onClose={() => setFeed(null)} />}
+      {/* Portalled: a transformed ancestor would otherwise trap the fixed overlay. */}
+      {feed && createPortal(<FeedOverlay cat={feed} onClose={() => setFeed(null)} />, document.body)}
     </section>
   );
 }
@@ -91,7 +93,7 @@ function CategoryStack({ cat, onOpen }: { cat: HomeCategory; onOpen: () => void 
               transition={{ type: "spring", stiffness: 280, damping: 24, delay: hover ? i * 0.045 : 0 }}
             >
               <div className="h-full w-full overflow-hidden">
-                <Media src={img.image_url} alt={img.alt_text || cat.label} label={cat.label} imgClassName="h-full w-full object-cover select-none" />
+                <Media src={img.thumb_url || img.image_url} alt={img.alt_text || cat.label} label={cat.label} imgClassName="h-full w-full object-cover select-none" />
               </div>
             </motion.div>
           );
@@ -171,6 +173,7 @@ function FeedOverlay({ cat, onClose }: { cat: HomeCategory; onClose: () => void 
         images={images.map((img, i) => ({
           src: img.image_url,
           alt: img.alt_text || `Visual ${i + 1} for ${cat.label}`,
+          scroll: img.scroll,
         }))}
         index={index ?? 0}
         onIndexChange={setIndex}

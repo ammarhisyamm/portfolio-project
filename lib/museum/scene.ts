@@ -9,6 +9,7 @@ import { createMuseumAvatar } from "./avatar";
 import { createMuseumEnvironment } from "./environment";
 import { createMuseumExhibits } from "./exhibits";
 import { createStudioCat } from "./cat";
+import { meow, rawr } from "./sounds";
 import { createNailong } from "./nailong";
 import { createStudioWing, inStudio, inStudioDoor } from "./studio";
 import { canvasTexture, loadImage, wrapText } from "./materials";
@@ -121,7 +122,7 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
   // now, before layer 1 is enabled, so its copy only ever sees layer 0.
   bubble.scale.set(2, .81, 1); bubble.position.set(1.9, 2.62, 10.4); bubble.layers.set(1); environment.reflection?.getReflectionCamera(camera); camera.layers.enable(1); scene.add(bubble);
   let greetUntil = 0, happyUntil = 0, grumpyUntil = 0, asked = false, wasNear = false, intro = !reduce;
-  const pokes: number[] = [], guideTarget = new THREE.Vector3(), bubbleView = new THREE.Vector3();
+  const pokes: number[] = [], catPokes: number[] = [], guideTarget = new THREE.Vector3(), bubbleView = new THREE.Vector3();
   const hasCat = config.data.exhibits.some(item => item.id === "secret-cat");
   if (hasCat) { const hit = new THREE.Mesh(new THREE.SphereGeometry(.45, 8, 6), new THREE.MeshBasicMaterial({ visible: false })); hit.position.y = .35; hit.userData.exhibitId = "secret-cat"; cat.root.add(hit); targets.push(hit); }
   const keys = new Set<string>();
@@ -131,7 +132,7 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
   const raycaster = new THREE.Raycaster(), pointer = new THREE.Vector2();
   let yaw = reduce ? 0 : Math.PI, pitch = .09, distance = mobile ? 6.5 : 5.8;
   let room: MuseumRoom = "work", focus: string | null = null, hovered: string | null = null;
-  let paused = false, disposed = false, sprint = false, firstPerson = false;
+  let paused = false, disposed = false, sprint = false, firstPerson = false, catMet = false;
   let dragging: { id: number; x: number; y: number; moved: number } | null = null;
   let destination: { path: Waypoint[]; yaw: number } | null = null;
   let last = performance.now(), elapsed = 0;
@@ -166,7 +167,14 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
   function interact(id: string) {
     // Immediate keyboard feedback; never delay the CMS dialog for choreography.
     if (!reduce) avatar.inspect(elapsed);
-    if (id === "secret-cat") cat.pet(elapsed);
+    if (id === "secret-cat") {
+      // A click gets a meow; the third quick click in a row gets a hiss and a growl.
+      catPokes.push(elapsed); while (catPokes.length && elapsed - catPokes[0] > 5) catPokes.shift();
+      if (catPokes.length >= 3) { catPokes.length = 0; cat.anger(elapsed); rawr(); } else { cat.pet(elapsed); meow(); }
+      // The card opens the first time only; after that the cat just answers.
+      if (catMet) return;
+      catMet = true;
+    }
     if (id === MUSEUM_GUIDE) {
       // Asking once is welcome; poking Nailong three times quickly is not.
       pokes.push(elapsed); while (pokes.length && elapsed - pokes[0] > 6) pokes.shift();

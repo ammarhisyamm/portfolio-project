@@ -137,6 +137,10 @@ export type CategoryImage = {
   offset_y: number;
   rotation: number;
   z_order: number;
+  /** Optional smaller preview for grids; image_url stays the full image. */
+  thumb_url?: string;
+  /** Full-length page captures scroll in the lightbox instead of shrinking. */
+  scroll?: boolean;
 };
 
 export type HomeCategory = {

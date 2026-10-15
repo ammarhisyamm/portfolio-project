@@ -125,9 +125,11 @@ html[data-museum-view="true"] [data-portfolio-shell] { visibility: hidden; }
 .museum-collection-list button>span { flex:1; }
 .museum-collection-list strong { display:block; font:22px/1.15 Georgia,serif; font-weight:400; }
 .museum-collection-list small { display:block; font-size:9px; color:#c0aa88; margin-top:8px; }
-.museum-classic-entry { margin:0 0 24px; }
-.museum-classic-entry>button { display:flex; align-items:center; justify-content:center; gap:10px; min-height:44px; padding:9px 17px; border:1px solid var(--border); border-radius:40px; color:var(--fg); font-size:12px; }
-.museum-classic-entry p { font-size:12px; line-height:1.6; margin-top:12px; opacity:.7; }
+.museum-classic-entry { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:16px 24px; padding:20px; }
+@media (min-width:640px) { .museum-classic-entry { padding:28px 32px; } }
+.museum-classic-entry .museum-classic-copy { margin:10px 0 0; font-size:15px; line-height:1.5; letter-spacing:-.01em; color:#5f5f5f; max-width:460px; }
+.museum-classic-entry>button { display:flex; align-items:center; justify-content:center; gap:10px; min-height:44px; padding:9px 17px; border:1px solid #e6e6e6; border-radius:40px; color:#161616; font-size:13px; background:#fff; }
+.museum-classic-entry>p { flex-basis:100%; font-size:12px; line-height:1.6; margin-top:12px; opacity:.7; }
 @keyframes museum-copy-in { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
 @keyframes museum-load { from { transform:translateX(-70px); } to { transform:translateX(150px); } }
 @media (max-width:1100px) { .museum-world-available { display:none; } .museum-room-copy { left:85px; width:190px; } .museum-room-copy h1 { font-size:40px; } .museum-world-nav button { padding:0 12px; } }
