@@ -7,8 +7,8 @@ type BackgroundType = "color" | "gradient" | "image";
 type ShadowType = "drop" | "inner";
 
 const defaults = {
-  radiusTL: 12, radiusTR: 12, radiusBR: 12, radiusBL: 12, gap: 16, border: 1,
-  borderColor: "#F4F4F4", background: "#f5f5f5", backgroundType: "color" as BackgroundType,
+  radiusTL: 12, radiusTR: 12, radiusBR: 12, radiusBL: 12, gap: 0, border: 1,
+  borderColor: "#F4F4F4", background: "#ffffff", backgroundType: "color" as BackgroundType,
   shadowEnabled: false, shadowType: "drop" as ShadowType, shadowX: 0, shadowY: 4,
   shadowBlur: 16, shadowSpread: 0, shadowColor: "#000000", shadowOpacity: 18,
 };

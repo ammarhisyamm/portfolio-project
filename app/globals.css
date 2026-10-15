@@ -12,7 +12,7 @@
   }
   body {
     @apply font-sans text-[15px] leading-normal text-ink;
-    background-color: var(--site-bg, #f5f5f5);
+    background-color: var(--site-bg, #ffffff);
     background-image: var(--site-bg-image, none);
     background-position: center;
     background-repeat: no-repeat;
@@ -127,7 +127,7 @@
   }
 }
 
-.page-stack { gap: var(--site-gap, 16px); min-width: 0; }
+.page-stack { gap: var(--site-gap, 0px); min-width: 0; }
 .page-stack > * { min-width: 0; }
 
 /* Studio entrance: a rare opening ceremony, composed on one architectural plane. */
