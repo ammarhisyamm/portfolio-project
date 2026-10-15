@@ -144,7 +144,8 @@ export default function MuseumExperience({ content }: { content: SiteContent }) 
   function resetJoystick() { joystickPointer.current = null; controller.current?.move(0, 0); if (stick.current) stick.current.style.transform = "translate(0,0)"; }
 
   if (!mounted) return null;
-  if (!active) return <div className="museum-classic-entry">
+  if (!active) return <div className="museum-classic-entry panel">
+    <div><span className="kicker">The 3D museum</span><p className="museum-classic-copy">Prefer to wander? Walk through the work, the showcase and the studio as a small museum.</p></div>
     <button type="button" onClick={() => changeView(true)}><Footprints size={16} aria-hidden="true" />Explore the 3D museum<ArrowRight size={15} aria-hidden="true" /></button>
     {error && <p role="status">The 3D view could not open in this browser. You can explore the full portfolio below, or try again.</p>}
   </div>;

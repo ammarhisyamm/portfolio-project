@@ -7,6 +7,7 @@ import SelectedWork from "@/components/SelectedWork";
 import HomeEntrance from "@/components/HomeEntrance";
 import MuseumExperience from "@/components/MuseumExperience";
 import { getContent } from "@/lib/content";
+import { withShowcase } from "@/lib/showcase-categories";
 
 export default async function HomePage() {
   const content = await getContent();
@@ -16,7 +17,6 @@ export default async function HomePage() {
   return (
     <>
       <HomeEntrance />
-      <MuseumExperience content={content} />
       <div className="page-stack grid pb-16 pt-3">
         <RestoreScroll />
         <Hero
@@ -42,7 +42,10 @@ export default async function HomePage() {
 
         <AboutPanel about={content.about} contact={content.contact} socials={content.socials.items} />
 
-        <CategoryStacks categories={content.homeCategories} />
+        <CategoryStacks categories={withShowcase(content.homeCategories)} />
+
+        {/* The 3D museum: opens full screen; in the classic view its entry sits at the end of the page. */}
+        <MuseumExperience content={content} />
       </div>
     </>
   );

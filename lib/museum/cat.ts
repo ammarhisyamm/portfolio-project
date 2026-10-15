@@ -123,9 +123,10 @@ export function createStudioCat(scene: THREE.Scene, blocked: (x: number, z: numb
     });
     add(head, g, fur, [0, 0, 0]);
   }
+  const ears: THREE.Group[] = [];
   for (const s of [-1, 1]) {
     // Ears: tall rounded triangles with pink insides, tipped slightly out.
-    const ear = new THREE.Group(); ear.position.set(s * .042, .05, -.006); ear.rotation.set(-.12, s * -.35, s * -.3); head.add(ear);
+    const ear = new THREE.Group(); ear.position.set(s * .042, .05, -.006); ear.rotation.set(-.12, s * -.35, s * -.3); ear.userData.side = s; head.add(ear); ears.push(ear);
     const outer = colorize(new THREE.ConeGeometry(1, 1, 16), p => coat(.2, 0, 0, .1).lerp(STRIPE, smooth(p.y, .2, .5) * .25));
     add(ear, outer, fur, [0, .028, 0], [.036, .062, .015]);
     add(ear, new THREE.ConeGeometry(1, 1, 12), pink, [0, .022, .009], [.023, .044, .006]);
@@ -176,7 +177,11 @@ export function createStudioCat(scene: THREE.Scene, blocked: (x: number, z: numb
   const heartMap = canvasTexture(64, 64, ctx => { ctx.fillStyle = "#ff8f8f"; ctx.font = "48px Georgia"; ctx.textAlign = "center"; ctx.fillText("♥", 32, 48); });
   const hearts = Array.from({ length: 4 }, () => { const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: heartMap, transparent: true, opacity: 0, depthWrite: false })); sprite.scale.setScalar(.14); scene.add(sprite); return sprite; });
 
-  let state: CatState = "loaf", timer = 6, path: Waypoint[] = [], phase = 0, sit = 1, loaf = 1, purrUntil = -1, purrStart = 0;
+  // A puff of steam over the head when it has been poked too often.
+  const angerMap = canvasTexture(64, 64, ctx => { ctx.strokeStyle = "#ff4b2e"; ctx.lineWidth = 6; ctx.lineCap = "round"; for (const [x, y, a] of [[6, 6, 0], [58, 6, Math.PI / 2], [58, 58, Math.PI], [6, 58, Math.PI * 1.5]]) { ctx.beginPath(); ctx.arc(x, y, 21, a + .2, a + Math.PI / 2 - .2); ctx.stroke(); } });
+  const anger = new THREE.Sprite(new THREE.SpriteMaterial({ map: angerMap, transparent: true, opacity: 0, depthWrite: false })); anger.scale.setScalar(.16); scene.add(anger);
+
+  let state: CatState = "loaf", timer = 6, path: Waypoint[] = [], phase = 0, sit = 1, loaf = 1, purrUntil = -1, purrStart = 0, angryUntil = -1, angryStart = 0, angry = 0;
   let bodyYaw = 0, last = 0, held: CatState | null = null;
   const pick = () => {
     const here = { x: root.position.x, z: root.position.z };
@@ -191,7 +196,9 @@ export function createStudioCat(scene: THREE.Scene, blocked: (x: number, z: numb
   return {
     root,
     position: root.position,
-    pet(time: number) { purrStart = time; purrUntil = time + 2.4; state = "sit"; timer = 4; path = []; },
+    pet(time: number) { purrStart = time; purrUntil = time + 2.4; angryUntil = -1; state = "sit"; timer = 4; path = []; },
+    /** Poked too often: stands up with an arched back, ears flat, tail puffed. */
+    anger(time: number) { angryStart = time; angryUntil = time + 2.6; purrUntil = -1; state = "sit"; timer = 5; path = []; },
     /** Pin the cat in one pose (for previews); null lets it roam again. */
     hold(next: CatState | null) { held = next; if (next) state = next; },
     update(time: number, player: THREE.Vector3, reduced: boolean) {
@@ -221,29 +228,39 @@ export function createStudioCat(scene: THREE.Scene, blocked: (x: number, z: numb
         root.rotation.y += reduced ? turn : turn * Math.min(1, dt * (state === "walk" ? 8 : 4));
         if (state === "walk") bodyYaw = root.rotation.y;
       }
-      sit = reduced ? Number(state === "sit") : THREE.MathUtils.damp(sit, state === "sit" ? 1 : 0, 6, dt);
+      const cross = time < angryUntil;
+      angry = reduced ? Number(cross) : THREE.MathUtils.damp(angry, cross ? 1 : 0, 9, dt);
+      const sitting = state === "sit" && !cross;
+      sit = reduced ? Number(sitting) : THREE.MathUtils.damp(sit, sitting ? 1 : 0, 6, dt);
       loaf = reduced ? Number(state === "loaf") : THREE.MathUtils.damp(loaf, state === "loaf" ? 1 : 0, 4, dt);
       const walking = state === "walk" ? 1 : 0;
       // Sitting drops the rump to the floor and lifts the chest; loafing lowers everything.
       hips.rotation.x = -.95 * sit;
-      hips.position.y = PIVOT.y - .19 * sit - .15 * loaf + Math.abs(Math.sin(phase)) * .008 * walking;
+      hips.position.y = PIVOT.y - .19 * sit - .15 * loaf + Math.abs(Math.sin(phase)) * .008 * walking + .035 * angry;
+      // Bristling: the whole cat shivers a little and the back arches up.
+      hips.rotation.z = reduced ? 0 : Math.sin(time * 38) * .012 * angry;
       legs.forEach((leg, i) => {
         const front = i < 2, swing = reduced ? 0 : Math.sin(phase + (i === 0 || i === 3 ? 0 : Math.PI)) * .45 * walking;
         leg.rotation.x = swing + (front ? .95 * sit : -.3 * sit) - (front ? 1.35 : 1.25) * loaf;
         leg.scale.y = 1 - .4 * loaf - (front ? 0 : .25 * sit);
       });
       haunches.forEach(h => h.scale.set(.05 + .025 * sit + .02 * loaf, .078 + .03 * sit, .08 + .035 * sit));
-      head.rotation.x = .85 * sit + .22 * loaf - .08 * walking;
+      head.rotation.x = .85 * sit + .22 * loaf - .08 * walking + .25 * angry;
+      ears.forEach(ear => ear.rotation.set(-.12 - .7 * angry, ear.userData.side * (-.35 - .5 * angry), ear.userData.side * (-.3 - .9 * angry)));
       head.rotation.y = watching && !reduced ? THREE.MathUtils.clamp(Math.sin(time * .7) * .15, -.3, .3) : 0;
       const purring = time < purrUntil;
       tail.forEach((segment, i) => {
         // Base lifts the tail; each link curls it. Up and quivering when purring,
         // low along the floor when sitting, wrapped round the body when loafing.
-        if (!i) { segment.rotation.x = .62 + (purring ? .6 : 0) - loaf * .62 + sit * .2; segment.rotation.y = loaf * 1.2 + sit * .45; return; }
+        if (!i) { segment.scale.setScalar(1 + .35 * angry); segment.rotation.x = .62 + (purring ? .6 : 0) - loaf * .62 + sit * .2 + .75 * angry; segment.rotation.y = (loaf * 1.2 + sit * .45) * (1 - angry); return; }
         const sway = reduced ? 0 : Math.sin(time * (purring ? 5 : 1.6) - i * .55) * (purring ? .1 : .1);
         segment.rotation.x = (purring ? .02 : -.07) * (1 - loaf) - sit * .02;
-        segment.rotation.y = sway + loaf * .32 + sit * .16;
+        segment.rotation.y = (sway + loaf * .32 + sit * .16) * (1 - angry);
+        segment.rotation.x = THREE.MathUtils.lerp(segment.rotation.x, .05, angry);
       });
+      const steam = (time - angryStart) / 2.4;
+      anger.material.opacity = cross && !reduced ? Math.min(1, steam * 6) * (1 - Math.max(0, steam - .7) / .3) : reduced && cross ? 1 : 0;
+      anger.position.set(root.position.x + Math.sin(root.rotation.y) * .2, .74 + Math.sin(time * 14) * .01, root.position.z + Math.cos(root.rotation.y) * .2);
       hearts.forEach((heart, i) => {
         const t = (time - purrStart - i * .35) / 1.4, alive = purring && t > 0 && t < 1 && !reduced;
         heart.material.opacity = alive ? Math.sin(Math.PI * t) : 0;

@@ -1,10 +1,11 @@
 "use client";
 
 import { useCallback, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { ArrowLeft, ArrowRight, X } from "lucide-react";
 import Media from "./Media";
 
-type LightboxImage = { src: string; alt: string };
+type LightboxImage = { src: string; alt: string; scroll?: boolean };
 
 type LightboxModalProps = {
   open: boolean;
@@ -44,7 +45,7 @@ export default function LightboxModal({ open, images, index, onIndexChange, onCl
   if (!open || count === 0 || !images[index]) return null;
   const img = images[index];
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 z-[200] flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm"
       role="dialog"
@@ -87,21 +88,33 @@ export default function LightboxModal({ open, images, index, onIndexChange, onCl
         </>
       )}
 
-      <div
-        className="max-h-full overflow-hidden rounded-[14px] bg-panel"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <Media
-          src={img.src}
-          alt={img.alt}
-          label={img.alt}
-          imgClassName="max-h-[80vh] w-auto object-contain"
-        />
-      </div>
+      {img.scroll ? (
+        // A full-length page: show it at a readable width and let it scroll.
+        <div
+          key={img.src}
+          className="max-h-[85vh] w-[min(1100px,100%)] overflow-y-auto overscroll-contain rounded-[14px] bg-panel"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <Media src={img.src} alt={img.alt} label={img.alt} imgClassName="block h-auto w-full" />
+        </div>
+      ) : (
+        <div
+          className="max-h-full overflow-hidden rounded-[14px] bg-panel"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <Media
+            src={img.src}
+            alt={img.alt}
+            label={img.alt}
+            imgClassName="max-h-[80vh] w-auto object-contain"
+          />
+        </div>
+      )}
 
       <div className="absolute bottom-5 left-1/2 z-10 -translate-x-1/2 rounded-full bg-black/60 px-3.5 py-1.5  text-[11px] uppercase tracking-[0.08em] text-white">
         {index + 1} / {count}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
