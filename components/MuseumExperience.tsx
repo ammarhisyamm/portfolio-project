@@ -3,10 +3,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type PointerEvent } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, BookOpen, Camera, Footprints, Layers, Lightbulb, Mouse, RotateCcw, Sparkles, X } from "lucide-react";
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, BookOpen, ChevronLeft, ChevronRight, Camera, Footprints, Layers, Lightbulb, Mouse, RotateCcw, Sparkles, X } from "lucide-react";
 import type { CaseStudy, SiteContent } from "@/lib/content";
 import { museumContent } from "@/lib/museum/content";
-import { MUSEUM_GUIDE, MUSEUM_ROOMS, type MuseumController, type MuseumExhibit, type MuseumRoom } from "@/lib/museum/types";
+import { MUSEUM_GUIDE, MUSEUM_ROOMS, type MuseumController, type MuseumExhibit, type MuseumRoom, type ShowcaseItem } from "@/lib/museum/types";
 import { caseStudyCover } from "@/lib/case-study-visuals";
 import CaseStudyOverlay from "./CaseStudyOverlay";
 
@@ -22,6 +22,7 @@ export default function MuseumExperience({ content }: { content: SiteContent }) 
   const [collection, setCollection] = useState(false), [selected, setSelected] = useState<MuseumExhibit | null>(null);
   const [study, setStudy] = useState<CaseStudy | null>(null), [error, setError] = useState(false);
   const [found, setFound] = useState<string[]>([]), [guide, setGuide] = useState(false);
+  const [shot, setShot] = useState<number | null>(null);
   const secretTotal = data.exhibits.filter(item => item.secret).length;
   const mountRef = useRef<HTMLDivElement>(null), controller = useRef<MuseumController | null>(null);
   const mapPlayer = useRef<HTMLSpanElement>(null), stick = useRef<HTMLSpanElement>(null);
@@ -131,7 +132,7 @@ export default function MuseumExperience({ content }: { content: SiteContent }) 
   }
   function visit(next: MuseumRoom) { controller.current?.visit(next); }
   function inspectStudy(item: CaseStudy) { setSelected(null); setCollection(false); setGuide(false); setStudy(item); }
-  function closeDialog() { setSelected(null); setCollection(false); setGuide(false); }
+  function closeDialog() { setSelected(null); setCollection(false); setGuide(false); setShot(null); }
   function moveJoystick(event: PointerEvent<HTMLDivElement>) {
     if (joystickPointer.current !== event.pointerId) return;
     const rect = event.currentTarget.getBoundingClientRect();
@@ -149,6 +150,7 @@ export default function MuseumExperience({ content }: { content: SiteContent }) 
   </div>;
 
   const processIndex = selected?.id.startsWith("process-") ? Number(selected.id.split("-")[1]) : -1;
+  const showcase = selected?.showcase?.length ? selected.showcase : null;
   const selectedStudy = selected?.studySlug ? content.caseStudies.find(item => item.slug === selected.studySlug) : undefined;
 
   return createPortal(<section className="museum-world" aria-label="Hisyam's interactive museum" data-lenis-prevent data-ready={ready}>
@@ -187,20 +189,48 @@ export default function MuseumExperience({ content }: { content: SiteContent }) 
       <span className="museum-mobile-look">Drag the room to look around</span>
     </div>
     {!ready && <div className="museum-world-loading" role="status"><span className="museum-loading-monogram">h</span><h2>Opening the museum</h2><p>Preparing the room and hanging the collection.</p><span className="museum-loading-line" aria-hidden="true" /><button type="button" onClick={() => changeView(false)}>Open classic view<ArrowRight size={14} /></button></div>}
-    <dialog ref={dialog} className="museum-exhibit-dialog" aria-labelledby="museum-dialog-title" onCancel={closeDialog} onClose={closeDialog}>
+    <dialog ref={dialog} className={`museum-exhibit-dialog${showcase ? " museum-showcase-dialog" : ""}`} aria-labelledby="museum-dialog-title" onCancel={event => { if (shot !== null) { event.preventDefault(); setShot(null); } else closeDialog(); }} onClose={closeDialog}>
       <div className="museum-dialog-top"><span>{guide ? "Nailong · Doorkeeper" : collection ? "The collection" : selected?.secret ? `Hidden find · ${found.length} of ${secretTotal}` : currentRoom.label}</span><button type="button" aria-label="Close exhibit" onClick={closeDialog}><X size={20} /></button></div>
       {guide ? <><h2 id="museum-dialog-title">Hi! Can I help you find something?</h2><p>I keep an eye on the doors. Pick a room and I will point you the right way.</p><div className="museum-guide-rooms">{MUSEUM_ROOMS.filter(item => !item.hidden).map(item => <button type="button" key={item.id} onClick={() => { pendingVisit.current = item.id; closeDialog(); }}><span>{item.number}</span><span><strong>{item.label}</strong><small>{item.description}</small></span><ArrowRight size={17} aria-hidden="true" /></button>)}</div><p className="museum-guide-hint">{found.length > 0 || room === "studio" ? "You found the quiet room off the hall. Nice work." : "Psst… one door near About is easy to miss."}</p></> : collection ? <><h2 id="museum-dialog-title">A closer look at the work.</h2><p>Choose a project to explore the thinking, the decisions, and the final design.</p><div className="museum-collection-list">{published.map(item => <button type="button" key={item.slug} onClick={() => inspectStudy(item)}>{(item.thumbnail || item.hero_image || caseStudyCover(item.slug)) && <img src={item.thumbnail || item.hero_image || caseStudyCover(item.slug)} alt={item.thumbnail_alt || item.title} />}<span><strong>{item.title}</strong><small>{[item.category, item.year].filter(Boolean).join(" / ")}</small></span><ArrowRight size={18} aria-hidden="true" /></button>)}{!published.length && <p>New work will appear here as projects are published.</p>}</div></> : selected && <>
         <h2 id="museum-dialog-title">{selected.title}</h2><p className="museum-dialog-subtitle">{selected.subtitle}</p>
-        {selected.image && <div className="museum-dialog-image"><img src={selected.image} alt={`${selected.title} exhibit`} /></div>}
+        {showcase && <ShowcaseWall items={showcase} shot={shot} setShot={setShot} />}
+        {selected.image && !showcase && <div className="museum-dialog-image"><img src={selected.image} alt={`${selected.title} exhibit`} /></div>}
         <p className="museum-dialog-description">{selected.description}</p>
         {processIndex >= 0 && <ul className="museum-process-points">{content.experience[processIndex]?.points.slice(1).map(point => <li key={point}>{point}</li>)}</ul>}
         {selected.id === "about-tools" && <div className="museum-dialog-skills">{content.about.capabilities.slice(0, 8).map(item => <span key={item}>{item}</span>)}</div>}
         {selected.list && <ul className="museum-process-points">{selected.list.map(point => <li key={point}>{point}</li>)}</ul>}
         {selected.images && selected.images.length > 0 && <div className="museum-secret-photos">{selected.images.map(src => <img key={src} src={src} alt="" />)}</div>}
-        <div className="museum-dialog-actions">{selected.secret && !selected.href ? <button type="button" className="museum-primary-action" onClick={closeDialog}>{selected.action}<ArrowRight size={17} aria-hidden="true" /></button> : selected.external && selected.href ? <a className="museum-primary-action" href={selected.href} target="_blank" rel="noreferrer">{selected.action}<ArrowRight size={17} aria-hidden="true" /></a> : selectedStudy ? <button type="button" className="museum-primary-action" onClick={() => inspectStudy(selectedStudy)}>View case study<ArrowRight size={17} aria-hidden="true" /></button> : selected.href ? <Link className="museum-primary-action" href={selected.href}>{selected.action}<ArrowRight size={17} aria-hidden="true" /></Link> : <Link className="museum-primary-action" href="/about-us">More about my work<ArrowRight size={17} aria-hidden="true" /></Link>}{selected.room === "contact" && <a href={`mailto:${content.contact.email}`}>{content.contact.email}</a>}</div>
+        <div className="museum-dialog-actions">{(selected.secret || showcase) && !selected.href ? <button type="button" className="museum-primary-action" onClick={closeDialog}>{showcase ? "Back to the hall" : selected.action}<ArrowRight size={17} aria-hidden="true" /></button> : selected.external && selected.href ? <a className="museum-primary-action" href={selected.href} target="_blank" rel="noreferrer">{selected.action}<ArrowRight size={17} aria-hidden="true" /></a> : selectedStudy ? <button type="button" className="museum-primary-action" onClick={() => inspectStudy(selectedStudy)}>View case study<ArrowRight size={17} aria-hidden="true" /></button> : selected.href ? <Link className="museum-primary-action" href={selected.href}>{selected.action}<ArrowRight size={17} aria-hidden="true" /></Link> : <Link className="museum-primary-action" href="/about-us">More about my work<ArrowRight size={17} aria-hidden="true" /></Link>}{selected.room === "contact" && <a href={`mailto:${content.contact.email}`}>{content.contact.email}</a>}</div>
       </>}
     </dialog>
     <div ref={studyLayer} className="museum-study-layer"><CaseStudyOverlay cs={study} onClose={() => setStudy(null)} /></div>
     <button type="button" className="museum-reset-view" title="Return to the entrance hall" aria-label="Return to the entrance hall" disabled={!ready} onClick={() => visit("work")}><RotateCcw size={15} /></button>
   </section>, document.body);
+}
+
+/** A wall of portfolio shots: thumbnails in a grid, one shot opened full size
+ * (landing pages scroll their full length) with previous and next. */
+function ShowcaseWall({ items, shot, setShot }: { items: ShowcaseItem[]; shot: number | null; setShot: (index: number | null) => void }) {
+  const viewer = useRef<HTMLDivElement>(null);
+  useEffect(() => { viewer.current?.scrollTo({ top: 0 }); viewer.current?.focus({ preventScroll: true }); }, [shot]);
+  if (shot === null) return <ul className="museum-showcase-grid">{items.map((item, index) => <li key={item.src}>
+    <button type="button" onClick={() => setShot(index)} aria-label={`Open ${item.title}, ${item.subtitle}`}>
+      <img src={item.thumb} alt="" decoding="async" />
+      <span><strong>{item.title}</strong><small>{item.subtitle}</small></span>
+    </button>
+  </li>)}</ul>;
+  const item = items[shot], step = (delta: number) => setShot((shot + delta + items.length) % items.length);
+  return <div className="museum-showcase-view">
+    <div className="museum-showcase-bar">
+      <button type="button" onClick={() => setShot(null)}><ArrowLeft size={16} aria-hidden="true" />All work</button>
+      <span aria-live="polite"><strong>{item.title}</strong> · {item.subtitle} <small>{shot + 1} / {items.length}</small></span>
+      <span className="museum-showcase-steps">
+        <button type="button" aria-label="Previous" onClick={() => step(-1)}><ChevronLeft size={18} /></button>
+        <button type="button" aria-label="Next" onClick={() => step(1)}><ChevronRight size={18} /></button>
+      </span>
+    </div>
+    <div className="museum-showcase-frame" ref={viewer} tabIndex={0} onKeyDown={event => { if (event.key === "ArrowRight") step(1); if (event.key === "ArrowLeft") step(-1); }}>
+      <img src={item.src} alt={`${item.title}, ${item.subtitle}`} />
+    </div>
+  </div>;
 }

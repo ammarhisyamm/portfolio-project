@@ -9,7 +9,7 @@ export type ExhibitDisplay = { exhibit: MuseumExhibit; group: THREE.Group; posit
 // Museum plan: an entrance foyer, then two galleries split by the arches
 // (z 5 and -11) with cases along the side walls, so the central aisle stays
 // open from the doors to the apse. Contact closes the axis as a low desk.
-//   Gallery 1: Selected work (west) / Playground (east)
+//   Gallery 1: Selected work (west) / Showcase (east)
 //   Gallery 2: About (west, beside the studio door) / Process (east)
 export const EXHIBIT_SLOTS: Record<MuseumRoom, [number, number, number][]> = {
   work: [[-8.6, 1.6, Math.PI / 2], [-8.6, -3.4, Math.PI / 2], [-8.6, -8.4, Math.PI / 2]],
