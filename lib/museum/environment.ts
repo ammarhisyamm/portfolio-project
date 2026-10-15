@@ -293,7 +293,7 @@ export function createMuseumEnvironment(scene: THREE.Scene, marbleMap: THREE.Tex
   for (const [title, sub, number, x, z, rotation] of [
     ["Selected Work", "Product design", "01", -13.38, -3.4, Math.PI / 2],
     ["Process", "Research. Decisions. Delivery.", "02", 13.38, -22, -Math.PI / 2],
-    ["Playground", "Studies and experiments", "03", 13.38, 2, -Math.PI / 2],
+    ["Showcase", "Websites, dashboards, apps", "03", 13.38, 2, -Math.PI / 2],
     ["About", "The person behind the work", "04", -13.38, -22.6, Math.PI / 2],
     ["Contact", "Start a conversation", "05", 6.2, -33.35, 0],
   ] as [string, string, string, number, number, number][]) {
@@ -314,7 +314,7 @@ export function createMuseumEnvironment(scene: THREE.Scene, marbleMap: THREE.Tex
     face.position.set(0, 1.08, .052); g.add(face);
     obstacles.push({ x, z, halfX: .5, halfZ: .5 });
   }
-  totem(-3.4, 4.2, 0, [["01  ←", "Selected Work"], ["03  →", "Playground"]]);
+  totem(-3.4, 4.2, 0, [["01  ←", "Selected Work"], ["03  →", "Showcase"]]);
   totem(3.4, -11.6, 0, [["04  ←", "About"], ["02  →", "Process"], ["05  ↑", "Contact"]]);
 
   // Merge repeating architectural materials to keep the renderer draw count low.

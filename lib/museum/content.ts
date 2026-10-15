@@ -1,6 +1,7 @@
 import type { SiteContent } from "@/lib/content";
 import { caseStudyCover } from "@/lib/case-study-visuals";
 import type { MuseumData, MuseumExhibit } from "./types";
+import { SHOWCASE } from "./showcase";
 
 /** An exhibition view of existing CMS content, with no second content store. */
 export function museumContent(content: SiteContent): MuseumData {
@@ -17,12 +18,8 @@ export function museumContent(content: SiteContent): MuseumData {
     id: `process-${index}`, room: "process", title: item.company, subtitle: item.role,
     description: item.points[0] || item.period, image: item.images[0] || "", action: "Read the story",
   }));
-  const explorations = content.exploration.filter(item => item.image);
-  explorations.slice(0, 3).forEach((item, index) => exhibits.push({
-    id: `playground-${index}`, room: "playground", title: item.label, subtitle: "Interface study",
-    description: item.description || "A design exploration from the Playground collection.", image: item.image, action: "Explore the gallery", href: "/playground",
-  }));
-  if (!explorations.length) exhibits.push({ id: "playground-gallery", room: "playground", title: "Design explorations", subtitle: "Ideas in progress", description: "Visit the Playground to explore interface studies as the collection grows.", image: "", action: "Visit Playground", href: "/playground" });
+  // Gallery 1 east: the portfolio showcase (websites, dashboards, mobile apps).
+  exhibits.push(...SHOWCASE);
   exhibits.push(
     { id: "about-journey", room: "about", title: "My journey", subtitle: content.hero.title, description: content.about.introBody, image: content.branding.profilePhoto || content.about.gallery[0]?.image || "", action: "Meet Hisyam", href: "/about-us" },
     { id: "about-practice", room: "about", title: "My approach", subtitle: content.about.philosophyTitle, description: content.about.philosophyBody, image: content.about.gallery[1]?.image || "", action: "Explore my approach", href: "/about-us" },
