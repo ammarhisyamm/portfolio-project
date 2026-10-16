@@ -48,7 +48,7 @@ export function titleTexture(title: string, subtitle: string, description = "", 
   });
 }
 
-export function coverTexture(image: HTMLImageElement, title: string, subtitle: string, number: string) {
+export function coverTexture(image: HTMLImageElement, title: string, subtitle: string, number: string, footer = "View the collection") {
   return canvasTexture(1024, 1280, ctx => {
     ctx.fillStyle = "#171510";
     ctx.fillRect(0, 0, 1024, 1280);
@@ -72,8 +72,28 @@ export function coverTexture(image: HTMLImageElement, title: string, subtitle: s
     ctx.strokeRect(x, y, w, h);
     ctx.fillStyle = "#ddcbaa";
     ctx.font = "25px Arial";
-    ctx.fillText("View the collection", 72, 1211);
+    ctx.fillText(footer, 72, 1211);
     ctx.fillText("↗", 918, 1211);
+  });
+}
+
+/** The contact kiosk: a glowing touch screen showing an empty message form. */
+export function kioskTexture(title: string, subtitle: string) {
+  return canvasTexture(1024, 786, ctx => {
+    const g = ctx.createLinearGradient(0, 0, 0, 786); g.addColorStop(0, "#1f2a2c"); g.addColorStop(1, "#121718");
+    ctx.fillStyle = g; ctx.fillRect(0, 0, 1024, 786);
+    ctx.strokeStyle = "#8fb3ad"; ctx.globalAlpha = .55; ctx.lineWidth = 2; ctx.strokeRect(24, 24, 976, 738); ctx.globalAlpha = 1;
+    ctx.fillStyle = "#f2e6cf"; ctx.font = "64px Georgia"; ctx.fillText(title, 72, 128);
+    ctx.fillStyle = "#a9c3bd"; ctx.font = "28px Arial"; ctx.fillText(subtitle.slice(0, 48), 72, 178);
+    const field = (label: string, x: number, y: number, w: number, h: number) => {
+      ctx.fillStyle = "#8fa9a4"; ctx.font = "22px Arial"; ctx.fillText(label.toUpperCase(), x, y - 14);
+      ctx.fillStyle = "rgba(255,255,255,.06)"; ctx.strokeStyle = "rgba(190,220,214,.45)"; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.roundRect(x, y, w, h, 12); ctx.fill(); ctx.stroke();
+    };
+    field("Name", 72, 262, 420, 70); field("Email", 532, 262, 420, 70); field("Message", 72, 410, 880, 170);
+    ctx.fillStyle = "#e8c48a"; ctx.beginPath(); ctx.roundRect(72, 628, 260, 76, 38); ctx.fill();
+    ctx.fillStyle = "#1c1611"; ctx.font = "bold 28px Arial"; ctx.textAlign = "center"; ctx.fillText("Send  →", 202, 676);
+    ctx.textAlign = "right"; ctx.fillStyle = "#cfe3de"; ctx.font = "26px Arial"; ctx.fillText("Tap the screen to write", 952, 676);
   });
 }
 

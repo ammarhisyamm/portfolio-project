@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
-import { canvasTexture, coverTexture, loadImage, titleTexture } from "./materials";
+import { canvasTexture, coverTexture, kioskTexture, loadImage, titleTexture } from "./materials";
 import type { MuseumExhibit, MuseumRoom } from "./types";
 import type { Obstacle } from "./environment";
 
@@ -17,6 +17,7 @@ export const EXHIBIT_SLOTS: Record<MuseumRoom, [number, number, number][]> = {
   about: [[-8.6, -18, Math.PI / 2], [-8.6, -22.6, Math.PI / 2], [-8.6, -27.2, Math.PI / 2]],
   process: [[8.6, -18, -Math.PI / 2], [8.6, -22.6, -Math.PI / 2], [8.6, -27.2, -Math.PI / 2]],
   contact: [[0, -26.6, 0]],
+  blog: [],
   studio: [],
 };
 // The catalogue of all work is a reading lectern in the foyer, by the doorkeeper.
@@ -51,7 +52,7 @@ export function createMuseumExhibits(scene: THREE.Scene, exhibits: MuseumExhibit
     const [x, z, rotation] = slot;
     const group = new THREE.Group(); group.position.set(x, 0, z); group.rotation.y = rotation; scene.add(group);
     const frame = new THREE.MeshStandardMaterial({ color: "#a17b42", metalness: .78, roughness: .32, emissive: "#bd8b48", emissiveIntensity: 0 });
-    const panelMap = titleTexture(exhibit.title, exhibit.subtitle, exhibit.description, `${index + 1}`.padStart(2, "0"));
+    const panelMap = exhibit.form ? kioskTexture(exhibit.title, exhibit.subtitle) : titleTexture(exhibit.title, exhibit.subtitle, exhibit.description, `${index + 1}`.padStart(2, "0"));
     const panelMat = new THREE.MeshBasicMaterial({ map: panelMap, toneMapped: false });
     const plaque = canvasTexture(1024, 256, ctx => {
       ctx.fillStyle = "#e2c69a"; ctx.font = "52px Georgia"; ctx.textAlign = "center"; ctx.fillText(exhibit.title, 512, 108);

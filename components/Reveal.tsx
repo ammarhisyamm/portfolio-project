@@ -7,10 +7,11 @@ import { reducedMotion } from "@/lib/utils";
 type RevealProps = {
   children: React.ReactNode;
   className?: string;
+  id?: string;
   y?: number;
 };
 
-export default function Reveal({ children, className, y = 16 }: RevealProps) {
+export default function Reveal({ children, className, id, y = 16 }: RevealProps) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -32,7 +33,7 @@ export default function Reveal({ children, className, y = 16 }: RevealProps) {
   }, [y]);
 
   return (
-    <div ref={ref} className={className}>
+    <div ref={ref} className={className} id={id}>
       {children}
     </div>
   );
