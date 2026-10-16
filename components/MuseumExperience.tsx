@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type PointerEvent } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, BookOpen, ChevronLeft, ChevronRight, Camera, Footprints, Layers, Lightbulb, Mouse, RotateCcw, Sparkles, Wrench, X } from "lucide-react";
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, BookOpen, ChevronLeft, ChevronRight, Camera, Download, Footprints, Layers, Lightbulb, Mouse, Plus, RotateCcw, Sparkles, Wrench, X } from "lucide-react";
 import type { CaseStudy, SiteContent } from "@/lib/content";
 import type { BlogSummary } from "@/lib/blog";
 import { museumContent } from "@/lib/museum/content";
@@ -12,6 +12,10 @@ import { caseStudyCover } from "@/lib/case-study-visuals";
 import CaseStudyOverlay from "./CaseStudyOverlay";
 import ContactForm from "./ContactForm";
 import { ProcessIcon } from "./ProcessIcon";
+import Socials from "./Socials";
+import { industryMeta } from "@/lib/industry-meta";
+import { capabilityMeta } from "@/lib/capability-meta";
+import { toolLogoFor } from "@/lib/tool-logos";
 
 const VIEW_KEY = "hisyam.portfolio.view.v1";
 const FOUND_KEY = "hisyam.museum.secrets.v1";
@@ -199,16 +203,18 @@ export default function MuseumExperience({ content, posts = [] }: { content: Sit
         {showcase && <ShowcaseWall items={showcase} shot={shot} setShot={setShot} />}
         {selected.image && !showcase && !selected.album && !selected.post && <div className="museum-dialog-image"><img src={selected.image} alt={`${selected.title} exhibit`} /></div>}
         {!(selected.post && reading) && <p className="museum-dialog-description">{selected.description}</p>}
-        {selected.chips && selected.chips.length > 0 && <div className="museum-dialog-skills">{selected.chips.map(item => <span key={item}><ProcessIcon label={item} />{item}</span>)}</div>}
-        {selected.tools && selected.tools.length > 0 && <div className="museum-dialog-skills museum-dialog-tools">{selected.tools.map(item => <span key={item}><ProcessIcon label={item} fallback={Wrench} />{item}</span>)}</div>}
+        {selected.chips && selected.chips.length > 0 && <div className="museum-dialog-skills">{selected.chips.map(item => { const CapIcon = selected.capabilityChips ? capabilityMeta[item.toLowerCase()]?.icon ?? Sparkles : undefined; return <span key={item}>{CapIcon ? <CapIcon size={15} strokeWidth={1.8} aria-hidden="true" /> : <ProcessIcon label={item} />}{item}</span>; })}</div>}
+        {selected.tools && selected.tools.length > 0 && <div className="museum-dialog-skills museum-dialog-tools">{selected.tools.map(item => { const logo = toolLogoFor(item); return <span key={item}>{logo ? <img className="museum-tool-logo" src={logo.src} alt="" aria-hidden="true" loading="lazy" /> : <ProcessIcon label={item} fallback={Wrench} />}{item}</span>; })}</div>}
         {selected.steps && <ol className="museum-steps">{selected.steps.map((step, index) => <li key={step.title}><span>{String(index + 1).padStart(2, "0")}</span><div><strong>{step.title}</strong><p>{step.description}</p></div></li>)}</ol>}
-        {selected.timeline && <ol className="museum-timeline">{selected.timeline.map(item => <li key={item.title + item.meta}><strong>{item.title}</strong><small>{item.meta}</small>{item.points[0] && <p>{item.points[0]}</p>}</li>)}</ol>}
+        {selected.timeline && <div className="museum-accordion">{selected.timeline.map((item, index) => <details key={item.title + item.meta} className="museum-accordion-item" open={index === 0}><summary><span><strong>{item.title}</strong><small>{item.meta}</small></span><Plus size={16} aria-hidden="true" /></summary><ul className="museum-process-points">{item.points.map(point => <li key={point}>{point}</li>)}</ul>{item.images && item.images.length > 0 && <div className="museum-experience-photos">{item.images.map(src => <img key={src} src={src} alt="" loading="lazy" decoding="async" />)}</div>}</details>)}</div>}
         {selected.album && selected.album.length > 0 && <ul className="museum-album">{selected.album.map(photo => <li key={photo.image}><img src={photo.image} alt={photo.alt || photo.title} loading="lazy" decoding="async" /><strong>{photo.title}</strong>{photo.note && <small>{photo.note}</small>}</li>)}</ul>}
         {selected.form && <div className="museum-contact-form"><ContactForm email={content.contact.email} /></div>}
         {(selected.post || selected.postIndex) && <ReadingDesk posts={posts} reading={reading} setReading={setReading} index={!!selected.postIndex} />}
         {selected.list && <ul className="museum-process-points">{selected.list.map(point => <li key={point}>{point}</li>)}</ul>}
+        {selected.industries && selected.industries.length > 0 && <><p className="museum-dialog-label">Industries I have designed for</p><div className="museum-industry-grid">{selected.industries.map(item => { const Icon = industryMeta[item.toLowerCase()] ?? Sparkles; return <span key={item}><Icon size={15} strokeWidth={1.8} aria-hidden="true" />{item}</span>; })}</div></>}
+        {selected.socials && selected.socials.length > 0 && <div className="museum-socials"><Socials items={selected.socials} /></div>}
         {selected.images && selected.images.length > 0 && <div className="museum-secret-photos">{selected.images.map(src => <img key={src} src={src} alt="" />)}</div>}
-        {!selected.form && !selected.post && !selected.postIndex && <div className="museum-dialog-actions">{(selected.secret || showcase) && !selected.href ? <button type="button" className="museum-primary-action" onClick={closeDialog}>{showcase ? "Back to the hall" : selected.action}<ArrowRight size={17} aria-hidden="true" /></button> : selected.external && selected.href ? <a className="museum-primary-action" href={selected.href} target="_blank" rel="noreferrer">{selected.action}<ArrowRight size={17} aria-hidden="true" /></a> : selectedStudy ? <button type="button" className="museum-primary-action" onClick={() => inspectStudy(selectedStudy)}>View case study<ArrowRight size={17} aria-hidden="true" /></button> : selected.href ? <Link className="museum-primary-action" href={selected.href}>{selected.action}<ArrowRight size={17} aria-hidden="true" /></Link> : <Link className="museum-primary-action" href="/about-us">More about my work<ArrowRight size={17} aria-hidden="true" /></Link>}</div>}
+        {!selected.form && !selected.post && !selected.postIndex && <div className="museum-dialog-actions">{selected.cv && <a className="museum-secondary-action" href={selected.cv.href} download={selected.cv.file} target="_blank" rel="noreferrer">{selected.cv.label}<Download size={16} aria-hidden="true" /></a>}{(selected.secret || showcase) && !selected.href ? <button type="button" className="museum-primary-action" onClick={closeDialog}>{showcase ? "Back to the hall" : selected.action}<ArrowRight size={17} aria-hidden="true" /></button> : selected.external && selected.href ? <a className="museum-primary-action" href={selected.href} target="_blank" rel="noreferrer">{selected.action}<ArrowRight size={17} aria-hidden="true" /></a> : selectedStudy ? <button type="button" className="museum-primary-action" onClick={() => inspectStudy(selectedStudy)}>View case study<ArrowRight size={17} aria-hidden="true" /></button> : selected.href ? <Link className="museum-primary-action" href={selected.href}>{selected.action}<ArrowRight size={17} aria-hidden="true" /></Link> : <Link className="museum-primary-action" href="/about-us">More about my work<ArrowRight size={17} aria-hidden="true" /></Link>}</div>}
       </>}
     </dialog>
     <div ref={studyLayer} className="museum-study-layer"><CaseStudyOverlay cs={study} onClose={() => setStudy(null)} /></div>

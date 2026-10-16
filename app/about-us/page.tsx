@@ -1,79 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import {
-  BarChart3,
-  BookOpen,
-  BriefcaseBusiness,
-  Cloud,
-  Code2,
-  Crosshair,
-  FileSearch,
-  Heart,
-  Landmark,
-  Layers3,
-  MessageCircle,
-  MousePointer2,
-  Palette,
-  PanelsTopLeft,
-  Play,
-  Search,
-  Sparkles,
-  UserRoundCheck,
-  type LucideIcon,
-} from "lucide-react";
+import { Sparkles } from "lucide-react";
+
 import GitHubActivity from "@/components/GitHubActivity";
 import AboutPhotoCarousel from "@/components/AboutPhotoCarousel";
 import { getContent } from "@/lib/content";
+import { industryMeta } from "@/lib/industry-meta";
+import { capabilityMeta } from "@/lib/capability-meta";
+import { toolLogos } from "@/lib/tool-logos";
 
 export const metadata: Metadata = {
   title: "About Us",
   description: "Learn about Hisyam's background, design approach, capabilities, and recent work on GitHub.",
 };
-
-type ItemMeta = { icon: LucideIcon; tone: string };
-
-const capabilityMeta: Record<string, ItemMeta> = {
-  "product strategy": { icon: Crosshair, tone: "sky" },
-  "ux research": { icon: Search, tone: "violet" },
-  "user flows & ia": { icon: FileSearch, tone: "amber" },
-  "user flows and information architecture": { icon: FileSearch, tone: "amber" },
-  wireframing: { icon: PanelsTopLeft, tone: "slate" },
-  prototyping: { icon: Play, tone: "mint" },
-  "interaction design": { icon: MousePointer2, tone: "rose" },
-  "visual design": { icon: Palette, tone: "gold" },
-  "design systems": { icon: Layers3, tone: "blue" },
-  "usability testing": { icon: UserRoundCheck, tone: "lilac" },
-  "design handoff": { icon: Code2, tone: "slate" },
-  "design-to-development handoff": { icon: Code2, tone: "slate" },
-  "competitor analysis": { icon: BarChart3, tone: "mint" },
-};
-
-const industryMeta: Record<string, LucideIcon> = {
-  fintech: Landmark,
-  saas: Cloud,
-  marketplaces: BriefcaseBusiness,
-  education: BookOpen,
-  enterprise: BriefcaseBusiness,
-  communication: MessageCircle,
-  "ai products": Sparkles,
-  lifestyle: Heart,
-};
-
-const toolLogos = [
-  { name: "Figma", src: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/figma.svg" },
-  { name: "Notion", src: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/notion.svg" },
-  { name: "Slack", src: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/slack.svg" },
-  { name: "Adobe", src: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/adobe.svg" },
-  { name: "Photopea", src: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/photopea.svg" },
-  { name: "OpenAI", src: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/openai.svg" },
-  { name: "Miro", src: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/miro.svg" },
-  { name: "GitHub", src: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/github.svg" },
-  { name: "Jira", src: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/jira.svg" },
-  { name: "Jitter", src: "/about-gallery/jitter-logo.png" },
-  { name: "Framer", src: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/framer.svg" },
-  { name: "OpenCode", src: "https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/opencode.svg" },
-  { name: "Whimsical", src: "https://whimsical.com/_next_public/brand/logo-color.svg" },
-];
 
 export default async function AboutUsPage() {
   const { about, socials } = await getContent();

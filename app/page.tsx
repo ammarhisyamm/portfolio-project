@@ -7,7 +7,6 @@ import RestoreScroll from "@/components/RestoreScroll";
 import SelectedWork from "@/components/SelectedWork";
 import HomeEntrance from "@/components/HomeEntrance";
 import MuseumExperience from "@/components/MuseumExperience";
-import ProcessPanel from "@/components/ProcessPanel";
 import BlogPanel from "@/components/BlogPanel";
 import { getBlogSummaries } from "@/lib/blog";
 import { SITE_URL } from "@/lib/site";
@@ -59,8 +58,6 @@ export default async function HomePage() {
         </section>
 
         <ExperienceAccordion items={content.experience} />
-
-        <ProcessPanel process={content.process} capabilities={content.about.capabilities} />
 
         <AboutPanel about={content.about} contact={content.contact} socials={content.socials.items} />
 
