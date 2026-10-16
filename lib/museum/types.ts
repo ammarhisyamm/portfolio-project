@@ -1,3 +1,5 @@
+import type { SocialLink } from "@/lib/content";
+
 export type MuseumRoom = "work" | "process" | "playground" | "about" | "contact" | "blog" | "studio";
 
 /** Interaction id for Nailong, the doorkeeper who offers directions. */
@@ -25,7 +27,13 @@ export type MuseumExhibit = {
   chips?: string[];
   tools?: string[];
   steps?: { title: string; description: string }[];
-  timeline?: { title: string; meta: string; points: string[] }[];
+  /** Work experience, shown as expandable roles like the classic accordion. */
+  timeline?: { title: string; meta: string; points: string[]; images?: string[] }[];
+  /** Industries on the shelf, drawn with the same icons as the classic About page. */
+  industries?: string[];
+  /** About room: CV download and social links, as in the classic About panel. */
+  cv?: { href: string; label: string; file: string };
+  socials?: SocialLink[];
   album?: { image: string; title: string; note: string; alt: string }[];
   /** The contact kiosk opens the message form instead of a description. */
   form?: boolean;

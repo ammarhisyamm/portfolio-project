@@ -2,16 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import {
   BarChart3,
-  BookOpen,
-  BriefcaseBusiness,
-  Cloud,
   Code2,
   Crosshair,
   FileSearch,
-  Heart,
-  Landmark,
   Layers3,
-  MessageCircle,
   MousePointer2,
   Palette,
   PanelsTopLeft,
@@ -24,6 +18,7 @@ import {
 import GitHubActivity from "@/components/GitHubActivity";
 import AboutPhotoCarousel from "@/components/AboutPhotoCarousel";
 import { getContent } from "@/lib/content";
+import { industryMeta } from "@/lib/industry-meta";
 
 export const metadata: Metadata = {
   title: "About Us",
@@ -46,17 +41,6 @@ const capabilityMeta: Record<string, ItemMeta> = {
   "design handoff": { icon: Code2, tone: "slate" },
   "design-to-development handoff": { icon: Code2, tone: "slate" },
   "competitor analysis": { icon: BarChart3, tone: "mint" },
-};
-
-const industryMeta: Record<string, LucideIcon> = {
-  fintech: Landmark,
-  saas: Cloud,
-  marketplaces: BriefcaseBusiness,
-  education: BookOpen,
-  enterprise: BriefcaseBusiness,
-  communication: MessageCircle,
-  "ai products": Sparkles,
-  lifestyle: Heart,
 };
 
 const toolLogos = [
