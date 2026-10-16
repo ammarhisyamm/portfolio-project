@@ -48,14 +48,10 @@ export default function AboutPhotoCarousel({ items }: { items: AboutGalleryItem[
               <img src={photo.image} alt={photo.alt || photo.title} className="h-full w-full object-cover" />
             </span>
             <span className="about-album-face about-album-back" aria-hidden={!flipped}>
-              <span className="about-postcard-frame" aria-hidden="true" />
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/about-gallery/air-mail-stamp.webp" alt="" aria-hidden="true" className="about-postcard-stamp" />
               <span className="about-postcard-copy">
-                <span className="text-[clamp(18px,3vw,28px)] leading-tight tracking-[-0.04em] text-ink">{photo.title || "A moment to keep"}</span>
-                <span className="mt-3 block max-w-[54ch] text-[clamp(12px,1.8vw,15px)] leading-[1.55] text-sub">{photo.note}</span>
+                <span className="about-postcard-title">{photo.title || "A moment to keep"}</span>
+                <span className="about-postcard-note">{photo.note}</span>
               </span>
-              <span className="about-postcard-sender">Hisyam</span>
             </span>
           </span>
         </button>

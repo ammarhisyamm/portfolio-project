@@ -283,13 +283,12 @@ html[data-studio-pending="true"]::after { content: "Preparing the studio…"; po
 .about-album-front img { position: absolute; inset: 8.4% 6.4%; z-index: 1; height: 83.2%; width: 87.2%; border: 1px solid rgba(102,80,42,.28); border-radius: 1px; object-fit: cover; filter: saturate(.86) contrast(.98); }
 .about-album-front::after { content: ""; position: absolute; inset: 10px; z-index: 3; pointer-events: none; border: 1px solid rgba(255,255,255,.34); opacity: 0; transition: opacity 220ms ease; }
 .about-album-card:hover .about-album-front::after, .about-album-card:focus-visible .about-album-front::after { opacity: 1; }
-.about-album-back { transform: rotateY(180deg); padding: 0; border: 0; background: transparent; box-shadow: none; }
+.about-album-back { transform: rotateY(180deg); padding: 0; border: 1px solid #ececec; background: #fff; box-shadow: none; }
 .about-album-back::before { display: none; }
-.about-postcard-frame { position: absolute; inset: 0; z-index: 0; pointer-events: none; background: url('/about-gallery/postcard-frame.webp') center/100% 100% no-repeat; }
-.about-postcard-stamp { position: absolute; top: clamp(24px, 5vw, 54px); right: clamp(24px, 5vw, 54px); z-index: 3; width: clamp(64px, 11vw, 110px); height: auto; transform: rotate(3deg); mix-blend-mode: multiply; }
-.about-postcard-copy { position: absolute; top: 32%; left: 9%; z-index: 3; width: 58%; padding-right: 4%; }
-.about-postcard-copy::before { content: ""; position: absolute; inset: auto 0 -14px; border-bottom: 1px solid rgba(85,65,39,.2); box-shadow: 0 12px 0 rgba(85,65,39,.13), 0 24px 0 rgba(85,65,39,.11); }
-.about-postcard-sender { position: absolute; bottom: 12%; left: 9%; z-index: 3; color: #594733; font-family: Georgia, serif; font-size: clamp(18px, 3vw, 30px); font-style: italic; transform: rotate(-3deg); }
+.about-postcard-copy { position: absolute; inset: 0; z-index: 3; display: flex; flex-direction: column; justify-content: center; gap: 12px; padding: clamp(16px, 5%, 44px); overflow: hidden; }
+.about-postcard-title, .about-postcard-note { display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; }
+.about-postcard-title { -webkit-line-clamp: 3; color: #161616; font-size: clamp(18px, 3vw, 28px); line-height: 1.2; letter-spacing: -0.04em; }
+.about-postcard-note { -webkit-line-clamp: 4; color: #5f5f5f; font-size: clamp(12px, 1.8vw, 15px); line-height: 1.55; }
 .about-skill-chip, .about-industry-chip, .about-tool-logo { position: relative; isolation: isolate; overflow: hidden; }
 .about-skill-chip::after, .about-industry-chip::after, .about-tool-logo::after { content: ""; position: absolute; inset: -40% auto -40% -55%; z-index: 1; width: 34%; pointer-events: none; opacity: .38; transform: skewX(-22deg); background: linear-gradient(90deg, transparent, rgba(255,255,255,.8), transparent); transition: transform 430ms cubic-bezier(.2,.7,.2,1); }
 .about-skill-chip:hover::after, .about-industry-chip:hover::after, .about-tool-logo:hover::after { transform: translateX(520%) skewX(-22deg); }
