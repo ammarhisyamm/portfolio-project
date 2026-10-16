@@ -121,6 +121,15 @@ export type MenuContent = {
   workLabel: string;
 };
 
+export type ProcessStep = { title: string; description: string };
+
+export type ProcessContent = {
+  intro: string;
+  skills: string[];
+  tools: string[];
+  steps: ProcessStep[];
+};
+
 export type TrustItem = {
   label: string;
   image: string;
@@ -172,6 +181,7 @@ export type SiteContent = {
   footer: FooterContent;
   branding: BrandingContent;
   menu: MenuContent;
+  process: ProcessContent;
 };
 
 const DEFAULT_HOME_CATEGORIES: HomeCategory[] = [
@@ -674,7 +684,41 @@ export const DEFAULTS: SiteContent = {
   menu: {
     workLabel: "Playground",
   },
+  process: {
+    intro: "How I work: what I bring to a team, the skills and tools behind it, and the steps that take a product from question to handoff.",
+    skills: [
+      "User interviews",
+      "Journey mapping",
+      "Information architecture",
+      "Responsive design",
+      "Accessibility",
+      "Design tokens",
+      "Stakeholder alignment",
+    ],
+    tools: ["Figma", "FigJam", "Adobe tools", "Photopea", "Notion", "AI-assisted design and research tools"],
+    steps: [
+      { title: "Understand", description: "Clarify the business context, users, and constraints before anything is drawn. Research, stakeholder interviews, and framing the problem space." },
+      { title: "Structure", description: "Map user flows and information architecture. Wireframes turn the messy middle into a usable model the whole team can react to." },
+      { title: "Refine", description: "Build the visual system, interaction details, and responsive behavior. Prototypes let teams feel the product before it ships." },
+      { title: "Hand off", description: "Design-to-development handoff with documented patterns, specs, and checkpoints so engineering can move with confidence." },
+    ],
+  },
 };
+
+function withProcess(value: unknown): ProcessContent {
+  const v = (value ?? {}) as Partial<ProcessContent>;
+  const list = (items: unknown, fallback: string[]) => {
+    const clean = Array.isArray(items) ? items.filter((item): item is string => typeof item === "string" && item.trim() !== "") : [];
+    return clean.length ? clean : fallback;
+  };
+  const steps = Array.isArray(v.steps) ? v.steps.filter((step) => step && typeof step.title === "string" && step.title.trim()) : [];
+  return {
+    intro: typeof v.intro === "string" && v.intro.trim() ? v.intro : DEFAULTS.process.intro,
+    skills: list(v.skills, DEFAULTS.process.skills),
+    tools: list(v.tools, DEFAULTS.process.tools),
+    steps: steps.length ? steps.map((step) => ({ title: step.title, description: step.description ?? "" })) : DEFAULTS.process.steps,
+  };
+}
 
 const caseStudyBlock = (
   block_type: string,
@@ -904,6 +948,7 @@ export const getContent = cache(async (): Promise<SiteContent> => {
       footer: { ...DEFAULTS.footer, ...(site.footer ?? {}) },
       branding: { ...DEFAULTS.branding, ...(site.branding ?? {}) },
       menu: { ...DEFAULTS.menu, ...(site.menu ?? {}) },
+      process: withProcess(site.process),
     };
   } catch {
     return { ...DEFAULTS, caseStudies: enrichPortfolioCaseStudies(DEFAULTS.caseStudies) };

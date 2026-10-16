@@ -12,6 +12,7 @@ import { createStudioCat } from "./cat";
 import { meow, rawr } from "./sounds";
 import { createNailong } from "./nailong";
 import { createStudioWing, inStudio, inStudioDoor } from "./studio";
+import { createLibraryWing, inLibrary, inLibraryDoor } from "./library";
 import { canvasTexture, loadImage, wrapText } from "./materials";
 import { museumPath, type Waypoint } from "./navigation";
 import { MUSEUM_GUIDE, type MuseumController, type MuseumData, type MuseumRoom } from "./types";
@@ -30,14 +31,14 @@ type Config = {
 };
 
 const destinations: Record<MuseumRoom, [number, number, number]> = {
-  work: [-4.4, -3.4, -Math.PI / 2], playground: [4.4, -3.4, Math.PI / 2], about: [-4.4, -22.6, -Math.PI / 2], process: [4.4, -22.6, Math.PI / 2], contact: [0, -23, 0], studio: [-17.2, -15, -Math.PI / 2],
+  work: [-4.4, -3.4, -Math.PI / 2], playground: [4.4, -3.4, Math.PI / 2], about: [-4.4, -22.6, -Math.PI / 2], process: [4.4, -22.6, Math.PI / 2], contact: [0, -23, 0], blog: [-27.2, 3.3, -Math.PI / 2], studio: [-17.2, -15, -Math.PI / 2],
 };
 const moveKeys = new Set(["KeyW", "KeyA", "KeyS", "KeyD", "ArrowUp", "ArrowLeft", "ArrowDown", "ArrowRight", "ShiftLeft", "ShiftRight"]);
 
 export async function createMuseumScene(config: Config): Promise<MuseumController> {
   const { mount, signal, reducedMotion: reduce } = config;
   const [marbleImage, knitImage] = await Promise.all([
-    loadImage("/museum/emperador-marble.webp"), loadImage("/museum/character-knit-v3.png"),
+    loadImage("/museum/emperador-marble.webp"), loadImage("/museum/character-knit-v3.webp"),
   ]);
   if (signal.aborted) throw new DOMException("Cancelled", "AbortError");
   const mobile = window.matchMedia("(pointer: coarse)").matches || mount.clientWidth < 700;
@@ -65,6 +66,7 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
   const environment = createMuseumEnvironment(scene, marbleMap, mobile);
   const gallery = createMuseumExhibits(scene, config.data.exhibits, environment.marble, signal);
   const studio = createStudioWing(scene, config.data.exhibits, environment.brass, mobile, signal);
+  const library = createLibraryWing(scene, config.data.exhibits, environment.marble, environment.brass, mobile, signal);
   const knitMap = knitImage ? new THREE.Texture(knitImage) : undefined;
   if (knitMap) knitMap.needsUpdate = true;
   const avatar = createMuseumAvatar(knitMap); scene.add(avatar.root);
@@ -94,10 +96,10 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
   // Visitors arrive just inside the doors, facing Nailong; the camera then
   // turns to the hall. With reduced motion they start facing the hall.
   avatar.root.position.set(0, 0, 6.4); avatar.root.rotation.y = reduce ? Math.PI : 0;
-  const obstacles = [...environment.obstacles, ...gallery.obstacles, ...studio.obstacles];
+  const obstacles = [...environment.obstacles, ...gallery.obstacles, ...studio.obstacles, ...library.obstacles];
   const cat = createStudioCat(scene, (x, z) => !inStudio(x, z) || obstacles.some(o => Math.abs(x - o.x) < o.halfX + .15 && Math.abs(z - o.z) < o.halfZ + .15));
   cat.root.scale.setScalar(.85);
-  const targets = [...gallery.targets, ...studio.targets];
+  const targets = [...gallery.targets, ...studio.targets, ...library.targets];
   // Nailong keeps the doors, greets visitors and offers directions.
   const guide = createNailong(); guide.root.scale.setScalar(1.15); guide.root.position.set(1.9, 0, 10.4); guide.root.rotation.y = Math.PI; scene.add(guide.root);
   const guideHit = new THREE.Mesh(new THREE.SphereGeometry(.8, 8, 6), new THREE.MeshBasicMaterial({ visible: false }));
@@ -149,13 +151,14 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
 
   function collision(x: number, z: number) {
     const hall = x >= -11.2 && x <= 11.2 && z >= -29 && z <= 11.2;
-    return (!hall && !inStudio(x, z) && !inStudioDoor(x, z)) || obstacles.some(obstacle => Math.abs(x - obstacle.x) < obstacle.halfX + .3 && Math.abs(z - obstacle.z) < obstacle.halfZ + .3);
+    return (!hall && !inStudio(x, z) && !inStudioDoor(x, z) && !inLibrary(x, z) && !inLibraryDoor(x, z)) || obstacles.some(obstacle => Math.abs(x - obstacle.x) < obstacle.halfX + .3 && Math.abs(z - obstacle.z) < obstacle.halfZ + .3);
   }
   function setRoom(next: MuseumRoom) { if (room !== next) { room = next; config.onRoom(next); } }
   function setFocus(id: string | null) {
     if (id === focus) return;
     focus = id; config.onFocus(id);
     gallery.displays.forEach(display => { display.frame.emissiveIntensity = display.exhibit.id === id ? .2 : 0; });
+    library.setFocus(id);
   }
   function cast(event: PointerEvent) {
     const rect = canvas.getBoundingClientRect();
@@ -266,7 +269,7 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
       if (!collision(avatar.root.position.x, nz)) avatar.root.position.z = nz;
       actualSpeed = Math.hypot(velocity.x, velocity.z);
       const { x, z } = avatar.root.position;
-      setRoom(x < -12.5 ? "studio" : z < -20.5 && Math.abs(x) < 3 ? "contact" : z < -11 ? x < 0 ? "about" : "process" : x > 0 && z < 5 ? "playground" : "work");
+      setRoom(x < -12.5 ? z > -4.5 ? "blog" : "studio" : z < -20.5 && Math.abs(x) < 3 ? "contact" : z < -11 ? x < 0 ? "about" : "process" : x > 0 && z < 5 ? "playground" : "work");
     }
     if (actualSpeed > .08) {
       const angle = Math.atan2(velocity.x, velocity.z);
@@ -275,6 +278,7 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
     avatar.update(elapsed, actualSpeed, reduce, !!focus);
     environment.update(delta, reduce);
     studio.update(delta, elapsed, avatar.root.position, focus, reduce);
+    library.update(delta, reduce);
     cat.update(elapsed, avatar.root.position, reduce);
     const toGuide = Math.hypot(avatar.root.position.x - guide.root.position.x, avatar.root.position.z - guide.root.position.z), near = toGuide < 4.6;
     if (near && !wasNear) { greetUntil = elapsed + 2.6; asked = false; }
@@ -294,7 +298,11 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
     const side = firstPerson ? 0 : mobile ? .7 : 1.25;
     targetCamera.set(pos.x - Math.sin(yaw) * (firstPerson ? 0 : distance) + Math.cos(yaw) * side, firstPerson ? 1.95 : 2.85 + pitch * distance, pos.z + Math.cos(yaw) * (firstPerson ? 0 : distance) + Math.sin(yaw) * side);
     // Keep the camera inside whichever room the visitor stands in.
-    if (pos.x < -14.6) {
+    if (pos.x < -14.6 && pos.z > -4) {
+      targetCamera.x = THREE.MathUtils.clamp(targetCamera.x, -29.7, -14.9); targetCamera.z = THREE.MathUtils.clamp(targetCamera.z, -3.2, 9.4); targetCamera.y = Math.min(targetCamera.y, 5.9);
+    } else if (pos.x < -11.2 && pos.z > -4) {
+      targetCamera.x = THREE.MathUtils.clamp(targetCamera.x, -29.7, 12.9); targetCamera.z = THREE.MathUtils.clamp(targetCamera.z, 1.2, 3.8); targetCamera.y = Math.min(targetCamera.y, 5.2);
+    } else if (pos.x < -14.6) {
       targetCamera.x = THREE.MathUtils.clamp(targetCamera.x, -29.7, -14.9); targetCamera.z = THREE.MathUtils.clamp(targetCamera.z, -25.4, -4.6); targetCamera.y = Math.min(targetCamera.y, 5.9);
     } else if (pos.x < -11.2) {
       targetCamera.x = THREE.MathUtils.clamp(targetCamera.x, -29.7, 12.9); targetCamera.z = THREE.MathUtils.clamp(targetCamera.z, -16.3, -13.7); targetCamera.y = Math.min(targetCamera.y, 5.2);
@@ -304,6 +312,7 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
     camera.position.lerp(targetCamera, cameraAlpha); currentGaze.lerp(gaze, cameraAlpha); camera.lookAt(currentGaze);
     let closest: string | null = null, closestDistance = 4.9;
     for (const display of gallery.displays) { const d = Math.hypot(display.position.x - pos.x, display.position.z - pos.z); if (d < closestDistance) { closestDistance = d; closest = display.exhibit.id; } }
+    for (const display of library.displays) { const d = Math.hypot(display.position.x - pos.x, display.position.z - pos.z); if (d < display.reach && d < closestDistance) { closestDistance = d; closest = display.id; } }
     // Hidden finds only answer when the visitor is right next to them.
     let secretDistance = 1.9;
     for (const secret of studio.secrets) { const d = Math.hypot(secret.position.x - pos.x, secret.position.z - pos.z); if (d < secretDistance) { secretDistance = d; closest = secret.id; } }
@@ -335,12 +344,12 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
         list.forEach(material => { materials.add(material); for (const value of Object.values(material)) if (value instanceof THREE.Texture) textures.add(value); });
       }
     });
-    bubbles.forEach(texture => texture.dispose()); environment.dispose(); studio.dispose(); skeletons.forEach(skeleton => skeleton.dispose()); geometries.forEach(geometry => geometry.dispose()); materials.forEach(material => material.dispose()); textures.forEach(texture => texture.dispose());
+    bubbles.forEach(texture => texture.dispose()); environment.dispose(); studio.dispose(); library.dispose(); skeletons.forEach(skeleton => skeleton.dispose()); geometries.forEach(geometry => geometry.dispose()); materials.forEach(material => material.dispose()); textures.forEach(texture => texture.dispose());
     renderPass?.dispose(); bloom?.dispose(); grade?.dispose(); output?.dispose(); composer?.dispose();
     environmentTarget.dispose(); renderer.dispose(); canvas.remove(); signal.removeEventListener("abort", dispose);
   }
   signal.addEventListener("abort", dispose, { once: true });
-  Promise.allSettled(gallery.loading).then(() => { if (!disposed) config.onReady(); });
+  Promise.allSettled([...gallery.loading, ...library.loading]).then(() => { if (!disposed) config.onReady(); });
   return {
     visit(next) {
       if (paused) return;
@@ -353,7 +362,7 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
     select(id) { if (!paused) interact(id); },
     move(x, y) { joystick.set(x, y); destination = null; },
     running(value) { sprint = value; },
-    setLights(enabled) { environment.setLights(enabled); studio.setLights(enabled); },
+    setLights(enabled) { environment.setLights(enabled); studio.setLights(enabled); library.setLights(enabled); },
     setPaused(value) { paused = value; releaseKeys(); hovered = null; },
     setPerspective(value) { firstPerson = value; },
     dispose,

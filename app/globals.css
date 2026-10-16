@@ -278,14 +278,14 @@ html[data-studio-pending="true"]::after { content: "Preparing the studio…"; po
 .about-album-card-inner.is-flipped { transform: rotateY(180deg); }
 .about-album-face { position: absolute; inset: 0; display: flex; flex-direction: column; overflow: hidden; border: 1px solid #dfcfad; background: #f8f0df; box-shadow: 0 14px 36px rgba(40,35,28,.12), 0 2px 5px rgba(40,35,28,.06); backface-visibility: hidden; -webkit-backface-visibility: hidden; isolation: isolate; }
 .about-album-face::before { content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none; background: radial-gradient(circle at 8px 0, rgba(103,79,43,.34) 0 3px, transparent 3.5px) 0 0/16px 12px repeat-x, radial-gradient(circle at 8px 100%, rgba(103,79,43,.34) 0 3px, transparent 3.5px) 0 100%/16px 12px repeat-x, radial-gradient(circle at 0 8px, rgba(103,79,43,.34) 0 3px, transparent 3.5px) 0 0/12px 16px repeat-y, radial-gradient(circle at 100% 8px, rgba(103,79,43,.34) 0 3px, transparent 3.5px) 100% 0/12px 16px repeat-y; opacity: .7; }
-.about-album-front { padding: 0; border: 0; background: transparent url('/about-gallery/postcard-frame.png') center/100% 100% no-repeat; box-shadow: none; }
+.about-album-front { padding: 0; border: 0; background: transparent url('/about-gallery/postcard-frame.webp') center/100% 100% no-repeat; box-shadow: none; }
 .about-album-front::before { display: none; }
 .about-album-front img { position: absolute; inset: 8.4% 6.4%; z-index: 1; height: 83.2%; width: 87.2%; border: 1px solid rgba(102,80,42,.28); border-radius: 1px; object-fit: cover; filter: saturate(.86) contrast(.98); }
 .about-album-front::after { content: ""; position: absolute; inset: 10px; z-index: 3; pointer-events: none; border: 1px solid rgba(255,255,255,.34); opacity: 0; transition: opacity 220ms ease; }
 .about-album-card:hover .about-album-front::after, .about-album-card:focus-visible .about-album-front::after { opacity: 1; }
 .about-album-back { transform: rotateY(180deg); padding: 0; border: 0; background: transparent; box-shadow: none; }
 .about-album-back::before { display: none; }
-.about-postcard-frame { position: absolute; inset: 0; z-index: 0; pointer-events: none; background: url('/about-gallery/postcard-frame.png') center/100% 100% no-repeat; }
+.about-postcard-frame { position: absolute; inset: 0; z-index: 0; pointer-events: none; background: url('/about-gallery/postcard-frame.webp') center/100% 100% no-repeat; }
 .about-postcard-stamp { position: absolute; top: clamp(24px, 5vw, 54px); right: clamp(24px, 5vw, 54px); z-index: 3; width: clamp(64px, 11vw, 110px); height: auto; transform: rotate(3deg); mix-blend-mode: multiply; }
 .about-postcard-copy { position: absolute; top: 32%; left: 9%; z-index: 3; width: 58%; padding-right: 4%; }
 .about-postcard-copy::before { content: ""; position: absolute; inset: auto 0 -14px; border-bottom: 1px solid rgba(85,65,39,.2); box-shadow: 0 12px 0 rgba(85,65,39,.13), 0 24px 0 rgba(85,65,39,.11); }
@@ -342,7 +342,7 @@ html[data-studio-pending="true"]::after { content: "Preparing the studio…"; po
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background: linear-gradient(180deg, rgba(12, 11, 10, .2), transparent 28%, rgba(12, 11, 10, .25)), url('/images/museum-room.png') center 52% / cover no-repeat;
+  background: linear-gradient(180deg, rgba(12, 11, 10, .2), transparent 28%, rgba(12, 11, 10, .25)), url('/images/museum-room.webp') center 52% / cover no-repeat;
   transition: filter 500ms var(--museum-ease);
 }
 .museum-gallery[data-lights="off"] .museum-gallery-wall { filter: brightness(.28) saturate(.72); }
@@ -424,7 +424,7 @@ html[data-studio-pending="true"]::after { content: "Preparing the studio…"; po
   width: min(calc(min(42dvh, 430px) * var(--art-ratio)), calc(100vw - 260px), 860px);
   aspect-ratio: var(--art-ratio);
   border: clamp(33px, 5.4vw, 76px) solid transparent;
-  border-image: url('/images/museum-ornate-frame.png') 183 190 197 190 / 1 / 0 stretch;
+  border-image: url('/images/museum-ornate-frame.webp') 183 190 197 190 / 1 / 0 stretch;
   transform: translate3d(0, clamp(-126px, -10vh, -44px), 0);
   filter: drop-shadow(0 17px 14px rgba(0, 0, 0, .55)) drop-shadow(0 4px 3px rgba(0, 0, 0, .35));
   transition: filter 250ms var(--museum-ease);
@@ -860,3 +860,30 @@ html.lenis body {
     transform: none;
   }
 }
+
+/* Process chips (classic view) */
+.process-chip { border: 1px solid #ececec; border-radius: 999px; padding: 6px 12px; font-size: 13px; line-height: 1.3; color: #161616; background: #fafafa; }
+.process-chip-tool { background: #fff; border-style: dashed; color: #5f5f5f; }
+
+/* Blog */
+.blog-lead img { transition: transform .5s cubic-bezier(.23, 1, .32, 1); }
+.blog-lead:hover img { transform: scale(1.02); }
+.blog-prose { --prose-ink: #161616; --prose-sub: #3d3d3d; --prose-line: #ececec; --prose-link: #161616; max-width: 680px; color: var(--prose-sub); font-size: 16px; line-height: 1.75; overflow-wrap: anywhere; }
+.blog-prose > * + * { margin-top: 1.1em; }
+.blog-prose h1, .blog-prose h2, .blog-prose h3, .blog-prose h4 { color: var(--prose-ink); font-weight: 500; letter-spacing: -0.03em; line-height: 1.25; margin-top: 1.8em; }
+.blog-prose h2 { font-size: 1.45em; }
+.blog-prose h3 { font-size: 1.2em; }
+.blog-prose a { color: var(--prose-link); text-decoration: underline; text-underline-offset: 3px; }
+.blog-prose strong { color: var(--prose-ink); font-weight: 600; }
+.blog-prose ul, .blog-prose ol { padding-left: 1.3em; }
+.blog-prose ul { list-style: disc; }
+.blog-prose ol { list-style: decimal; }
+.blog-prose li + li { margin-top: .4em; }
+.blog-prose blockquote { border-left: 2px solid var(--prose-line); padding-left: 1em; font-style: italic; }
+.blog-prose img, .blog-prose video { max-width: 100%; height: auto; border-radius: 10px; }
+.blog-prose figure { margin: 1.6em 0; }
+.blog-prose figcaption { margin-top: .5em; font-size: 13px; color: #6f6f6f; text-align: center; }
+.blog-prose hr { border: 0; border-top: 1px solid var(--prose-line); margin: 2em 0; }
+.blog-prose pre { overflow-x: auto; padding: 14px; border-radius: 10px; background: #f6f6f6; font-size: 14px; }
+.blog-prose .subscription-widget-wrap, .blog-prose .subscription-widget-wrap-editor, .blog-prose .button-wrapper, .blog-prose .captioned-button-wrap, .blog-prose .image-link-expand { display: none; }
+.blog-prose .image-link { display: block; }

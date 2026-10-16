@@ -4,9 +4,9 @@
  * not recreated product screens, and can be replaced per-project in the CMS.
  */
 const FALLBACK_COVERS: Record<string, string> = {
-  nomory: "/case-studies/nomory-cover.png",
-  quriz: "/case-studies/quriz-cover.png",
-  jeam: "/case-studies/jeam-cover.png",
+  nomory: "/case-studies/nomory-cover.webp",
+  quriz: "/case-studies/quriz-cover.webp",
+  jeam: "/case-studies/jeam-cover.webp",
 };
 
 export function caseStudyCover(slug: string) {

@@ -132,6 +132,7 @@ html[data-museum-view="true"] [data-portfolio-shell] { visibility: hidden; }
 .museum-classic-entry>p { flex-basis:100%; font-size:12px; line-height:1.6; margin-top:12px; opacity:.7; }
 @keyframes museum-copy-in { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
 @keyframes museum-load { from { transform:translateX(-70px); } to { transform:translateX(150px); } }
+@media (max-width:960px) and (min-width:761px) { .museum-world-nav { padding:5px 6px; } .museum-world-nav button { padding:0 8px; font-size:11px; } }
 @media (max-width:1100px) { .museum-world-available { display:none; } .museum-room-copy { left:85px; width:190px; } .museum-room-copy h1 { font-size:40px; } .museum-world-nav button { padding:0 12px; } }
 @media (max-width:760px) {
   .museum-world-header { top:15px; left:17px; right:17px; gap:8px; flex-wrap:wrap; }
@@ -166,3 +167,49 @@ html[data-museum-view="true"] [data-portfolio-shell] { visibility: hidden; }
 @media (pointer:coarse) and (min-width:761px) { .museum-mobile-controls { display:block; } .museum-game-guide { display:none; } .museum-joystick { position:absolute; bottom:30px; left:28px; width:100px; height:100px; border:1px solid #c9a66b60; border-radius:50%; background:#17110baf; touch-action:none; } .museum-joystick-thumb { position:absolute; left:32px; top:32px; width:36px; height:36px; border-radius:50%; background:#ddbb8133; } .museum-joystick svg { display:none; } .museum-mobile-run { position:absolute; bottom:45px; left:155px; border:1px solid #c9a66b60; border-radius:50%; width:65px; height:65px; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#17110baf; touch-action:none; font-size:10px; } .museum-mobile-look { display:none; } }
 @media (max-height:570px) and (min-width:761px) { .museum-room-copy { top:100px; } .museum-room-copy h1 { font-size:34px; } .museum-room-rail { display:none; } .museum-room-copy { left:35px; } .museum-game-guide { bottom:17px; padding:9px 12px; } }
 @media (prefers-reduced-motion:reduce) { .museum-room-copy,.museum-exhibit-dialog[open] { animation:none; } .museum-loading-line::after { animation:none; width:100%; } .museum-world button { transition:none; } }
+
+/* Reading Room, process and about exhibits */
+.museum-map-blog { top:128px; left:31px; }
+.museum-dialog-tools { margin-top:10px; }
+.museum-dialog-tools span { border-style:dashed; color:#e3cfac; }
+.museum-steps, .museum-timeline { list-style:none; margin:20px 0 0; padding:0; border-top:1px solid #b69b712e; }
+.museum-steps li { display:grid; grid-template-columns:34px 1fr; gap:12px; padding:14px 0; border-bottom:1px solid #b69b712e; }
+.museum-steps li>span { font:13px Georgia,serif; color:#c9a46a; padding-top:2px; }
+.museum-steps strong, .museum-timeline strong { display:block; font:19px/1.2 Georgia,serif; font-weight:400; color:#f5e8d4; }
+.museum-steps p, .museum-timeline p { margin:6px 0 0; }
+.museum-timeline li { padding:14px 0; border-bottom:1px solid #b69b712e; }
+.museum-timeline small { display:block; margin-top:5px; font-size:10px; letter-spacing:.02em; color:#c0aa88; }
+.museum-album { list-style:none; display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:14px; margin:20px 0 0; padding:0; }
+.museum-album img { width:100%; aspect-ratio:4/5; object-fit:cover; border:1px solid #b9a17a36; border-radius:4px; background:#17120d; }
+.museum-album strong { display:block; margin-top:8px; font:16px/1.25 Georgia,serif; font-weight:400; color:#f5e8d4; }
+.museum-album small { display:block; margin-top:4px; font-size:10px; line-height:1.6; color:#c8b597; }
+
+.museum-contact-form { margin-top:18px; padding:20px; border:1px solid #8fb3ad40; border-radius:12px; background:linear-gradient(#1f2a2c,#141a1b); box-shadow:inset 0 0 40px #8fb3ad12; }
+.museum-contact-form label { color:#a9c3bd !important; }
+.museum-contact-form .field { background:#ffffff0d; border-color:#bedcd640; color:#f2e6cf; }
+.museum-contact-form .field::placeholder { color:#cfe3de66; }
+.museum-contact-form .field:focus { border-color:#e8c48a; box-shadow:0 0 0 3px #e8c48a26; }
+.museum-contact-form .field-select option { color:#161616; }
+.museum-contact-form .btn-primary { background:#e8c48a; color:#1c1611; border-color:#e8c48a; text-shadow:none; box-shadow:0 0 0 1px #e8c48a, 0 6px 18px #e8c48a33; }
+.museum-contact-form a, .museum-contact-form .text-sub { color:#cfe3de; }
+.museum-contact-form .text-accent-ink { color:#bfe3c9; }
+
+.museum-exhibit-dialog.museum-reading-dialog { width:min(820px,calc(100% - 32px)); }
+.museum-post-list { list-style:none; display:flex; flex-direction:column; gap:10px; margin:22px 0 0; padding:0; }
+.museum-post-list button { display:flex; align-items:center; gap:16px; width:100%; padding:10px; border:1px solid #b69b712e; background:#17110b5c; border-radius:6px; text-align:left; }
+.museum-post-list button:hover, .museum-post-list button:focus-visible { background:#b69b7117; }
+.museum-post-list img { width:96px; height:64px; object-fit:cover; border-radius:3px; flex-shrink:0; }
+.museum-post-list button>span { flex:1; min-width:0; }
+.museum-post-list strong { display:block; font:19px/1.2 Georgia,serif; font-weight:400; color:#f5e8d4; }
+.museum-post-list small { display:block; margin-top:6px; font-size:10px; color:#c0aa88; }
+.museum-post-empty { font-size:12px; color:#c0aa88; }
+.museum-article { margin-top:6px; }
+.museum-article h3 { font:clamp(22px,3vw,28px)/1.2 Georgia,serif; color:#f5e8d4; margin:6px 0 16px; }
+.museum-article-back { display:inline-flex; align-items:center; gap:8px; font-size:12px; color:#e3cfac; margin-bottom:14px; }
+.museum-article-meta, .museum-article-status { font-size:11px !important; color:#c0aa88 !important; }
+.museum-article-body { margin-top:10px; padding-top:18px; border-top:1px solid #b69b712e; color:#e6d7bf; }
+.museum-article-body.blog-prose { --prose-ink:#f5e8d4; --prose-sub:#e0cfb4; --prose-line:#b69b7140; --prose-link:#ffdfaf; }
+.museum-exhibit-dialog .museum-article-body h2, .museum-exhibit-dialog .museum-article-body h3, .museum-exhibit-dialog .museum-article-body h4 { font:400 21px/1.3 Georgia,serif; letter-spacing:-.01em; margin:1.6em 0 .2em; color:var(--prose-ink); }
+.museum-exhibit-dialog .museum-article-body h3, .museum-exhibit-dialog .museum-article-body h4 { font-size:18px; }
+.museum-exhibit-dialog .museum-article-body p, .museum-article-body li, .museum-article-body blockquote { font-size:14px; line-height:1.8; color:var(--prose-sub); }
+.museum-article-body figcaption { color:#c0aa88; }

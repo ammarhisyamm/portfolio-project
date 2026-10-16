@@ -56,8 +56,10 @@ export function createMuseumEnvironment(scene: THREE.Scene, marbleMap: THREE.Tex
   }
 
   // Actual architectural volumes: a central nave, side bays, and arched windows.
-  // The west wall is split around a side door into the studio wing.
-  box(-14, 5.5, .3, 1, 11, 27.4, wall); box(-14, 5.5, -25.3, 1, 11, 17.4, wall); box(-14, 8.3, -15, 1, 5.4, 3.2, wall);
+  // The west wall is split around two side doors: the studio and the Reading Room.
+  // A second door further north opens into the Reading Room.
+  box(-14, 5.5, -6.25, 1, 11, 14.3, wall); box(-14, 5.5, 9.05, 1, 11, 9.9, wall); box(-14, 8.3, 2.5, 1, 5.4, 3.2, wall);
+  box(-14, 5.5, -25.3, 1, 11, 17.4, wall); box(-14, 8.3, -15, 1, 5.4, 3.2, wall);
   box(14, 1.3, -10, 1, 2.6, 48, wall);
   box(0, 5.5, -34, 29, 11, 1, wall);
   box(0, 5.5, 14, 29, 11, .5, wall);
@@ -85,7 +87,7 @@ export function createMuseumEnvironment(scene: THREE.Scene, marbleMap: THREE.Tex
     for (const y of [1.15, 8.05]) box(-13.38, y, z, .034, .034, 3.64, brass);
     box(-13.36, 4.6, z - 1.82, .04, 6.9, .012, brass);
   }
-  for (const [x, z, length] of [[-13.65, .3, 27.4], [-13.65, -25.3, 17.4], [13.65, -10, 48]]) {
+  for (const [x, z, length] of [[-13.65, -6.25, 14.3], [-13.65, 9.05, 9.9], [-13.65, -25.3, 17.4], [13.65, -10, 48]]) {
     box(x, .32, z, .32, .64, length);
     box(x, .66, z, .35, .055, length, brass);
   }
@@ -161,6 +163,16 @@ export function createMuseumEnvironment(scene: THREE.Scene, marbleMap: THREE.Tex
     ctx.fillStyle = "#e0c391"; ctx.font = "italic 38px Georgia"; ctx.textAlign = "center"; ctx.fillText("the studio", 192, 62); ctx.fillStyle = "#a8977b"; ctx.font = "19px Arial"; ctx.fillText("curious visitors welcome", 192, 98);
   }), toneMapped: false }));
   doorPlaque.rotation.y = Math.PI / 2; doorPlaque.position.set(-13.25, 3.3, -17.65); architecture.add(doorPlaque);
+  // The Reading Room door: the same reveals and arch, and its own plaque.
+  for (const dz of [-1.72, 1.72]) { box(-13.42, 2.8, 2.5 + dz, .3, 5.6, .26); box(-13.26, 2.8, 2.5 + dz * .93, .03, 5.5, .03, brass); }
+  box(-13.42, 5.66, 2.5, .3, .26, 3.7);
+  const readingArch = doorArch.clone(); readingArch.position.z = 2.5; architecture.add(readingArch);
+  const readingRim = doorRim.clone(); readingRim.position.z = 2.5; architecture.add(readingRim);
+  const readingPlaque = new THREE.Mesh(new THREE.PlaneGeometry(.9, .3), new THREE.MeshBasicMaterial({ map: canvasTexture(384, 128, ctx => {
+    ctx.fillStyle = "#1c1611"; ctx.fillRect(0, 0, 384, 128); ctx.strokeStyle = "#a98450"; ctx.lineWidth = 3; ctx.strokeRect(6, 6, 372, 116);
+    ctx.fillStyle = "#e0c391"; ctx.font = "italic 38px Georgia"; ctx.textAlign = "center"; ctx.fillText("reading room", 192, 62); ctx.fillStyle = "#a8977b"; ctx.font = "19px Arial"; ctx.fillText("articles & notes", 192, 98);
+  }), toneMapped: false }));
+  readingPlaque.rotation.y = Math.PI / 2; readingPlaque.position.set(-13.25, 3.3, -.15); architecture.add(readingPlaque);
 
   // Warm, low-key lighting: golden sun through the arched windows, a dim
   // amber fill, and pools from lamps, sconces, the chandelier and the spots.
@@ -204,7 +216,7 @@ export function createMuseumEnvironment(scene: THREE.Scene, marbleMap: THREE.Tex
     const halo = new THREE.Sprite(glowMaterial.clone()); halo.position.copy(tip.position); halo.scale.setScalar(1.1); scene.add(halo); halos.push(halo);
     flickers.push({ halo, phase: x * 1.7 + z * .9 });
   }
-  for (const z of [-25.5, -18.6, -11.4, -4.5, 2.5, 9.4]) sconce(-13.46, z, -1);
+  for (const z of [-25.5, -18.6, -11.4, -4.5, 9.4]) sconce(-13.46, z, -1);
   for (const z of [-21.6, -10.4, 2]) sconce(13.46, z, 1, 3.7);
   for (const x of [-13.38, 13.38]) box(x, 9.43, -10, .03, .035, 48, cove);
   // The chandelier pours light onto the crossing.
@@ -314,7 +326,7 @@ export function createMuseumEnvironment(scene: THREE.Scene, marbleMap: THREE.Tex
     face.position.set(0, 1.08, .052); g.add(face);
     obstacles.push({ x, z, halfX: .5, halfZ: .5 });
   }
-  totem(-3.4, 4.2, 0, [["01  ←", "Selected Work"], ["03  →", "Showcase"]]);
+  totem(-3.4, 4.2, 0, [["01  ←", "Selected Work"], ["03  →", "Showcase"], ["06  ←", "Reading Room"]]);
   totem(3.4, -11.6, 0, [["04  ←", "About"], ["02  →", "Process"], ["05  ↑", "Contact"]]);
 
   // Merge repeating architectural materials to keep the renderer draw count low.
