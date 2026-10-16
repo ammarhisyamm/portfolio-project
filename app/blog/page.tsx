@@ -6,7 +6,7 @@ import { formatPostDate, getBlogSummaries, DEFAULT_SUBSTACK } from "@/lib/blog";
 
 export const metadata: Metadata = {
   title: "Blog",
-  description: "Notes from Hisyam on product design, UX, design systems and building digital products.",
+  description: "Personal essays from Hisyam on life, growth, and the small things worth noticing.",
   alternates: { canonical: "/blog" },
 };
 
@@ -18,7 +18,7 @@ export default async function BlogPage() {
       <Reveal className="panel grid gap-5 p-5 sm:p-8 lg:p-10">
         <span className="kicker">Blog</span>
         <h1 className="max-w-[820px] text-[clamp(26px,4vw,32px)] font-normal leading-[1.08] tracking-[-0.05em]">
-          Notes on design, products, and the work in between.
+          Notes on life, growth, and the things in between.
         </h1>
         <p className="max-w-[560px] leading-relaxed text-sub">
           Essays and field notes, also published on{" "}
