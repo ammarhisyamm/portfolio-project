@@ -6,8 +6,10 @@ export type NailongGesture = "idle" | "wave" | "cheer" | "reach" | "chest" | "ga
 // Head centre and radii in Nailong's own space (front is +z, feet at y = 0).
 const HEAD = new THREE.Vector3(0, 1.04, .03), RADII = new THREE.Vector3(.43, .43, .39);
 const NECK = new THREE.Vector3(0, .76, .02);
-// One even lemon yellow all over, as in the turnaround, with a soft peach blush.
-const YELLOW = new THREE.Color("#ffda3a"), CHEEK = new THREE.Color("#ffa54d");
+// One even lemon yellow all over, as in the turnaround, with a soft pink blush.
+const YELLOW = new THREE.Color("#ffda3a"), CHEEK = new THREE.Color("#ff9a8b");
+// Her chestnut bob: straight bangs over the brow, sides that fall to the jaw.
+const BANGS = 1.21, BOB = 2.2;
 
 /** Radius of the head along a unit direction: an egg with chubby jowls, a
  * soft muzzle and a slightly narrower crown, like the reference sheets. */
@@ -36,16 +38,62 @@ function irisTexture() {
   // The sphere's front (+z) sits at u = .25, v = .5.
   // A big glossy black pupil inside a thin green ring, then white.
   const iris = ctx.createRadialGradient(128, 128, 4, 128, 128, 64);
-  iris.addColorStop(0, "#050806"); iris.addColorStop(.74, "#0a120b"); iris.addColorStop(.78, "#1d6a2a"); iris.addColorStop(.88, "#3fae46"); iris.addColorStop(.96, "#24722c"); iris.addColorStop(1, "#14401a");
+  iris.addColorStop(0, "#050806"); iris.addColorStop(.5, "#0a120b"); iris.addColorStop(.56, "#1d6a2a"); iris.addColorStop(.8, "#3fae46"); iris.addColorStop(.95, "#24722c"); iris.addColorStop(1, "#14401a");
   ctx.fillStyle = iris; ctx.beginPath(); ctx.arc(128, 128, 64, 0, Math.PI * 2); ctx.fill();
   const texture = new THREE.CanvasTexture(canvas); texture.colorSpace = THREE.SRGBColorSpace; texture.anisotropy = 4;
   return texture;
 }
 
+/** Strands for the bob: u runs around the head (front at .5), v from the crown down. */
+function hairTexture() {
+  const canvas = document.createElement("canvas"); canvas.width = 512; canvas.height = 128;
+  const ctx = canvas.getContext("2d")!;
+  const shade = ctx.createLinearGradient(0, 0, 0, 128); shade.addColorStop(0, "#6a4029"); shade.addColorStop(1, "#4a2a1a");
+  ctx.fillStyle = shade; ctx.fillRect(0, 0, 512, 128);
+  let seed = 7; const random = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  for (let i = 0; i < 170; i++) {
+    const x = random() * 512;
+    ctx.strokeStyle = random() > .5 ? `rgba(150,98,64,${.1 + random() * .14})` : `rgba(38,20,12,${.1 + random() * .14})`;
+    ctx.lineWidth = 1 + random() * 2.2; ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x + (random() - .5) * 6, 128); ctx.stroke();
+  }
+  // A centre parting from the crown to the front of the bangs.
+  ctx.strokeStyle = "rgba(34,17,10,.7)"; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(256, 0); ctx.lineTo(256, 34); ctx.stroke();
+  const texture = new THREE.CanvasTexture(canvas); texture.colorSpace = THREE.SRGBColorSpace; texture.wrapS = THREE.RepeatWrapping; texture.anisotropy = 4;
+  return texture;
+}
+
+/** Where the hair ends, as an angle from the crown: high over the brow in
+ * front (the bangs), down to the jaw at the sides and back (the bob). */
+function hairEdge(theta: number) {
+  const side = THREE.MathUtils.smoothstep(Math.abs(theta), .66, 1.08);
+  const fringe = (1 - side) * .025 * Math.sin(theta * 16);
+  return THREE.MathUtils.lerp(BANGS, BOB, side) + fringe;
+}
+/** A point on the hair shell: the head surface, puffed out a little, with the
+ * bob flaring at its ends. Front is theta = 0. */
+function hairPoint(theta: number, phi: number, into = new THREE.Vector3()) {
+  const d = into.set(Math.sin(phi) * Math.sin(theta), Math.cos(phi), Math.sin(phi) * Math.cos(theta));
+  const side = THREE.MathUtils.smoothstep(Math.abs(theta), .66, 1.08);
+  const ends = THREE.MathUtils.smoothstep(phi / hairEdge(theta), .55, 1);
+  return d.multiplyScalar(headRadius(d) * (1.065 + .055 * Math.max(0, d.y) + .05 * ends * side + .025 * (1 - side)));
+}
+
+/** A heart, the shape of her hair clips, centred and pointing down. */
+function heartGeometry(width: number) {
+  const s = new THREE.Shape();
+  s.moveTo(5, 5); s.bezierCurveTo(5, 5, 4, 0, 0, 0); s.bezierCurveTo(-6, 0, -6, 7, -6, 7);
+  s.bezierCurveTo(-6, 11, -3, 15.4, 5, 19); s.bezierCurveTo(12, 15.4, 16, 11, 16, 7);
+  s.bezierCurveTo(16, 7, 16, 0, 10, 0); s.bezierCurveTo(7, 0, 5, 5, 5, 5);
+  const g = new THREE.ExtrudeGeometry(s, { depth: 4, bevelEnabled: true, bevelThickness: 2, bevelSize: 1.6, bevelSegments: 4, curveSegments: 16 });
+  g.center(); g.rotateZ(Math.PI); g.scale(width / 25, width / 25, width / 25);
+  return g;
+}
+
 /** Nailong: a chubby lemon-yellow dinosaur built from soft, readable
  * primitives (round head, pear body, big cream belly, stubby clawed paws and
  * a thick tail that curls up), with blinking eyelids, the mouth shapes of the
- * expression sheet and gesture poses. */
+ * expression sheet and gesture poses. She wears a chestnut bob with straight
+ * bangs and two pink heart clips, as in the turnaround. */
 export function createNailong() {
   const root = new THREE.Group(); root.name = "Nailong";
   const body = new THREE.Group(); root.add(body);
@@ -130,6 +178,47 @@ export function createNailong() {
   const round = new THREE.Group(); mouth.add(round);
   add(round, ball, mouthDark, [0, 0, -.012], [1, 1, .3]);
   add(round, ball, tongue, [0, -.55, .04], [.62, .4, .25]);
+
+  // The bob: one shell from the crown down to the bangs in front and the jaw
+  // at the sides, with a rounded rim along its ends.
+  const hairMap = hairTexture(); textures.push(hairMap);
+  const hairMat = material(new THREE.MeshPhysicalMaterial({ map: hairMap, roughness: .55, sheen: .5, sheenColor: "#c48a5c", sheenRoughness: .45, side: THREE.DoubleSide }));
+  const rimMat = material(new THREE.MeshPhysicalMaterial({ color: "#4f2d1c", roughness: .58, sheen: .4, sheenColor: "#b07a50" }));
+  const COLS = 120, ROWS = 30, hairPos: number[] = [], hairUv: number[] = [], hairIndex: number[] = [], p = new THREE.Vector3();
+  for (let i = 0; i <= COLS; i++) {
+    const theta = -Math.PI + i / COLS * Math.PI * 2, edge = hairEdge(theta);
+    for (let j = 0; j <= ROWS; j++) { hairPoint(theta, Math.max(.001, edge * j / ROWS), p); hairPos.push(p.x, p.y, p.z); hairUv.push(i / COLS, 1 - j / ROWS); }
+  }
+  for (let i = 0; i < COLS; i++) for (let j = 0; j < ROWS; j++) {
+    const a = i * (ROWS + 1) + j, b = (i + 1) * (ROWS + 1) + j;
+    hairIndex.push(a, a + 1, b, b, a + 1, b + 1);
+  }
+  const hairShell = track(new THREE.BufferGeometry());
+  hairShell.setAttribute("position", new THREE.Float32BufferAttribute(hairPos, 3));
+  hairShell.setAttribute("uv", new THREE.Float32BufferAttribute(hairUv, 2));
+  hairShell.setIndex(hairIndex); hairShell.computeVertexNormals();
+  // Smooth the seam at the back and point the crown straight up.
+  const hn = hairShell.getAttribute("normal") as THREE.BufferAttribute, n0 = new THREE.Vector3(), n1 = new THREE.Vector3();
+  for (let j = 0; j <= ROWS; j++) {
+    const a = j, b = COLS * (ROWS + 1) + j;
+    n0.fromBufferAttribute(hn, a).add(n1.fromBufferAttribute(hn, b)).normalize();
+    hn.setXYZ(a, n0.x, n0.y, n0.z); hn.setXYZ(b, n0.x, n0.y, n0.z);
+  }
+  for (let i = 0; i <= COLS; i++) hn.setXYZ(i * (ROWS + 1), 0, 1, 0);
+  add(head, hairShell, hairMat, [0, 0, 0]);
+  const rim = new THREE.CatmullRomCurve3(Array.from({ length: COLS }, (_, i) => { const theta = -Math.PI + i / COLS * Math.PI * 2; return hairPoint(theta, hairEdge(theta)); }), true);
+  add(head, track(new THREE.TubeGeometry(rim, 240, .024, 8, true)), rimMat, [0, 0, 0]);
+
+  // Two pink heart clips pinned to the bangs.
+  const clipMat = material(new THREE.MeshPhysicalMaterial({ color: "#f68fae", roughness: .32, clearcoat: .8, clearcoatRoughness: .2 }));
+  const heart = track(heartGeometry(.11));
+  for (const s of [-1, 1]) {
+    const theta = s * .56, phi = 1.02, at = hairPoint(theta, phi), out = at.clone().normalize();
+    const clip = add(head, heart, clipMat, [0, 0, 0]);
+    clip.position.copy(at).addScaledVector(out, .012);
+    clip.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), out);
+    clip.rotateZ(-s * .35);
+  }
 
   // Stubby arms ending in round paws with three tiny brown claws.
   const claws = track(new THREE.ConeGeometry(.017, .042, 10)); claws.rotateX(Math.PI);
