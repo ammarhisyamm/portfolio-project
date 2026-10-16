@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type PointerEvent } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, BookOpen, ChevronLeft, ChevronRight, Camera, Footprints, Layers, Lightbulb, Mouse, RotateCcw, Sparkles, X } from "lucide-react";
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, BookOpen, ChevronLeft, ChevronRight, Camera, Footprints, Layers, Lightbulb, Mouse, RotateCcw, Sparkles, Wrench, X } from "lucide-react";
 import type { CaseStudy, SiteContent } from "@/lib/content";
 import type { BlogSummary } from "@/lib/blog";
 import { museumContent } from "@/lib/museum/content";
@@ -11,6 +11,7 @@ import { MUSEUM_GUIDE, MUSEUM_ROOMS, type MuseumController, type MuseumExhibit, 
 import { caseStudyCover } from "@/lib/case-study-visuals";
 import CaseStudyOverlay from "./CaseStudyOverlay";
 import ContactForm from "./ContactForm";
+import { ProcessIcon } from "./ProcessIcon";
 
 const VIEW_KEY = "hisyam.portfolio.view.v1";
 const FOUND_KEY = "hisyam.museum.secrets.v1";
@@ -198,8 +199,8 @@ export default function MuseumExperience({ content, posts = [] }: { content: Sit
         {showcase && <ShowcaseWall items={showcase} shot={shot} setShot={setShot} />}
         {selected.image && !showcase && !selected.album && !selected.post && <div className="museum-dialog-image"><img src={selected.image} alt={`${selected.title} exhibit`} /></div>}
         {!(selected.post && reading) && <p className="museum-dialog-description">{selected.description}</p>}
-        {selected.chips && selected.chips.length > 0 && <div className="museum-dialog-skills">{selected.chips.map(item => <span key={item}>{item}</span>)}</div>}
-        {selected.tools && selected.tools.length > 0 && <div className="museum-dialog-skills museum-dialog-tools">{selected.tools.map(item => <span key={item}>{item}</span>)}</div>}
+        {selected.chips && selected.chips.length > 0 && <div className="museum-dialog-skills">{selected.chips.map(item => <span key={item}><ProcessIcon label={item} />{item}</span>)}</div>}
+        {selected.tools && selected.tools.length > 0 && <div className="museum-dialog-skills museum-dialog-tools">{selected.tools.map(item => <span key={item}><ProcessIcon label={item} fallback={Wrench} />{item}</span>)}</div>}
         {selected.steps && <ol className="museum-steps">{selected.steps.map((step, index) => <li key={step.title}><span>{String(index + 1).padStart(2, "0")}</span><div><strong>{step.title}</strong><p>{step.description}</p></div></li>)}</ol>}
         {selected.timeline && <ol className="museum-timeline">{selected.timeline.map(item => <li key={item.title + item.meta}><strong>{item.title}</strong><small>{item.meta}</small>{item.points[0] && <p>{item.points[0]}</p>}</li>)}</ol>}
         {selected.album && selected.album.length > 0 && <ul className="museum-album">{selected.album.map(photo => <li key={photo.image}><img src={photo.image} alt={photo.alt || photo.title} loading="lazy" decoding="async" /><strong>{photo.title}</strong>{photo.note && <small>{photo.note}</small>}</li>)}</ul>}

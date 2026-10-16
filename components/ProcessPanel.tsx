@@ -1,4 +1,6 @@
 import Reveal from "./Reveal";
+import { ProcessIcon } from "./ProcessIcon";
+import { Compass, Wrench } from "lucide-react";
 import ProcessAccordion from "./ProcessAccordion";
 import type { ProcessContent } from "@/lib/content";
 
@@ -11,16 +13,16 @@ export default function ProcessPanel({ process, capabilities }: { process: Proce
         <section aria-labelledby="process-capabilities">
           <h2 id="process-capabilities" className="text-[11px] uppercase text-muted">Capabilities</h2>
           <ul className="mt-3 flex flex-wrap gap-2">
-            {capabilities.map((item) => <li key={item} className="process-chip">{item}</li>)}
+            {capabilities.map((item) => <li key={item} className="process-chip"><ProcessIcon label={item} fallback={Compass} />{item}</li>)}
           </ul>
         </section>
         <section aria-labelledby="process-skills">
           <h2 id="process-skills" className="text-[11px] uppercase text-muted">Skills &amp; tools</h2>
           <ul className="mt-3 flex flex-wrap gap-2">
-            {process.skills.map((item) => <li key={item} className="process-chip">{item}</li>)}
+            {process.skills.map((item) => <li key={item} className="process-chip"><ProcessIcon label={item} />{item}</li>)}
           </ul>
           <ul className="mt-3 flex flex-wrap gap-2">
-            {process.tools.map((item) => <li key={item} className="process-chip process-chip-tool">{item}</li>)}
+            {process.tools.map((item) => <li key={item} className="process-chip process-chip-tool"><ProcessIcon label={item} fallback={Wrench} />{item}</li>)}
           </ul>
         </section>
       </div>
