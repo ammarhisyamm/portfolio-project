@@ -93,7 +93,16 @@ function dropCoverCopy(html: string, cover: string) {
   if (!key || !image || !src || imageKey(src) !== key) return html;
   const figure = /<figure\b[\s\S]*?<\/figure>/i.exec(html);
   const block = figure && figure.index <= image.index ? figure : image;
-  return html.slice(0, block.index) + html.slice(block.index + block[0].length);
+  let start = block.index;
+  let end = block.index + block[0].length;
+  // Substack wraps the figure in a container div; take that too so no empty gap is left behind.
+  const before = html.slice(0, start).match(/<div class="captioned-image-container">\s*$/i);
+  const after = html.slice(end).match(/^\s*<\/div>/i);
+  if (before && after) {
+    start -= before[0].length;
+    end += after[0].length;
+  }
+  return html.slice(0, start) + html.slice(end);
 }
 
 function readingMinutes(html: string) {
