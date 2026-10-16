@@ -108,7 +108,7 @@ html[data-museum-view="true"] [data-portfolio-shell] { visibility: hidden; }
 .museum-process-points { padding-left:20px; font-size:12px; line-height:1.8; color:#d0c0a9; }
 .museum-process-points li { margin:9px 0; }
 .museum-dialog-skills { display:flex; flex-wrap:wrap; gap:8px; }
-.museum-dialog-skills span { padding:8px 11px; border:1px solid #b3935c38; font-size:10px; border-radius:4px; }
+.museum-dialog-skills span { display:inline-flex; align-items:center; gap:7px; padding:8px 11px; border:1px solid #b3935c38; font-size:10px; border-radius:4px; }
 .museum-interaction-prompt .museum-guide-prompt { border-color:#f2c45c99; background:#2a1d0ae8; box-shadow:0 0 24px #f7c33a26,0 4px 24px #0003; }
 .museum-guide-rooms { display:flex; flex-direction:column; gap:8px; margin-top:22px; }
 .museum-guide-rooms button { display:flex; align-items:center; gap:16px; width:100%; padding:12px 14px; border:1px solid #b69b712e; background:#17110b5c; border-radius:6px; text-align:left; }

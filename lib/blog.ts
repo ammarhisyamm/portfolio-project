@@ -77,6 +77,25 @@ export function sanitizeHtml(html: string) {
     .replace(/\sstyle\s*=\s*("[^"]*"|'[^']*')/gi, "");
 }
 
+/** Substack repeats the cover photo at the top of the body; the page already shows the cover, so drop that first copy. */
+function imageKey(url: string) {
+  try {
+    return decodeURIComponent(url).split("?")[0].split("/").pop() ?? "";
+  } catch {
+    return "";
+  }
+}
+
+function dropCoverCopy(html: string, cover: string) {
+  const key = imageKey(cover);
+  const image = /<img\b[^>]*>/i.exec(html);
+  const src = image?.[0].match(/\ssrc="([^"]+)"/)?.[1];
+  if (!key || !image || !src || imageKey(src) !== key) return html;
+  const figure = /<figure\b[\s\S]*?<\/figure>/i.exec(html);
+  const block = figure && figure.index <= image.index ? figure : image;
+  return html.slice(0, block.index) + html.slice(block.index + block[0].length);
+}
+
 function readingMinutes(html: string) {
   const words = html.replace(/<[^>]+>/g, " ").split(/\s+/).filter(Boolean).length;
   return Math.max(1, Math.round(words / 220));
@@ -138,7 +157,7 @@ export const getBlogPosts = cache(async (): Promise<BlogPost[]> => {
   }
   return Array.from(bySlug.values())
     .filter((post) => post.published)
-    .map((post) => ({ ...post, body: sanitizeHtml(post.body) }))
+    .map((post) => ({ ...post, body: dropCoverCopy(sanitizeHtml(post.body), post.cover) }))
     .sort((a, b) => (b.date || "").localeCompare(a.date || ""));
 });
 
