@@ -17,7 +17,7 @@ export function museumContent(content: SiteContent, posts: BlogSummary[] = []): 
   exhibits.push({ id: "work-collection", room: "work", title: "The collection", subtitle: "Product design", description: `Explore all ${work.length} published projects, from the first question to the final interface.`, image: "", action: "Browse all work" });
   // Gallery 2 east: how the work gets done.
   exhibits.push(
-    { id: "process-capabilities", room: "process", title: "Capabilities", subtitle: "What I bring to a team", description: content.process.intro, image: "", chips: content.about.capabilities.filter(Boolean), action: "See how I work", href: "/about-us" },
+    { id: "process-capabilities", room: "process", title: "Capabilities", subtitle: "What I bring to a team", description: content.process.intro, image: "", chips: content.about.capabilities.filter(Boolean), capabilityChips: true, industries: content.about.industries.filter(Boolean), action: "See how I work", href: "/about-us" },
     { id: "process-skills", room: "process", title: "Skills & tools", subtitle: "From research to handoff", description: "The skills I lean on in every project, and the tools I use to get the work done.", image: "", chips: content.process.skills, tools: content.process.tools, action: "See how I work", href: "/about-us" },
     { id: "process-steps", room: "process", title: "Design process", subtitle: content.process.steps.map(step => step.title).join(" / "), description: "The steps that take a product from the first question to a confident handoff.", image: "", steps: content.process.steps, action: "See how I work", href: "/about-us" },
   );

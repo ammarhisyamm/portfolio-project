@@ -25,6 +25,8 @@ export type MuseumExhibit = {
   /** Portfolio shots shown as a browsable wall in the exhibit dialog. */
   showcase?: ShowcaseItem[];
   chips?: string[];
+  /** Capabilities use the classic About icons; skills use the process icons. */
+  capabilityChips?: boolean;
   tools?: string[];
   steps?: { title: string; description: string }[];
   /** Work experience, shown as expandable roles like the classic accordion. */
