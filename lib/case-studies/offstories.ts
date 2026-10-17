@@ -4,13 +4,13 @@ import { block, media } from "./block";
 const P = "/case-studies/offstories";
 
 export const offstories: CaseStudy = {
-  slug: "offstories", title: "OffStories", published: true, featured: true, featured_order: -3,
-  year: "2026", category: "Web app - Wedding planning", industry: "Consumer lifestyle", platform: "Web, desktop and mobile", project_status: "Live",
+  slug: "offstories", title: "One calm place to plan a wedding together", published: true, featured: true, featured_order: -3,
+  year: "2026", category: "OffStories · Wedding planning web app", industry: "Consumer lifestyle", platform: "Web, desktop and mobile", project_status: "Live",
   short_description: "A calm, shared workspace where Indonesian couples plan their wedding together instead of across spreadsheets and group chats.",
-  hero_headline: "Planning a wedding together, in one calm place.",
+  hero_headline: "",
   hero_description: "OffStories brings the checklist, budget, vendors, guests, timeline and notes into one workspace for two. A short guided setup turns a few answers into a first plan that already understands akad, resepsi, adat and Rupiah.",
-  hero_image: `${P}/hero.webp`, hero_image_alt: "OffStories dashboard on desktop and mobile, counting down 210 days to the wedding with planning progress, budget, vendors and guests",
-  thumbnail: `${P}/hero.webp`, thumbnail_alt: "OffStories wedding planning dashboard on desktop and mobile",
+  hero_image: `${P}/cover.mp4`, hero_image_alt: "A walkthrough of OffStories: the seven-question smart setup on desktop, then the dashboard, checklist and budget, with the mobile app alongside",
+  thumbnail: `${P}/cover-poster.webp`, cover_video: `${P}/cover.mp4`, thumbnail_alt: "A walkthrough of OffStories: the seven-question smart setup on desktop, then the dashboard, checklist and budget, with the mobile app alongside",
   client: "Independent product", role: "Product designer and builder", timeline: "June to October 2026", scope: "Research - UX - UI - Onboarding - Front end", team: "Solo", project_type: "Collaborative web app",
   blocks: [
     block("OVERVIEW", "At a glance", "A planner that knows how an Indonesian wedding works.", "", {
@@ -93,6 +93,16 @@ export const offstories: CaseStudy = {
         { title: "Timeline and milestones", image: "", alt: "Timeline with milestones by month" },
       ],
       caption: "All screens use sample data for a fictional couple.",
+    }),
+    block("SCREEN_GALLERY", "On mobile", "The same plan, in your pocket.", "Most updates happen on the go, between vendor visits and family calls, so every screen is built mobile-first.", {
+      layout: "phone",
+      media: media(`${P}/mobile-dashboard.webp`, `${P}/mobile-checklist.webp`, `${P}/mobile-budget.webp`, `${P}/mobile-guests.webp`),
+      steps: [
+        { title: "Dashboard", image: "", alt: "Mobile dashboard with the countdown and planning progress" },
+        { title: "Checklist", image: "", alt: "Mobile checklist with progress by category" },
+        { title: "Budget", image: "", alt: "Mobile budget tracker with paid, committed and remaining totals" },
+        { title: "Guests", image: "", alt: "Mobile guest list with RSVP counts" },
+      ],
     }),
     block("METRIC_HIGHLIGHT", "By the numbers", "Built and shipped, then refined.", "Project facts from the repository. Usage metrics are not claimed here.", {
       metrics: [

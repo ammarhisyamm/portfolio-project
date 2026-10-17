@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { reducedMotion } from "@/lib/utils";
 import MediaPlaceholder from "./MediaPlaceholder";
 
 type MediaProps = {
@@ -8,14 +9,18 @@ type MediaProps = {
   alt: string;
   label: string;
   imgClassName?: string;
+  /** Still frame for a video: shown while it loads and instead of playback when motion is reduced. */
+  poster?: string;
   onNaturalSize?: (width: number, height: number) => void;
 };
 
 const VIDEO_RE = /\.(mp4|webm|mov)(\?|#|$)/i;
 const CROP_RE = /[?&]crop=([\d.]+),([\d.]+),([\d.]+),([\d.]+)/;
 
-export default function Media({ src, alt, label, imgClassName, onNaturalSize }: MediaProps) {
+export default function Media({ src, alt, label, imgClassName, poster, onNaturalSize }: MediaProps) {
   const [failed, setFailed] = useState(false);
+  const [still, setStill] = useState(false);
+  useEffect(() => setStill(reducedMotion()), []);
   const [nat, setNat] = useState<{ w: number; h: number } | null>(null);
   if (!src || failed) return <MediaPlaceholder label={label} />;
 
@@ -65,9 +70,11 @@ export default function Media({ src, alt, label, imgClassName, onNaturalSize }: 
     return (
       <video
         src={src}
+        poster={poster}
+        aria-label={alt}
         muted
         playsInline
-        autoPlay
+        autoPlay={!still}
         loop
         preload="metadata"
         onLoadedMetadata={(e) => { setNat({ w: e.currentTarget.videoWidth, h: e.currentTarget.videoHeight }); onNaturalSize?.(e.currentTarget.videoWidth, e.currentTarget.videoHeight); }}

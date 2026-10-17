@@ -52,6 +52,8 @@ export type CaseStudy = {
   hero_image: string;
   hero_image_alt: string;
   thumbnail: string;
+  /** Looping MP4 used as the cover wherever the study is shown; thumbnail stays its still frame. */
+  cover_video?: string;
   thumbnail_alt: string;
   client: string;
   role: string;

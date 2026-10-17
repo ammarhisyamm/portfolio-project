@@ -4,13 +4,13 @@ import { block, media } from "./block";
 const P = "/case-studies/quriz";
 
 export const quriz: CaseStudy = {
-  slug: "quriz", title: "Quriz", published: true, featured: true, featured_order: -1,
-  year: "2026", category: "Mobile web app - Quran practice", industry: "Education", platform: "Mobile web", project_status: "Live",
+  slug: "quriz", title: "Quran practice in two minutes a day", published: true, featured: true, featured_order: -1,
+  year: "2026", category: "Quriz · Quran practice web app", industry: "Education", platform: "Mobile web", project_status: "Live",
   short_description: "Short daily Quran quizzes with streaks, XP and a path back to every mistake, redesigned three times in five weeks.",
-  hero_headline: "Making Quran practice short enough to do every day.",
+  hero_headline: "",
   hero_description: "Quriz turns Quran practice into short quizzes: match an ayah to its translation, find the ayah from a translation, continue a verse or guess the surah. Streaks and XP bring people back; a review path turns mistakes into the next session.",
-  hero_image: `${P}/hero.webp`, hero_image_alt: "Three Quriz screens in the painted game-world style: a quiz question, the home screen with a weekly streak, and the profile with badges",
-  thumbnail: `${P}/hero.webp`, thumbnail_alt: "Quriz home, quiz and profile screens",
+  hero_image: `${P}/cover.mp4`, hero_image_alt: "A walkthrough of Quriz on mobile: home, choosing a surah, answering a quiz question, progress and badges",
+  thumbnail: `${P}/cover-poster.webp`, cover_video: `${P}/cover.mp4`, thumbnail_alt: "A walkthrough of Quriz on mobile: home, choosing a surah, answering a quiz question, progress and badges",
   client: "Independent product", role: "Product designer and builder", timeline: "September to October 2026", scope: "UX - UI - Illustration direction - Front end", team: "Solo", project_type: "Learning product",
   blocks: [
     block("OVERVIEW", "At a glance", "A two-minute habit, not a course.", "", {

@@ -64,7 +64,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
   const text = (
     <div className="grid gap-4">
       {block.heading && (
-        <h2 className="text-[clamp(24px,3vw,34px)] font-normal leading-[1.12] tracking-[-0.05em]">
+        <h2 className="text-[clamp(24px,3vw,34px)] font-normal leading-[1.12] tracking-[-0.05em] text-ink">
           {block.heading}
         </h2>
       )}
@@ -104,7 +104,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
       {text}
     </div>
   );
-  const caption = block.caption && <p className="px-1 text-[11px] leading-relaxed text-muted">{block.caption}</p>;
+  const caption = block.caption && <p className="px-1 text-[12px] leading-relaxed text-sub">{block.caption}</p>;
   const numbered = block.block_type === "INSIGHTS" || block.block_type === "DESIGN_DIRECTION";
   const cards = block.cards?.length ? (
     <div className={`grid gap-3 ${block.cards.length > 2 ? "sm:grid-cols-2" : ""}`}>

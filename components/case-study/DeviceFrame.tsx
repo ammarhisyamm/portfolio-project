@@ -1,11 +1,11 @@
 import type { ReactNode } from "react";
 
-/** A light device shell so product screens read as screens, not loose images. */
+/** A plain screen edge so product screens read as screens without a heavy device bezel. */
 export default function DeviceFrame({ kind, children, className = "" }: { kind: "phone" | "desktop"; children: ReactNode; className?: string }) {
   if (kind === "phone") {
     return (
-      <div className={`relative mx-auto w-full max-w-[260px] rounded-[34px] bg-[#141414] p-[7px] shadow-[0_24px_48px_-24px_rgba(22,22,22,.45)] ${className}`}>
-        <div className="relative aspect-[390/844] w-full overflow-hidden rounded-[28px] bg-bg">{children}</div>
+      <div className={`relative mx-auto aspect-[390/844] w-full max-w-[260px] overflow-hidden rounded-[12px] border border-[#e4e4e4] bg-bg shadow-[0_20px_40px_-24px_rgba(22,22,22,.35)] ${className}`}>
+        {children}
       </div>
     );
   }

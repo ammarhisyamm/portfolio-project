@@ -9,7 +9,7 @@ export function museumContent(content: SiteContent, posts: BlogSummary[] = []): 
   const work = content.caseStudies.filter(study => study.published).sort((a, b) => Number(b.featured) - Number(a.featured) || a.featured_order - b.featured_order);
   const exhibits: MuseumExhibit[] = work.slice(0, 3).map(study => ({
     id: `work-${study.slug}`, room: "work", title: study.title,
-    subtitle: [study.platform || study.category, study.industry].filter(Boolean).join(" / "),
+    subtitle: [study.category || study.platform, study.industry].filter(Boolean).join(" / "),
     description: study.short_description || study.hero_description,
     image: study.thumbnail || study.hero_image || caseStudyCover(study.slug),
     action: "View case study", studySlug: study.slug,

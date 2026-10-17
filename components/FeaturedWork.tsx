@@ -52,6 +52,7 @@ export default function FeaturedWork({
           }`}
         >
           <div className={`grid gap-5 sm:gap-6 ${i > 0 ? "pb-7 pt-7 sm:pb-9 sm:pt-9" : "pb-7 sm:pb-9"}`}>
+            {p.category && <span className="kicker -mb-3 sm:-mb-4">{p.category}</span>}
             <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1.5">
               <h3 className="flex items-center gap-2.5 text-[clamp(20px,3.2vw,26px)] font-medium leading-tight tracking-[-0.045em]">
                 {p.title}
@@ -74,7 +75,8 @@ export default function FeaturedWork({
               style={{ boxShadow: "0 1px 2px rgba(22,22,22,.04), 0 8px 24px -12px rgba(22,22,22,.06)" }}
             >
               <Media
-                src={p.thumbnail || caseStudyCover(p.slug)}
+                src={p.cover_video || p.thumbnail || caseStudyCover(p.slug)}
+                poster={p.cover_video ? p.thumbnail : undefined}
                 alt={p.thumbnail_alt || `Visual for ${p.title}`}
                 label={p.year || p.category}
                 imgClassName="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02]"

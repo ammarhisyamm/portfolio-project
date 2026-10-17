@@ -4,13 +4,13 @@ import { block, media } from "./block";
 const P = "/case-studies/nomory";
 
 export const nomory: CaseStudy = {
-  slug: "nomory", title: "Nomory", published: true, featured: true, featured_order: -2,
-  year: "2026", category: "Mobile web app - Food diary", industry: "Consumer lifestyle", platform: "Installable web app (PWA)", project_status: "Live",
+  slug: "nomory", title: "Turning food photos into memories worth revisiting", published: true, featured: true, featured_order: -2,
+  year: "2026", category: "Nomory · Food diary web app", industry: "Consumer lifestyle", platform: "Installable web app (PWA)", project_status: "Live",
   short_description: "A private food diary that turns everyday meal photos into memories worth returning to.",
-  hero_headline: "Making everyday meals easier to remember.",
+  hero_headline: "",
   hero_description: "Nomory keeps the story around a meal, not only the photo: when it happened, where, what it cost and why it mattered. Capture takes a photo and a name; everything else is optional and comes back later through a calendar, a memory archive and search.",
-  hero_image: `${P}/hero.webp`, hero_image_alt: "Nomory screens showing the daily diary with a streak, a meal memory and the calendar of meal photos",
-  thumbnail: `${P}/hero.webp`, thumbnail_alt: "Nomory food diary screens",
+  hero_image: `${P}/cover.mp4`, hero_image_alt: "A walkthrough of Nomory on mobile: onboarding, the daily diary, adding a meal, the meal memory, calendar, archive and search",
+  thumbnail: `${P}/cover-poster.webp`, cover_video: `${P}/cover.mp4`, thumbnail_alt: "A walkthrough of Nomory on mobile: onboarding, the daily diary, adding a meal, the meal memory, calendar, archive and search",
   client: "Independent product", role: "Product designer and builder", timeline: "September 2026", scope: "UX - UI - Interaction design - Front end", team: "Solo", project_type: "Consumer product",
   blocks: [
     block("OVERVIEW", "At a glance", "Lighter than a log, more useful than a camera roll.", "", {
