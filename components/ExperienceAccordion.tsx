@@ -27,13 +27,25 @@ export default function ExperienceAccordion({ items }: { items: ExperienceItem[]
                 aria-controls={`experience-panel-${i}`}
                 className="flex w-full items-center justify-between gap-4 py-5 text-left"
               >
-                <div className="min-w-0">
-                  <span className="block truncate text-[17px] font-medium tracking-[-0.02em] sm:text-[19px]">
-                    {job.company}
-                  </span>
-                  <span className="mt-1 block  text-[11px] uppercase tracking-[0.02em] text-muted">
-                    {job.role} · {job.period}
-                  </span>
+                <div className="flex min-w-0 items-center gap-4">
+                  {job.logo && (
+                    <span className="grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-[10px] border border-line bg-white p-1.5">
+                      <Media
+                        src={job.logo}
+                        alt=""
+                        label={job.company}
+                        imgClassName="max-h-full max-w-full object-contain"
+                      />
+                    </span>
+                  )}
+                  <div className="min-w-0">
+                    <span className="block truncate text-[17px] font-medium tracking-[-0.02em] sm:text-[19px]">
+                      {job.company}
+                    </span>
+                    <span className="mt-1 block  text-[11px] uppercase tracking-[0.02em] text-muted">
+                      {job.role} · {job.period}
+                    </span>
+                  </div>
                 </div>
                 <span
                   className={`grid h-9 w-9 shrink-0 place-items-center rounded-full border bg-white transition-colors duration-300 ${

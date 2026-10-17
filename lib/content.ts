@@ -71,6 +71,7 @@ export type ExperienceItem = {
   period: string;
   points: string[];
   images: string[];
+  logo?: string;
 };
 
 export type ExplorationItem = {
