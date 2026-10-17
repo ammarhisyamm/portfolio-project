@@ -25,16 +25,16 @@ export default function ExperienceAccordion({ items }: { items: ExperienceItem[]
                 onClick={() => setOpen(isOpen ? null : i)}
                 aria-expanded={isOpen}
                 aria-controls={`experience-panel-${i}`}
-                className="flex w-full items-center justify-between gap-4 py-5 text-left"
+                className="group flex w-full items-center justify-between gap-4 py-5 text-left"
               >
                 <div className="flex min-w-0 items-center gap-4">
                   {job.logo && (
                     <span className="grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-[10px] border border-line bg-white p-1.5">
-                      <Media
+                      {/* Logos are shown in grayscale and turn to full colour on hover. */}
+                      <img
                         src={job.logo}
                         alt=""
-                        label={job.company}
-                        imgClassName="max-h-full max-w-full object-contain"
+                        className="max-h-full max-w-full object-contain grayscale transition duration-300 group-hover:grayscale-0"
                       />
                     </span>
                   )}

@@ -215,6 +215,7 @@ const CV_WORKING_EXPERIENCE: ExperienceItem[] = [
     company: "Serba Mulia Group",
     role: "UI/UX Designer - Full Time",
     period: "Nov 2024 - Present",
+    logo: "/experience-logos/serba-mulia.png",
     points: [
       "Led product design across 5+ business and internal platforms, including Promas, OCR CRM, Pajak Mas, Cashlux, and Synqra.",
       "Redesigned Promas from research through a new design system for cashier, branch manager, and multi-branch workflows.",
@@ -235,6 +236,7 @@ const CV_WORKING_EXPERIENCE: ExperienceItem[] = [
     company: "Caraka Studio",
     role: "UI/UX Designer - Full Time",
     period: "Aug 2024 - Nov 2024",
+    logo: "/experience-logos/caraka-studio.svg",
     points: [
       "Created three reusable mobile UI kits for Zenspace IoT, Sporty News, and TRVLEASE Travel, covering 210+ screens.",
       "Delivered two full-cycle client projects from concepts and user flows to high-fidelity design and final delivery.",
@@ -244,6 +246,7 @@ const CV_WORKING_EXPERIENCE: ExperienceItem[] = [
     company: "Serasi Autoraya",
     role: "UI/UX Designer - Full Time",
     period: "Feb 2024 - Jul 2024",
+    logo: "/experience-logos/serasi-autoraya.png",
     points: [
       "Led qualitative research for SELOG, a B2B fleet logistics platform, through 10+ interviews and competitor analysis that generated 100+ actionable insights.",
       "Designed the responsive SELOG experience across 14+ screens and a reusable design system with 25+ components.",
