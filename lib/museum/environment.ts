@@ -178,7 +178,7 @@ export function createMuseumEnvironment(scene: THREE.Scene, marbleMap: THREE.Tex
   // amber fill, and pools from lamps, sconces, the chandelier and the spots.
   const sun = new THREE.DirectionalLight("#ffc98c", 3.2);
   sun.position.set(12, 19, -18); sun.target.position.set(-2, 0, -4); scene.add(sun, sun.target);
-  sun.castShadow = true; sun.shadow.mapSize.set(mobile ? 512 : 1536, mobile ? 512 : 1536);
+  sun.castShadow = true; sun.shadow.mapSize.set(mobile ? 512 : 1024, mobile ? 512 : 1024);
   Object.assign(sun.shadow.camera, { left: -23, right: 23, top: 25, bottom: -25, near: 1, far: 65 });
   sun.shadow.bias = -.0005; sun.shadow.normalBias = .04;
   const ambient = new THREE.HemisphereLight("#ffcf94", "#22150a", .52); scene.add(ambient);

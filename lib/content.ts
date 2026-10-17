@@ -4,6 +4,7 @@ import { trustItems, capabilities, industries } from "./projects";
 import { nomory } from "./case-studies/nomory";
 import { offstories } from "./case-studies/offstories";
 import { quriz } from "./case-studies/quriz";
+import { withGraphicDesign } from "./graphic-design";
 
 export type Metric = { value: string; label: string };
 
@@ -70,6 +71,7 @@ export type ExperienceItem = {
   period: string;
   points: string[];
   images: string[];
+  logo?: string;
 };
 
 export type ExplorationItem = {
@@ -213,6 +215,7 @@ const CV_WORKING_EXPERIENCE: ExperienceItem[] = [
     company: "Serba Mulia Group",
     role: "UI/UX Designer - Full Time",
     period: "Nov 2024 - Present",
+    logo: "/experience-logos/serba-mulia.png",
     points: [
       "Led product design across 5+ business and internal platforms, including Promas, OCR CRM, Pajak Mas, Cashlux, and Synqra.",
       "Redesigned Promas from research through a new design system for cashier, branch manager, and multi-branch workflows.",
@@ -223,6 +226,7 @@ const CV_WORKING_EXPERIENCE: ExperienceItem[] = [
     company: "Let's Vibe Digital",
     role: "UI/UX Designer - Freelance",
     period: "May 2025 - Jul 2026",
+    logo: "/experience-logos/lets-vibe-digital.png",
     points: [
       "Designed responsive web applications for Australian enterprise clients, including Big Rock Developments, RenoPlus, VV Construction, and VSCO Pty.",
       "Delivered the end-to-end design process from visual direction and wireframes to responsive UI and stakeholder revisions.",
@@ -232,6 +236,7 @@ const CV_WORKING_EXPERIENCE: ExperienceItem[] = [
     company: "Caraka Studio",
     role: "UI/UX Designer - Full Time",
     period: "Aug 2024 - Nov 2024",
+    logo: "/experience-logos/caraka-studio.svg",
     points: [
       "Created three reusable mobile UI kits for Zenspace IoT, Sporty News, and TRVLEASE Travel, covering 210+ screens.",
       "Delivered two full-cycle client projects from concepts and user flows to high-fidelity design and final delivery.",
@@ -241,6 +246,7 @@ const CV_WORKING_EXPERIENCE: ExperienceItem[] = [
     company: "Serasi Autoraya",
     role: "UI/UX Designer - Full Time",
     period: "Feb 2024 - Jul 2024",
+    logo: "/experience-logos/serasi-autoraya.png",
     points: [
       "Led qualitative research for SELOG, a B2B fleet logistics platform, through 10+ interviews and competitor analysis that generated 100+ actionable insights.",
       "Designed the responsive SELOG experience across 14+ screens and a reusable design system with 25+ components.",
@@ -617,7 +623,7 @@ const DEFAULT_CASE_STUDIES: CaseStudy[] = [
 
 export const DEFAULTS: SiteContent = {
   caseStudies: DEFAULT_CASE_STUDIES,
-  homeCategories: DEFAULT_HOME_CATEGORIES,
+  homeCategories: withGraphicDesign(DEFAULT_HOME_CATEGORIES),
   experience: DEFAULT_EXPERIENCE,
   exploration: DEFAULT_EXPLORATION,
   trust: trustItems.map((label) => ({ label, image: "" })),
@@ -897,7 +903,7 @@ export const getContent = cache(async (): Promise<SiteContent> => {
       caseStudies: enrichPortfolioCaseStudies(
         (cs.data ?? []).map((r) => rowToCaseStudy(r, blocksByStudy[r.id] ?? []))
       ),
-      homeCategories,
+      homeCategories: withGraphicDesign(homeCategories),
       experience: cvExperience(
         (e.data ?? []).map((r) => ({
           company: r.company,

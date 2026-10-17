@@ -7,28 +7,25 @@ import { House, UserRound, BriefcaseBusiness, Mail, NotebookPen } from "lucide-r
 const TABS = [
   { href: "/", label: "Home", Icon: House },
   { href: "/about-us", label: "About Us", Icon: UserRound },
-  { href: "/playground", label: "Playground", Icon: BriefcaseBusiness },
   { href: "/blog", label: "Blog", Icon: NotebookPen },
   { href: "/contact", label: "Contact", Icon: Mail },
 ];
 
-export default function MobileTabBar({ workLabel }: { workLabel?: string }) {
+export default function MobileTabBar() {
   const pathname = usePathname();
-  const label = workLabel || "Playground";
 
   return (
     <nav aria-label="Mobile navigation" className="floating-bottom-nav md:hidden">
       {TABS.map(({ href, label: tabLabel, Icon }) => {
         const active =
           href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
-        const displayLabel = href === "/playground" ? label : tabLabel;
         return (
           <Link
             key={href}
             href={href}
             data-active={active || undefined}
             aria-current={active ? "page" : undefined}
-            aria-label={displayLabel}
+            aria-label={tabLabel}
             className="bottom-nav-item"
           >
             <Icon size={22} strokeWidth={active ? 2.2 : 1.8} aria-hidden="true" />

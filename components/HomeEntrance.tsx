@@ -17,7 +17,7 @@ const BUBBLE: Partial<Record<Phase, string>> = {
 };
 const NOTES = [
   { label: "A note from the studio", title: "Considered, not complicated.", text: "A collection of digital work, explorations, and the thinking behind them." },
-  { label: "Behind these doors", title: "Take a closer look.", text: "Explore selected projects, or visit the Playground for interface studies in the gallery." },
+  { label: "Behind these doors", title: "Take a closer look.", text: "Explore selected projects, or step into the showcase for interface studies." },
 ];
 
 // Brushed-steel blades, champagne-brass handles, and a layered central rivet.
@@ -58,6 +58,7 @@ export default function HomeEntrance() {
   const timers = useRef<number[]>([]);
   const busy = useRef(false);
   const revealed = useRef(false);
+  const starting = useRef(false);
   const touchStart = useRef(0);
   const entryStarted = useRef(false);
   const pointerAnimation = useRef<AnimationPlaybackControls | null>(null);
@@ -84,16 +85,18 @@ export default function HomeEntrance() {
     timers.current.forEach(window.clearTimeout);
     timers.current = [];
     try { sessionStorage.setItem(SEEN_KEY, "1"); } catch { /* Storage may be blocked. */ }
+    starting.current = false;
     setVisible(false);
     revealHome();
   }, [revealHome]);
 
+  // The doors are the museum's loading screen: they open on demand, when a
+  // visitor chooses to explore the museum, never on the classic page itself.
   useEffect(() => {
     let cancelled = false;
-    let seen = false;
-    try { seen = sessionStorage.getItem(SEEN_KEY) === "1"; } catch { /* Still allow entry. */ }
-    const replay = new URLSearchParams(window.location.search).get("entrance") === "1";
-    if (replay || !seen) {
+    const begin = () => {
+      if (starting.current) return;
+      starting.current = true; revealed.current = false;
       document.documentElement.setAttribute("data-studio-pending", "true");
       const assets = ["studio-room-v3", "studio-doors-v4", "studio-ribbon-v4"].map(asset => `/images/${asset}.webp`);
       assets.forEach(src => preload(src, { as: "image" }));
@@ -109,10 +112,11 @@ export default function HomeEntrance() {
         image.onerror = () => resolve(); // A failed asset must not trap the visitor.
         image.src = src;
       }))]).then(() => { if (!cancelled) setVisible(true); });
-    }
-    if (seen && !replay) document.documentElement.removeAttribute("data-studio-pending");
+    };
+    window.addEventListener("museum:doors", begin);
     return () => {
       cancelled = true;
+      window.removeEventListener("museum:doors", begin);
       stage.current?.dispose(); stage.current = null;
       pointerAnimation.current?.stop();
       cutAnimations.current.forEach(animation => animation.cancel());

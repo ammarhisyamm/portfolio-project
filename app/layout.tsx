@@ -53,8 +53,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Cover the first visit before hydration; repeat visits never wait for the intro. */}
-        <script dangerouslySetInnerHTML={{ __html: `try{if(location.pathname==='/'&&(new URLSearchParams(location.search).get('entrance')==='1'||sessionStorage.getItem('hisyam.home-entrance.seen.v3')!=='1'))document.documentElement.setAttribute('data-studio-pending','true')}catch(e){if(location.pathname==='/')document.documentElement.setAttribute('data-studio-pending','true')}` }} />
+        {/* The page opens in the classic view. Only a museum visit that still owes its doors is covered before hydration. */}
+        <script dangerouslySetInnerHTML={{ __html: `try{var q=new URLSearchParams(location.search);if(location.pathname==='/'&&q.get('view')!=='classic'&&(q.get('entrance')==='1'||((q.get('museum')==='1'||sessionStorage.getItem('hisyam.portfolio.view.v1')==='museum')&&sessionStorage.getItem('hisyam.home-entrance.seen.v3')!=='1')))document.documentElement.setAttribute('data-studio-pending','true')}catch(e){}` }} />
         <link rel="icon" href={content.branding.logo || FALLBACK_ICON} />
       </head>
       <body className={`${manrope.variable} font-sans`}>
@@ -67,7 +67,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <div className="mx-auto w-full max-w-[720px] px-4 pb-28 sm:px-6 md:pb-0">
             <SiteFooter footer={content.footer} />
           </div>
-          <MobileTabBar workLabel={content.menu.workLabel} />
+          <MobileTabBar />
           <DesignLabLauncher />
           </div>
         </Providers>

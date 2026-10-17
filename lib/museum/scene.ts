@@ -42,8 +42,9 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
   ]);
   if (signal.aborted) throw new DOMException("Cancelled", "AbortError");
   const mobile = window.matchMedia("(pointer: coarse)").matches || mount.clientWidth < 700;
-  const renderer = new THREE.WebGLRenderer({ antialias: !mobile, powerPreference: "high-performance" });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, mobile ? 1.25 : 1.6));
+  // Desktop renders into the composer's own multisampled target, so the canvas needs no antialiasing of its own.
+  const renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: "high-performance" });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, mobile ? 1.25 : 1.5));
   renderer.setSize(mount.clientWidth, mount.clientHeight);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -231,11 +232,26 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
   });
   resize.observe(mount);
 
+  // Quality scaler: when most frames run slow (under about 38 fps), step the
+  // render resolution down a quarter at a time. It never climbs back up.
+  let ratio = renderer.getPixelRatio(), warmup = 90, sampled = 0, slow = 0;
+  function lowerResolution() {
+    ratio = Math.max(.75, ratio - .25);
+    renderer.setPixelRatio(ratio); renderer.setSize(mount.clientWidth, mount.clientHeight);
+    if (composer) { composer.setPixelRatio(ratio); composer.setSize(mount.clientWidth, mount.clientHeight); }
+  }
+
   function frame(now: number) {
     if (disposed) return;
     // rAF timestamps can precede the performance.now() taken at setup.
-    const delta = THREE.MathUtils.clamp((now - last) / 1000, 0, .045); last = now;
-    if (paused || document.hidden) return;
+    const frameTime = (now - last) / 1000;
+    const delta = THREE.MathUtils.clamp(frameTime, 0, .045); last = now;
+    if (paused || document.hidden) { sampled = 0; slow = 0; return; }
+    if (warmup > 0) warmup--;
+    else if (ratio > .75) {
+      sampled++; if (frameTime > .026) slow++;
+      if (sampled === 60) { if (slow > 36) lowerResolution(); sampled = 0; slow = 0; }
+    }
     elapsed += delta;
     // After a moment with Nailong, turn to face the hall (unless the visitor already took over).
     if (intro && elapsed > 3.4) { intro = false; if (!destination && !keys.size) destination = { path: [], yaw: 0 }; }

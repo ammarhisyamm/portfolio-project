@@ -19,10 +19,20 @@ import { toolLogoFor } from "@/lib/tool-logos";
 
 const VIEW_KEY = "hisyam.portfolio.view.v1";
 const FOUND_KEY = "hisyam.museum.secrets.v1";
+const SEEN_KEY = "hisyam.home-entrance.seen.v3";
+
+/** True when the door-opening screen has to play first (once per session, or when replayed with ?entrance=1). */
+function requestDoors() {
+  let seen = false;
+  try { seen = sessionStorage.getItem(SEEN_KEY) === "1"; } catch { /* Still allow entry. */ }
+  if (seen && new URLSearchParams(window.location.search).get("entrance") !== "1") return false;
+  window.setTimeout(() => window.dispatchEvent(new Event("museum:doors")), 0);
+  return true;
+}
 
 export default function MuseumExperience({ content, posts = [] }: { content: SiteContent; posts?: BlogSummary[] }) {
   const data = useMemo(() => museumContent(content, posts), [content, posts]);
-  const [mounted, setMounted] = useState(false), [active, setActive] = useState(true);
+  const [mounted, setMounted] = useState(false), [active, setActive] = useState(false);
   const [ready, setReady] = useState(false), [entered, setEntered] = useState(false);
   const [room, setRoom] = useState<MuseumRoom>("work"), [focusId, setFocusId] = useState<string | null>(null);
   const [lights, setLights] = useState(true), [firstPerson, setFirstPerson] = useState(false);
@@ -44,12 +54,13 @@ export default function MuseumExperience({ content, posts = [] }: { content: Sit
 
   useEffect(() => {
     const query = new URLSearchParams(window.location.search);
-    let classic = false;
-    try { classic = sessionStorage.getItem(VIEW_KEY) === "classic"; } catch { /* View preference is optional. */ }
-    if (query.get("museum") === "1" || query.get("entrance") === "1") classic = false;
-    if (query.get("view") === "classic") classic = true;
-    setActive(!classic); setMounted(true);
-    setEntered(!document.documentElement.hasAttribute("data-studio-pending") && !document.querySelector(".home-entrance"));
+    let museum = false;
+    try { museum = sessionStorage.getItem(VIEW_KEY) === "museum"; } catch { /* View preference is optional. */ }
+    if (query.get("museum") === "1" || query.get("entrance") === "1") museum = true;
+    if (query.get("view") === "classic") museum = false;
+    setActive(museum); setMounted(true);
+    setEntered(museum ? !requestDoors() : true);
+    if (!museum) document.documentElement.removeAttribute("data-studio-pending");
     const onEntered = () => setEntered(true);
     window.addEventListener("studio:entered", onEntered);
     return () => window.removeEventListener("studio:entered", onEntered);
@@ -135,6 +146,8 @@ export default function MuseumExperience({ content, posts = [] }: { content: Sit
 
   function changeView(museum: boolean) {
     setSelected(null); setCollection(false); setGuide(false); setStudy(null); setError(false); setActive(museum);
+    // Entering the museum the first time plays the door-opening screen while the scene builds behind it.
+    if (museum) setEntered(!requestDoors());
     try { sessionStorage.setItem(VIEW_KEY, museum ? "museum" : "classic"); } catch { /* No persistent preference required. */ }
   }
   function visit(next: MuseumRoom) { controller.current?.visit(next); }
