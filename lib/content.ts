@@ -4,6 +4,7 @@ import { trustItems, capabilities, industries } from "./projects";
 import { nomory } from "./case-studies/nomory";
 import { offstories } from "./case-studies/offstories";
 import { quriz } from "./case-studies/quriz";
+import { withGraphicDesign } from "./graphic-design";
 
 export type Metric = { value: string; label: string };
 
@@ -617,7 +618,7 @@ const DEFAULT_CASE_STUDIES: CaseStudy[] = [
 
 export const DEFAULTS: SiteContent = {
   caseStudies: DEFAULT_CASE_STUDIES,
-  homeCategories: DEFAULT_HOME_CATEGORIES,
+  homeCategories: withGraphicDesign(DEFAULT_HOME_CATEGORIES),
   experience: DEFAULT_EXPERIENCE,
   exploration: DEFAULT_EXPLORATION,
   trust: trustItems.map((label) => ({ label, image: "" })),
@@ -897,7 +898,7 @@ export const getContent = cache(async (): Promise<SiteContent> => {
       caseStudies: enrichPortfolioCaseStudies(
         (cs.data ?? []).map((r) => rowToCaseStudy(r, blocksByStudy[r.id] ?? []))
       ),
-      homeCategories,
+      homeCategories: withGraphicDesign(homeCategories),
       experience: cvExperience(
         (e.data ?? []).map((r) => ({
           company: r.company,
