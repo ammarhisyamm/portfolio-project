@@ -1,8 +1,19 @@
 import { cache } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { trustItems, capabilities, industries } from "./projects";
+import { nomory } from "./case-studies/nomory";
+import { offstories } from "./case-studies/offstories";
+import { quriz } from "./case-studies/quriz";
 
 export type Metric = { value: string; label: string };
+
+/** One frame of a walkthrough or one version in an evolution strip. */
+export type CaseStudyStep = { title: string; description?: string; image: string; alt?: string };
+
+/** A cluster on the research wall: its sticky notes and what they add up to. */
+export type CaseStudyNoteGroup = { theme: string; color: string; notes: string[]; insight?: string };
+
+export type CaseStudyCard = { label?: string; title: string; body: string };
 
 export type CaseStudyBlock = {
   block_type: string;
@@ -16,6 +27,11 @@ export type CaseStudyBlock = {
   metrics: Metric[];
   layout: string;
   visible: boolean;
+  /** Structured extras for the interactive blocks. Code-defined studies only; CMS rows leave them empty. */
+  steps?: CaseStudyStep[];
+  notes?: CaseStudyNoteGroup[];
+  cards?: CaseStudyCard[];
+  labels?: [string, string];
 };
 
 export type CaseStudy = {
@@ -741,50 +757,11 @@ const caseStudyBlock = (
 });
 
 const PORTFOLIO_CASE_STUDIES: CaseStudy[] = [
+  offstories,
+  nomory,
+  quriz,
   {
-    slug: "nomory", title: "Nomory", published: true, featured: true, featured_order: -2,
-    year: "2026", category: "Consumer product - Food diary", industry: "Consumer lifestyle", platform: "Web PWA", project_status: "Live",
-    short_description: "A private food diary that turns everyday meal photos into memories worth returning to.",
-    hero_headline: "Making everyday meals easier to remember.",
-    hero_description: "Nomory helps people keep the context around a meal, not only the photo. Each entry can carry its date, time, type, place, and a note for later recall.",
-    hero_image: "/case-studies/nomory/hero-mockup.jpg", hero_image_alt: "Nomory meal diary shown on a mobile device with meal-photo memories and calendar moments", thumbnail: "", thumbnail_alt: "", client: "Independent product", role: "Product Design - UX/UI", timeline: "2026", scope: "Product strategy - UX/UI - Design system", team: "Independent", project_type: "Consumer product",
-    blocks: [
-      caseStudyBlock("INTRO", "The opportunity", "A food photo often loses the story around it.", "Gallery photos are easy to collect but difficult to revisit with meaning. Nomory reframes the meal as a small personal record: what it was, when it happened, where it was, and why it mattered.", "The design target was a private experience that feels lighter than logging and more useful than an unstructured camera roll."),
-      {
-        ...caseStudyBlock("CHALLENGE", "The design problem", "Capture has to be quick. Recall has to be rewarding.", "The core tension was avoiding a long diary form while retaining enough context for a memory to be useful months later. The entry flow therefore had to move from photo to saved memory without adding unnecessary decisions.", "The product also supports both local use and optional cloud sync, so the experience needs to communicate privacy and ownership without turning setup into a barrier."),
-        media: "/case-studies/nomory/problem-sticky-notes.jpg",
-        caption: "Problem framing: preserve context, reduce effort, and keep the diary private.",
-        alt_text: "Workshop board with five sticky notes describing Nomory's product problems around context, friction, recall, privacy, and quick capture",
-      },
-      {
-        ...caseStudyBlock("USER_FLOW", "Product strategy", "Build one loop for capture now and recall later.", "The primary loop starts with a camera capture or upload, then lets the user add only the context they want: meal type, date, time, location, and notes. The memory then becomes available through Today, Calendar, Memories, and Search.", "This gives the product two equally important moments: a low-effort entry point and a richer way to return to the past."),
-        media: "/case-studies/nomory/capture.jpg\n/case-studies/nomory/details.jpg\n/case-studies/nomory/find-again.jpg",
-        caption: "Capture a meal, add the details that matter, then find the memory again.",
-        alt_text: "Nomory product illustrations showing photo capture, meal details, and memory recall",
-      },
-      caseStudyBlock("INTERACTION_DESIGN", "Design decisions", "Make the saved meal feel personal, not transactional.", "The interaction model treats each meal photo as a keepsake rather than a database record. Visual hierarchy prioritizes the image and date, while supporting metadata stays available without taking over the screen.", "That choice makes the calendar and memory views feel like browsing an album, while still supporting structured search."),
-      caseStudyBlock("OUTCOME", "Current outcome", "A live diary with a complete capture-to-recall loop.", "Nomory is available as a web product with installable PWA support. It can be used locally without an account, while signed-in users can sync memories across devices.", "Portfolio performance metrics are intentionally not claimed here. The next product measure is whether saved meals lead to meaningful return visits over 7 and 30 days."),
-      caseStudyBlock("REFLECTION", "What comes next", "The smallest details may be the reason someone returns.", "Future exploration should test which optional prompts improve recall without slowing capture. The product can grow through better memory resurfacing, not by asking people to document more."),
-    ],
-  },
-  {
-    slug: "quriz", title: "Quriz", published: true, featured: true, featured_order: -1,
-    year: "2026", category: "Learning product - Quran practice", industry: "Education", platform: "Web", project_status: "Live",
-    short_description: "A focused Quran practice experience that supports daily consistency through short quizzes and thoughtful review.",
-    hero_headline: "Helping Quran practice become a repeatable daily habit.",
-    hero_description: "Quriz combines quick ayat-to-translation practice with recommendations, progress, and a dedicated path back to missed questions.",
-    hero_image: "", hero_image_alt: "", thumbnail: "", thumbnail_alt: "", client: "Independent product", role: "Product Design - UX/UI", timeline: "2026", scope: "Learning flows - UX/UI - Interaction design", team: "Independent", project_type: "Learning product",
-    blocks: [
-      caseStudyBlock("INTRO", "The opportunity", "Practice needs a clear next action.", "A study product can become intimidating when it asks users to plan too much before they begin. Quriz reduces the first step to a focused practice moment, then makes progress visible without turning the home screen into a dense dashboard.", "The product is built around consistency, not one-off completion."),
-      caseStudyBlock("CHALLENGE", "The design problem", "Make learning feel approachable without making it shallow.", "The interface needed to support a meaningful practice loop while keeping the decision load low. Users should be able to start a quiz quickly, understand what they answered correctly, and know what to do after a mistake.", "The design challenge was to use progress as encouragement, not pressure."),
-      caseStudyBlock("INFORMATION_ARCHITECTURE", "Product structure", "One home for practice, progress, and return paths.", "The primary navigation separates three jobs: start practice from Beranda, see momentum in Kemajuan, and manage identity in Profil. Within the home screen, recommendations direct people to Ayat Pilihan, Acak Surah, or the daily challenge.", "A dedicated review path for incorrect answers closes the learning loop instead of treating a quiz as a final score."),
-      caseStudyBlock("INTERACTION_DESIGN", "Key decision", "Turn mistakes into the next useful session.", "Rather than burying incorrect answers inside history, Quriz surfaces an explicit option to revisit them. This makes feedback actionable and helps the product stay focused on practice rather than passive tracking.", "Daily activity and streak language are kept close to the primary action so progress supports the habit without competing with it."),
-      caseStudyBlock("OUTCOME", "Current outcome", "A live learning loop from question to review.", "The live experience includes short quiz sessions, progress visibility, practice recommendations, and a return path for missed questions. The case study records the current product behavior without attributing unmeasured retention or learning gains.", "The next evidence to collect is task completion, repeat practice, and the proportion of users who return to review mistakes."),
-      caseStudyBlock("REFLECTION", "What comes next", "Consistency is a product behavior, not a badge.", "Further iterations should test how challenge cadence, reminder timing, and review prompts affect a sustainable practice rhythm."),
-    ],
-  },
-  {
-    slug: "jeam", title: "Jeam", published: true, featured: true, featured_order: -3,
+    slug: "jeam", title: "Jeam", published: true, featured: true, featured_order: 1,
     year: "2024", category: "Mobile product - Fitness training", industry: "Health and fitness", platform: "Mobile", project_status: "Concept",
     short_description: "A mobile fitness training concept designed around flexible routines, tailored guidance, and motivation between sessions.",
     hero_headline: "A more personal path to everyday fitness.",
