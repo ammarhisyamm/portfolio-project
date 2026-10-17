@@ -67,7 +67,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <div className="mx-auto w-full max-w-[720px] px-4 pb-28 sm:px-6 md:pb-0">
             <SiteFooter footer={content.footer} />
           </div>
-          <MobileTabBar workLabel={content.menu.workLabel} />
+          <MobileTabBar />
           <DesignLabLauncher />
           </div>
         </Providers>

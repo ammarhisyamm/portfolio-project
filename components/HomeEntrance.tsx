@@ -17,7 +17,7 @@ const BUBBLE: Partial<Record<Phase, string>> = {
 };
 const NOTES = [
   { label: "A note from the studio", title: "Considered, not complicated.", text: "A collection of digital work, explorations, and the thinking behind them." },
-  { label: "Behind these doors", title: "Take a closer look.", text: "Explore selected projects, or visit the Playground for interface studies in the gallery." },
+  { label: "Behind these doors", title: "Take a closer look.", text: "Explore selected projects, or step into the showcase for interface studies." },
 ];
 
 // Brushed-steel blades, champagne-brass handles, and a layered central rivet.
