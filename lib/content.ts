@@ -225,6 +225,7 @@ const CV_WORKING_EXPERIENCE: ExperienceItem[] = [
     company: "Let's Vibe Digital",
     role: "UI/UX Designer - Freelance",
     period: "May 2025 - Jul 2026",
+    logo: "/experience-logos/lets-vibe-digital.png",
     points: [
       "Designed responsive web applications for Australian enterprise clients, including Big Rock Developments, RenoPlus, VV Construction, and VSCO Pty.",
       "Delivered the end-to-end design process from visual direction and wireframes to responsive UI and stakeholder revisions.",
