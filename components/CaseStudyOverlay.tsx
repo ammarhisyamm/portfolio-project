@@ -61,7 +61,7 @@ export default function CaseStudyOverlay({
           role="dialog"
           aria-modal="true"
           aria-label={`${cs.title} case study`}
-          className="fixed inset-0 z-[300] overflow-y-auto bg-bg"
+          className="fixed inset-0 z-[300] overflow-y-auto bg-bg text-ink"
           data-lenis-prevent
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -105,6 +105,7 @@ export default function CaseStudyOverlay({
                 <div className="aspect-[16/9] w-full overflow-hidden rounded-[18px] border border-line bg-bg sm:rounded-[24px]">
                   <Media
                     src={heroImage}
+                    poster={heroImage.endsWith(".mp4") ? cs.thumbnail : undefined}
                     alt={cs.hero_image_alt || cs.hero_description || `Visual for ${cs.title}`}
                     label={cs.title}
                   />

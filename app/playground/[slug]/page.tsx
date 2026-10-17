@@ -101,6 +101,7 @@ export default async function CaseStudyPage({ params }: Props) {
           <div className="aspect-[16/9] w-full overflow-hidden rounded-[18px] border border-line bg-bg sm:rounded-[24px]">
             <Media
               src={heroImage}
+              poster={heroImage.endsWith(".mp4") ? cs.thumbnail : undefined}
               alt={cs.hero_image_alt || cs.hero_description || `Visual for ${cs.title}`}
               label={cs.title}
             />
@@ -149,7 +150,8 @@ export default async function CaseStudyPage({ params }: Props) {
           {(next.thumbnail || caseStudyCover(next.slug)) && (
             <div className="aspect-[16/8] w-full overflow-hidden rounded-[14px] border border-line bg-bg sm:rounded-[18px]">
               <Media
-                src={next.thumbnail || caseStudyCover(next.slug)}
+                src={next.cover_video || next.thumbnail || caseStudyCover(next.slug)}
+                poster={next.cover_video ? next.thumbnail : undefined}
                 alt={next.thumbnail_alt || `Visual for ${next.title}`}
                 label={next.title}
                 imgClassName="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]"

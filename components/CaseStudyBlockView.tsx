@@ -1,6 +1,10 @@
 import { ArrowUpRight } from "lucide-react";
 import type { CaseStudyBlock } from "@/lib/content";
 import Media from "./Media";
+import AffinityBoard from "./case-study/AffinityBoard";
+import CompareSlider from "./case-study/CompareSlider";
+import DeviceFrame from "./case-study/DeviceFrame";
+import FlowPlayer from "./case-study/FlowPlayer";
 
 const ARTICLE_TYPES = new Set([
   "INTRO",
@@ -20,6 +24,7 @@ const ARTICLE_TYPES = new Set([
   "DESIGN_SYSTEM",
   "OUTCOME",
   "REFLECTION",
+  "PERSONA",
 ]);
 
 function mediaList(block: CaseStudyBlock): string[] {
@@ -31,6 +36,9 @@ function mediaList(block: CaseStudyBlock): string[] {
 
 function hasContent(block: CaseStudyBlock): boolean {
   return Boolean(
+    block.steps?.length ||
+      block.notes?.length ||
+      block.cards?.length ||
     block.eyebrow ||
       block.heading ||
       block.description ||
@@ -56,7 +64,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
   const text = (
     <div className="grid gap-4">
       {block.heading && (
-        <h2 className="text-[clamp(24px,3vw,34px)] font-normal leading-[1.12] tracking-[-0.05em]">
+        <h2 className="text-[clamp(24px,3vw,34px)] font-normal leading-[1.12] tracking-[-0.05em] text-ink">
           {block.heading}
         </h2>
       )}
@@ -89,7 +97,91 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
     </figure>
   );
 
+  const frame = block.layout === "desktop" ? "desktop" : "phone";
+  const header = (fallback: string) => (
+    <div className="grid gap-4 border-t border-line pt-8">
+      <span className="kicker">{block.eyebrow || fallback}</span>
+      {text}
+    </div>
+  );
+  const caption = block.caption && <p className="px-1 text-[12px] leading-relaxed text-sub">{block.caption}</p>;
+  const numbered = block.block_type === "INSIGHTS" || block.block_type === "DESIGN_DIRECTION";
+  const cards = block.cards?.length ? (
+    <div className={`grid gap-3 ${block.cards.length > 2 ? "sm:grid-cols-2" : ""}`}>
+      {block.cards.map((card, i) => (
+        <div key={card.title} className="grid content-start gap-2 rounded-[14px] border border-line bg-panel p-5 sm:rounded-[18px]">
+          <span className="text-[11px] uppercase tracking-[0.06em] text-muted">{card.label || (numbered ? String(i + 1).padStart(2, "0") : "")}</span>
+          <h3 className="text-[16px] font-medium leading-snug tracking-[-0.02em] text-ink">{card.title}</h3>
+          <p className="text-[13.5px] leading-[1.65] text-sub">{card.body}</p>
+        </div>
+      ))}
+    </div>
+  ) : null;
+
   switch (block.block_type) {
+    case "OVERVIEW":
+      return (
+        <section className="grid gap-3 md:gap-4">
+          {header("Overview")}
+          {cards}
+        </section>
+      );
+
+    case "PROBLEM_STATEMENT":
+      return (
+        <section className="grid gap-4 rounded-[18px] bg-ink p-6 text-white sm:rounded-[24px] sm:p-9">
+          <span className="text-[11px] uppercase tracking-[0.06em] text-white/60">{block.eyebrow || "How might we"}</span>
+          <p className="text-[clamp(22px,3.2vw,32px)] font-normal leading-[1.2] tracking-[-0.04em]">{block.heading}</p>
+          {block.description && <p className="max-w-[560px] text-[14px] leading-[1.7] text-white/70">{block.description}</p>}
+        </section>
+      );
+
+    case "AFFINITY_BOARD":
+      return (
+        <section className="grid gap-3 md:gap-4">
+          {header("Research")}
+          {block.notes?.length ? <AffinityBoard groups={block.notes} /> : null}
+          {caption}
+        </section>
+      );
+
+    case "FLOW_PLAYER":
+    case "EVOLUTION":
+      return block.steps?.length ? (
+        <section className="grid gap-3 md:gap-4">
+          {header(block.block_type === "EVOLUTION" ? "Iterations" : "Walkthrough")}
+          <FlowPlayer steps={block.steps} frame={frame} autoplay={block.block_type === "FLOW_PLAYER"} />
+          {caption}
+        </section>
+      ) : null;
+
+    case "SCREEN_GALLERY":
+      return medias.length ? (
+        <section className="grid gap-3 md:gap-4">
+          {header("Final design")}
+          <div className={`grid gap-4 rounded-[14px] border border-line bg-[#fafafa] p-4 sm:rounded-[18px] sm:p-6 ${frame === "phone" ? "grid-cols-2 md:grid-cols-4" : "sm:grid-cols-2"}`}>
+            {medias.map((m, i) => (
+              <figure key={m} className="grid content-start gap-2">
+                <DeviceFrame kind={frame}>
+                  <img src={m} alt={block.steps?.[i]?.alt || `${block.heading}: screen ${i + 1}`} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover object-top" />
+                </DeviceFrame>
+                {block.steps?.[i]?.title && <figcaption className="text-center text-[11.5px] leading-relaxed text-muted">{block.steps[i].title}</figcaption>}
+              </figure>
+            ))}
+          </div>
+          {caption}
+        </section>
+      ) : null;
+
+    case "COMPARE_SLIDER":
+      return medias.length > 1 ? (
+        <section className="grid gap-3 md:gap-4">
+          {header("Before / After")}
+          <CompareSlider before={medias[0]} after={medias[1]} labels={block.labels ?? ["Before", "After"]} alt={block.alt_text || block.heading} frame={frame} />
+          {caption}
+        </section>
+      ) : null;
+
     case "METRIC_HIGHLIGHT":
       return (
         <section className="grid gap-3 md:gap-4">
@@ -296,6 +388,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
               )}
             </div>
           </div>
+          {cards}
           {medias.length > 0 && (
             <div className={`grid gap-3 md:gap-4 ${block.block_type === "USER_FLOW" && medias.length === 3 ? "grid-cols-1 sm:grid-cols-3" : medias.length > 1 ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1"}`}>
               {medias.map((m, i) => {
