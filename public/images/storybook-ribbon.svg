@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 100" preserveAspectRatio="none">
+<defs>
+<linearGradient id="r" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f06b6b"/><stop offset=".3" stop-color="#d9393e"/><stop offset=".62" stop-color="#b8262f"/><stop offset="1" stop-color="#8f1d27"/></linearGradient>
+<linearGradient id="l" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f26e6e"/><stop offset=".6" stop-color="#c92d35"/><stop offset="1" stop-color="#8f1d27"/></linearGradient>
+<linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff0b8"/><stop offset=".5" stop-color="#f2b632"/><stop offset="1" stop-color="#c4831a"/></linearGradient>
+</defs>
+<rect x="0" y="44" width="300" height="12" fill="url(#r)"/>
+<rect x="0" y="45.2" width="300" height=".7" fill="#ffd76a" opacity=".9"/>
+<rect x="0" y="54.1" width="300" height=".7" fill="#ffd76a" opacity=".9"/>
+<rect x="0" y="47" width="300" height="1.6" fill="#fff" opacity=".18"/>
+<path d="M146 54l-10 34 6-3 3 6 6-34Z M154 54l10 34-6-3-3 6-6-34Z" fill="url(#l)" stroke="#7d1621" stroke-width=".6"/>
+<path d="M150 50C136 34 118 30 116 40c-2 10 10 22 34 12Z" fill="url(#l)" stroke="#7d1621" stroke-width=".7"/>
+<path d="M150 50c14-16 32-20 34-10 2 10-10 22-34 12Z" fill="url(#l)" stroke="#7d1621" stroke-width=".7"/>
+<path d="M146 48c-10-8-20-10-24-7" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="1.2"/>
+<path d="M154 48c10-8 20-10 24-7" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="1.2"/>
+<circle cx="150" cy="50" r="8.6" fill="url(#g)" stroke="#a8681a" stroke-width=".9"/>
+<circle cx="150" cy="50" r="6.4" fill="#6c42c7" stroke="#ffe08a" stroke-width=".6"/>
+<text x="150" y="53.4" text-anchor="middle" font-family="Georgia,serif" font-size="9.5" font-style="italic" fill="#ffe08a">h</text>
+</svg>

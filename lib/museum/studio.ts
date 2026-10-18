@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
-import { canvasTexture, haloTexture, loadImage } from "./materials";
+import { PALETTE, canvasTexture, haloTexture, loadImage, skyTexture, wallpaper } from "./materials";
 import type { Obstacle } from "./environment";
 import type { MuseumExhibit } from "./types";
 
@@ -34,29 +34,29 @@ export function createStudioWing(scene: THREE.Scene, exhibits: MuseumExhibit[], 
     for (let row = 0; row < 16; row++) for (let col = 0; col < 4; col++) {
       seed = (seed * 16807) % 2147483647;
       const tone = 92 + seed % 26;
-      ctx.fillStyle = `rgb(${tone + 30},${tone - 4},${tone - 40})`;
+      ctx.fillStyle = `rgb(${tone + 112},${tone + 46},${tone - 22})`;
       const offset = row % 2 ? 64 : 0;
       ctx.fillRect(col * 128 + offset - 128, row * 32, 127, 31); ctx.fillRect(col * 128 + offset, row * 32, 127, 31);
-      ctx.fillStyle = "rgba(40,22,10,.25)"; for (let i = 0; i < 6; i++) ctx.fillRect(col * 128 + offset + (seed >> i) % 120, row * 32 + 4 + i * 4, 30, 1);
+      ctx.fillStyle = "rgba(120,60,20,.22)"; for (let i = 0; i < 6; i++) ctx.fillRect(col * 128 + offset + (seed >> i) % 120, row * 32 + 4 + i * 4, 30, 1);
     }
   }));
   parquet.wrapS = parquet.wrapT = THREE.RepeatWrapping; parquet.repeat.set(5, 7);
-  const floor = new THREE.MeshStandardMaterial({ map: parquet, color: "#a5876a", roughness: .55, metalness: .02 });
-  const plaster = new THREE.MeshStandardMaterial({ color: "#3b4536", roughness: .92 });
-  const walnut = new THREE.MeshStandardMaterial({ color: "#4a2f1d", roughness: .6 });
-  const darkWood = new THREE.MeshStandardMaterial({ color: "#2b1b11", roughness: .7 });
-  const leather = new THREE.MeshStandardMaterial({ color: "#6b3a22", roughness: .5 });
-  const fabric = new THREE.MeshStandardMaterial({ color: "#5a5f4a", roughness: .95 });
+  const floor = new THREE.MeshStandardMaterial({ map: parquet, roughness: .45 });
+  const plaster = new THREE.MeshStandardMaterial({ color: PALETTE.green, roughness: .88 }); wallpaper(plaster);
+  const walnut = new THREE.MeshStandardMaterial({ color: PALETTE.wood, roughness: .6 });
+  const darkWood = new THREE.MeshStandardMaterial({ color: PALETTE.woodDeep, roughness: .7 });
+  const leather = new THREE.MeshStandardMaterial({ color: PALETTE.red, roughness: .55 });
+  const fabric = new THREE.MeshStandardMaterial({ color: PALETTE.purple, roughness: .9 });
   const paper = new THREE.MeshStandardMaterial({ color: "#efe6d2", roughness: .9 });
   const cork = new THREE.MeshStandardMaterial({ color: "#a47d55", roughness: 1 });
   const ceramic = new THREE.MeshStandardMaterial({ color: "#d9d2c4", roughness: .45 });
-  const leaf = new THREE.MeshStandardMaterial({ color: "#56683f", roughness: .9 });
-  const screen = new THREE.MeshBasicMaterial({ color: new THREE.Color("#9fb7c9").multiplyScalar(.9), toneMapped: false });
+  const leaf = new THREE.MeshStandardMaterial({ color: PALETTE.leaf, roughness: .8 });
+  const screen = new THREE.MeshBasicMaterial({ color: "#a9e0ff", toneMapped: false });
   const bulb = new THREE.MeshBasicMaterial({ color: new THREE.Color("#ffe3b0").multiplyScalar(2.6), toneMapped: false });
   const rugMap = keep(canvasTexture(512, 512, ctx => {
-    ctx.fillStyle = "#5b2a1f"; ctx.beginPath(); ctx.arc(256, 256, 254, 0, Math.PI * 2); ctx.fill();
-    for (const [r, color, width] of [[236, "#c4955a", 6], [200, "#2f3b4a", 18], [150, "#b98950", 4], [92, "#7b3a28", 40]] as [number, string, number][]) { ctx.strokeStyle = color; ctx.lineWidth = width; ctx.beginPath(); ctx.arc(256, 256, r, 0, Math.PI * 2); ctx.stroke(); }
-    ctx.fillStyle = "#c4955a"; for (let i = 0; i < 24; i++) { const a = i / 24 * Math.PI * 2; ctx.beginPath(); ctx.arc(256 + Math.cos(a) * 172, 256 + Math.sin(a) * 172, 7, 0, Math.PI * 2); ctx.fill(); }
+    ctx.fillStyle = PALETTE.red; ctx.beginPath(); ctx.arc(256, 256, 254, 0, Math.PI * 2); ctx.fill();
+    for (const [r, color, width] of [[236, PALETTE.gold, 12], [200, PALETTE.purple, 22], [150, PALETTE.gold, 6], [92, PALETTE.redDeep, 40]] as [number, string, number][]) { ctx.strokeStyle = color; ctx.lineWidth = width; ctx.beginPath(); ctx.arc(256, 256, r, 0, Math.PI * 2); ctx.stroke(); }
+    ctx.fillStyle = PALETTE.gold; for (let i = 0; i < 24; i++) { const a = i / 24 * Math.PI * 2; ctx.beginPath(); ctx.arc(256 + Math.cos(a) * 172, 256 + Math.sin(a) * 172, 7, 0, Math.PI * 2); ctx.fill(); }
   }));
   const rug = new THREE.MeshStandardMaterial({ map: rugMap, transparent: true, roughness: 1 });
 
@@ -81,10 +81,7 @@ export function createStudioWing(scene: THREE.Scene, exhibits: MuseumExhibit[], 
   box(-14.55, .6, -20.7, .1, 1.2, 8.2, walnut); box(-14.55, .6, -9.5, .1, 1.2, 8.2, walnut);
 
   // An arched window on the west wall with warm "outside" light.
-  const windowMap = keep(canvasTexture(256, 512, ctx => {
-    const g = ctx.createLinearGradient(0, 0, 0, 512); g.addColorStop(0, "#f3dcb0"); g.addColorStop(.6, "#e9b77c"); g.addColorStop(1, "#8a5f3b");
-    ctx.fillStyle = g; ctx.fillRect(0, 0, 256, 512); ctx.fillStyle = "rgba(60,45,30,.28)"; for (let i = 0; i < 7; i++) ctx.fillRect(i * 40, 360 + (i % 3) * 25, 22, 160);
-  }));
+  const windowMap = keep(skyTexture(256, 512));
   const arch = new THREE.Shape(); arch.moveTo(-1.1, 0); arch.lineTo(1.1, 0); arch.lineTo(1.1, 2.8); arch.absarc(0, 2.8, 1.1, 0, Math.PI, false); arch.closePath();
   const pane = new THREE.Mesh(new THREE.ShapeGeometry(arch, 24), new THREE.MeshBasicMaterial({ map: windowMap, toneMapped: false }));
   pane.rotation.y = Math.PI / 2; pane.position.set(-30.17, 1.4, cz); wing.add(pane);
@@ -216,7 +213,7 @@ export function createStudioWing(scene: THREE.Scene, exhibits: MuseumExhibit[], 
   const bed = new THREE.Mesh(new THREE.TorusGeometry(.36, .13, 10, 28), fabric); bed.rotation.x = Math.PI / 2; bed.position.set(-28.1, .13, -13.2); bed.castShadow = true; wing.add(bed);
   cylinder(-28.1, .05, -13.2, .36, .36, .08, new THREE.MeshStandardMaterial({ color: "#c49a55", roughness: 1 }), 24);
   cylinder(-22.2, 5.4, -15, .012, .012, 2.4, brass);
-  const pendant = cylinder(-22.2, 4.1, -15, .12, .5, .4, new THREE.MeshStandardMaterial({ color: "#2b3328", metalness: .5, roughness: .4, side: THREE.DoubleSide }), 28); pendant.castShadow = false;
+  const pendant = cylinder(-22.2, 4.1, -15, .12, .5, .4, new THREE.MeshStandardMaterial({ color: PALETTE.gold, metalness: .45, roughness: .35, side: THREE.DoubleSide }), 28); pendant.castShadow = false;
   const pendantBulb = new THREE.Mesh(new THREE.SphereGeometry(.09, 12, 8), bulb); pendantBulb.position.set(-22.2, 3.9, -15); scene.add(pendantBulb);
   const nook = new THREE.PointLight("#ffd29a", mobile ? 18 : 24, 12, 1.6); nook.position.set(-22.2, 3.75, -15); scene.add(nook); lamps.push(nook);
   const deskLight = new THREE.PointLight("#ffd7a0", 6, 4, 2); deskLight.position.set(-23.1, 1.3, -5.3); scene.add(deskLight); lamps.push(deskLight);

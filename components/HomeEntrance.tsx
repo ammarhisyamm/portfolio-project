@@ -98,7 +98,7 @@ export default function HomeEntrance() {
       if (starting.current) return;
       starting.current = true; revealed.current = false;
       document.documentElement.setAttribute("data-studio-pending", "true");
-      const assets = ["studio-room-v3", "studio-doors-v4", "studio-ribbon-v4"].map(asset => `/images/${asset}.webp`);
+      const assets = ["storybook-doors", "storybook-ribbon"].map(asset => `/images/${asset}.svg`);
       assets.forEach(src => preload(src, { as: "image" }));
       // Nailong arrives with the scene, but a slow network never holds the doors shut.
       const doorkeeper = Promise.race([
@@ -324,7 +324,13 @@ export default function HomeEntrance() {
   const opened = ["opening", "open", "entering", "fading"].includes(phase);
   return createPortal(<div ref={dialogRef} className="home-entrance" style={{ "--cut-position": `${cutPosition}%` } as CSSProperties} tabIndex={-1} data-phase={phase} data-started={phase !== "idle"} data-released={released} data-open={opened} role="dialog" aria-modal="true" aria-labelledby="studio-welcome" data-lenis-prevent onWheel={event => { if (event.deltaY > 5) stepInside(); }} onTouchStart={event => { touchStart.current = event.touches[0]?.clientY ?? 0; }} onTouchEnd={event => { if (touchStart.current - (event.changedTouches[0]?.clientY ?? touchStart.current) > 35) stepInside(); }}>
     <div className="entrance-scene">
-      <div className="home-entrance-room" aria-hidden="true" />
+      {/* The museum's front hall, drawn in the same storybook palette as the 3D rooms. */}
+      <div className="home-entrance-room" aria-hidden="true">
+        <i className="entrance-window entrance-window-left" /><i className="entrance-window entrance-window-right" />
+        <i className="entrance-wainscot" />
+        <i className="entrance-floor" /><i className="entrance-carpet" />
+        <i className="entrance-plant entrance-plant-left" /><i className="entrance-plant entrance-plant-right" />
+      </div>
       <div className="home-entrance-vignette" aria-hidden="true" />
       <div className="home-entrance-copy">
         <h1 id="studio-welcome">Welcome to my portfolio.</h1>
