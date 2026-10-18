@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1035 1000">
+<defs>
+<linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe9a8"/><stop offset=".35" stop-color="#f2b632"/><stop offset=".7" stop-color="#d9951f"/><stop offset="1" stop-color="#ffd76a"/></linearGradient>
+<linearGradient id="leaf" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#5b36b2"/><stop offset=".55" stop-color="#7650d8"/><stop offset="1" stop-color="#6a44c9"/></linearGradient>
+<linearGradient id="panel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4f2ea3"/><stop offset="1" stop-color="#5d38b8"/></linearGradient>
+<linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset=".4" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#1c0b45" stop-opacity=".28"/></linearGradient>
+<radialGradient id="knob" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fff6d0"/><stop offset=".45" stop-color="#f2b632"/><stop offset="1" stop-color="#a8681a"/></radialGradient>
+<g id="d">
+<rect width="517.5" height="1000" fill="url(#leaf)"/>
+<rect x="14" y="14" width="489.5" height="972" rx="10" fill="none" stroke="url(#g)" stroke-width="10"/>
+<path d="M66 560V200a192 130 0 0 1 384 0v360Z" fill="url(#panel)" stroke="#2f1a72" stroke-width="12"/>
+<path d="M66 560V200a192 130 0 0 1 384 0v360Z" fill="none" stroke="url(#g)" stroke-width="8"/>
+<path d="M92 534V206a166 108 0 0 1 332 0v328Z" fill="none" stroke="#ffd76a" stroke-opacity=".55" stroke-width="3"/>
+<rect x="66" y="640" width="384" height="280" rx="22" fill="url(#panel)" stroke="#2f1a72" stroke-width="12"/>
+<rect x="66" y="640" width="384" height="280" rx="22" fill="none" stroke="url(#g)" stroke-width="8"/>
+<rect x="92" y="666" width="332" height="228" rx="12" fill="none" stroke="#ffd76a" stroke-opacity=".55" stroke-width="3"/>
+<path d="M258 220l20 58 58 20-58 20-20 58-20-58-58-20 58-20Z" fill="url(#g)" stroke="#a8681a" stroke-width="3"/>
+<circle cx="258" cy="298" r="9" fill="#fff4cf"/>
+<g fill="url(#g)"><circle cx="160" cy="780" r="12"/><circle cx="258" cy="780" r="16"/><circle cx="356" cy="780" r="12"/></g>
+<rect x="472" y="560" width="26" height="110" rx="13" fill="url(#g)" stroke="#a8681a" stroke-width="3"/>
+<circle cx="485" cy="615" r="19" fill="url(#knob)" stroke="#a8681a" stroke-width="3"/>
+<rect width="517.5" height="1000" fill="url(#sheen)"/>
+</g>
+</defs>
+<use href="#d"/>
+<use href="#d" transform="translate(1035 0) scale(-1 1)"/>
+<rect x="514" width="7" height="1000" fill="#24104f" opacity=".75"/>
+</svg>

@@ -38,7 +38,7 @@ function keyframes(frames: [number, number, string?][], t: number) {
 function createScissors() {
   const group = new THREE.Group();
   const steel = new THREE.MeshStandardMaterial({ color: "#d9dad6", metalness: .92, roughness: .22 });
-  const brass = new THREE.MeshStandardMaterial({ color: "#d3a456", metalness: .9, roughness: .3 });
+  const brass = new THREE.MeshStandardMaterial({ color: "#f2b632", metalness: .55, roughness: .3 });
   const blade = new THREE.Shape(); blade.moveTo(0, -.02); blade.lineTo(.034, .02); blade.quadraticCurveTo(.03, .22, 0, .44); blade.quadraticCurveTo(-.006, .2, -.008, -.02); blade.closePath();
   const bladeGeometry = new THREE.ExtrudeGeometry(blade, { depth: .01, bevelEnabled: true, bevelThickness: .003, bevelSize: .003, bevelSegments: 2, curveSegments: 12 });
   const ring = new THREE.TorusGeometry(.055, .014, 10, 28), shank = new THREE.BoxGeometry(.026, .12, .016);
@@ -70,7 +70,7 @@ export function createEntranceStage(canvas: HTMLCanvasElement, options: { reduce
   const pmrem = new THREE.PMREMGenerator(renderer), room = new RoomEnvironment();
   const environment = pmrem.fromScene(room, .04); scene.environment = environment.texture; scene.environmentIntensity = .35; room.dispose(); pmrem.dispose();
   // Warm spotlight above the doors, a soft fill and a rim from the doorway.
-  scene.add(new THREE.HemisphereLight("#fbefdc", "#2b2015", .9));
+  scene.add(new THREE.HemisphereLight("#fff4e2", "#a985d8", 1.05));
   const key = new THREE.DirectionalLight("#fff0da", 2.2); key.position.set(-.6, 5, 4); scene.add(key);
   const rim = new THREE.DirectionalLight("#ffc98a", 1.6); rim.position.set(1.5, 3.5, -3); scene.add(rim);
   const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, .1, 40);
@@ -78,7 +78,7 @@ export function createEntranceStage(canvas: HTMLCanvasElement, options: { reduce
 
   const nailong = createNailong(); nailong.root.scale.setScalar(SCALE); scene.add(nailong.root);
   const shadowMap = haloTexture();
-  const shadow = new THREE.Mesh(new THREE.PlaneGeometry(1.15, .9), new THREE.MeshBasicMaterial({ map: shadowMap, color: "#000000", transparent: true, opacity: .6, depthWrite: false }));
+  const shadow = new THREE.Mesh(new THREE.PlaneGeometry(1.15, .9), new THREE.MeshBasicMaterial({ map: shadowMap, color: "#3a2268", transparent: true, opacity: .4, depthWrite: false }));
   shadow.rotation.x = -Math.PI / 2; scene.add(shadow);
   const scissors = createScissors(); scene.add(scissors.group);
   const hand = nailong.hand(-1);
