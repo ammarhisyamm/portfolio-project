@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
-import { canvasTexture, coverTexture, kioskTexture, loadImage, titleTexture } from "./materials";
+import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
+import { PALETTE, canvasTexture, coverTexture, kioskTexture, loadImage, roundRugTexture, titleTexture } from "./materials";
 import type { MuseumExhibit, MuseumRoom } from "./types";
 import type { Obstacle } from "./environment";
 
@@ -38,7 +39,30 @@ export function createMuseumExhibits(scene: THREE.Scene, exhibits: MuseumExhibit
   }
   const loading: Promise<void>[] = [];
   const warm = new THREE.MeshBasicMaterial({ color: new THREE.Color("#e8b26d").multiplyScalar(1.7), toneMapped: false });
-  const glass = new THREE.MeshPhysicalMaterial({ color: "#e4c790", roughness: .07, metalness: .02, clearcoat: 1, transparent: true, opacity: .075, side: THREE.DoubleSide, depthWrite: false });
+  const glass = new THREE.MeshPhysicalMaterial({ color: "#e3f4ff", roughness: .07, metalness: .02, clearcoat: 1, transparent: true, opacity: .075, side: THREE.DoubleSide, depthWrite: false });
+  // Every case stands on a purple rug behind a gold-and-red velvet rope.
+  const rugMap = roundRugTexture();
+  const rug = new THREE.MeshStandardMaterial({ map: rugMap, transparent: true, roughness: .95 });
+  const post = new THREE.MeshStandardMaterial({ color: PALETTE.gold, metalness: .45, roughness: .3, emissive: "#7a4a06", emissiveIntensity: .25 });
+  const pearl = new THREE.MeshStandardMaterial({ color: "#fff3e6", roughness: .35 });
+  const rope = new THREE.MeshStandardMaterial({ color: PALETTE.red, roughness: .7 });
+  const postGeometry = new THREE.CylinderGeometry(.045, .07, 1.05, 14), footGeometry = new THREE.CylinderGeometry(.2, .24, .07, 20), knobGeometry = new THREE.SphereGeometry(.1, 16, 12);
+  // The ropes and rugs of every case are merged into one mesh per material at the end.
+  const dressing = new Map<THREE.Material, THREE.BufferGeometry[]>();
+  function dress(parent: THREE.Group, geometry: THREE.BufferGeometry, material: THREE.Material, matrix: THREE.Matrix4) {
+    parent.updateMatrixWorld(true);
+    const placed = (geometry.index ? geometry.toNonIndexed() : geometry.clone()).applyMatrix4(new THREE.Matrix4().multiplyMatrices(parent.matrixWorld, matrix));
+    dressing.set(material, [...dressing.get(material) ?? [], placed]);
+  }
+  function stanchion(parent: THREE.Group, x: number, z: number) {
+    for (const [geometry, material, y] of [[footGeometry, post, .035], [postGeometry, post, .56], [knobGeometry, pearl, 1.15]] as [THREE.BufferGeometry, THREE.Material, number][]) {
+      dress(parent, geometry, material, new THREE.Matrix4().makeTranslation(x, y, z));
+    }
+  }
+  function velvetRope(parent: THREE.Group, from: number, to: number, z: number) {
+    const sag = new THREE.QuadraticBezierCurve3(new THREE.Vector3(from, 1.02, z), new THREE.Vector3((from + to) / 2, .62, z), new THREE.Vector3(to, 1.02, z));
+    const tube = new THREE.TubeGeometry(sag, 20, .035, 8); dress(parent, tube, rope, new THREE.Matrix4()); tube.dispose();
+  }
   function box(parent: THREE.Group, size: [number, number, number], pos: [number, number, number], material: THREE.Material, rounded = false) {
     const mesh = new THREE.Mesh(rounded ? new RoundedBoxGeometry(...size, 2, .018) : new THREE.BoxGeometry(...size), material);
     mesh.position.set(...pos); mesh.castShadow = true; mesh.receiveShadow = true; parent.add(mesh); return mesh;
@@ -51,12 +75,12 @@ export function createMuseumExhibits(scene: THREE.Scene, exhibits: MuseumExhibit
     const slot = exhibit.id === "work-collection" ? COLLECTION : slotFor(exhibit.room, index); if (!slot) continue;
     const [x, z, rotation] = slot;
     const group = new THREE.Group(); group.position.set(x, 0, z); group.rotation.y = rotation; scene.add(group);
-    const frame = new THREE.MeshStandardMaterial({ color: "#a17b42", metalness: .78, roughness: .32, emissive: "#bd8b48", emissiveIntensity: 0 });
+    const frame = new THREE.MeshStandardMaterial({ color: PALETTE.gold, metalness: .45, roughness: .32, emissive: "#ffc861", emissiveIntensity: 0 });
     const panelMap = exhibit.form ? kioskTexture(exhibit.title, exhibit.subtitle) : titleTexture(exhibit.title, exhibit.subtitle, exhibit.description, `${index + 1}`.padStart(2, "0"));
     const panelMat = new THREE.MeshBasicMaterial({ map: panelMap, toneMapped: false });
     const plaque = canvasTexture(1024, 256, ctx => {
-      ctx.fillStyle = "#e2c69a"; ctx.font = "52px Georgia"; ctx.textAlign = "center"; ctx.fillText(exhibit.title, 512, 108);
-      ctx.fillStyle = "#a99a80"; ctx.font = "28px Arial"; ctx.fillText(exhibit.action, 512, 177);
+      ctx.fillStyle = PALETTE.ink; ctx.font = "bold 52px Georgia"; ctx.textAlign = "center"; ctx.fillText(exhibit.title, 512, 108);
+      ctx.fillStyle = PALETTE.red; ctx.font = "bold 28px Arial"; ctx.fillText(exhibit.action, 512, 177);
     });
     const labelMat = new THREE.MeshBasicMaterial({ map: plaque, transparent: true, toneMapped: false });
     if (lectern) {
@@ -93,7 +117,12 @@ export function createMuseumExhibits(scene: THREE.Scene, exhibits: MuseumExhibit
       }
       const label = new THREE.Mesh(new THREE.PlaneGeometry(3.12, .78), labelMat);
       label.position.set(0, .56, .8); label.userData.exhibitId = exhibit.id; group.add(label); targets.push(label);
-      const long = 1.94 * CASE_SCALE, short = .91 * CASE_SCALE;
+      const disc = new THREE.CircleGeometry(1, 48);
+      dress(group, disc, rug, new THREE.Matrix4().compose(new THREE.Vector3(0, .03 / CASE_SCALE, .25), new THREE.Quaternion().setFromEuler(new THREE.Euler(-Math.PI / 2, 0, 0)), new THREE.Vector3(2.75, 1.85, 1)));
+      disc.dispose();
+      for (const xx of [-2.1, 0, 2.1]) stanchion(group, xx, 1.55);
+      velvetRope(group, -2.1, 0, 1.55); velvetRope(group, 0, 2.1, 1.55);
+      const long = 2.2 * CASE_SCALE, short = 1.4 * CASE_SCALE;
       obstacles.push({ x, z, halfX: rotation ? short : long, halfZ: rotation ? long : short });
     }
     displays.push({ exhibit, group, position: new THREE.Vector3(x, 0, z), frame });
@@ -103,5 +132,11 @@ export function createMuseumExhibits(scene: THREE.Scene, exhibits: MuseumExhibit
       panelMat.map?.dispose(); panelMat.map = map; panelMat.needsUpdate = true;
     }));
   }
+  for (const [material, geometries] of dressing) {
+    const merged = mergeGeometries(geometries, false); geometries.forEach(geometry => geometry.dispose());
+    if (!merged) continue;
+    const mesh = new THREE.Mesh(merged, material); mesh.castShadow = material !== rug; mesh.receiveShadow = true; scene.add(mesh);
+  }
+  [postGeometry, footGeometry, knobGeometry].forEach(geometry => geometry.dispose());
   return { displays, targets, obstacles, loading };
 }

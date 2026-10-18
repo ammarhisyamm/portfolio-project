@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
-import { canvasTexture, coverTexture, loadImage, titleTexture } from "./materials";
+import { PALETTE, canvasTexture, coverTexture, loadImage, skyTexture, titleTexture, wallpaper } from "./materials";
 import type { Obstacle } from "./environment";
 import type { MuseumExhibit } from "./types";
 
@@ -29,19 +29,19 @@ export function createLibraryWing(scene: THREE.Scene, exhibits: MuseumExhibit[],
       while (x < 512) {
         seed = (seed * 16807) % 2147483647;
         const tone = 70 + seed % 22, length = 140 + seed % 120;
-        ctx.fillStyle = `rgb(${tone + 34},${tone + 4},${tone - 24})`; ctx.fillRect(x, row * 64, length - 2, 62);
-        ctx.fillStyle = "rgba(30,16,8,.22)"; for (let i = 0; i < 5; i++) ctx.fillRect(x + (seed >> i) % length, row * 64 + 8 + i * 10, 40, 1);
+        ctx.fillStyle = `rgb(${tone + 140},${tone + 70},${tone - 6})`; ctx.fillRect(x, row * 64, length - 2, 62);
+        ctx.fillStyle = "rgba(120,60,20,.2)"; for (let i = 0; i < 5; i++) ctx.fillRect(x + (seed >> i) % length, row * 64 + 8 + i * 10, 40, 1);
         x += length;
       }
     }
   }));
   boards.wrapS = boards.wrapT = THREE.RepeatWrapping; boards.repeat.set(4, 4);
-  const floor = new THREE.MeshStandardMaterial({ map: boards, color: "#9b7a5c", roughness: .6, metalness: .02 });
-  const plaster = new THREE.MeshStandardMaterial({ color: "#3f2b26", roughness: .92 });
-  const walnut = new THREE.MeshStandardMaterial({ color: "#4a2f1d", roughness: .6 });
-  const darkWood = new THREE.MeshStandardMaterial({ color: "#2b1b11", roughness: .7 });
-  const leather = new THREE.MeshStandardMaterial({ color: "#5c2f22", roughness: .5 });
-  const felt = new THREE.MeshStandardMaterial({ color: "#2f4a3a", roughness: .95 });
+  const floor = new THREE.MeshStandardMaterial({ map: boards, roughness: .45 });
+  const plaster = new THREE.MeshStandardMaterial({ color: "#2f86c4", roughness: .88 }); wallpaper(plaster);
+  const walnut = new THREE.MeshStandardMaterial({ color: PALETTE.wood, roughness: .6 });
+  const darkWood = new THREE.MeshStandardMaterial({ color: PALETTE.woodDeep, roughness: .7 });
+  const leather = new THREE.MeshStandardMaterial({ color: PALETTE.red, roughness: .55 });
+  const felt = new THREE.MeshStandardMaterial({ color: PALETTE.green, roughness: .9 });
   const glassShade = new THREE.MeshStandardMaterial({ color: "#2f6b4a", roughness: .25, metalness: .1, emissive: "#3f8f5f", emissiveIntensity: .55 });
   const paper = new THREE.MeshStandardMaterial({ color: "#efe6d2", roughness: .9 });
   const bulb = new THREE.MeshBasicMaterial({ color: new THREE.Color("#ffe3b0").multiplyScalar(2.6), toneMapped: false });
@@ -103,10 +103,7 @@ export function createLibraryWing(scene: THREE.Scene, exhibits: MuseumExhibit[],
   bookMesh.castShadow = bookMesh.receiveShadow = true; scene.add(bookMesh);
 
   // An arched window between the north shelves.
-  const windowMap = keep(canvasTexture(256, 512, ctx => {
-    const g = ctx.createLinearGradient(0, 0, 0, 512); g.addColorStop(0, "#f0d7aa"); g.addColorStop(.6, "#d9a66e"); g.addColorStop(1, "#7a5232");
-    ctx.fillStyle = g; ctx.fillRect(0, 0, 256, 512);
-  }));
+  const windowMap = keep(skyTexture(256, 512));
   const arch = new THREE.Shape(); arch.moveTo(-.9, 0); arch.lineTo(.9, 0); arch.lineTo(.9, 2.6); arch.absarc(0, 2.6, .9, 0, Math.PI, false); arch.closePath();
   const pane = new THREE.Mesh(new THREE.ShapeGeometry(arch, 24), new THREE.MeshBasicMaterial({ map: windowMap, toneMapped: false }));
   pane.rotation.y = Math.PI; pane.position.set(-22.35, 1.5, 9.87); wing.add(pane);
@@ -144,7 +141,7 @@ export function createLibraryWing(scene: THREE.Scene, exhibits: MuseumExhibit[],
   // The newest articles hang on the west wall as framed broadsheets.
   const posts = exhibits.filter(item => item.room === "blog" && item.post).slice(0, 3);
   const slots = [6.3, 3.3, .3];
-  const frameFor = () => new THREE.MeshStandardMaterial({ color: "#a17b42", metalness: .78, roughness: .32, emissive: "#bd8b48", emissiveIntensity: 0 });
+  const frameFor = () => new THREE.MeshStandardMaterial({ color: PALETTE.gold, metalness: .45, roughness: .32, emissive: "#ffc861", emissiveIntensity: 0 });
   const loading: Promise<void>[] = [];
   posts.forEach((exhibit, index) => {
     const z = slots[index], frame = frameFor();
@@ -181,7 +178,7 @@ export function createLibraryWing(scene: THREE.Scene, exhibits: MuseumExhibit[],
 
   // Light: a pendant over the table, a wash on the article wall, the corner lamp.
   cylinder(-21.6, 5.5, 3.1, .012, .012, 2.2, brass);
-  const pendant = cylinder(-21.6, 4.3, 3.1, .12, .55, .4, new THREE.MeshStandardMaterial({ color: "#2b3328", metalness: .5, roughness: .4, side: THREE.DoubleSide }), 28); pendant.castShadow = false;
+  const pendant = cylinder(-21.6, 4.3, 3.1, .12, .55, .4, new THREE.MeshStandardMaterial({ color: PALETTE.gold, metalness: .45, roughness: .35, side: THREE.DoubleSide }), 28); pendant.castShadow = false;
   const pendantBulb = new THREE.Mesh(new THREE.SphereGeometry(.09, 12, 8), bulb); pendantBulb.position.set(-21.6, 4.1, 3.1); scene.add(pendantBulb);
   const table = new THREE.PointLight("#ffd29a", mobile ? 16 : 22, 11, 1.6); table.position.set(-21.6, 3.95, 3.1); scene.add(table);
   const wash = new THREE.SpotLight("#ffcb88", mobile ? 36 : 50, 13, .7, .7, 1.6); wash.position.set(-24.5, 6, 3.1); wash.target.position.set(-30.1, 2.6, 3.1); scene.add(wash, wash.target);

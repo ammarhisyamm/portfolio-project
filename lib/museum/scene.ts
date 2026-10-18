@@ -37,9 +37,7 @@ const moveKeys = new Set(["KeyW", "KeyA", "KeyS", "KeyD", "ArrowUp", "ArrowLeft"
 
 export async function createMuseumScene(config: Config): Promise<MuseumController> {
   const { mount, signal, reducedMotion: reduce } = config;
-  const [marbleImage, knitImage] = await Promise.all([
-    loadImage("/museum/emperador-marble.webp"), loadImage("/museum/character-knit-v3.webp"),
-  ]);
+  const knitImage = await loadImage("/museum/character-knit-v3.webp");
   if (signal.aborted) throw new DOMException("Cancelled", "AbortError");
   const mobile = window.matchMedia("(pointer: coarse)").matches || mount.clientWidth < 700;
   // Desktop renders into the composer's own multisampled target, so the canvas needs no antialiasing of its own.
@@ -47,24 +45,24 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, mobile ? 1.25 : 1.5));
   renderer.setSize(mount.clientWidth, mount.clientHeight);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.12;
+  // Neutral tone mapping keeps the storybook colours saturated in the highlights.
+  renderer.toneMapping = THREE.NeutralToneMapping;
+  renderer.toneMappingExposure = 1;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFShadowMap;
   renderer.domElement.setAttribute("aria-label", "Interactive 3D museum. Use WASD or the arrow keys to walk, drag to look around, and E to inspect a nearby display.");
   renderer.domElement.tabIndex = 0;
   mount.appendChild(renderer.domElement);
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color("#1a120b");
-  scene.fog = new THREE.FogExp2("#26190e", .011);
+  scene.background = new THREE.Color("#f6dcb8");
+  scene.fog = new THREE.FogExp2("#f3dcc0", .0035);
   const camera = new THREE.PerspectiveCamera(mobile ? 63 : 52, mount.clientWidth / mount.clientHeight, .1, 85);
   const pmrem = new THREE.PMREMGenerator(renderer);
   const roomEnvironment = new RoomEnvironment();
   const environmentTarget = pmrem.fromScene(roomEnvironment, .04);
-  scene.environment = environmentTarget.texture; scene.environmentIntensity = .3;
+  scene.environment = environmentTarget.texture; scene.environmentIntensity = .45;
   roomEnvironment.dispose(); pmrem.dispose();
-  const marbleMap = new THREE.Texture(marbleImage ?? undefined); marbleMap.colorSpace = THREE.SRGBColorSpace; marbleMap.needsUpdate = !!marbleImage; marbleMap.anisotropy = 4;
-  const environment = createMuseumEnvironment(scene, marbleMap, mobile);
+  const environment = createMuseumEnvironment(scene, mobile);
   const gallery = createMuseumExhibits(scene, config.data.exhibits, environment.marble, signal);
   const studio = createStudioWing(scene, config.data.exhibits, environment.brass, mobile, signal);
   const library = createLibraryWing(scene, config.data.exhibits, environment.marble, environment.brass, mobile, signal);
@@ -76,17 +74,18 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
   const composer = mobile ? null : new EffectComposer(renderer, new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType, samples: 2 }));
   composer?.setSize(mount.clientWidth, mount.clientHeight);
   const renderPass = composer ? new RenderPass(scene, camera) : null;
-  const bloom = composer ? new UnrealBloomPass(new THREE.Vector2(mount.clientWidth, mount.clientHeight), .3, .55, 1) : null;
-  // A warm grade (amber shadows, golden highlights) and a soft vignette give
-  // the halls the deep, candle-lit look of the concept frames.
+  const bloom = composer ? new UnrealBloomPass(new THREE.Vector2(mount.clientWidth, mount.clientHeight), .22, .5, 1.6) : null;
+  // A light grade: a little extra saturation, warm highlights and a soft
+  // vignette, for the bright, painted look of a cosy game room.
   const grade = composer ? new ShaderPass({
-    uniforms: { tDiffuse: { value: null }, vignette: { value: .38 } },
+    uniforms: { tDiffuse: { value: null }, vignette: { value: .16 } },
     vertexShader: "varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }",
     fragmentShader: `uniform sampler2D tDiffuse; uniform float vignette; varying vec2 vUv;
       void main() {
         vec4 c = texture2D(tDiffuse, vUv);
         float l = dot(c.rgb, vec3(.2126, .7152, .0722));
-        c.rgb *= mix(vec3(1.02, .93, .8), vec3(1.06, .99, .88), smoothstep(0., 1., l));
+        c.rgb = max(mix(vec3(l), c.rgb, 1.14), 0.);
+        c.rgb *= mix(vec3(.98, .96, 1.03), vec3(1.03, 1., .96), smoothstep(0., 1., l));
         vec2 d = vUv - .5;
         c.rgb *= 1. - vignette * smoothstep(.12, .62, dot(d, d) * 2.);
         gl_FragColor = c;
@@ -121,9 +120,7 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
     return texture;
   };
   const bubble = new THREE.Sprite(new THREE.SpriteMaterial({ map: bubbleText("Hi there! Can I help you find something?"), transparent: true, opacity: 0, depthWrite: false, toneMapped: false }));
-  // Layer 1 keeps the bubble out of the floor reflection: the reflector clones the camera
-  // now, before layer 1 is enabled, so its copy only ever sees layer 0.
-  bubble.scale.set(2, .81, 1); bubble.position.set(1.9, 2.62, 10.4); bubble.layers.set(1); environment.reflection?.getReflectionCamera(camera); camera.layers.enable(1); scene.add(bubble);
+  bubble.scale.set(2, .81, 1); bubble.position.set(1.9, 2.62, 10.4); scene.add(bubble);
   let greetUntil = 0, happyUntil = 0, grumpyUntil = 0, asked = false, wasNear = false, intro = !reduce;
   const pokes: number[] = [], catPokes: number[] = [], guideTarget = new THREE.Vector3(), bubbleView = new THREE.Vector3();
   const hasCat = config.data.exhibits.some(item => item.id === "secret-cat");
@@ -147,7 +144,7 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
   const dustPositions = new Float32Array(mobile ? 150 : 450);
   for (let i = 0; i < dustPositions.length; i += 3) { dustPositions[i] = Math.sin(i * 12.7) * 12; dustPositions[i + 1] = 1 + ((i * 13) % 83) / 10; dustPositions[i + 2] = -29 + ((i * 11) % 40); }
   dustGeometry.setAttribute("position", new THREE.BufferAttribute(dustPositions, 3));
-  const dust = new THREE.Points(dustGeometry, new THREE.PointsMaterial({ color: "#d5b679", size: .026, transparent: true, opacity: .38, depthWrite: false, sizeAttenuation: true }));
+  const dust = new THREE.Points(dustGeometry, new THREE.PointsMaterial({ color: "#fff1c9", size: .03, transparent: true, opacity: .5, depthWrite: false, sizeAttenuation: true }));
   scene.add(dust);
 
   function collision(x: number, z: number) {
@@ -366,6 +363,8 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
   }
   signal.addEventListener("abort", dispose, { once: true });
   Promise.allSettled([...gallery.loading, ...library.loading]).then(() => { if (!disposed) config.onReady(); });
+  // Development only: place the visitor anywhere, for checking the scene in a browser.
+  if (process.env.NODE_ENV === "development") Object.assign(window, { __museum: { place(x: number, z: number, look: number) { intro = false; destination = null; avatar.root.position.set(x, 0, z); yaw = look; avatar.root.rotation.y = Math.PI - look; }, info: () => { renderer.render(scene, camera); return { ...renderer.info.render, ...renderer.info.memory }; } } });
   return {
     visit(next) {
       if (paused) return;
