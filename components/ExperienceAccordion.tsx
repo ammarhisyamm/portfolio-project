@@ -30,11 +30,17 @@ export default function ExperienceAccordion({ items }: { items: ExperienceItem[]
                 <div className="flex min-w-0 items-center gap-4">
                   {job.logo && (
                     <span className="grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-[10px] border border-line bg-white p-1.5">
-                      {/* Logos are shown in grayscale and turn to full colour on hover. */}
+                      {/* Logos are shown in grayscale and turn to full colour on hover.
+                          Logos marked logoBlack are shown as solid black instead, since the
+                          purple reads too faint in grayscale. */}
                       <img
                         src={job.logo}
                         alt=""
-                        className="max-h-full max-w-full object-contain grayscale transition duration-300 group-hover:grayscale-0"
+                        className={`max-h-full max-w-full object-contain transition duration-300 ${
+                          job.logoBlack
+                            ? "brightness-0 group-hover:brightness-100"
+                            : "grayscale group-hover:grayscale-0"
+                        }`}
                       />
                     </span>
                   )}

@@ -72,6 +72,8 @@ export type ExperienceItem = {
   points: string[];
   images: string[];
   logo?: string;
+  /** Show the logo as a solid black mark, and its colour on hover. */
+  logoBlack?: boolean;
 };
 
 export type ExplorationItem = {
@@ -227,6 +229,7 @@ const CV_WORKING_EXPERIENCE: ExperienceItem[] = [
     role: "UI/UX Designer - Freelance",
     period: "May 2025 - Jul 2026",
     logo: "/experience-logos/lets-vibe-digital.png",
+    logoBlack: true,
     points: [
       "Designed responsive web applications for Australian enterprise clients, including Big Rock Developments, RenoPlus, VV Construction, and VSCO Pty.",
       "Delivered the end-to-end design process from visual direction and wireframes to responsive UI and stakeholder revisions.",
