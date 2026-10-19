@@ -632,7 +632,7 @@ export const DEFAULTS: SiteContent = {
   trust: trustItems.map((label) => ({ label, image: "" })),
   hero: {
     name: "Hisyam",
-    title: "Senior UX/UI & Product Designer",
+    title: "Product Designer (UI/UX)",
     headline: "I design thoughtful digital products that make complex experiences feel simple.",
     intro:
       "I help teams turn ideas into clear, useful, and engaging experiences across fintech, SaaS, marketplaces, dashboards, and AI-powered products.",
