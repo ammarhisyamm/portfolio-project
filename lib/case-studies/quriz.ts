@@ -11,6 +11,7 @@ export const quriz: CaseStudy = {
   hero_description: "Quriz turns Quran practice into short quizzes: match an ayah to its translation, find the ayah from a translation, continue a verse or guess the surah. Streaks and XP bring people back; a review path turns mistakes into the next session.",
   hero_image: `${P}/cover.mp4`, hero_image_alt: "A walkthrough of Quriz on mobile: home, choosing a surah, answering a quiz question, progress and badges",
   thumbnail: `${P}/cover-poster.webp`, cover_video: `${P}/cover.mp4`, thumbnail_alt: "A walkthrough of Quriz on mobile: home, choosing a surah, answering a quiz question, progress and badges",
+  live_url: "https://quriz.online",
   client: "Independent product", role: "Product designer and builder", timeline: "September to October 2026", scope: "UX - UI - Illustration direction - Front end", team: "Solo", project_type: "Learning product",
   blocks: [
     block("OVERVIEW", "At a glance", "A two-minute habit, not a course.", "", {
@@ -20,6 +21,18 @@ export const quriz: CaseStudy = {
         { label: "My role", title: "End to end", body: "Product framing, UX, UI and illustration direction for the game world, then I built the front end myself." },
         { label: "Outcome", title: "Live, three iterations", body: "Live at quriz.online. The interface went from a flat system to a painted game world in five weeks." },
       ],
+    }),
+    block("RESULT_SHOWCASE", "The result", "The finished product, screen by screen.", "The painted game world as shipped. The iterations and the practice loop follow below.", {
+      layout: "phone",
+      steps: [
+        { title: "Home: consistency and one big start button", image: `${P}/v3-home.webp`, alt: "Quriz home with weekly consistency and the Mulai latihan button" },
+        { title: "Pick a juz or surah", image: `${P}/v3-setup.webp`, alt: "Mulai latihan sheet with Juz and Surah options" },
+        { title: "Answer and listen", image: `${P}/v3-quiz.webp`, alt: "Quiz question asking which surah an ayah comes from" },
+        { title: "Progress: XP, minutes and sessions", image: `${P}/v3-progress.webp`, alt: "Progress screen with total points and recent sessions" },
+        { title: "Badges as framed collectibles", image: `${P}/v3-badges.webp`, alt: "Profile achievements with framed badges" },
+        { title: "Profile as a trophy shelf", image: `${P}/v3-profile.webp`, alt: "The painted profile with badge frames" },
+      ],
+      caption: "Screens rendered from the final Quriz commit with sample data.",
     }),
     block("CONTEXT", "The opportunity", "Good intentions, no small next step.", "Many people want to stay close to the Quran every day, but the available tools ask for a big commitment: read a whole page, follow a course, memorise a surah. Quriz asks for two minutes and a few taps, then shows what to practise next."),
     block("AFFINITY_BOARD", "Research", "Framing the problem on a wall of notes.", "Before designing screens I grouped what I knew and what I assumed about daily practice. Notes marked as assumptions are the ones the product still needs to validate.", {

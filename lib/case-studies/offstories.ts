@@ -11,6 +11,7 @@ export const offstories: CaseStudy = {
   hero_description: "OffStories brings the checklist, budget, vendors, guests, timeline and notes into one workspace for two. A short guided setup turns a few answers into a first plan that already understands akad, resepsi, adat and Rupiah.",
   hero_image: `${P}/cover.mp4`, hero_image_alt: "A walkthrough of OffStories: the seven-question smart setup on desktop, then the dashboard, checklist and budget, with the mobile app alongside",
   thumbnail: `${P}/cover-poster.webp`, cover_video: `${P}/cover.mp4`, thumbnail_alt: "A walkthrough of OffStories: the seven-question smart setup on desktop, then the dashboard, checklist and budget, with the mobile app alongside",
+  live_url: "https://offstories.fun",
   client: "Independent product", role: "Product designer and builder", timeline: "June to October 2026", scope: "Research - UX - UI - Onboarding - Front end", team: "Solo", project_type: "Collaborative web app",
   blocks: [
     block("OVERVIEW", "At a glance", "A planner that knows how an Indonesian wedding works.", "", {
@@ -20,6 +21,19 @@ export const offstories: CaseStudy = {
         { label: "My role", title: "End to end", body: "Desk research, information architecture, onboarding and interface design, then I built the front end myself." },
         { label: "Outcome", title: "Live and free", body: "Live at offstories.fun with partner invites, RSVP links, a public invitation page and an English and Indonesian interface." },
       ],
+    }),
+    block("RESULT_SHOWCASE", "The result", "The finished product, screen by screen.", "The shipped workspace on desktop and mobile. How it got here follows below.", {
+      layout: "desktop",
+      steps: [
+        { title: "Dashboard: countdown and the next best step", image: `${P}/dashboard.webp`, alt: "OffStories dashboard with countdown, progress, budget, vendors and guests" },
+        { title: "Budget: paid, committed, remaining", image: `${P}/budget.webp`, alt: "Budget tracker with paid, committed and remaining totals" },
+        { title: "Checklist with progress per category", image: `${P}/checklist.webp`, alt: "Master checklist with progress by category and tasks marked done" },
+        { title: "Guests with RSVP and side", image: `${P}/guests.webp`, alt: "Guest list with invited, confirmed, pending and declined counts" },
+        { title: "Timeline and milestones", image: `${P}/timeline.webp`, alt: "Timeline with milestones by month" },
+        { title: "Mobile: dashboard", image: `${P}/mobile-dashboard.webp`, frame: "phone", alt: "Mobile dashboard with the countdown and planning progress" },
+        { title: "Mobile: budget", image: `${P}/mobile-budget.webp`, frame: "phone", alt: "Mobile budget tracker with paid, committed and remaining totals" },
+      ],
+      caption: "All screens use sample data for a fictional couple.",
     }),
     block("CONTEXT", "The opportunity", "Couples plan for months, with tools that were never built for it.", "A typical Indonesian wedding has two ceremonies, two families, a few hundred guests and a budget in the hundreds of millions of Rupiah. Most couples run it from a spreadsheet and a WhatsApp group, and the spreadsheet is always one version behind the chat."),
     block("COMPARE_SLIDER", "Before and after", "From five places to one.", "Drag across the screen. On the left is the planning stack most couples already use; on the right is the same wedding inside OffStories.", {

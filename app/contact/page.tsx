@@ -17,7 +17,7 @@ export default async function ContactPage() {
           Have a product, problem, or idea in mind?
         </h1>
         <p className="max-w-[560px] leading-relaxed text-sub">
-          I&rsquo;m open to selected collaborations, product design projects, and conversations
+          I&rsquo;m open to full-time product design roles, selected projects, and conversations
           about creating better digital experiences.
         </p>
       </Reveal>

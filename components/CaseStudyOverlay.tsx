@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowLeft, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, X } from "lucide-react";
+import Link from "next/link";
 import type { CaseStudy } from "@/lib/content";
 import { caseStudyCover } from "@/lib/case-study-visuals";
 import Media from "./Media";
@@ -17,10 +18,6 @@ function projectInfo(cs: CaseStudy): [string, string][] {
     ["Scope", cs.scope],
     ["Team", cs.team],
     ["Platform", cs.platform],
-    ["Project type", cs.project_type],
-    ["Year", cs.year],
-    ["Industry", cs.industry],
-    ["Status", cs.project_status],
   ];
   for (const [label, value] of fields) {
     if (value && value.trim()) rows.push([label, value]);
@@ -31,9 +28,14 @@ function projectInfo(cs: CaseStudy): [string, string][] {
 export default function CaseStudyOverlay({
   cs,
   onClose,
+  next,
+  onNext,
 }: {
   cs: CaseStudy | null;
   onClose: () => void;
+  /** The study to offer at the end, so a reader never hits a dead end. */
+  next?: CaseStudy | null;
+  onNext?: (study: CaseStudy) => void;
 }) {
   useEffect(() => {
     if (!cs) return;
@@ -58,6 +60,7 @@ export default function CaseStudyOverlay({
     <AnimatePresence>
       {cs && (
         <motion.div
+          key={cs.slug}
           role="dialog"
           aria-modal="true"
           aria-label={`${cs.title} case study`}
@@ -88,7 +91,7 @@ export default function CaseStudyOverlay({
               </button>
             </div>
 
-            <div className="grid gap-3 pb-16 pt-4 md:gap-4">
+            <div className="grid grid-cols-[minmax(0,1fr)] gap-3 pb-16 pt-4 md:gap-4">
               <div className="panel grid gap-5 p-5 sm:p-8">
                 {meta && <span className="kicker">{meta}</span>}
                 <h2 className="text-[clamp(26px,4vw,32px)] font-normal leading-[1.08] tracking-[-0.05em]">
@@ -98,6 +101,17 @@ export default function CaseStudyOverlay({
                   <p className="max-w-[640px] text-[15px] leading-[1.7] text-sub sm:text-[16px]">
                     {cs.hero_description}
                   </p>
+                )}
+                {cs.live_url && (
+                  <a
+                    href={cs.live_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex w-fit items-center gap-1.5 text-[14px] font-medium text-ink underline decoration-line underline-offset-4 hover:decoration-ink"
+                  >
+                    Visit the live product: {cs.live_url.replace(/^https?:\/\//, "")}
+                    <ArrowUpRight size={15} aria-hidden="true" />
+                  </a>
                 )}
               </div>
 
@@ -124,12 +138,46 @@ export default function CaseStudyOverlay({
               )}
 
               {blocks.length > 0 && (
-                <div className="grid gap-3 md:gap-4">
+                <div className="grid grid-cols-[minmax(0,1fr)] gap-3 md:gap-4">
                   {blocks.map((b, i) => (
                     <CaseStudyBlockView key={`${i}-${b.block_type}`} block={b} />
                   ))}
                 </div>
               )}
+
+              {next && onNext && (
+                <button
+                  type="button"
+                  onClick={() => onNext(next)}
+                  aria-label={`Next case study: ${next.title}`}
+                  className="group mt-6 grid gap-4 border-t border-line pt-8 text-left"
+                >
+                  <span className="kicker">Next case study</span>
+                  <span
+                    className="relative block aspect-[16/9] w-full overflow-hidden rounded-[16px] border-8 border-white bg-bg sm:rounded-[20px]"
+                    style={{ boxShadow: "0 1px 2px rgba(22,22,22,.04), 0 8px 24px -12px rgba(22,22,22,.06)" }}
+                  >
+                    <Media
+                      src={next.thumbnail || caseStudyCover(next.slug)}
+                      alt={next.thumbnail_alt || `Visual for ${next.title}`}
+                      label={next.title}
+                      imgClassName="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02]"
+                    />
+                  </span>
+                  <span className="flex items-baseline justify-between gap-4">
+                    <span className="text-[clamp(20px,3.2vw,26px)] font-medium leading-tight tracking-[-0.045em]">{next.title}</span>
+                    <ArrowRight size={20} aria-hidden="true" className="shrink-0 self-center text-ink transition-transform duration-300 group-hover:translate-x-1" />
+                  </span>
+                  {next.short_description && <span className="max-w-[560px] text-[15px] leading-relaxed text-sub">{next.short_description}</span>}
+                </button>
+              )}
+
+              <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-line pt-6">
+                <span className="text-[15px] text-sub">Hiring a product designer?</span>
+                <Link href="/contact" className="btn btn-primary">
+                  Get in touch
+                </Link>
+              </div>
             </div>
           </div>
         </motion.div>

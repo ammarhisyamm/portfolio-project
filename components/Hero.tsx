@@ -56,7 +56,7 @@ export default function Hero({ name, title, headline, intro, available, email, s
             className="inline-flex items-center gap-2 rounded-full border border-line bg-panel px-3.5 py-1.5 text-xs font-medium text-sub"
           >
             <span className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-accent" />
-            {available ? "Available for selected projects" : "Currently booked"}
+            {available ? "Open to full-time roles and projects" : "Currently booked"}
           </span>
           <div data-hero-fade>
             <Socials items={socials} />

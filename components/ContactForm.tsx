@@ -19,6 +19,7 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>;
 
 const PROJECT_TYPES = [
+  "Full-time role",
   "Product design",
   "UX/UI design",
   "Design system",
@@ -45,7 +46,7 @@ export default function ContactForm({ email }: { email: string }) {
     });
     const data = (await res.json().catch(() => ({}))) as { error?: string };
     if (!res.ok) {
-      setFormError(data.error || "Gagal mengirim. Coba lagi nanti.");
+      setFormError(data.error || "Something went wrong. Please try again, or email me directly.");
       return;
     }
     setSent(true);

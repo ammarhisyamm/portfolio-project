@@ -5,6 +5,7 @@ import AffinityBoard from "./case-study/AffinityBoard";
 import CompareSlider from "./case-study/CompareSlider";
 import DeviceFrame from "./case-study/DeviceFrame";
 import FlowPlayer from "./case-study/FlowPlayer";
+import ResultShowcase from "./case-study/ResultShowcase";
 
 const ARTICLE_TYPES = new Set([
   "INTRO",
@@ -126,6 +127,15 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
           {cards}
         </section>
       );
+
+    case "RESULT_SHOWCASE":
+      return block.steps?.length ? (
+        <section className="grid min-w-0 gap-3 md:gap-4">
+          {header("The result")}
+          <ResultShowcase steps={block.steps} frame={frame} />
+          {caption}
+        </section>
+      ) : null;
 
     case "PROBLEM_STATEMENT":
       return (

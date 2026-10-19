@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { gsap } from "@/lib/gsap";
 import { reducedMotion } from "@/lib/utils";
 import type { CaseStudy } from "@/lib/content";
@@ -88,6 +88,10 @@ export default function FeaturedWork({
                 {p.short_description}
               </p>
             )}
+            <span className="-mt-1 inline-flex items-center gap-1.5 text-[13px] font-medium text-ink">
+              {p.role ? `${p.role} · ` : ""}Read case study
+              <ArrowRight size={14} aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-0.5" />
+            </span>
           </div>
         </button>
       ))}

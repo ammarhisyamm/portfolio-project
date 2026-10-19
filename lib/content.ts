@@ -9,7 +9,7 @@ import { withGraphicDesign } from "./graphic-design";
 export type Metric = { value: string; label: string };
 
 /** One frame of a walkthrough or one version in an evolution strip. */
-export type CaseStudyStep = { title: string; description?: string; image: string; alt?: string };
+export type CaseStudyStep = { title: string; description?: string; image: string; alt?: string; /** Device frame for this screen; defaults to the block layout. */ frame?: "phone" | "desktop" };
 
 /** A cluster on the research wall: its sticky notes and what they add up to. */
 export type CaseStudyNoteGroup = { theme: string; color: string; notes: string[]; insight?: string };
@@ -56,6 +56,8 @@ export type CaseStudy = {
   /** Looping MP4 used as the cover wherever the study is shown; thumbnail stays its still frame. */
   cover_video?: string;
   thumbnail_alt: string;
+  /** Public URL of the shipped product, linked from the case study header. */
+  live_url?: string;
   client: string;
   role: string;
   timeline: string;
