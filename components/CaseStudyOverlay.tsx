@@ -91,7 +91,7 @@ export default function CaseStudyOverlay({
               </button>
             </div>
 
-            <div className="grid gap-3 pb-16 pt-4 md:gap-4">
+            <div className="grid grid-cols-[minmax(0,1fr)] gap-3 pb-16 pt-4 md:gap-4">
               <div className="panel grid gap-5 p-5 sm:p-8">
                 {meta && <span className="kicker">{meta}</span>}
                 <h2 className="text-[clamp(26px,4vw,32px)] font-normal leading-[1.08] tracking-[-0.05em]">
@@ -138,7 +138,7 @@ export default function CaseStudyOverlay({
               )}
 
               {blocks.length > 0 && (
-                <div className="grid gap-3 md:gap-4">
+                <div className="grid grid-cols-[minmax(0,1fr)] gap-3 md:gap-4">
                   {blocks.map((b, i) => (
                     <CaseStudyBlockView key={`${i}-${b.block_type}`} block={b} />
                   ))}

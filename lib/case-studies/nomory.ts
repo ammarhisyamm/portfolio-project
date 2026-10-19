@@ -22,6 +22,20 @@ export const nomory: CaseStudy = {
         { label: "Outcome", title: "Live and installable", body: "Live at nomory.site as an installable web app. It works without an account; signing in syncs memories across devices." },
       ],
     }),
+    block("RESULT_SHOWCASE", "The result", "The finished product, screen by screen.", "The shipped diary on mobile. The walkthrough below shows how the screens connect.", {
+      layout: "phone",
+      steps: [
+        { title: "Today: greeting, streak and meals", image: `${P}/screen-today.webp`, alt: "Nomory daily diary with a streak and today's meals" },
+        { title: "Add a meal in two taps", image: `${P}/screen-add.webp`, alt: "Add a meal sheet with Take a photo and Choose from library" },
+        { title: "A memory, not a record", image: `${P}/screen-meal.webp`, alt: "Meal detail with the photo first and date, price, rating and note below" },
+        { title: "Calendar by the meals you had", image: `${P}/screen-calendar.webp`, alt: "Calendar with meal photo thumbnails on each day" },
+        { title: "Memories archive", image: `${P}/screen-memories.webp`, alt: "Memories archive grouped by day with a summary" },
+        { title: "Search by dish, note or place", image: `${P}/screen-search.webp`, alt: "Search screen with a field for meal name, note or location" },
+        { title: "Onboarding", image: `${P}/onboarding-1.webp`, alt: "Onboarding screen: Start with a photo" },
+        { title: "Profile", image: `${P}/screen-profile.webp`, alt: "Nomory profile screen" },
+      ],
+      caption: "All screens use sample data.",
+    }),
     block("CONTEXT", "The opportunity", "We photograph food all the time, and almost never look again.", "A camera roll is a great place to collect meal photos and a poor place to remember them. Calorie trackers ask for too much and frame food as a number. Nomory sits in between: a personal diary where the meal is a small memory, not a data entry."),
     block("COMPARE_SLIDER", "Before and after", "From a camera roll to a diary.", "Drag across the screen. On the left, meal photos lost among screenshots and receipts; on the right, the same day in Nomory.", {
       media: media(`${P}/before-camera-roll.webp`, `${P}/screen-today.webp`),
