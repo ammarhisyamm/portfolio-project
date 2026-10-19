@@ -17,7 +17,7 @@ export const quriz: CaseStudy = {
       cards: [
         { label: "Problem", title: "Practice has no daily shape", body: "Quran apps are excellent for reading and listening, but there is rarely a small, repeatable way to check what you remember." },
         { label: "Approach", title: "Short quizzes, real feedback", body: "Four quiz modes by juz or surah, ayah audio, streaks and XP, and a one-tap review of every wrong answer." },
-        { label: "My role", title: "End to end", body: "Product framing, UX, UI, illustration direction for the game world, and the front end, across 143 commits." },
+        { label: "My role", title: "End to end", body: "Product framing, UX, UI and illustration direction for the game world, then I built the front end myself." },
         { label: "Outcome", title: "Live, three iterations", body: "Live at quriz.online. The interface went from a flat system to a painted game world in five weeks." },
       ],
     }),
@@ -88,12 +88,12 @@ export const quriz: CaseStudy = {
         { title: "Arabic done properly", body: "Surah names and ayahs are isolated as right-to-left Arabic, so mixed Indonesian and Arabic lines never scramble." },
       ],
     }),
-    block("METRIC_HIGHLIGHT", "By the numbers", "Five weeks of iteration.", "Project facts from the repository. Usage metrics are not claimed here.", {
+    block("METRIC_HIGHLIGHT", "By the numbers", "Five weeks of iteration.", "What shipped, counted in the product.", {
       metrics: [
-        { value: "143", label: "Commits from September to October 2026" },
-        { value: "3", label: "Visual directions shipped" },
+        { value: "3", label: "Visual directions shipped in five weeks" },
         { value: "4", label: "Quiz modes" },
         { value: "114", label: "Surahs open from day one" },
+        { value: "1 tap", label: "From a wrong answer to its review" },
       ],
     }),
     block("OUTCOME", "Outcome", "A live practice loop from question to review.", "Quriz is live at quriz.online with Google sign-in, four quiz modes, ayah audio, a consistency calendar, badges and a review path for wrong answers.", { supporting_text: "Next, I want to measure repeat practice within a week, how often people use the mistake review, and whether the painted direction changes either." }),

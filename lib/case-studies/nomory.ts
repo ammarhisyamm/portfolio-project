@@ -17,7 +17,7 @@ export const nomory: CaseStudy = {
       cards: [
         { label: "Problem", title: "Food photos lose their story", body: "Meal photos sit between receipts and screenshots. A month later nobody remembers where it was, who was there or what it cost." },
         { label: "Approach", title: "Photo first, details later", body: "Save a meal in two taps, add context only if you want, then get it back through a calendar, an archive and search." },
-        { label: "My role", title: "End to end", body: "Problem framing, UX, UI, motion and the front end, including local-first storage and optional cloud sync, across 144 commits." },
+        { label: "My role", title: "End to end", body: "Problem framing, UX, UI, motion and the front end, then I built it myself, including local-first storage and optional cloud sync." },
         { label: "Outcome", title: "Live and installable", body: "Live at nomory.site as an installable web app. It works without an account; signing in syncs memories across devices." },
       ],
     }),
@@ -94,12 +94,12 @@ export const nomory: CaseStudy = {
       ],
       caption: "All screens use sample data.",
     }),
-    block("METRIC_HIGHLIGHT", "By the numbers", "Built and refined in one month.", "Project facts from the repository. Usage metrics are not claimed here.", {
+    block("METRIC_HIGHLIGHT", "By the numbers", "Less to fill in, more ways back.", "The design goals, counted in the shipped product.", {
       metrics: [
-        { value: "144", label: "Commits in September 2026" },
         { value: "1", label: "Required field to save a meal" },
         { value: "4", label: "Ways back in: Today, Calendar, Memories, Search" },
         { value: "0", label: "Accounts needed to start" },
+        { value: "1 month", label: "From problem framing to a live app" },
       ],
     }),
     block("OUTCOME", "Outcome", "A live diary with a complete capture-to-recall loop.", "Nomory is live at nomory.site as an installable web app. It can be used locally without an account, and signed-in users sync memories across devices.", { supporting_text: "Next, I want to measure whether saved meals lead to return visits over 7 and 30 days, and which optional details people actually fill in." }),

@@ -10,23 +10,38 @@ import { capabilityMeta } from "@/lib/capability-meta";
 import { toolLogos } from "@/lib/tool-logos";
 
 export const metadata: Metadata = {
-  title: "About Us",
+  title: "About",
   description: "Learn about Hisyam's background, design approach, capabilities, and recent work on GitHub.",
 };
 
 export default async function AboutUsPage() {
-  const { about, socials } = await getContent();
+  const { about, socials, contact, experience } = await getContent();
+  const current = experience.find((item) => /present/i.test(item.period));
+  const facts = [
+    current && { label: "Currently", value: `${current.role.split(" - ")[0]} at ${current.company}` },
+    contact.location && { label: "Based in", value: contact.location },
+  ].filter((fact): fact is { label: string; value: string } => Boolean(fact));
   const githubUrl = socials.items.find((item) => item.type === "github")?.href ?? "";
   const username = githubUrl.match(/github\.com\/([^/?#]+)/i)?.[1] ?? "ammarhisyamm";
 
   return (
     <div className="page-stack grid pb-16 pt-3">
       <section className="panel p-5 sm:p-8">
-        <span className="kicker">About Us</span>
-        <h1 className="mt-5 max-w-[640px] text-[clamp(26px,4vw,32px)] font-normal leading-[1.12] tracking-[-0.05em]">
+        <span className="kicker">About</span>
+        <h1 className="mt-5 max-w-[560px] text-balance text-[clamp(28px,4.4vw,36px)] font-normal leading-[1.1] tracking-[-0.05em]">
           {about.introTitle}
         </h1>
-        <p className="mt-5 max-w-[60ch] leading-relaxed text-sub">{about.introBody}</p>
+        <p className="mt-4 max-w-[52ch] leading-relaxed text-sub">{about.introBody}</p>
+        {facts.length > 0 && (
+          <dl className="mt-6 grid gap-x-8 gap-y-3 border-t border-line pt-5 sm:grid-cols-2">
+            {facts.map((fact) => (
+              <div key={fact.label}>
+                <dt className="text-[11px] uppercase tracking-[0.02em] text-muted">{fact.label}</dt>
+                <dd className="mt-1 text-sm">{fact.value}</dd>
+              </div>
+            ))}
+          </dl>
+        )}
         <div className="mt-7 flex flex-wrap gap-3">
           <Link href="/contact" className="btn btn-primary">Get in touch</Link>
           {about.cvUrl && (
