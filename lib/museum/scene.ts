@@ -364,7 +364,7 @@ export async function createMuseumScene(config: Config): Promise<MuseumControlle
   signal.addEventListener("abort", dispose, { once: true });
   Promise.allSettled([...gallery.loading, ...library.loading]).then(() => { if (!disposed) config.onReady(); });
   // Development only: place the visitor anywhere, for checking the scene in a browser.
-  if (process.env.NODE_ENV === "development") Object.assign(window, { __museum: { place(x: number, z: number, look: number) { intro = false; destination = null; avatar.root.position.set(x, 0, z); yaw = look; avatar.root.rotation.y = Math.PI - look; }, info: () => { renderer.render(scene, camera); return { ...renderer.info.render, ...renderer.info.memory }; } } });
+  if (process.env.NODE_ENV === "development") Object.assign(window, { __museum: { select: (id: string) => interact(id), place(x: number, z: number, look: number) { intro = false; destination = null; avatar.root.position.set(x, 0, z); yaw = look; avatar.root.rotation.y = Math.PI - look; }, info: () => { renderer.render(scene, camera); return { ...renderer.info.render, ...renderer.info.memory }; } } });
   return {
     visit(next) {
       if (paused) return;
