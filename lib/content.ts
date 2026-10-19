@@ -4,6 +4,7 @@ import { trustItems, capabilities, industries } from "./projects";
 import { nomory } from "./case-studies/nomory";
 import { offstories } from "./case-studies/offstories";
 import { quriz } from "./case-studies/quriz";
+import { synqra } from "./case-studies/synqra";
 import { withGraphicDesign } from "./graphic-design";
 
 export type Metric = { value: string; label: string };
@@ -768,6 +769,7 @@ const caseStudyBlock = (
 });
 
 const PORTFOLIO_CASE_STUDIES: CaseStudy[] = [
+  synqra,
   offstories,
   nomory,
   quriz,
