@@ -26,13 +26,13 @@ export async function POST(req: NextRequest) {
   const projectType = clean(rec.projectType);
   const message = clean(rec.message);
 
-  if (!name || name.length > 80) return NextResponse.json({ error: "Name wajib diisi." }, { status: 400 });
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return NextResponse.json({ error: "Email tidak valid." }, { status: 400 });
-  if (!projectType || projectType.length > 60) return NextResponse.json({ error: "Pilih tipe proyek." }, { status: 400 });
-  if (message.length < 10 || message.length > 5000) return NextResponse.json({ error: "Pesan 10–5000 karakter." }, { status: 400 });
+  if (!name || name.length > 80) return NextResponse.json({ error: "Please enter your name." }, { status: 400 });
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return NextResponse.json({ error: "Please enter a valid email." }, { status: 400 });
+  if (!projectType || projectType.length > 60) return NextResponse.json({ error: "Please select a project type." }, { status: 400 });
+  if (message.length < 10 || message.length > 5000) return NextResponse.json({ error: "Your message should be 10 to 5000 characters." }, { status: 400 });
 
   const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) return NextResponse.json({ error: "RESEND_API_KEY belum di-set." }, { status: 500 });
+  if (!apiKey) return NextResponse.json({ error: "The contact form is unavailable right now. Please email me directly." }, { status: 500 });
 
   const resend = new Resend(apiKey);
   const { error } = await resend.emails.send({

@@ -11,6 +11,7 @@ export const offstories: CaseStudy = {
   hero_description: "OffStories brings the checklist, budget, vendors, guests, timeline and notes into one workspace for two. A short guided setup turns a few answers into a first plan that already understands akad, resepsi, adat and Rupiah.",
   hero_image: `${P}/cover.mp4`, hero_image_alt: "A walkthrough of OffStories: the seven-question smart setup on desktop, then the dashboard, checklist and budget, with the mobile app alongside",
   thumbnail: `${P}/cover-poster.webp`, cover_video: `${P}/cover.mp4`, thumbnail_alt: "A walkthrough of OffStories: the seven-question smart setup on desktop, then the dashboard, checklist and budget, with the mobile app alongside",
+  live_url: "https://offstories.fun",
   client: "Independent product", role: "Product designer and builder", timeline: "June to October 2026", scope: "Research - UX - UI - Onboarding - Front end", team: "Solo", project_type: "Collaborative web app",
   blocks: [
     block("OVERVIEW", "At a glance", "A planner that knows how an Indonesian wedding works.", "", {

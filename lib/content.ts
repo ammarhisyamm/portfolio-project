@@ -56,6 +56,8 @@ export type CaseStudy = {
   /** Looping MP4 used as the cover wherever the study is shown; thumbnail stays its still frame. */
   cover_video?: string;
   thumbnail_alt: string;
+  /** Public URL of the shipped product, linked from the case study header. */
+  live_url?: string;
   client: string;
   role: string;
   timeline: string;

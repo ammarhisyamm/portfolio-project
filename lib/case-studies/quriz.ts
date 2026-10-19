@@ -11,6 +11,7 @@ export const quriz: CaseStudy = {
   hero_description: "Quriz turns Quran practice into short quizzes: match an ayah to its translation, find the ayah from a translation, continue a verse or guess the surah. Streaks and XP bring people back; a review path turns mistakes into the next session.",
   hero_image: `${P}/cover.mp4`, hero_image_alt: "A walkthrough of Quriz on mobile: home, choosing a surah, answering a quiz question, progress and badges",
   thumbnail: `${P}/cover-poster.webp`, cover_video: `${P}/cover.mp4`, thumbnail_alt: "A walkthrough of Quriz on mobile: home, choosing a surah, answering a quiz question, progress and badges",
+  live_url: "https://quriz.online",
   client: "Independent product", role: "Product designer and builder", timeline: "September to October 2026", scope: "UX - UI - Illustration direction - Front end", team: "Solo", project_type: "Learning product",
   blocks: [
     block("OVERVIEW", "At a glance", "A two-minute habit, not a course.", "", {

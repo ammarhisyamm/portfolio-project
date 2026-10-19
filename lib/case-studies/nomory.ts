@@ -11,6 +11,7 @@ export const nomory: CaseStudy = {
   hero_description: "Nomory keeps the story around a meal, not only the photo: when it happened, where, what it cost and why it mattered. Capture takes a photo and a name; everything else is optional and comes back later through a calendar, a memory archive and search.",
   hero_image: `${P}/cover.mp4`, hero_image_alt: "A walkthrough of Nomory on mobile: onboarding, the daily diary, adding a meal, the meal memory, calendar, archive and search",
   thumbnail: `${P}/cover-poster.webp`, cover_video: `${P}/cover.mp4`, thumbnail_alt: "A walkthrough of Nomory on mobile: onboarding, the daily diary, adding a meal, the meal memory, calendar, archive and search",
+  live_url: "https://nomory.site",
   client: "Independent product", role: "Product designer and builder", timeline: "September 2026", scope: "UX - UI - Interaction design - Front end", team: "Solo", project_type: "Consumer product",
   blocks: [
     block("OVERVIEW", "At a glance", "Lighter than a log, more useful than a camera roll.", "", {

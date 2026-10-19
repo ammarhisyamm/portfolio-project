@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowLeft, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, X } from "lucide-react";
+import Link from "next/link";
 import type { CaseStudy } from "@/lib/content";
 import { caseStudyCover } from "@/lib/case-study-visuals";
 import Media from "./Media";
@@ -17,10 +18,6 @@ function projectInfo(cs: CaseStudy): [string, string][] {
     ["Scope", cs.scope],
     ["Team", cs.team],
     ["Platform", cs.platform],
-    ["Project type", cs.project_type],
-    ["Year", cs.year],
-    ["Industry", cs.industry],
-    ["Status", cs.project_status],
   ];
   for (const [label, value] of fields) {
     if (value && value.trim()) rows.push([label, value]);
@@ -31,9 +28,14 @@ function projectInfo(cs: CaseStudy): [string, string][] {
 export default function CaseStudyOverlay({
   cs,
   onClose,
+  next,
+  onNext,
 }: {
   cs: CaseStudy | null;
   onClose: () => void;
+  /** The study to offer at the end, so a reader never hits a dead end. */
+  next?: CaseStudy | null;
+  onNext?: (study: CaseStudy) => void;
 }) {
   useEffect(() => {
     if (!cs) return;
@@ -58,6 +60,7 @@ export default function CaseStudyOverlay({
     <AnimatePresence>
       {cs && (
         <motion.div
+          key={cs.slug}
           role="dialog"
           aria-modal="true"
           aria-label={`${cs.title} case study`}
@@ -99,6 +102,17 @@ export default function CaseStudyOverlay({
                     {cs.hero_description}
                   </p>
                 )}
+                {cs.live_url && (
+                  <a
+                    href={cs.live_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex w-fit items-center gap-1.5 text-[14px] font-medium text-ink underline decoration-line underline-offset-4 hover:decoration-ink"
+                  >
+                    Visit the live product: {cs.live_url.replace(/^https?:\/\//, "")}
+                    <ArrowUpRight size={15} aria-hidden="true" />
+                  </a>
+                )}
               </div>
 
               {heroImage && (
@@ -130,6 +144,28 @@ export default function CaseStudyOverlay({
                   ))}
                 </div>
               )}
+
+              <div className="panel mt-6 grid gap-5 p-5 sm:grid-cols-2 sm:p-8">
+                {next && onNext && (
+                  <button
+                    type="button"
+                    onClick={() => onNext(next)}
+                    className="group grid content-start gap-2 text-left"
+                  >
+                    <span className="kicker">Next case study</span>
+                    <span className="flex items-center gap-2 text-[clamp(18px,2.4vw,22px)] leading-snug tracking-[-0.04em]">
+                      {next.title}
+                      <ArrowRight size={16} aria-hidden="true" className="shrink-0 transition-transform group-hover:translate-x-0.5" />
+                    </span>
+                  </button>
+                )}
+                <div className="grid content-start gap-3">
+                  <span className="kicker">Hiring a product designer?</span>
+                  <Link href="/contact" className="btn btn-primary w-fit">
+                    Get in touch
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
         </motion.div>
