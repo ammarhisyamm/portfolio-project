@@ -145,26 +145,38 @@ export default function CaseStudyOverlay({
                 </div>
               )}
 
-              <div className="panel mt-6 grid gap-5 p-5 sm:grid-cols-2 sm:p-8">
-                {next && onNext && (
-                  <button
-                    type="button"
-                    onClick={() => onNext(next)}
-                    className="group grid content-start gap-2 text-left"
+              {next && onNext && (
+                <button
+                  type="button"
+                  onClick={() => onNext(next)}
+                  aria-label={`Next case study: ${next.title}`}
+                  className="group mt-6 grid gap-4 border-t border-line pt-8 text-left"
+                >
+                  <span className="kicker">Next case study</span>
+                  <span
+                    className="relative block aspect-[16/9] w-full overflow-hidden rounded-[16px] border-8 border-white bg-bg sm:rounded-[20px]"
+                    style={{ boxShadow: "0 1px 2px rgba(22,22,22,.04), 0 8px 24px -12px rgba(22,22,22,.06)" }}
                   >
-                    <span className="kicker">Next case study</span>
-                    <span className="flex items-center gap-2 text-[clamp(18px,2.4vw,22px)] leading-snug tracking-[-0.04em]">
-                      {next.title}
-                      <ArrowRight size={16} aria-hidden="true" className="shrink-0 transition-transform group-hover:translate-x-0.5" />
-                    </span>
-                  </button>
-                )}
-                <div className="grid content-start gap-3">
-                  <span className="kicker">Hiring a product designer?</span>
-                  <Link href="/contact" className="btn btn-primary w-fit">
-                    Get in touch
-                  </Link>
-                </div>
+                    <Media
+                      src={next.thumbnail || caseStudyCover(next.slug)}
+                      alt={next.thumbnail_alt || `Visual for ${next.title}`}
+                      label={next.title}
+                      imgClassName="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02]"
+                    />
+                  </span>
+                  <span className="flex items-baseline justify-between gap-4">
+                    <span className="text-[clamp(20px,3.2vw,26px)] font-medium leading-tight tracking-[-0.045em]">{next.title}</span>
+                    <ArrowRight size={20} aria-hidden="true" className="shrink-0 self-center text-ink transition-transform duration-300 group-hover:translate-x-1" />
+                  </span>
+                  {next.short_description && <span className="max-w-[560px] text-[15px] leading-relaxed text-sub">{next.short_description}</span>}
+                </button>
+              )}
+
+              <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-line pt-6">
+                <span className="text-[15px] text-sub">Hiring a product designer?</span>
+                <Link href="/contact" className="btn btn-primary">
+                  Get in touch
+                </Link>
               </div>
             </div>
           </div>
