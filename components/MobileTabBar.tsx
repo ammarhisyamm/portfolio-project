@@ -6,7 +6,7 @@ import { House, UserRound, BriefcaseBusiness, Mail, NotebookPen } from "lucide-r
 
 const TABS = [
   { href: "/", label: "Home", Icon: House },
-  { href: "/about-us", label: "About Us", Icon: UserRound },
+  { href: "/about-us", label: "About", Icon: UserRound },
   { href: "/blog", label: "Blog", Icon: NotebookPen },
   { href: "/contact", label: "Contact", Icon: Mail },
 ];

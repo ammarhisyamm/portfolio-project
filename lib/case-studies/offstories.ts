@@ -17,7 +17,7 @@ export const offstories: CaseStudy = {
       cards: [
         { label: "Problem", title: "Planning is scattered", body: "Budgets live in spreadsheets, decisions in family group chats, quotes in DMs. One partner ends up relaying everything." },
         { label: "Approach", title: "One shared workspace", body: "Checklist, budget, vendors, guests and timeline in one place, opened by a seven-question setup that drafts the first plan." },
-        { label: "My role", title: "End to end", body: "Desk research, information architecture, onboarding, interface design and the front end, across 215 commits." },
+        { label: "My role", title: "End to end", body: "Desk research, information architecture, onboarding and interface design, then I built the front end myself." },
         { label: "Outcome", title: "Live and free", body: "Live at offstories.fun with partner invites, RSVP links, a public invitation page and an English and Indonesian interface." },
       ],
     }),
@@ -104,12 +104,12 @@ export const offstories: CaseStudy = {
         { title: "Guests", image: "", alt: "Mobile guest list with RSVP counts" },
       ],
     }),
-    block("METRIC_HIGHLIGHT", "By the numbers", "Built and shipped, then refined.", "Project facts from the repository. Usage metrics are not claimed here.", {
+    block("METRIC_HIGHLIGHT", "By the numbers", "Research that became product defaults.", "Each number is something the research put into the product, not a usage claim.", {
       metrics: [
-        { value: "215", label: "Commits from June to October 2026" },
-        { value: "7", label: "Setup questions, up from 5 after research" },
         { value: "12", label: "Cities with local per-guest pricing" },
         { value: "8", label: "Adat traditions with their processions" },
+        { value: "5 → 7", label: "Setup questions after research" },
+        { value: "5 months", label: "From desk research to a live product" },
       ],
     }),
     block("OUTCOME", "Outcome", "A live, free workspace for two.", "OffStories is live at offstories.fun. Couples can run the smart setup, invite a partner, send RSVP links, publish an invitation page, track gifts and export their data.", { supporting_text: "Next, I want to measure setup completion, partner invite acceptance and weekly active workspaces, and interview couples who finish their wedding inside the product." }),

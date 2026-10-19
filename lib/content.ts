@@ -632,23 +632,21 @@ export const DEFAULTS: SiteContent = {
   trust: trustItems.map((label) => ({ label, image: "" })),
   hero: {
     name: "Hisyam",
-    title: "Senior UX/UI & Product Designer",
+    title: "Product Designer (UI/UX)",
     headline: "I design thoughtful digital products that make complex experiences feel simple.",
     intro:
       "I help teams turn ideas into clear, useful, and engaging experiences across fintech, SaaS, marketplaces, dashboards, and AI-powered products.",
     available: true,
   },
   about: {
-    introTitle:
-      "Hey, I'm Hisyam — a strategy-driven product designer with more than 15 years of experience creating scalable digital experiences.",
+    introTitle: "Hey, I'm Hisyam. I design B2B and AI products that feel simple to use.",
     introBody:
-      "I enjoy shaping a product from the early question through to a considered interface and a practical handoff. My work is grounded in attention to people, business context, and the small details that make a product feel trustworthy.",
-    philosophyTitle: "Complexity should be resolved long before it reaches the interface.",
+      "Product designer with 4.5+ years of experience, taking products from the first research question to a clean developer handoff.",
+    philosophyTitle: "Make the complex legible.",
     philosophyBody:
-      "I design with structure and restraint. Every layout, flow, and pattern should earn its place and make the next decision easier for both users and the team building it.",
+      "I design with structure and restraint. Every flow, screen, and pattern should earn its place and make the next decision easier for both users and the team building it.",
     background: [
-      "More than 15 years across product teams, agencies, and client work — spanning fintech, SaaS, marketplaces, education, security, communication, and AI-powered platforms.",
-      "From strategy and research to interaction, visual systems, and developer handoff, I stay involved across the full arc of a product.",
+      "In-house, agency, and freelance work across fintech, SaaS, marketplaces, education, security, communication, and AI. I stay involved from strategy and research through interaction, visual design, and developer handoff.",
     ],
     tools:
       "Figma, FigJam, Adobe tools, Photopea, Notion, and AI-assisted design and research tools. I work openly with product, engineering, and stakeholders to turn decisions into momentum.",

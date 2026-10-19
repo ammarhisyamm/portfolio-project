@@ -14,7 +14,7 @@ export default function SiteHeader({ logo, workLabel }: { logo?: string; workLab
 
   const LINKS = [
     { href: "/", label: "Home" },
-    { href: "/about-us", label: "About Us" },
+    { href: "/about-us", label: "About" },
     { href: "/blog", label: "Blog" },
     { href: "/contact", label: "Contact" },
   ];

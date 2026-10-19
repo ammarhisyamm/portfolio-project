@@ -21,12 +21,12 @@ const FALLBACK_ICON = `data:image/svg+xml,${encodeURIComponent(
 )}`;
 
 const DESCRIPTION =
-  "Hisyam is a Jakarta-based senior UX/UI and product designer creating thoughtful digital products across fintech, SaaS, marketplaces, and AI-powered experiences.";
+  "Hisyam is a Jakarta-based product designer creating thoughtful digital products across fintech, SaaS, marketplaces, and AI-powered experiences.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Hisyam — Senior UX/UI & Product Designer",
+    default: "Hisyam — Product Designer (UI/UX)",
     template: "%s — Hisyam",
   },
   description: DESCRIPTION,
@@ -36,13 +36,13 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: "Hisyam Design",
-    title: "Hisyam — Senior UX/UI & Product Designer",
+    title: "Hisyam — Product Designer (UI/UX)",
     description: DESCRIPTION,
     url: "/",
     locale: "en_US",
     images: [{ url: "/case-studies/nomory-cover.webp", width: 1672, height: 941, alt: "Hisyam's portfolio" }],
   },
-  twitter: { card: "summary_large_image", title: "Hisyam — Senior UX/UI & Product Designer", description: DESCRIPTION, images: ["/case-studies/nomory-cover.webp"] },
+  twitter: { card: "summary_large_image", title: "Hisyam — Product Designer (UI/UX)", description: DESCRIPTION, images: ["/case-studies/nomory-cover.webp"] },
   robots: { index: true, follow: true },
 };
 

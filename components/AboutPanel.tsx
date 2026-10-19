@@ -27,13 +27,10 @@ export default function AboutPanel({
           <span className=" text-[11px] uppercase text-muted">Email</span>
           {contact.email}
         </a>
-        <a
-          href={linkedin}
-          className="flex items-center justify-between gap-4 border-b border-line py-3 text-[13px] no-underline"
-        >
+        <div className="flex items-center justify-between gap-4 border-b border-line py-3 text-[13px]">
           <span className=" text-[11px] uppercase text-muted">Location</span>
           {contact.location}
-        </a>
+        </div>
         <a href={linkedin} className="flex items-center justify-between gap-4 border-b border-line py-3 text-[13px] no-underline">
           <span className=" text-[11px] uppercase text-muted">LinkedIn</span>
           View profile
