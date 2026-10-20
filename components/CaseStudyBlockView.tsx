@@ -83,7 +83,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
   // "natural" keeps a presentation slide at its own proportions instead of cropping it to 16:9; cropped sources (?crop=) still fill the frame.
   const natural = block.layout === "natural";
   const figure = (src: string, overlay?: string, className?: string, showCaption = true) => (
-    <figure className={className}>
+    <figure key={src} className={className}>
       <div className={`relative w-full overflow-hidden rounded-[14px] border border-line bg-bg sm:rounded-[18px] ${natural && !src.includes("crop=") ? "" : "aspect-[16/9]"}`}>
         {natural && !src.includes("crop=") ? (
           <img src={src} alt={block.alt_text || block.caption || "Case study visual"} loading="lazy" decoding="async" className="block h-auto w-full" />
