@@ -80,10 +80,16 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
     </div>
   );
 
+  // "natural" keeps a presentation slide at its own proportions instead of cropping it to 16:9; cropped sources (?crop=) still fill the frame.
+  const natural = block.layout === "natural";
   const figure = (src: string, overlay?: string, className?: string, showCaption = true) => (
     <figure className={className}>
-      <div className="relative aspect-[16/9] w-full overflow-hidden rounded-[14px] border border-line bg-bg sm:rounded-[18px]">
-        <Media src={src} alt={block.alt_text || block.caption || "Case study visual"} label={block.caption || "Media"} />
+      <div className={`relative w-full overflow-hidden rounded-[14px] border border-line bg-bg sm:rounded-[18px] ${natural && !src.includes("crop=") ? "" : "aspect-[16/9]"}`}>
+        {natural && !src.includes("crop=") ? (
+          <img src={src} alt={block.alt_text || block.caption || "Case study visual"} loading="lazy" decoding="async" className="block h-auto w-full" />
+        ) : (
+          <Media src={src} alt={block.alt_text || block.caption || "Case study visual"} label={block.caption || "Media"} />
+        )}
         {overlay && (
           <span className="absolute left-3 top-3 rounded-full border border-white/20 bg-black/45 px-3 py-1  text-[10px] uppercase tracking-[0.08em] text-white backdrop-blur">
             {overlay}
@@ -487,7 +493,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
           </div>
           {cards}
           {medias.length > 0 && (
-            <div className={`grid gap-3 md:gap-4 ${block.block_type === "USER_FLOW" && medias.length === 3 ? "grid-cols-1 sm:grid-cols-3" : medias.length > 1 ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1"}`}>
+            <div className={`grid gap-3 md:gap-4 ${block.block_type === "USER_FLOW" && medias.length === 3 ? "grid-cols-1 sm:grid-cols-3" : medias.length > 1 && !natural ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1"}`}>
               {medias.map((m, i) => {
                 const flowLabels = ["Capture a meal", "Keep the context", "Find it again"];
                 if (block.block_type !== "USER_FLOW" || medias.length !== 3) return figure(m, undefined, undefined, i === 0);

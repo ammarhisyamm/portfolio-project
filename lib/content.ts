@@ -4,6 +4,7 @@ import { trustItems, capabilities, industries } from "./projects";
 import { nomory } from "./case-studies/nomory";
 import { offstories } from "./case-studies/offstories";
 import { quriz } from "./case-studies/quriz";
+import { jeam } from "./case-studies/jeam";
 import { synqra } from "./case-studies/synqra";
 import { withGraphicDesign } from "./graphic-design";
 
@@ -751,47 +752,12 @@ function withProcess(value: unknown): ProcessContent {
   };
 }
 
-const caseStudyBlock = (
-  block_type: string,
-  eyebrow: string,
-  heading: string,
-  description: string,
-  supporting_text = ""
-): CaseStudyBlock => ({
-  block_type,
-  eyebrow,
-  heading,
-  description,
-  supporting_text,
-  media: "",
-  caption: "",
-  alt_text: "",
-  metrics: [],
-  layout: "",
-  visible: true,
-});
-
 const PORTFOLIO_CASE_STUDIES: CaseStudy[] = [
   synqra,
   offstories,
   nomory,
   quriz,
-  {
-    slug: "jeam", title: "Jeam", published: true, featured: true, featured_order: 1,
-    year: "2024", category: "Mobile product - Fitness training", industry: "Health and fitness", platform: "Mobile", project_status: "Concept",
-    short_description: "A mobile fitness training concept designed around flexible routines, tailored guidance, and motivation between sessions.",
-    hero_headline: "A more personal path to everyday fitness.",
-    hero_description: "Jeam explores how a trainer-led fitness product can make personalized workout guidance feel flexible, encouraging, and easy to return to.",
-    hero_image: "", hero_image_alt: "", thumbnail: "", thumbnail_alt: "", client: "Concept project", role: "UI/UX Designer", timeline: "2024", scope: "Mobile UX - UI design - Product concept", team: "Collaborative project", project_type: "Fitness mobile app",
-    blocks: [
-      caseStudyBlock("INTRO", "The opportunity", "Fitness guidance should flex around real schedules.", "Jeam is a fitness trainer mobile concept that explores personalized programs, accessible sessions, and the motivation that helps people stay engaged between workouts.", "The work focuses on the mobile experience and product framing rather than making claims about a shipped service."),
-      caseStudyBlock("CHALLENGE", "The design problem", "Generic routines and rigid timing are easy to abandon.", "The concept starts from a familiar fitness tension: people need guidance that fits their goals and availability, but not another complex plan to manage. The interface has to make a program feel tailored while keeping the next workout easy to find.", "Motivation also needs to be supportive, not performative."),
-      caseStudyBlock("DESIGN_DIRECTION", "Product strategy", "Connect a clear plan with flexible sessions.", "The proposed experience centers on a personalized training path, on-demand workout sessions, and guidance that can adapt to a person’s level and preferences. Community and feedback are treated as optional support layers, not requirements before someone can start.", "This keeps the product useful for both beginners and people returning to a routine."),
-      caseStudyBlock("UI_DESIGN", "Interface direction", "Keep movement, progress, and coaching legible at a glance.", "The mobile visual system prioritizes active states, session information, and clear calls to action. High contrast and strong hierarchy help the most important decision stand out: what to do next.", "The final visual direction is documented in the original Behance project."),
-      caseStudyBlock("OUTCOME", "Current outcome", "A documented mobile product concept with a public design presentation.", "Jeam is presented as a concept case study. No product adoption or outcome metrics are claimed because a public measurement source was not available during this audit.", "The value of the work is the product framing and interface direction, not an invented business result."),
-      caseStudyBlock("REFLECTION", "What comes next", "Test the moments that decide whether a routine becomes a habit.", "A next validation step would compare onboarding confidence, first-session completion, and return behavior across different levels of program personalization."),
-    ],
-  },
+  jeam,
 ];
 
 /** Studies kept out of the portfolio for now, whatever the CMS says. */
