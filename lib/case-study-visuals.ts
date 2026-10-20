@@ -8,7 +8,7 @@ const FALLBACK_COVERS: Record<string, string> = {
   offstories: "/case-studies/offstories/cover-poster.webp",
   nomory: "/case-studies/nomory-cover.webp",
   quriz: "/case-studies/quriz-cover.webp",
-  jeam: "/case-studies/jeam-cover.webp",
+  jeam: "/case-studies/jeam/cover-poster.webp",
 };
 
 export function caseStudyCover(slug: string) {
