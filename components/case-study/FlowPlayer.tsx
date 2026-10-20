@@ -56,39 +56,60 @@ export default function FlowPlayer({ steps, frame, autoplay = true }: { steps: C
     </>
   );
 
-  const list = (
-    <ol className={frame === "phone" ? "grid content-center gap-1.5" : "-mx-1 flex snap-x gap-1.5 overflow-x-auto px-1 pb-1"}>
-      {steps.map((step, i) => (
-        <li key={step.image} className={frame === "phone" ? "" : "min-w-[150px] flex-1 snap-start"}>
-          <button
-            type="button"
-            onClick={() => setActive(i)}
-            aria-current={i === active ? "step" : undefined}
-            className={`group relative grid w-full gap-1 overflow-hidden rounded-[12px] border px-3.5 py-3 text-left transition-colors ${i === active ? "border-[#e3e3e3] bg-panel" : "border-transparent hover:bg-panel/70"}`}
-          >
-            <span className="flex items-baseline gap-2">
-              <span className={`text-[11px] tabular-nums ${i === active ? "text-ink" : "text-muted"}`}>{String(i + 1).padStart(2, "0")}</span>
-              <span className={`text-[13.5px] font-medium leading-snug ${i === active ? "text-ink" : "text-sub"}`}>{step.title}</span>
-            </span>
-            {step.description && frame === "phone" && (
-              <span className={`pl-7 text-[12.5px] leading-relaxed text-muted ${i === active ? "block" : "hidden sm:block"}`}>{step.description}</span>
-            )}
-            {autoplay && (
-              <span className="absolute inset-x-0 bottom-0 h-[2px] bg-[#efefef]" aria-hidden="true">
-                {i === active && (
-                  <span
-                    key={`${active}-${running}`}
-                    className="flow-progress block h-full bg-ink"
-                    style={{ animationDuration: `${STEP_MS}ms`, animationPlayState: running ? "running" : "paused" }}
-                  />
-                )}
+  const progress = (i: number) =>
+    autoplay && (
+      <span className={frame === "phone" ? "absolute inset-x-0 bottom-0 h-[2px] bg-[#efefef]" : "mt-auto block h-[2px] overflow-hidden rounded-full bg-[#ececec]"} aria-hidden="true">
+        {i === active && (
+          <span
+            key={`${active}-${running}`}
+            className="flow-progress block h-full bg-ink"
+            style={{ animationDuration: `${STEP_MS}ms`, animationPlayState: running ? "running" : "paused" }}
+          />
+        )}
+      </span>
+    );
+
+  const list =
+    frame === "phone" ? (
+      <ol className="grid content-center gap-1.5">
+        {steps.map((step, i) => (
+          <li key={step.image}>
+            <button
+              type="button"
+              onClick={() => setActive(i)}
+              aria-current={i === active ? "step" : undefined}
+              className={`group relative grid w-full gap-1 overflow-hidden rounded-[12px] border px-3.5 py-3 text-left transition-colors ${i === active ? "border-[#e3e3e3] bg-panel" : "border-transparent hover:bg-panel/70"}`}
+            >
+              <span className="flex items-baseline gap-2">
+                <span className={`text-[11px] tabular-nums ${i === active ? "text-ink" : "text-muted"}`}>{String(i + 1).padStart(2, "0")}</span>
+                <span className={`text-[13.5px] font-medium leading-snug ${i === active ? "text-ink" : "text-sub"}`}>{step.title}</span>
               </span>
-            )}
-          </button>
-        </li>
-      ))}
-    </ol>
-  );
+              {step.description && (
+                <span className={`pl-7 text-[12.5px] leading-relaxed text-muted ${i === active ? "block" : "hidden sm:block"}`}>{step.description}</span>
+              )}
+              {progress(i)}
+            </button>
+          </li>
+        ))}
+      </ol>
+    ) : (
+      <ol className="-mx-1 flex snap-x gap-2.5 overflow-x-auto px-1 pb-1 sm:gap-3">
+        {steps.map((step, i) => (
+          <li key={step.image} className="flex min-w-[170px] flex-1 snap-start">
+            <button
+              type="button"
+              onClick={() => setActive(i)}
+              aria-current={i === active ? "step" : undefined}
+              className={`flex w-full flex-col gap-1.5 rounded-[14px] border p-4 text-left transition-colors ${i === active ? "border-[#e3e3e3] bg-panel shadow-[0_8px_24px_-18px_rgba(22,22,22,.35)]" : "border-[#ededed] bg-transparent hover:bg-panel/70"}`}
+            >
+              <span className={`text-[11px] tabular-nums tracking-[0.04em] ${i === active ? "text-ink" : "text-muted"}`}>{String(i + 1).padStart(2, "0")}</span>
+              <span className={`pb-3 text-[14px] font-medium leading-snug tracking-[-0.01em] ${i === active ? "text-ink" : "text-sub"}`}>{step.title}</span>
+              {progress(i)}
+            </button>
+          </li>
+        ))}
+      </ol>
+    );
 
   return (
     <div
@@ -103,8 +124,8 @@ export default function FlowPlayer({ steps, frame, autoplay = true }: { steps: C
         <DeviceFrame kind={frame}>{screen}</DeviceFrame>
         {list}
       </div>
-      <div className="flex items-center justify-between gap-3 px-1">
-        <p className="text-[12px] leading-relaxed text-muted" aria-live="polite">
+      <div className={`flex items-center justify-between gap-4 px-1 ${frame === "desktop" ? "border-t border-[#ededed] pt-4" : ""}`}>
+        <p className={frame === "desktop" ? "max-w-[560px] text-[13px] leading-[1.65] text-sub" : "text-[12px] leading-relaxed text-muted"} aria-live="polite">
           {frame === "desktop" && current.description ? current.description : `Step ${active + 1} of ${steps.length}`}
         </p>
         {autoplay && (

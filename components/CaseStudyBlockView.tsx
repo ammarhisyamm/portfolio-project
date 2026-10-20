@@ -99,15 +99,35 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
   );
 
   const frame = block.layout === "desktop" ? "desktop" : "phone";
+  const kicker = (fallback: string) => (
+    <span className="kicker flex flex-wrap items-center gap-2">
+      {block.eyebrow || fallback}
+      {block.draft && (
+        <span title="Placeholder research. Replace it with real data, then remove draft from this block." className="rounded-full border border-dashed border-[#c9a227] bg-[#fdf8e6] px-2 py-0.5 text-[10px] normal-case tracking-normal text-[#7a6114]">
+          Sample data
+        </span>
+      )}
+    </span>
+  );
   const header = (fallback: string) => (
     <div className="grid gap-4 border-t border-line pt-8">
-      <span className="kicker">{block.eyebrow || fallback}</span>
+      {kicker(fallback)}
       {text}
     </div>
   );
   const caption = block.caption && <p className="px-1 text-[12px] leading-relaxed text-sub">{block.caption}</p>;
   const numbered = block.block_type === "INSIGHTS" || block.block_type === "DESIGN_DIRECTION";
-  const cards = !block.cards?.length ? null : block.layout === "list" ? (
+  const cards = !block.cards?.length ? null : block.layout === "quotes" ? (
+    <div className={`grid gap-3 ${block.cards.length > 1 ? "sm:grid-cols-2" : ""}`}>
+      {block.cards.map((card, i, all) => (
+        <figure key={card.title} className={`grid content-start gap-4 rounded-[14px] border border-line bg-panel p-5 sm:rounded-[18px] ${all.length > 1 && all.length % 2 && i === all.length - 1 ? "sm:col-span-2" : ""}`}>
+          <blockquote className="text-[17px] leading-[1.45] tracking-[-0.02em] text-ink">“{card.title}”</blockquote>
+          {card.label && <figcaption className="text-[11px] uppercase tracking-[0.06em] text-muted">{card.label}</figcaption>}
+          {card.body && <p className="border-t border-line pt-3 text-[13px] leading-[1.6] text-sub">{card.body}</p>}
+        </figure>
+      ))}
+    </div>
+  ) : block.layout === "list" ? (
     <ol className="grid border-t border-line">
       {block.cards.map((card, i) => (
         <li key={card.title} className="grid gap-1 border-b border-line py-4 sm:grid-cols-[56px_220px_1fr] sm:gap-4">
@@ -121,6 +141,11 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
     <div className={`grid gap-3 ${block.cards.length > 2 ? "sm:grid-cols-2" : ""}`}>
       {block.cards.map((card, i, all) => (
         <div key={card.title} className={`grid content-start gap-2 rounded-[14px] border border-line bg-panel p-5 sm:rounded-[18px] ${all.length > 2 && all.length % 2 && i === all.length - 1 ? "sm:col-span-2" : ""}`}>
+          {card.image && (
+            <div className="relative -mx-2 -mt-2 mb-2 aspect-[16/10] overflow-hidden rounded-[10px] border border-line bg-bg sm:rounded-[12px]">
+              <img src={card.image} alt={`${card.label || card.title} screenshot`} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover object-top" />
+            </div>
+          )}
           <span className="text-[11px] uppercase tracking-[0.06em] text-muted">{card.label || (numbered ? String(i + 1).padStart(2, "0") : "")}</span>
           <h3 className="text-[16px] font-medium leading-snug tracking-[-0.02em] text-ink">{card.title}</h3>
           <p className="text-[13.5px] leading-[1.65] text-sub">{card.body}</p>
@@ -219,7 +244,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
       return (
         <section className="grid gap-3 md:gap-4">
           <div className="grid gap-4 border-t border-line pt-8">
-            <span className="kicker">{block.eyebrow || "Metrics"}</span>
+            {kicker("Metrics")}
             <div className="grid gap-4">
               {block.heading && <h2 className="text-[clamp(24px,3vw,34px)] leading-[1.12] tracking-[-0.05em]">{block.heading}</h2>}
               {block.description && <p className="max-w-[620px] text-[15px] leading-[1.7] text-sub">{block.description}</p>}
@@ -248,6 +273,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
               ))}
             </div>
           )}
+          {cards}
           {block.supporting_text && (
             <p className="max-w-[620px] border-l border-line-strong pl-4 text-[13px] leading-[1.65] text-muted">{block.supporting_text}</p>
           )}
@@ -258,7 +284,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
       return (
         <section className="grid gap-3 md:gap-4">
           <div className="grid gap-4 border-t border-line pt-8">
-            <span className="kicker">{block.eyebrow || "Quote"}</span>
+            {kicker("Quote")}
             <figure className="grid gap-5">
               <blockquote className="text-[clamp(22px,3vw,32px)] font-normal leading-[1.25] tracking-[-0.04em]">
                 {block.description || block.heading}
@@ -277,7 +303,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
       return (
         <section className="grid gap-3 md:gap-4">
           <div className="grid gap-4 border-t border-line pt-8">
-            <span className="kicker">{block.eyebrow || "Gallery"}</span>
+            {kicker("Gallery")}
             <div className="grid gap-4">
               {block.heading && <h2 className="text-[clamp(24px,3vw,34px)] leading-[1.12] tracking-[-0.05em]">{block.heading}</h2>}
               {block.description && <p className="max-w-[620px] text-[15px] leading-[1.7] text-sub">{block.description}</p>}
@@ -317,7 +343,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
         return (
           <section className="grid gap-3 md:gap-4">
             <div className="grid gap-4 border-t border-line pt-8">
-              <span className="kicker">{block.eyebrow || "Detail"}</span>
+              {kicker("Detail")}
               {text}
             </div>
           </section>
@@ -328,7 +354,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
         <section className="grid gap-3 md:gap-4">
           <div className="grid gap-6">
             <div className="grid gap-4">
-              <span className="kicker">{block.eyebrow || "Detail"}</span>
+              {kicker("Detail")}
               {text}
             </div>
             {figure(medias[0])}
@@ -363,7 +389,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
       return medias.length > 0 ? (
         <section className="grid gap-3 md:gap-4">
           <div className="grid gap-4 border-t border-line pt-8">
-            <span className="kicker">{block.eyebrow || "Before / After"}</span>
+            {kicker("Before / After")}
             <div className="grid gap-4">
               {block.heading && <h2 className="text-[clamp(24px,3vw,34px)] leading-[1.12] tracking-[-0.05em]">{block.heading}</h2>}
               {block.description && <p className="max-w-[620px] text-[15px] leading-[1.7] text-sub">{block.description}</p>}
@@ -381,7 +407,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
       return (
         <section className="grid gap-3 md:gap-4">
           <div className="grid gap-4 border-t border-line pt-8">
-            <span className="kicker">{block.eyebrow || "Video"}</span>
+            {kicker("Video")}
             <div className="grid gap-4">
               {block.heading && <h2 className="text-[clamp(24px,3vw,34px)] leading-[1.12] tracking-[-0.05em]">{block.heading}</h2>}
               {block.description && <p className="max-w-[620px] text-[15px] leading-[1.7] text-sub">{block.description}</p>}
@@ -411,7 +437,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
         return (
           <section className="grid gap-3 md:gap-4">
             <div className="grid gap-4 border-t border-line pt-8">
-              <span className="kicker">{block.eyebrow || "Prototype"}</span>
+              {kicker("Prototype")}
               <div className="grid gap-4">
                 {block.heading && <h2 className="text-[clamp(24px,3vw,34px)] leading-[1.12] tracking-[-0.05em]">{block.heading}</h2>}
                 {block.description && <p className="max-w-[620px] text-[15px] leading-[1.7] text-sub">{block.description}</p>}
@@ -448,7 +474,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
       return (
         <section className="grid gap-3 md:gap-4">
           <div className="grid gap-4 border-t border-line pt-8">
-            <span className="kicker">{block.eyebrow || block.block_type.replaceAll("_", " ")}</span>
+            {kicker(block.block_type.replaceAll("_", " "))}
             <div className="grid gap-4">
               {block.heading && <h2 className="text-[clamp(24px,3vw,34px)] leading-[1.12] tracking-[-0.05em]">{block.heading}</h2>}
               {block.description && <p className="max-w-[620px] text-[15px] leading-[1.7] text-sub">{block.description}</p>}
