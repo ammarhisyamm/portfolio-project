@@ -1,12 +1,15 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ArrowRight, ArrowUpRight, ChevronDown } from "lucide-react";
 import { gsap } from "@/lib/gsap";
 import { reducedMotion } from "@/lib/utils";
 import type { CaseStudy } from "@/lib/content";
 import { caseStudyCover } from "@/lib/case-study-visuals";
 import Media from "./Media";
+
+/** Studies shown before "View all work"; the rest stay one click away. */
+const INITIAL_COUNT = 3;
 
 export default function FeaturedWork({
   caseStudies,
@@ -16,6 +19,8 @@ export default function FeaturedWork({
   onOpen: (cs: CaseStudy) => void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const [showAll, setShowAll] = useState(false);
+  const visible = showAll ? caseStudies : caseStudies.slice(0, INITIAL_COUNT);
 
   useEffect(() => {
     if (reducedMotion()) return;
@@ -40,7 +45,7 @@ export default function FeaturedWork({
 
   return (
     <div ref={ref}>
-      {caseStudies.map((p, i) => (
+      {visible.map((p, i) => (
         <button
           key={p.slug}
           type="button"
@@ -95,6 +100,19 @@ export default function FeaturedWork({
           </div>
         </button>
       ))}
+      {caseStudies.length > INITIAL_COUNT && (
+        <div className="border-t border-line pt-7 sm:pt-9">
+          <button
+            type="button"
+            onClick={() => setShowAll((current) => !current)}
+            aria-expanded={showAll}
+            className="inline-flex min-h-11 items-center gap-2 rounded-full border border-line bg-panel px-5 text-[13px] font-medium text-ink transition-colors hover:bg-bg"
+          >
+            {showAll ? "Show less" : `View all work (${caseStudies.length})`}
+            <ChevronDown size={15} aria-hidden="true" className={`transition-transform duration-300 ${showAll ? "rotate-180" : ""}`} />
+          </button>
+        </div>
+      )}
     </div>
   );
 }
