@@ -107,17 +107,40 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
   );
   const caption = block.caption && <p className="px-1 text-[12px] leading-relaxed text-sub">{block.caption}</p>;
   const numbered = block.block_type === "INSIGHTS" || block.block_type === "DESIGN_DIRECTION";
-  const cards = block.cards?.length ? (
-    <div className={`grid gap-3 ${block.cards.length > 2 ? "sm:grid-cols-2" : ""}`}>
+  const cards = !block.cards?.length ? null : block.layout === "list" ? (
+    <ol className="grid border-t border-line">
       {block.cards.map((card, i) => (
-        <div key={card.title} className="grid content-start gap-2 rounded-[14px] border border-line bg-panel p-5 sm:rounded-[18px]">
+        <li key={card.title} className="grid gap-1 border-b border-line py-4 sm:grid-cols-[56px_220px_1fr] sm:gap-4">
+          <span className="text-[11px] uppercase tracking-[0.06em] text-muted">{card.label || String(i + 1).padStart(2, "0")}</span>
+          <h3 className="text-[15px] font-medium leading-snug tracking-[-0.02em] text-ink">{card.title}</h3>
+          <p className="text-[13.5px] leading-[1.65] text-sub">{card.body}</p>
+        </li>
+      ))}
+    </ol>
+  ) : (
+    <div className={`grid gap-3 ${block.cards.length > 2 ? "sm:grid-cols-2" : ""}`}>
+      {block.cards.map((card, i, all) => (
+        <div key={card.title} className={`grid content-start gap-2 rounded-[14px] border border-line bg-panel p-5 sm:rounded-[18px] ${all.length > 2 && all.length % 2 && i === all.length - 1 ? "sm:col-span-2" : ""}`}>
           <span className="text-[11px] uppercase tracking-[0.06em] text-muted">{card.label || (numbered ? String(i + 1).padStart(2, "0") : "")}</span>
           <h3 className="text-[16px] font-medium leading-snug tracking-[-0.02em] text-ink">{card.title}</h3>
           <p className="text-[13.5px] leading-[1.65] text-sub">{card.body}</p>
+          {[["Strengths", "+", card.pros], ["Gaps", "−", card.cons]].map(([title, mark, items]) =>
+            (items as string[] | undefined)?.length ? (
+              <div key={title as string} className="mt-2 grid gap-1.5 border-t border-line pt-3">
+                <span className="text-[11px] uppercase tracking-[0.06em] text-muted">{title as string}</span>
+                {(items as string[]).map((item) => (
+                  <p key={item} className="grid grid-cols-[14px_1fr] text-[13px] leading-[1.55] text-sub">
+                    <span aria-hidden="true" className="text-ink">{mark as string}</span>
+                    {item}
+                  </p>
+                ))}
+              </div>
+            ) : null
+          )}
         </div>
       ))}
     </div>
-  ) : null;
+  );
 
   switch (block.block_type) {
     case "OVERVIEW":
@@ -208,9 +231,25 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
                 <div key={i} className="rounded-[14px] border border-line bg-panel p-5 sm:rounded-[18px]">
                   <div className="text-[clamp(28px,3.6vw,46px)] font-medium leading-none tracking-[-0.05em]">{m.value}</div>
                   <div className="mt-3  text-[11px] uppercase tracking-[0.02em] text-muted">{m.label}</div>
+                  {m.bar && (
+                    <div className="mt-4 grid gap-2 border-t border-line pt-4 text-[12px] text-sub">
+                      {[["Before", m.bar.from, m.bar.fromLabel, "bg-[#c4c4c4]"], ["Target", m.bar.to, m.bar.toLabel, "bg-ink"]].map(([name, pct, text, tone]) => (
+                        <div key={name as string} className="grid grid-cols-[52px_1fr_auto] items-center gap-3">
+                          <span className="text-muted">{name as string}</span>
+                          <span className="h-2 overflow-hidden rounded-full bg-[#ededed]">
+                            <span className={`block h-full rounded-full ${tone as string}`} style={{ width: `${pct as number}%` }} />
+                          </span>
+                          <span className="text-ink">{text as string}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
+          )}
+          {block.supporting_text && (
+            <p className="max-w-[620px] border-l border-line-strong pl-4 text-[13px] leading-[1.65] text-muted">{block.supporting_text}</p>
           )}
         </section>
       );
@@ -294,9 +333,31 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
             </div>
             {figure(medias[0])}
           </div>
+          {cards}
         </section>
       );
     }
+
+    case "STAGES":
+      return block.cards?.length ? (
+        <section className="grid gap-3 md:gap-4">
+          {header("Stages")}
+          <ol className="grid gap-3 md:grid-cols-4 md:gap-0">
+            {block.cards.map((card, i) => (
+              <li key={card.title} className="relative grid content-start gap-2 border-l border-line pb-2 pl-5 md:border-l-0 md:border-t md:pl-0 md:pr-5 md:pt-5">
+                <span aria-hidden="true" className={`absolute -left-[5px] top-1 h-[9px] w-[9px] rounded-full md:-top-[5px] md:left-0 ${card.label ? "border border-ink bg-panel" : "bg-ink"}`} />
+                <span className="text-[11px] uppercase tracking-[0.06em] text-muted">
+                  {String(i + 1).padStart(2, "0")}
+                  {card.label && <span className="ml-2 rounded-full border border-line px-2 py-0.5 normal-case tracking-normal text-ink">{card.label}</span>}
+                </span>
+                <h3 className="text-[16px] font-medium leading-snug tracking-[-0.02em] text-ink">{card.title}</h3>
+                <p className="text-[13.5px] leading-[1.65] text-sub">{card.body}</p>
+              </li>
+            ))}
+          </ol>
+          {caption}
+        </section>
+      ) : null;
 
     case "BEFORE_AFTER":
       return medias.length > 0 ? (

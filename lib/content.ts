@@ -7,7 +7,8 @@ import { quriz } from "./case-studies/quriz";
 import { synqra } from "./case-studies/synqra";
 import { withGraphicDesign } from "./graphic-design";
 
-export type Metric = { value: string; label: string };
+/** `bar` draws a baseline-to-target comparison, both on a 0-100 scale. */
+export type Metric = { value: string; label: string; bar?: { from: number; to: number; fromLabel: string; toLabel: string } };
 
 /** One frame of a walkthrough or one version in an evolution strip. */
 export type CaseStudyStep = { title: string; description?: string; image: string; alt?: string; /** Device frame for this screen; defaults to the block layout. */ frame?: "phone" | "desktop" };
@@ -15,7 +16,7 @@ export type CaseStudyStep = { title: string; description?: string; image: string
 /** A cluster on the research wall: its sticky notes and what they add up to. */
 export type CaseStudyNoteGroup = { theme: string; color: string; notes: string[]; insight?: string };
 
-export type CaseStudyCard = { label?: string; title: string; body: string };
+export type CaseStudyCard = { label?: string; title: string; body: string; pros?: string[]; cons?: string[] };
 
 export type CaseStudyBlock = {
   block_type: string;
