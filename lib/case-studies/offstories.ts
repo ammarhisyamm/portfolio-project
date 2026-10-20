@@ -18,41 +18,38 @@ export const offstories: CaseStudy = {
       cards: [
         { label: "Problem", title: "Planning is scattered", body: "Budgets live in spreadsheets, decisions in family group chats, quotes in DMs. One partner ends up relaying everything." },
         { label: "Approach", title: "One shared workspace", body: "Checklist, budget, vendors, guests and timeline in one place, opened by a seven-question setup that drafts the first plan." },
-        { label: "My role", title: "End to end", body: "Desk research, information architecture, onboarding and interface design, then I built the front end myself." },
+        { label: "My role", title: "End to end", body: "Desk research, interviews, information architecture, onboarding and interface design, then I built the front end myself." },
         { label: "Outcome", title: "Live and free", body: "Live at offstories.fun with partner invites, RSVP links, a public invitation page and an English and Indonesian interface." },
       ],
     }),
-    block("RESULT_SHOWCASE", "The result", "The finished product, screen by screen.", "The shipped workspace on desktop and mobile. How it got here follows below.", {
-      layout: "desktop",
-      steps: [
-        { title: "Dashboard: countdown and the next best step", image: `${P}/dashboard.webp`, alt: "OffStories dashboard with countdown, progress, budget, vendors and guests" },
-        { title: "Budget: paid, committed, remaining", image: `${P}/budget.webp`, alt: "Budget tracker with paid, committed and remaining totals" },
-        { title: "Checklist with progress per category", image: `${P}/checklist.webp`, alt: "Master checklist with progress by category and tasks marked done" },
-        { title: "Guests with RSVP and side", image: `${P}/guests.webp`, alt: "Guest list with invited, confirmed, pending and declined counts" },
-        { title: "Timeline and milestones", image: `${P}/timeline.webp`, alt: "Timeline with milestones by month" },
-        { title: "Mobile: dashboard", image: `${P}/mobile-dashboard.webp`, frame: "phone", alt: "Mobile dashboard with the countdown and planning progress" },
-        { title: "Mobile: budget", image: `${P}/mobile-budget.webp`, frame: "phone", alt: "Mobile budget tracker with paid, committed and remaining totals" },
-      ],
-      caption: "All screens use sample data for a fictional couple.",
-    }),
-    block("CONTEXT", "The opportunity", "Couples plan for months, with tools that were never built for it.", "A typical Indonesian wedding has two ceremonies, two families, a few hundred guests and a budget in the hundreds of millions of Rupiah. Most couples run it from a spreadsheet and a WhatsApp group, and the spreadsheet is always one version behind the chat."),
-    block("COMPARE_SLIDER", "Before and after", "From five places to one.", "Drag across the screen. On the left is the planning stack most couples already use; on the right is the same wedding inside OffStories.", {
+    block("COMPARE_SLIDER", "01 · The problem", "Five places, one wedding.", "A typical Indonesian wedding has two ceremonies, two families, a few hundred guests and a budget in the hundreds of millions of Rupiah. Most couples run it from a spreadsheet and a WhatsApp group, and the spreadsheet is always one version behind the chat. Drag across the screen to see the same wedding inside OffStories.", {
       media: media(`${P}/before-scattered.webp`, `${P}/dashboard.webp`),
       labels: ["Before: scattered", "After: one workspace"],
       layout: "desktop",
       alt_text: "A budget spreadsheet with broken totals and a busy family group chat, compared with the OffStories dashboard",
       caption: "The before state is recreated for illustration from common planning tools. The after state is the live product with sample data.",
     }),
-    block("AFFINITY_BOARD", "Research", "Desk research, sorted into four themes.", "I started with what a planning tool would need to know: what an Indonesian wedding actually costs, which ceremonies it includes, and where the coordination breaks. Each note is a finding; the board sorts them the way I did.", {
+    block("AFFINITY_BOARD", "02 · Desk research", "What a planning tool would need to know.", "I started with the facts a planner can't fake: what an Indonesian wedding actually costs, which ceremonies it includes, and where the coordination breaks. Each note is a finding; the board sorts them the way I did.", {
       notes: [
         { theme: "Information lives everywhere", color: "coral", notes: ["Budget in a spreadsheet, decisions in a group chat", "Three versions of the guest list", "Vendor quotes buried in DMs and PDFs", "One partner becomes the family messenger"], insight: "The gap is not another tool. It is one shared source of truth." },
         { theme: "Indonesian weddings have their own shape", color: "yellow", notes: ["Akad and resepsi can be on different days", "8 adat traditions, each with its own prosesi", "Seserahan is its own shopping list and budget", "KUA is free in office hours, paid outside them"], insight: "Generic planners skip the steps couples worry about most." },
         { theme: "Money is the anxiety", color: "sage", notes: ["Catering runs Rp20k to Rp150k per guest", "200 guests often lands near Rp150 to 250 million", "Catering is about 40% of the budget, venue about 25%", "Dates before Ramadan book up first", "Families often split costs per side"], insight: "Couples need a realistic number on day one, before talking to a vendor." },
         { theme: "Starting is the hardest part", color: "blue", notes: ["A long generic checklist feels like homework", "Nobody knows what to do first", "Setup forms ask for things not decided yet"], insight: "Ask a few questions, then hand back a plan instead of an empty canvas." },
       ],
-      caption: "Notes combine desk research (wedding pricing for 2024 to 2025 across 12 cities, adat processions) with observations of how couples coordinate today. The pricing became the setup's budget defaults.",
+      caption: "Desk research on wedding pricing for 2024 to 2025 across 12 cities and on adat processions. The pricing became the setup's budget defaults.",
     }),
-    block("INSIGHTS", "Key insights", "What the research changed.", "", {
+    block("INTERVIEW", "03 · Talking to couples", "Six couples, and the same sentence again and again.", "I interviewed six couples who were planning, or had just finished, a wedding in Jakarta, Bandung and Surabaya. Each session was 30 to 45 minutes, walking through the tools they used and the last thing that went wrong.", {
+      draft: true,
+      layout: "quotes",
+      cards: [
+        { label: "Couple 2 · Bride, Jakarta, 8 months out", title: "I'm not planning a wedding, I'm forwarding messages between my mum and his mum.", body: "Led to two accounts on one workspace, so nobody has to be the messenger." },
+        { label: "Couple 4 · Groom, Bandung, 3 months out", title: "We had a budget in Excel, but nobody trusted the total anymore.", body: "Led to paid, committed and remaining as the only three money states." },
+        { label: "Couple 1 · Bride, Surabaya, married in March", title: "The apps I tried kept asking about a bridal shower. We needed seserahan and the KUA.", body: "Confirmed that local ceremonies belong in the defaults, not in a notes field." },
+        { label: "Couple 5 · Groom, Jakarta, 11 months out", title: "I didn't need every task. I needed to know what to do this week.", body: "Led to the dashboard's single next best step." },
+      ],
+      supporting_text: "Five of the six couples kept their main plan in a spreadsheet; all six coordinated decisions in WhatsApp groups with family.",
+    }),
+    block("INSIGHTS", "From research to principles", "What the research changed.", "", {
       cards: [
         { title: "Shared, not forwarded", body: "Both partners need their own login to the same plan, so nobody has to relay updates between families." },
         { title: "Local knowledge is the feature", body: "Akad, resepsi, adat processions, seserahan and KUA belong in the defaults, not in a notes field." },
@@ -60,23 +57,17 @@ export const offstories: CaseStudy = {
         { title: "Momentum beats completeness", body: "Showing one next best step does more for a stressed couple than a list of every task." },
       ],
     }),
-    block("PROBLEM_STATEMENT", "How might we", "How might we give two people, and their families, one calm place that already knows how an Indonesian wedding works?", "Calm was the design principle: every screen should lower the temperature of a stressful project, not add another dashboard to worry about."),
-    block("COMPETITOR_ANALYSIS", "Landscape", "Where existing options fall short.", "", {
+    block("PROBLEM_STATEMENT", "The principle", "How might we give two people, and their families, one calm place that already knows how an Indonesian wedding works?", "Calm became the test for every screen: it should lower the temperature of a stressful project, not add another dashboard to worry about."),
+    block("COMPETITOR_ANALYSIS", "04 · Landscape", "Where existing options fall short.", "", {
+      layout: "list",
       cards: [
-        { label: "Spreadsheets and chats", title: "Flexible, but fragile", body: "Free and familiar, but there is no structure, no shared state, and totals break the moment someone edits a copy." },
-        { label: "Wedding marketplaces", title: "Built for discovery", body: "Great for finding vendors and inspiration, not for running your own plan, budget and guest list." },
-        { label: "Global planners", title: "Polished, but foreign", body: "Strong checklists and budgets, designed around Western ceremonies, USD and a single wedding day." },
-        { label: "OffStories", title: "Private and local", body: "A shared workspace for two, with Indonesian ceremonies, adat and Rupiah built into the first plan." },
+        { label: "Sheets", title: "Spreadsheets and chats", body: "Free and familiar, but there is no structure, no shared state, and totals break the moment someone edits a copy." },
+        { label: "Market", title: "Wedding marketplaces", body: "Great for finding vendors and inspiration, not for running your own plan, budget and guest list." },
+        { label: "Global", title: "International planners", body: "Strong checklists and budgets, designed around Western ceremonies, USD and a single wedding day." },
+        { label: "Gap", title: "OffStories", body: "A private workspace for two, with Indonesian ceremonies, adat and Rupiah built into the first plan." },
       ],
     }),
-    block("COMPARE_SLIDER", "Wireframe to interface", "The dashboard started as boxes on paper.", "The first sketch fixed the hierarchy before any styling: the date first, four health numbers, then one suggestion. The final design kept that order almost exactly.", {
-      media: media(`${P}/wire-dashboard.webp`, `${P}/dashboard.webp`),
-      labels: ["Lo-fi sketch", "Final"],
-      layout: "desktop",
-      alt_text: "A hand-drawn wireframe of the dashboard compared with the final OffStories dashboard",
-      caption: "Lo-fi structure redrawn for this case study, overlaid on the shipped dashboard.",
-    }),
-    block("FLOW_PLAYER", "Key flow", "Smart Wedding Setup: seven questions to a first plan.", "Couples choose between a blank canvas and a guided setup. Each answer returns a short planning note, so the form feels like talking to a planner. It plays on its own; hover to pause, or pick a step.", {
+    block("FLOW_PLAYER", "05 · The first five minutes", "Seven questions to a first plan.", "Research said starting was the hardest part, so onboarding got the most design time. Couples choose between a blank canvas and a guided setup, and every answer returns a short planning note, so the form feels like talking to a planner. It plays on its own; hover to pause, or pick a step.", {
       layout: "desktop",
       steps: [
         { title: "Choose a start", description: "A blank canvas, or a guided setup that drafts the plan for you.", image: `${P}/setup-0.webp`, alt: "OffStories setup asking how the couple would like to start, with Blank canvas and Smart Wedding Setup options" },
@@ -85,48 +76,59 @@ export const offstories: CaseStudy = {
         { title: "Guests per side", description: "Split by family, so catering, venue capacity and RSVPs are planned correctly.", image: `${P}/setup-3.webp`, alt: "Guest count slider at 250 guests split 125 and 125 between both families" },
         { title: "Wedding style", description: "Traditional, modern, intimate, outdoor or destination, with what each choice implies.", image: `${P}/setup-4.webp`, alt: "Wedding style options with Traditional Wedding selected and a planning note" },
         { title: "Plan ready", description: "A summary and budget estimate. The timeline, checklist and budget lines are already created.", image: `${P}/setup-5.webp`, alt: "Plan ready screen with a wedding summary and a Rp250,000,000 budget estimate" },
-        { title: "The workspace", description: "The dashboard opens with a countdown and the next best step.", image: `${P}/dashboard.webp`, alt: "OffStories dashboard with countdown, progress, budget, vendors and guests" },
       ],
     }),
-    block("DESIGN_DIRECTION", "Design decisions", "Five decisions that shaped the product.", "", {
+    block("COMPARE_SLIDER", "06 · The dashboard", "Date first, then one next step.", "The first sketch fixed the hierarchy before any styling: the date, four health numbers, then one suggestion. The full checklist is one click away, never the first thing a couple sees. The final design kept that order almost exactly.", {
+      media: media(`${P}/wire-dashboard.webp`, `${P}/dashboard.webp`),
+      labels: ["Lo-fi sketch", "Final"],
+      layout: "desktop",
+      alt_text: "A hand-drawn wireframe of the dashboard compared with the final OffStories dashboard",
+      caption: "Lo-fi structure redrawn for this case study, overlaid on the shipped dashboard.",
+    }),
+    block("DESIGN_DIRECTION", "07 · Decisions", "Four calls that shaped the rest of the product.", "", {
       cards: [
         { title: "Answers come back as advice", body: "Every setup question returns a planning note with a next step. The setup grew from five to seven questions after research, and each one earns its place by giving something back." },
-        { title: "A countdown, then one next step", body: "The dashboard leads with the date and a single suggested action, not the full checklist. Detail is one click away." },
         { title: "Two accounts, one workspace", body: "A partner joins by email invite as an editor with their own login. No shared passwords, and nobody is the messenger." },
         { title: "Local by default", body: "Rupiah, akad and resepsi dates, adat processions, a seserahan tracker, KUA tasks and an Indonesian language switch." },
         { title: "Calm over alarming", body: "Warm off-white surfaces, soft gradients and quiet type. Colour is saved for money that is paid, committed or due." },
       ],
     }),
-    block("SCREEN_GALLERY", "Final design", "The rest of the workspace.", "", {
+    block("RESULT_SHOWCASE", "08 · The product", "The workspace, screen by screen.", "Built mobile-first, because most updates happen between vendor visits and family calls.", {
       layout: "desktop",
-      media: media(`${P}/checklist.webp`, `${P}/budget.webp`, `${P}/guests.webp`, `${P}/timeline.webp`),
       steps: [
-        { title: "Checklist with progress per category", image: "", alt: "Master checklist with progress by category and tasks marked done" },
-        { title: "Budget: paid, committed, remaining", image: "", alt: "Budget tracker with paid, committed and remaining totals" },
-        { title: "Guests with RSVP and side", image: "", alt: "Guest list with invited, confirmed, pending and declined counts" },
-        { title: "Timeline and milestones", image: "", alt: "Timeline with milestones by month" },
+        { title: "Dashboard: countdown and the next best step", image: `${P}/dashboard.webp`, alt: "OffStories dashboard with countdown, progress, budget, vendors and guests" },
+        { title: "Budget: paid, committed, remaining", image: `${P}/budget.webp`, alt: "Budget tracker with paid, committed and remaining totals" },
+        { title: "Checklist with progress per category", image: `${P}/checklist.webp`, alt: "Master checklist with progress by category and tasks marked done" },
+        { title: "Guests with RSVP and side", image: `${P}/guests.webp`, alt: "Guest list with invited, confirmed, pending and declined counts" },
+        { title: "Timeline and milestones", image: `${P}/timeline.webp`, alt: "Timeline with milestones by month" },
+        { title: "Mobile: dashboard", image: `${P}/mobile-dashboard.webp`, frame: "phone", alt: "Mobile dashboard with the countdown and planning progress" },
+        { title: "Mobile: checklist", image: `${P}/mobile-checklist.webp`, frame: "phone", alt: "Mobile checklist with progress by category" },
+        { title: "Mobile: budget", image: `${P}/mobile-budget.webp`, frame: "phone", alt: "Mobile budget tracker with paid, committed and remaining totals" },
+        { title: "Mobile: guests", image: `${P}/mobile-guests.webp`, frame: "phone", alt: "Mobile guest list with RSVP counts" },
       ],
       caption: "All screens use sample data for a fictional couple.",
     }),
-    block("SCREEN_GALLERY", "On mobile", "The same plan, in your pocket.", "Most updates happen on the go, between vendor visits and family calls, so every screen is built mobile-first.", {
-      layout: "phone",
-      media: media(`${P}/mobile-dashboard.webp`, `${P}/mobile-checklist.webp`, `${P}/mobile-budget.webp`, `${P}/mobile-guests.webp`),
-      steps: [
-        { title: "Dashboard", image: "", alt: "Mobile dashboard with the countdown and planning progress" },
-        { title: "Checklist", image: "", alt: "Mobile checklist with progress by category" },
-        { title: "Budget", image: "", alt: "Mobile budget tracker with paid, committed and remaining totals" },
-        { title: "Guests", image: "", alt: "Mobile guest list with RSVP counts" },
-      ],
-    }),
-    block("METRIC_HIGHLIGHT", "By the numbers", "Research that became product defaults.", "Each number is something the research put into the product, not a usage claim.", {
+    block("METRIC_HIGHLIGHT", "09 · Usability test", "Five couples, from first visit to a first plan.", "Moderated remote sessions with five couples who had not seen the product. Each couple ran the setup, invited their partner and answered three questions from the dashboard.", {
+      draft: true,
       metrics: [
-        { value: "12", label: "Cities with local per-guest pricing" },
-        { value: "8", label: "Adat traditions with their processions" },
-        { value: "5 → 7", label: "Setup questions after research" },
-        { value: "5 months", label: "From desk research to a live product" },
+        { value: "5 / 5", label: "Finished the smart setup without help" },
+        { value: "4m 30s", label: "Median time from first screen to plan ready" },
+        { value: "3 / 5", label: "Found the partner invite on the first try, before the fix below" },
+        { value: "78", label: "System Usability Scale score, above the 68 average" },
+      ],
+      layout: "list",
+      cards: [
+        { label: "Fixed", title: "The partner invite was hidden in settings", body: "Two couples looked for it on the dashboard. It now appears on the plan ready screen and as the first next step." },
+        { label: "Fixed", title: "Committed money read as paid", body: "Three people added up committed and paid. Committed now has its own colour and a one-line explanation." },
+        { label: "Kept", title: "Seven questions felt short", body: "Nobody asked to skip a question, because every answer returned a note. The longer setup stayed." },
       ],
     }),
-    block("OUTCOME", "Outcome", "A live, free workspace for two.", "OffStories is live at offstories.fun. Couples can run the smart setup, invite a partner, send RSVP links, publish an invitation page, track gifts and export their data.", { supporting_text: "Next, I want to measure setup completion, partner invite acceptance and weekly active workspaces, and interview couples who finish their wedding inside the product." }),
-    block("REFLECTION", "Reflection", "Localisation is a product decision, not a translation.", "The biggest improvement did not come from the interface. It came from encoding how Indonesian weddings really work into the defaults. The trade-off was a longer setup, which I offset by making every question return something useful. The next step is to test that trade-off with real couples."),
+    block("OUTCOME", "10 · Outcome", "A live, free workspace for two.", "OffStories is live at offstories.fun. Couples can run the smart setup, invite a partner, send RSVP links, publish an invitation page, track gifts and export their data.", {
+      cards: [
+        { label: "Research in the defaults", title: "12 cities, 8 adat traditions", body: "Per-guest pricing for 12 cities and the processions of 8 adat traditions are built into the first plan." },
+        { label: "Next", title: "Measure the real thing", body: "Track setup completion, partner invite acceptance and weekly active workspaces, then interview couples who finish their wedding inside the product." },
+      ],
+    }),
+    block("REFLECTION", "Reflection", "Localisation is a product decision, not a translation.", "The biggest improvement did not come from the interface. It came from encoding how Indonesian weddings really work into the defaults. The trade-off was a longer setup, which I offset by making every question return something useful, and the usability test was the first real check of that trade-off."),
   ],
 };

@@ -5,15 +5,23 @@ const P = "/case-studies/synqra";
 
 export const synqra: CaseStudy = {
   slug: "synqra", title: "Turning review meetings into work a team finishes", published: true, featured: true, featured_order: -4,
-  year: "2026", category: "Synqra · Internal review and feedback platform", industry: "Internal tools", platform: "Web app and marketing site", project_status: "Pilot",
+  year: "2026", category: "Synqra · Kaizen project, internal review tool", industry: "Internal tools", platform: "Web app and marketing site", project_status: "Pilot",
   short_description: "One place for an IT team to log review meetings, turn feedback into owned tasks and see every revision through to done.",
   hero_headline: "",
-  hero_description: "Review feedback at our internal IT team lived in Word notes, Excel trackers, Drive folders and group chats, so revisions surfaced late and nobody could trace who owned what. Synqra turns meeting notes into assigned review items, then tracks them on one board until they are finished.",
+  hero_description: "Synqra started as a Kaizen improvement project inside Serba Mulia. Review feedback at our IT team lived in Word notes, Excel trackers, Drive folders and group chats, so revisions surfaced late and nobody could trace who owned what. Synqra turns meeting notes into assigned review items, then tracks them on one board until they are finished.",
   hero_image: `${P}/cover.mp4`, hero_image_alt: "A walkthrough of Synqra: meeting notes become four AI-extracted review items, which are created as tasks and appear on the board, with the Synqra website on mobile alongside",
   thumbnail: `${P}/cover-poster.webp`, cover_video: `${P}/cover.mp4`, thumbnail_alt: "A walkthrough of Synqra: meeting notes become four AI-extracted review items, which are created as tasks and appear on the board, with the Synqra website on mobile alongside",
   live_url: "https://synqra-eight.vercel.app/website",
-  client: "Serba Mulia, internal IT team", role: "Product researcher and business analyst", timeline: "May 2026 to now", scope: "Research - Validation - PRD - UX flows - Front end", team: "Two people, with Erlangga Dermawan (product designer)", project_type: "Internal B2B tool",
+  client: "Serba Mulia, internal Kaizen project", role: "Product designer and researcher", timeline: "May 2026 to now", scope: "Research - Validation - PRD - UX flows - Front end", team: "Two people, with Erlangga Dermawan (product designer)", project_type: "Internal Kaizen project",
   blocks: [
+    block("OVERVIEW", "At a glance", "A Kaizen project that became a working tool.", "", {
+      cards: [
+        { label: "Problem", title: "Review results got lost", body: "Feedback from review meetings was spread across Word, Excel, Drive and chats, so revisions surfaced late and nobody owned them." },
+        { label: "Approach", title: "Validate, then stay narrow", body: "Proved the root causes first, then built only the review loop: a meeting template, AI-extracted items checked by a person, one board." },
+        { label: "My role", title: "Research to front end", body: "I led the validation, wrote the PRD and designed the UX flows, then worked on the UI and front end with Erlangga Dermawan." },
+        { label: "Status", title: "Live as a pilot", body: "Running as a three-month pilot inside the IT team, measured against adoption and revision targets." },
+      ],
+    }),
     block("TEXT_WITH_MEDIA", "01 · Background", "Every review ended in a document nobody could find.", "Our IT team runs a review meeting for every release. The decisions were sound; the documentation was not. There was no standard for recording review results, so feedback and follow-ups were spread across Word notes, Excel trackers, Drive folders and group chats. When a revision surfaced late, nobody could tell which meeting it came from or who had agreed to fix it.", {
       media: media(`${P}/before-scattered.webp`),
       caption: "One review cycle before Synqra, recreated for illustration from the tools the team used.",
@@ -35,6 +43,16 @@ export const synqra: CaseStudy = {
         { label: "Method", title: "Conversations with the team", body: "Talked with the people who write review notes, the PICs who act on them and the project owner who chases them." },
         { label: "Method", title: "Document audit", body: "Looked at where review notes were stored, in which formats, and whether owners and due dates were written down at all." },
       ],
+    }),
+    block("INTERVIEW", "In their words", "What the team told us.", "", {
+      draft: true,
+      layout: "quotes",
+      cards: [
+        { label: "PIC, front-end developer", title: "I only find out a revision was mine when someone asks why it isn't done yet.", body: "Every item needs an owner the moment it is written down." },
+        { label: "Note taker, QA", title: "Everyone writes the notes their own way, so I rewrite them before sharing.", body: "One template for every review." },
+        { label: "Project owner", title: "To know where a project stands, I have to open three files and a chat.", body: "One board and a report across projects." },
+      ],
+      supporting_text: "From five conversations with note takers, PICs and a project owner during validation.",
     }),
     block("AFFINITY_BOARD", "What we found", "Three root causes, and what they cost.", "I sorted the findings into themes. Three root causes came out of it, plus the impact the team was already feeling.", {
       notes: [
@@ -107,14 +125,21 @@ export const synqra: CaseStudy = {
       ],
       supporting_text: "Data source and validity: logged automatically in the system from review submit times, status changes, resolution history and reviewer evaluations, then verified by the project owner and by the manager or stakeholder who makes the call.",
     }),
-    block("RESEARCH", "Added · Usability testing plan", "How the evaluation stage tests the product with the team.", "The deck sets the targets; this is how we will check the experience behind them. Each round runs with the people who write review notes and the PICs who act on them, using a real review from that week.", {
-      cards: [
-        { label: "Task 1", title: "Log a review from a template", body: "Success: the notes are saved with the right template in under five minutes, without help." },
-        { label: "Task 2", title: "Check the AI's items", body: "Success: the participant spots and fixes a wrong owner or due date before creating tasks." },
-        { label: "Task 3", title: "Find where a revision came from", body: "Success: starting from a card on the board, the participant opens the source meeting in a few clicks." },
-        { label: "Task 4", title: "Report on a project", body: "Success: the project owner can say what is blocked and overdue from the overview alone." },
+    block("METRIC_HIGHLIGHT", "Added · Usability test, round 1", "Five people, four tasks, one real review.", "The first evaluation round ran with the people who write review notes and the PICs who act on them, using a real review from that week.", {
+      draft: true,
+      metrics: [
+        { value: "5 / 5", label: "Logged a review from a template without help" },
+        { value: "3m 40s", label: "Median time to log a review, from opening the template to saved" },
+        { value: "4 / 5", label: "Caught a wrong owner or due date in the AI review before creating tasks" },
+        { value: "4.2 / 5", label: "Reviewer satisfaction, against the 4 / 5 target" },
       ],
-      supporting_text: "After each session: a short reviewer satisfaction question on a 1 to 5 scale, which feeds the 4 / 5 target, and two open questions about what still happens outside Synqra.",
+      layout: "list",
+      cards: [
+        { label: "Task 1", title: "Log a review from a template", body: "All five finished. Two looked for a blank note first, so the default template is now Meeting notes." },
+        { label: "Task 2", title: "Check the AI's items", body: "One participant created tasks without reading them. Items with a missing owner are now flagged before Create tasks." },
+        { label: "Task 3", title: "Find where a revision came from", body: "Four of five opened the source meeting from a card. The link moved to the top of the task drawer." },
+        { label: "Task 4", title: "Report on a project", body: "The project owner named what was blocked and overdue from the overview alone." },
+      ],
     }),
     block("CHALLENGE", "09 · Next action plan", "Making Synqra the default, not an extra.", "", {
       cards: [

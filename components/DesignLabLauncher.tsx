@@ -51,6 +51,12 @@ export default function DesignLabLauncher() {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [imageName, setImageName] = useState("");
   const imageUrlRef = useRef<string | null>(null);
+  // The style editor is a design tool, not part of the portfolio: in production it only shows with ?edit-style.
+  const [visible, setVisible] = useState(process.env.NODE_ENV !== "production");
+
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).has("edit-style")) setVisible(true);
+  }, []);
 
   // No localStorage by design: new visits always begin with the portfolio default.
   useEffect(() => {
@@ -92,6 +98,8 @@ export default function DesignLabLauncher() {
     setImageName("");
     setValues(defaults);
   }
+
+  if (!visible) return null;
 
   return (
     <div className="design-lab-launcher">

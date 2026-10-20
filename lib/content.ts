@@ -35,6 +35,8 @@ export type CaseStudyBlock = {
   notes?: CaseStudyNoteGroup[];
   cards?: CaseStudyCard[];
   labels?: [string, string];
+  /** Placeholder research written to show the shape of the evidence. Shows a "Sample data" badge until real data replaces it. */
+  draft?: boolean;
 };
 
 export type CaseStudy = {
