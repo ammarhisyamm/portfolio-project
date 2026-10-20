@@ -109,7 +109,9 @@ export default function CaseStudyOverlay({
                     rel="noreferrer"
                     className="inline-flex w-fit items-center gap-1.5 text-[14px] font-medium text-ink underline decoration-line underline-offset-4 hover:decoration-ink"
                   >
-                    Visit the live product: {cs.live_url.replace(/^https?:\/\//, "")}
+                    {cs.live_url.includes("behance.net")
+                      ? "View the full case study on Behance"
+                      : `Visit the live product: ${cs.live_url.replace(/^https?:\/\//, "")}`}
                     <ArrowUpRight size={15} aria-hidden="true" />
                   </a>
                 )}
