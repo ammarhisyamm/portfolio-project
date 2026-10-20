@@ -40,7 +40,7 @@ export default function FeaturedWork({
 
   return (
     <div ref={ref}>
-      {caseStudies.slice(0, 3).map((p, i) => (
+      {caseStudies.map((p, i) => (
         <button
           key={p.slug}
           type="button"
