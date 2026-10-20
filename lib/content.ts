@@ -16,7 +16,7 @@ export type CaseStudyStep = { title: string; description?: string; image: string
 /** A cluster on the research wall: its sticky notes and what they add up to. */
 export type CaseStudyNoteGroup = { theme: string; color: string; notes: string[]; insight?: string };
 
-export type CaseStudyCard = { label?: string; title: string; body: string; pros?: string[]; cons?: string[] };
+export type CaseStudyCard = { label?: string; title: string; body: string; pros?: string[]; cons?: string[]; /** Screenshot shown at the top of the card. */ image?: string };
 
 export type CaseStudyBlock = {
   block_type: string;

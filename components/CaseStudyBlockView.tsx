@@ -121,6 +121,11 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
     <div className={`grid gap-3 ${block.cards.length > 2 ? "sm:grid-cols-2" : ""}`}>
       {block.cards.map((card, i, all) => (
         <div key={card.title} className={`grid content-start gap-2 rounded-[14px] border border-line bg-panel p-5 sm:rounded-[18px] ${all.length > 2 && all.length % 2 && i === all.length - 1 ? "sm:col-span-2" : ""}`}>
+          {card.image && (
+            <div className="relative -mx-2 -mt-2 mb-2 aspect-[16/10] overflow-hidden rounded-[10px] border border-line bg-bg sm:rounded-[12px]">
+              <img src={card.image} alt={`${card.label || card.title} screenshot`} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover object-top" />
+            </div>
+          )}
           <span className="text-[11px] uppercase tracking-[0.06em] text-muted">{card.label || (numbered ? String(i + 1).padStart(2, "0") : "")}</span>
           <h3 className="text-[16px] font-medium leading-snug tracking-[-0.02em] text-ink">{card.title}</h3>
           <p className="text-[13.5px] leading-[1.65] text-sub">{card.body}</p>

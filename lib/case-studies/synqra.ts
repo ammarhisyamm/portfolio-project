@@ -45,12 +45,12 @@ export const synqra: CaseStudy = {
       ],
       caption: "Validation findings grouped into the three root causes from the project deck, plus their impact.",
     }),
-    block("COMPETITOR_ANALYSIS", "03 · Competitor analysis", "Strong tools, but none built for review follow-up.", "The team already knew Notion and ClickUp, so I looked at what each would take to solve this problem.", {
+    block("COMPETITOR_ANALYSIS", "03 · Competitor analysis", "Strong tools, but none built for review follow-up.", "The team already knew Notion and ClickUp. I compared what each would take to solve this problem, then where Synqra sits between them.", {
       cards: [
-        { label: "Notion", title: "Flexible, but blank", body: "Works for docs, databases or simple notes.", pros: ["Can be shaped for documentation, databases or plain notes", "Works on desktop and mobile"], cons: ["The team has to design its own structure, format and workflow first, which takes setup effort"] },
-        { label: "ClickUp", title: "Complete, but heavy", body: "Full task management with an AI that turns meeting notes into tasks.", pros: ["Assignees, deadlines, priority and status in one platform", "AI summarises meeting notes and converts them into tasks"], cons: ["The AI is limited on the free plan and needs a monthly subscription", "So many options that new users take time to learn the workflow"] },
+        { label: "Notion", title: "Flexible, but blank", body: "Works for docs, databases or simple notes, with AI meeting notes and transcription.", image: `${P}/competitor-notion.webp`, pros: ["Can be shaped for documentation, databases or plain notes", "Works on desktop and mobile, so notes can be updated anywhere"], cons: ["The team has to design its own structure, format and workflow first, which takes setup effort"] },
+        { label: "ClickUp", title: "Complete, but heavy", body: "Full task management, with meeting notes as docs and an AI that turns them into tasks.", image: `${P}/competitor-clickup.webp`, pros: ["Assignees, deadlines, priority and status in one platform", "AI summarises meeting notes and converts them into tasks"], cons: ["The AI is limited on the free plan and needs a monthly subscription", "So many options and settings that new users take time to learn the workflow"] },
+        { label: "Synqra", title: "Narrow on purpose", body: "Only the review loop: a meeting template, AI extraction of review items, a human check, then one five-stage board.", image: `${P}/board.webp`, pros: ["Ready on day one, with no structure to design first", "AI suggestions always pass a person before they become tasks", "Every item keeps the meeting it came from"], cons: ["Another tool to adopt, so it needs the SOP update to stick"] },
       ],
-      supporting_text: "The gap: a tool that is ready for review meetings on day one, with no setup, and that keeps the AI step behind a human check.",
     }),
     block("TEXT_WITH_MEDIA", "04 · Our solution", "One place for the whole review cycle.", "Synqra is a central system where the team records meeting results, manages feedback and tracks follow-up in a structured way. From writing the feedback to assigning a PIC and a deadline to watching it get done, nobody has to switch tools.", {
       media: media(`${P}/overview.webp`),
