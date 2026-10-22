@@ -48,6 +48,7 @@ export default function LightboxModal({ open, images, index, onIndexChange, onCl
   return createPortal(
     <div
       className="fixed inset-0 z-[200] flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm"
+      data-lenis-prevent
       role="dialog"
       aria-modal="true"
       onClick={onClose}

@@ -271,11 +271,16 @@ const CV_WORKING_EXPERIENCE: ExperienceItem[] = [
   },
 ].map((e) => ({ ...e, images: [] }));
 
-const DEFAULT_EXPERIENCE = CV_WORKING_EXPERIENCE;
+/** Roles kept on the CV but left off the portfolio for now. */
+const HIDDEN_EXPERIENCE = new Set(["Let's Vibe Digital"]);
+
+const SHOWN_EXPERIENCE = CV_WORKING_EXPERIENCE.filter((item) => !HIDDEN_EXPERIENCE.has(item.company));
+
+const DEFAULT_EXPERIENCE = SHOWN_EXPERIENCE;
 
 function cvExperience(items: ExperienceItem[]): ExperienceItem[] {
   const sourceByCompany = new Map(items.map((item) => [item.company, item]));
-  return CV_WORKING_EXPERIENCE.map((item) => ({
+  return SHOWN_EXPERIENCE.map((item) => ({
     ...item,
     images: sourceByCompany.get(item.company)?.images?.filter(Boolean) ?? [],
   }));

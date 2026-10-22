@@ -145,8 +145,9 @@ function FeedOverlay({ cat, onClose }: { cat: HomeCategory; onClose: () => void 
     return () => window.removeEventListener("keydown", onKey);
   }, [index, onClose]);
 
+  // data-lenis-prevent: the page's smooth scrolling would otherwise swallow the wheel here.
   return (
-    <div className="fixed inset-0 z-[160] overflow-y-auto bg-bg">
+    <div className="fixed inset-0 z-[160] overflow-y-auto overscroll-contain bg-bg" data-lenis-prevent>
       <div className="mx-auto w-full max-w-[720px] px-4 pb-16 pt-6 sm:px-6">
         <div className="mb-6 flex items-center justify-between gap-4">
           <div>
