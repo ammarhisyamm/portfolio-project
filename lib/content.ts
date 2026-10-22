@@ -219,6 +219,10 @@ const DEFAULT_HOME_CATEGORIES: HomeCategory[] = [
   { id: "mobile", key: "mobile", label: "Mobile", sort: 2, images: [] },
 ];
 
+/** The CV served by the site; replace this file to update every CV link. */
+export const CV_URL = "/cv/Ammar_Hisyam_Fakhrudin_CV.pdf";
+
+/** Mirrors the working experience section of the CV in public/cv. */
 const CV_WORKING_EXPERIENCE: ExperienceItem[] = [
   {
     company: "Serba Mulia Group",
@@ -226,9 +230,10 @@ const CV_WORKING_EXPERIENCE: ExperienceItem[] = [
     period: "Nov 2024 - Present",
     logo: "/experience-logos/serba-mulia.png",
     points: [
-      "Led product design across 5+ business and internal platforms, including Promas, OCR CRM, Pajak Mas, Cashlux, and Synqra.",
-      "Redesigned Promas from research through a new design system for cashier, branch manager, and multi-branch workflows.",
-      "Built products from zero to one and managed design architecture across 10+ Figma projects.",
+      "Lead product design for 5+ business and internal platforms, including Promas, OCR CRM, Pajak Mas, Cashlux, and Synqra, translating complex operational requirements into scalable digital experiences.",
+      "Redesigned Promas for cashiers, branch managers, and multi-branch teams, grounding the work in competitor research and a 120-question user interview guide, and built its design system from the ground up.",
+      "Built new products from zero to one, including Pajak Mas, Cashlux, and Synqra.",
+      "Structured design architecture across 10+ Figma projects, improving design consistency by 35% and research efficiency by 40%.",
     ],
   },
   {
@@ -239,7 +244,7 @@ const CV_WORKING_EXPERIENCE: ExperienceItem[] = [
     logoBlack: true,
     points: [
       "Designed responsive web applications for Australian enterprise clients, including Big Rock Developments, RenoPlus, VV Construction, and VSCO Pty.",
-      "Delivered the end-to-end design process from visual direction and wireframes to responsive UI and stakeholder revisions.",
+      "Ran end-to-end design workflows, from moodboards and visual direction to high-fidelity wireframes, responsive desktop and mobile layouts, and stakeholder revisions.",
     ],
   },
   {
@@ -248,8 +253,9 @@ const CV_WORKING_EXPERIENCE: ExperienceItem[] = [
     period: "Aug 2024 - Nov 2024",
     logo: "/experience-logos/caraka-studio.svg",
     points: [
-      "Created three reusable mobile UI kits for Zenspace IoT, Sporty News, and TRVLEASE Travel, covering 210+ screens.",
-      "Delivered two full-cycle client projects from concepts and user flows to high-fidelity design and final delivery.",
+      "Designed 3 reusable mobile UI kits with scalable design systems for Zenspace IoT, Sporty News, and TRVLEASE Travel, covering 210+ screens.",
+      "Delivered 2 full-cycle client projects, owning design from initial concepts and user flows through high-fidelity design and final delivery.",
+      "Developed reusable product patterns and customizable templates to support varied user requirements across projects.",
     ],
   },
   {
@@ -258,18 +264,23 @@ const CV_WORKING_EXPERIENCE: ExperienceItem[] = [
     period: "Feb 2024 - Jul 2024",
     logo: "/experience-logos/serasi-autoraya.png",
     points: [
-      "Led qualitative research for SELOG, a B2B fleet logistics platform, through 10+ interviews and competitor analysis that generated 100+ actionable insights.",
-      "Designed the responsive SELOG experience across 14+ screens and a reusable design system with 25+ components.",
-      "Presented the product vision and design direction to the Board of Directors to align the digital transformation work.",
+      "Led qualitative research for SELOG, a B2B fleet logistics platform, conducting 10+ user interviews and competitor analysis that produced 100+ actionable insights and informed about 75% of design decisions.",
+      "Designed the responsive SELOG B2B experience across 14+ screens, supported by a design system of 25+ reusable components.",
+      "Presented research insights, product vision, and design direction to the Board of Directors, securing executive alignment for SELOG's digital transformation.",
     ],
   },
 ].map((e) => ({ ...e, images: [] }));
 
-const DEFAULT_EXPERIENCE = CV_WORKING_EXPERIENCE;
+/** Roles kept on the CV but left off the portfolio for now. */
+const HIDDEN_EXPERIENCE = new Set(["Let's Vibe Digital"]);
+
+const SHOWN_EXPERIENCE = CV_WORKING_EXPERIENCE.filter((item) => !HIDDEN_EXPERIENCE.has(item.company));
+
+const DEFAULT_EXPERIENCE = SHOWN_EXPERIENCE;
 
 function cvExperience(items: ExperienceItem[]): ExperienceItem[] {
   const sourceByCompany = new Map(items.map((item) => [item.company, item]));
-  return CV_WORKING_EXPERIENCE.map((item) => ({
+  return SHOWN_EXPERIENCE.map((item) => ({
     ...item,
     images: sourceByCompany.get(item.company)?.images?.filter(Boolean) ?? [],
   }));
@@ -659,7 +670,7 @@ export const DEFAULTS: SiteContent = {
       "Figma, FigJam, Adobe tools, Photopea, Notion, and AI-assisted design and research tools. I work openly with product, engineering, and stakeholders to turn decisions into momentum.",
     capabilities,
     industries,
-    cvUrl: "",
+    cvUrl: CV_URL,
     cvLabel: "Download CV",
     gallery: [
       {
@@ -905,7 +916,8 @@ export const getContent = cache(async (): Promise<SiteContent> => {
         image: r.image_url ?? "",
       })),
       hero: { ...DEFAULTS.hero, ...(site.hero ?? {}) },
-      about: { ...DEFAULTS.about, ...(site.about ?? {}) },
+      // The bundled CV always wins so every link serves the latest version.
+      about: { ...DEFAULTS.about, ...(site.about ?? {}), cvUrl: CV_URL },
       contact: { ...DEFAULTS.contact, ...(site.contact ?? {}) },
       socials: { ...DEFAULTS.socials, ...(site.socials ?? {}) },
       footer: { ...DEFAULTS.footer, ...(site.footer ?? {}) },
