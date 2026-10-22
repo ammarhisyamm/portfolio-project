@@ -26,7 +26,6 @@ function InfoPage({ photo, number, total, onClick }: { photo: AboutGalleryItem; 
     <div className="album-page is-right" onClick={onClick}>
       <span className="album-eyebrow">Photo {pad(number)} of {pad(total)}</span>
       <h3 className="album-title">{photo.title || "A moment to keep"}</h3>
-      <span className="album-rule" aria-hidden="true" />
       <p className="album-note">{photo.note}</p>
     </div>
   );
