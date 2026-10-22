@@ -925,10 +925,10 @@ html.lenis body {
 .album-photo figcaption { position: absolute; left: 10px; right: 10px; bottom: 5px; color: #7d6a4c; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; }
 .album-eyebrow { color: #7d6a4c; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; }
 .album-title, .album-note { font-family: "Caveat", "Segoe Print", "Bradley Hand", cursive; font-weight: 700; color: #2d2a33; }
-.album-title { font-size: clamp(28px, 3vw, 36px); line-height: 1.05; }
-.album-note { font-size: clamp(21px, 2.1vw, 26px); line-height: 1.32; overflow-wrap: anywhere; }
-.is-compact .album-title { font-size: 26px; }
-.is-compact .album-note { font-size: 21px; }
+.album-title { font-size: clamp(22px, 2.1vw, 26px); line-height: 1.1; }
+.album-note { font-size: clamp(16px, 1.5vw, 19px); line-height: 1.45; overflow-wrap: anywhere; }
+.is-compact .album-title { font-size: 21px; }
+.is-compact .album-note { font-size: 16px; }
 .album-leaf { position: absolute; top: 0; bottom: 0; z-index: 5; transform-style: preserve-3d; transform-origin: left center; will-change: transform; animation-duration: 820ms; animation-timing-function: cubic-bezier(.45, .05, .25, 1); animation-fill-mode: both; }
 .album-leaf.is-next { animation-name: album-turn-next; }
 .album-leaf.is-prev { animation-name: album-turn-prev; }
