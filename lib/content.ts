@@ -661,20 +661,20 @@ export const DEFAULTS: SiteContent = {
   hero: {
     name: "Hisyam",
     title: "Product Designer (UI/UX)",
-    headline: "I design thoughtful digital products that make complex experiences feel simple.",
+    headline: "I design B2B and AI products that make complex work feel simple.",
     intro:
-      "I help teams turn ideas into clear, useful, and engaging experiences across fintech, SaaS, marketplaces, dashboards, and AI-powered products.",
+      "Currently a UI/UX Designer at Serba Mulia Group. I take products from the first research question to a clean developer handoff, across fintech, SaaS, marketplaces, and AI.",
     available: true,
   },
   about: {
     introTitle: "Hey, I'm Hisyam. I design B2B and AI products that feel simple to use.",
     introBody:
-      "Product designer with 4.5+ years of experience, taking products from the first research question to a clean developer handoff.",
+      "I work across research, interaction design, visual systems, and prototyping, so teams get a clear flow they can build with confidence.",
     philosophyTitle: "Make the complex legible.",
     philosophyBody:
       "I design with structure and restraint. Every flow, screen, and pattern should earn its place and make the next decision easier for both users and the team building it.",
     background: [
-      "In-house, agency, and freelance work across fintech, SaaS, marketplaces, education, security, communication, and AI. I stay involved from strategy and research through interaction, visual design, and developer handoff.",
+      "I have worked in-house, at agencies, and as a freelancer on fintech, SaaS, marketplace, education, security, communication, and AI products. I stay involved from research through visual design to developer handoff.",
     ],
     tools:
       "Figma, FigJam, Adobe tools, Photopea, Notion, and AI-assisted design and research tools. I work openly with product, engineering, and stakeholders to turn decisions into momentum.",
@@ -925,9 +925,23 @@ export const getContent = cache(async (): Promise<SiteContent> => {
         label: r.label,
         image: r.image_url ?? "",
       })),
-      hero: { ...DEFAULTS.hero, ...(site.hero ?? {}) },
+      // Headline and intro copy lives in code so it always matches the CV
+      // (older CMS text claimed "senior" and "15+ years").
+      hero: {
+        ...DEFAULTS.hero,
+        ...(site.hero ?? {}),
+        headline: DEFAULTS.hero.headline,
+        intro: DEFAULTS.hero.intro,
+      },
       // The bundled CV always wins so every link serves the latest version.
-      about: { ...DEFAULTS.about, ...(site.about ?? {}), cvUrl: CV_URL },
+      about: {
+        ...DEFAULTS.about,
+        ...(site.about ?? {}),
+        introTitle: DEFAULTS.about.introTitle,
+        introBody: DEFAULTS.about.introBody,
+        background: DEFAULTS.about.background,
+        cvUrl: CV_URL,
+      },
       contact: { ...DEFAULTS.contact, ...(site.contact ?? {}) },
       socials: { ...DEFAULTS.socials, ...(site.socials ?? {}) },
       footer: { ...DEFAULTS.footer, ...(site.footer ?? {}) },
