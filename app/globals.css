@@ -908,27 +908,28 @@ html.lenis body {
 
 /* Photo album: an open blank notebook (public/album) with a real page turn.
    The spread sits on the page area of the image: insets are % of the book. */
-.album-book { position: relative; perspective: 2400px; aspect-ratio: 1414 / 929; border-radius: 10px; background: url("/album/notebook-open.webp") center / 100% 100% no-repeat; box-shadow: 0 24px 40px -24px rgba(40, 28, 12, .45); outline-offset: 5px; }
-.album-book.is-compact { aspect-ratio: 707 / 929; background-size: 200% 100%; background-position: 100% 0; overflow: hidden; }
+.album-book { position: relative; container-type: inline-size; perspective: 2400px; aspect-ratio: 1414 / 929; border-radius: 10px; background: url("/album/notebook-open.webp") center / 100% 100% no-repeat; box-shadow: 0 24px 40px -24px rgba(40, 28, 12, .45); outline-offset: 5px; }
+.album-book.is-compact { aspect-ratio: 707 / 1200; max-width: 440px; background-size: 200% 100%; background-position: 100% 0; overflow: hidden; }
 .album-book > .album-spread { position: absolute; display: grid; overflow: hidden; }
 .album-book > .album-spread.is-wide { inset: 4.74% 4.67% 4.63% 2.83%; grid-template-columns: 659fr 649fr; grid-template-rows: minmax(0, 1fr); }
 .album-book.is-compact > .album-spread { inset: 4.74% 7% 4.63% 4%; grid-template-columns: minmax(0, 1fr); align-content: start; }
-.album-page { position: relative; display: flex; min-width: 0; min-height: 0; flex-direction: column; gap: 14px; overflow: hidden; padding: clamp(18px, 6%, 40px) clamp(20px, 7%, 48px); background: transparent; }
+.album-page { position: relative; display: flex; min-width: 0; min-height: 0; flex-direction: column; gap: 1.8cqw; overflow: hidden; padding: 4cqw 4.6cqw; background: transparent; }
 .album-page.is-left { justify-content: center; align-items: center; cursor: w-resize; }
-.album-page.is-right { justify-content: flex-start; padding-top: clamp(22px, 9%, 56px); overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(120, 95, 55, .35) transparent; cursor: e-resize; }
-.is-compact .album-page { cursor: default; padding: 22px 24px 12px; }
-.is-compact .album-page.is-right { overflow: visible; padding-top: 16px; }
-.album-photo { position: relative; margin: 0; width: min(82%, 280px); transform: rotate(-2deg); background: #fff; padding: 7px 7px 26px; box-shadow: 0 10px 20px -10px rgba(40, 28, 12, .55), 0 0 0 1px rgba(70, 48, 18, .08); }
-.is-compact .album-photo { width: min(72%, 220px); }
+.album-page.is-right { justify-content: flex-start; padding-top: 5.2cqw; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(120, 95, 55, .35) transparent; cursor: e-resize; }
+.is-compact .album-page { cursor: default; gap: 3cqw; padding: 5cqw 7cqw 3cqw; }
+.is-compact .album-page.is-right { overflow: visible; padding-top: 2cqw; }
+.album-photo { position: relative; margin: 0; width: 80%; transform: rotate(-2deg); background: #fff; padding: 7px 7px 26px; box-shadow: 0 10px 20px -10px rgba(40, 28, 12, .55), 0 0 0 1px rgba(70, 48, 18, .08); }
+.is-compact .album-photo { width: 62%; }
 .album-photo::before { content: ""; position: absolute; top: -9px; left: 50%; width: 64px; height: 18px; transform: translateX(-50%) rotate(2deg); background: rgba(226, 205, 160, .78); box-shadow: 0 1px 2px rgba(70, 48, 18, .18); }
 .album-photo img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; background: #e8dfca; }
 .album-photo figcaption { position: absolute; left: 10px; right: 10px; bottom: 5px; color: #7d6a4c; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; }
-.album-eyebrow { color: #7d6a4c; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; }
+.album-eyebrow { color: #7d6a4c; font-size: clamp(8px, 1.6cqw, 11px); letter-spacing: .1em; text-transform: uppercase; }
 .album-title, .album-note { font-family: "Caveat", "Segoe Print", "Bradley Hand", cursive; font-weight: 700; color: #2d2a33; }
-.album-title { font-size: clamp(22px, 2.1vw, 26px); line-height: 1.1; }
-.album-note { font-size: clamp(16px, 1.5vw, 19px); line-height: 1.45; overflow-wrap: anywhere; }
-.is-compact .album-title { font-size: 21px; }
-.is-compact .album-note { font-size: 16px; }
+.album-title { font-size: 3.1cqw; line-height: 1.1; }
+.album-note { font-size: 2.35cqw; line-height: 1.4; overflow-wrap: anywhere; }
+.is-compact .album-title { font-size: max(6cqw, 16px); }
+.is-compact .album-note { font-size: max(4.3cqw, 11.5px); }
+.is-compact .album-eyebrow { font-size: 3cqw; }
 .album-leaf { position: absolute; top: 0; bottom: 0; z-index: 5; transform-style: preserve-3d; transform-origin: left center; will-change: transform; animation-duration: 820ms; animation-timing-function: cubic-bezier(.45, .05, .25, 1); animation-fill-mode: both; }
 .album-leaf.is-next { animation-name: album-turn-next; }
 .album-leaf.is-prev { animation-name: album-turn-prev; }
