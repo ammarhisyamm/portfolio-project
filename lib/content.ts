@@ -241,10 +241,20 @@ const CV_WORKING_EXPERIENCE: ExperienceItem[] = [
     role: "UI/UX Designer - Freelance",
     period: "May 2025 - Jul 2026",
     logo: "/experience-logos/lets-vibe-digital.png",
-    logoBlack: true,
     points: [
       "Designed responsive web applications for Australian enterprise clients, including Big Rock Developments, RenoPlus, VV Construction, and VSCO Pty.",
       "Ran end-to-end design workflows, from moodboards and visual direction to high-fidelity wireframes, responsive desktop and mobile layouts, and stakeholder revisions.",
+    ],
+  },
+  {
+    company: "HexOcean",
+    role: "UI/UX Designer - Freelance",
+    period: "Sep 2025 - Apr 2026",
+    logo: "/experience-logos/hexocean.png",
+    points: [
+      "Designed end-to-end experiences for AI-driven software products, translating complex business requirements and data-heavy workflows into intuitive digital experiences.",
+      "Developed user journeys, wireframes, high-fidelity interfaces, and interactive prototypes for complex AI interactions and software workflows.",
+      "Collaborated with international software engineering teams throughout product development to refine experiences and ensure design feasibility.",
     ],
   },
   {
@@ -271,8 +281,8 @@ const CV_WORKING_EXPERIENCE: ExperienceItem[] = [
   },
 ].map((e) => ({ ...e, images: [] }));
 
-/** Roles kept on the CV but left off the portfolio for now. */
-const HIDDEN_EXPERIENCE = new Set(["Let's Vibe Digital"]);
+/** Roles kept on the CV but left off the portfolio. */
+const HIDDEN_EXPERIENCE = new Set<string>();
 
 const SHOWN_EXPERIENCE = CV_WORKING_EXPERIENCE.filter((item) => !HIDDEN_EXPERIENCE.has(item.company));
 
