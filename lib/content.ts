@@ -230,10 +230,10 @@ const CV_WORKING_EXPERIENCE: ExperienceItem[] = [
     period: "Nov 2024 - Present",
     logo: "/experience-logos/serba-mulia.png",
     points: [
-      "Lead product design for 5+ business and internal platforms, including Promas, OCR CRM, Pajak Mas, Cashlux, and Synqra, translating complex operational requirements into scalable digital experiences.",
-      "Redesigned Promas for cashiers, branch managers, and multi-branch teams, grounding the work in competitor research and a 120-question user interview guide, and built its design system from the ground up.",
-      "Built new products from zero to one, including Pajak Mas, Cashlux, and Synqra.",
-      "Structured design architecture across 10+ Figma projects, improving design consistency by 35% and research efficiency by 40%.",
+      "Design B2B and internal products including Promas, OCR CRM, Pajak Mas, Cashlux, and Synqra, translating operational needs into flows, interfaces, and reusable patterns.",
+      "Work on Promas for cashiers, branch managers, and multi-branch teams, including workflow research, interface design, and a reusable design system.",
+      "Contribute to products from early definition through delivery, including Pajak Mas, Cashlux, and Synqra.",
+      "Coordinate design work across product areas and collaborate with product and engineering through implementation.",
     ],
   },
   {
@@ -274,9 +274,9 @@ const CV_WORKING_EXPERIENCE: ExperienceItem[] = [
     period: "Feb 2024 - Jul 2024",
     logo: "/experience-logos/serasi-autoraya.png",
     points: [
-      "Led qualitative research for SELOG, a B2B fleet logistics platform, conducting 10+ user interviews and competitor analysis that produced 100+ actionable insights and informed about 75% of design decisions.",
-      "Designed the responsive SELOG B2B experience across 14+ screens, supported by a design system of 25+ reusable components.",
-      "Presented research insights, product vision, and design direction to the Board of Directors, securing executive alignment for SELOG's digital transformation.",
+      "Worked on SELOG, a B2B fleet logistics platform, contributing to workflow research, competitor review, and product design.",
+      "Designed responsive SELOG experiences and reusable interface patterns for the B2B platform.",
+      "Presented research insights and design direction to stakeholders to support discussion of SELOG's digital product direction.",
     ],
   },
 ].map((e) => ({ ...e, images: [] }));
@@ -722,8 +722,8 @@ export const DEFAULTS: SiteContent = {
     ],
   },
   footer: {
-    heading: "Let's work together",
-    note: "Have a thoughtful problem to solve?",
+    heading: "Let's talk about a role or a project.",
+    note: "Hiring a product designer?",
     email: "hello@hisyam.design",
     links: [
       { label: "LinkedIn", href: "#" },

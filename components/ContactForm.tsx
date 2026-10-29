@@ -9,10 +9,10 @@ import { Check } from "lucide-react";
 import Btn from "./Btn";
 
 const schema = z.object({
-  name: z.string().min(2, "Please add your name."),
-  email: z.string().email("Please add a valid email."),
-  projectType: z.string().min(1, "Please select a project type."),
-  message: z.string().min(10, "Message should be at least 10 characters."),
+  name: z.string().trim().min(1, "Enter your name."),
+  email: z.string().trim().min(1, "Enter your email address.").email("Enter an email address like name@example.com."),
+  projectType: z.string().min(1, "Choose a topic."),
+  message: z.string().trim().min(10, "Add a little more detail (at least 10 characters)."),
   company: z.string().optional(),
 });
 
@@ -20,11 +20,10 @@ type FormValues = z.infer<typeof schema>;
 
 const PROJECT_TYPES = [
   "Full-time role",
-  "Product design",
-  "UX/UI design",
+  "Freelance product design",
   "Design system",
-  "Product audit",
-  "Other",
+  "UX review",
+  "Something else",
 ];
 
 export default function ContactForm({ email }: { email: string }) {
@@ -46,7 +45,7 @@ export default function ContactForm({ email }: { email: string }) {
     });
     const data = (await res.json().catch(() => ({}))) as { error?: string };
     if (!res.ok) {
-      setFormError(data.error || "Something went wrong. Please try again, or email me directly.");
+      setFormError(data.error || `Your message couldn't be sent. Try again, or email me at ${email}.`);
       return;
     }
     setSent(true);
@@ -93,7 +92,7 @@ export default function ContactForm({ email }: { email: string }) {
 
       <div>
         <label htmlFor="projectType" className="mb-2 block  text-[11px] uppercase tracking-[0.02em] text-sub">
-          Project type
+          What would you like to discuss?
         </label>
         <select
           id="projectType"
@@ -103,7 +102,7 @@ export default function ContactForm({ email }: { email: string }) {
           {...register("projectType")}
         >
           <option value="" disabled>
-            Select a project type
+            Choose a topic
           </option>
           {PROJECT_TYPES.map((t) => (
             <option key={t} value={t}>
@@ -123,7 +122,7 @@ export default function ContactForm({ email }: { email: string }) {
         <textarea
           id="message"
           rows={5}
-          placeholder="Tell me about your product, problem, or idea."
+          placeholder="Share the role or project, what you need, and any timing."
           aria-invalid={!!errors.message}
           className={`field resize-none ${errors.message ? "field-error" : ""}`}
           {...register("message")}
@@ -133,7 +132,7 @@ export default function ContactForm({ email }: { email: string }) {
 
       <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
         <Btn type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Sending…" : "Send message"}
+            {isSubmitting ? "Sending message…" : "Send message"}
         </Btn>
         {formError && (
           <p className="text-sm text-red-500" role="alert">
@@ -146,14 +145,16 @@ export default function ContactForm({ email }: { email: string }) {
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
+              role="status"
+              aria-live="polite"
               className="flex items-center gap-2 text-sm text-accent-ink"
             >
-              <Check size={15} /> Message sent — I&rsquo;ll get back to you soon.
+              <Check size={15} /> Your message has been submitted. I&rsquo;ll reply by email.
             </motion.p>
           )}
         </AnimatePresence>
         <a href={`mailto:${email}`} className="text-sm text-sub no-underline hover:text-ink">
-          or email directly
+          Email Hisyam: {email}
         </a>
       </div>
     </form>

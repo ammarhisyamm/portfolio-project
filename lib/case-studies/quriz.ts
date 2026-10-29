@@ -4,25 +4,25 @@ import { block, media } from "./block";
 const P = "/case-studies/quriz";
 
 export const quriz: CaseStudy = {
-  slug: "quriz", title: "Quran practice in two minutes a day", published: true, featured: true, featured_order: -1,
+  slug: "quriz", title: "Short Quran quizzes, with a way back to every mistake", published: true, featured: true, featured_order: -1,
   year: "2026", category: "Quriz · Quran practice web app", industry: "Education", platform: "Mobile web", project_status: "Live",
-  short_description: "Short daily Quran quizzes with streaks, XP and a path back to every mistake, redesigned three times in five weeks.",
+  short_description: "A practice app with four quiz modes, audio, and mistake review, developed through three visual iterations.",
   hero_headline: "",
-  hero_description: "Quriz turns Quran practice into short quizzes: match an ayah to its translation, find the ayah from a translation, continue a verse or guess the surah. Streaks and XP bring people back; a review path turns mistakes into the next session.",
+  hero_description: "Quriz offers short Quran quizzes with ayah audio and a way to revisit wrong answers. People can choose a juz or surah and practise matching verses and translations, continuing a verse, or identifying a surah. Streaks and XP make progress visible; whether they change return visits remains a question to measure.",
   hero_image: `${P}/cover.mp4`, hero_image_alt: "A walkthrough of Quriz on mobile: home, choosing a surah, answering a quiz question, progress and badges",
   thumbnail: `${P}/cover-poster.webp`, cover_video: `${P}/cover.mp4`, thumbnail_alt: "A walkthrough of Quriz on mobile: home, choosing a surah, answering a quiz question, progress and badges",
   live_url: "https://quriz.online",
   client: "Independent product", role: "Product designer and builder", timeline: "September to October 2026", scope: "Research - UX - UI - Illustration direction - Front end", team: "Solo", project_type: "Learning product",
   blocks: [
-    block("OVERVIEW", "At a glance", "A two-minute habit, not a course.", "", {
+    block("OVERVIEW", "At a glance", "A small, repeatable starting point for Quran practice.", "", {
       cards: [
-        { label: "Problem", title: "Practice has no daily shape", body: "Quran apps are excellent for reading and listening, but there is rarely a small, repeatable way to check what you remember." },
+        { label: "Problem", title: "Finding a small next step", body: "The product explores a short, repeatable way to practise what someone remembers." },
         { label: "Approach", title: "Ship the loop, then give it a world", body: "Four quiz modes by juz or surah, ayah audio, streaks and XP, and a one-tap review of every wrong answer, then three visual passes." },
-        { label: "My role", title: "End to end", body: "Product framing, interviews, UX, UI and illustration direction for the game world, then I built the front end myself." },
+        { label: "My role", title: "Product design and build", body: "I shaped the practice flow, designed the interface and visual direction, and built the front end." },
         { label: "Outcome", title: "Live, three iterations", body: "Live at quriz.online. The interface went from a flat system to a painted game world in five weeks." },
       ],
     }),
-    block("CONTEXT", "01 · The problem", "Good intentions, no small next step.", "Many people want to stay close to the Quran every day, but the available tools ask for a big commitment: read a whole page, follow a course, memorise a surah. Quriz asks for two minutes and a few taps, then shows what to practise next."),
+    block("CONTEXT", "01 · The problem", "A small next step for practice.", "Quriz explores a repeatable starting point for Quran practice. The design helps people begin, understand an answer, and see what to revisit after a session."),
     block("AFFINITY_BOARD", "02 · Framing", "What I knew, and what I was only assuming.", "Before designing screens I grouped what I knew and what I assumed about daily practice. The assumptions went into the interviews that follow.", {
       notes: [
         { theme: "Motivation fades fast", color: "yellow", notes: ["Daily intention, weekly reality", "Big goals like khatam feel far away", "Assumption: missing a day should not feel like failure", "Progress needs to be visible in one glance"], insight: "Make the daily unit tiny, and make showing up feel good." },
@@ -48,7 +48,7 @@ export const quriz: CaseStudy = {
       layout: "list",
       cards: [
         { label: "Read", title: "Quran readers", body: "Apps such as Quran.com and Muslim Pro are excellent references with audio and translations. Self-testing is not their focus." },
-        { label: "Habit", title: "Habit learning apps", body: "The Duolingo pattern of short lessons, streaks and XP proves that small daily units bring people back." },
+        { label: "Habit", title: "Habit learning apps", body: "Short lessons, streaks, and XP offer one reference for visible progress. Their effect on Quriz use would need to be measured separately." },
         { label: "Hafalan", title: "Memorisation tools", body: "Built for hafalan with long sessions. Valuable, but heavier than a two-minute daily check." },
         { label: "Gap", title: "Quriz", body: "Short quizzes on any juz or surah, with audio, honest progress and a review path for mistakes." },
       ],
@@ -143,6 +143,6 @@ export const quriz: CaseStudy = {
         { label: "Next", title: "Measure the habit", body: "Repeat practice within a week, how often people use the mistake review, and whether the painted direction changes either." },
       ],
     }),
-    block("REFLECTION", "Reflection", "Ship the loop first, then give it a world.", "Proving the quiz loop in a plain system made the later visual work safer: every redesign kept the same structure and changed only how it felt. The next question is whether the game world improves return visits at scale, which is something to measure rather than assume."),
+    block("REFLECTION", "Reflection", "Keep the practice loop steady as the visuals evolve.", "Keeping the practice flow consistent made the visual iterations easier to compare. The next step is to evaluate whether the interface changes improve clarity and return use, rather than assuming a more playful appearance creates a stronger habit."),
   ],
 };

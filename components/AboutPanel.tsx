@@ -1,4 +1,5 @@
 import Btn from "./Btn";
+import Link from "next/link";
 import Reveal from "./Reveal";
 import type { AboutContent, ContactContent, SocialLink } from "@/lib/content";
 
@@ -14,11 +15,12 @@ export default function AboutPanel({
   const linkedin = socials.find((s) => s.type === "linkedin")?.href ?? "#";
   return (
     <Reveal className="panel p-5 sm:p-8">
-      <span className="kicker">About myself</span>
+      <span className="kicker">About Hisyam</span>
       <p className="mb-4 mt-4 text-[clamp(22px,2.2vw,30px)] leading-snug tracking-[-0.05em]">
         {about.introTitle}
       </p>
       <p className="leading-relaxed text-sub">{about.introBody}</p>
+      <Link href="/about-us" className="mt-4 inline-flex w-fit text-[13px] font-medium text-ink underline decoration-line underline-offset-4 hover:decoration-ink">More about Hisyam</Link>
       <div className="mt-6 border-t border-line">
         <a
           href={`mailto:${contact.email}`}

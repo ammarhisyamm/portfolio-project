@@ -6,9 +6,9 @@ const P = "/case-studies/nomory";
 export const nomory: CaseStudy = {
   slug: "nomory", title: "Turning food photos into memories worth revisiting", published: true, featured: true, featured_order: -2,
   year: "2026", category: "Nomory · Food diary web app", industry: "Consumer lifestyle", platform: "Installable web app (PWA)", project_status: "Live",
-  short_description: "A private food diary that turns everyday meal photos into memories worth returning to.",
+  short_description: "A personal food diary for saving a meal with its context and finding it again through a calendar, archive, or search.",
   hero_headline: "",
-  hero_description: "Nomory keeps the story around a meal, not only the photo: when it happened, where, what it cost and why it mattered. Capture takes a photo and a name; everything else is optional and comes back later through a calendar, a memory archive and search.",
+  hero_description: "Nomory keeps a meal photo with the details around it. Save a photo and meal name, add context if you want, and return to the memory through the calendar, archive, or search. The app works on the device without an account, with optional sign-in for sync.",
   hero_image: `${P}/cover.mp4`, hero_image_alt: "A walkthrough of Nomory on mobile: onboarding, the daily diary, adding a meal, the meal memory, calendar, archive and search",
   thumbnail: `${P}/cover-poster.webp`, cover_video: `${P}/cover.mp4`, thumbnail_alt: "A walkthrough of Nomory on mobile: onboarding, the daily diary, adding a meal, the meal memory, calendar, archive and search",
   live_url: "https://nomory.site",
@@ -17,8 +17,8 @@ export const nomory: CaseStudy = {
     block("OVERVIEW", "At a glance", "Lighter than a log, more useful than a camera roll.", "", {
       cards: [
         { label: "Problem", title: "Food photos lose their story", body: "Meal photos sit between receipts and screenshots. A month later nobody remembers where it was, who was there or what it cost." },
-        { label: "Approach", title: "Two halves: capture and recall", body: "Save a meal in two taps, add context only if you want, then get it back through a calendar, an archive and search." },
-        { label: "My role", title: "End to end", body: "Problem framing, interviews, UX, UI, motion and the front end, including local-first storage and optional cloud sync." },
+        { label: "Approach", title: "Capture and recall", body: "Save a photo and meal name, add optional context, then return through a calendar, archive, or search." },
+        { label: "My role", title: "Product design and build", body: "I shaped the product, designed its flows and interface, and built the front end, including local storage and optional sync." },
         { label: "Outcome", title: "Live and installable", body: "Live at nomory.site as an installable web app. It works without an account; signing in syncs memories across devices." },
       ],
     }),
@@ -58,7 +58,7 @@ export const nomory: CaseStudy = {
         { label: "Nomory", title: "A diary built for meals", body: "Photo-first capture, optional context, and recall by day, archive or search." },
       ],
     }),
-    block("FLOW_PLAYER", "05 · Half one: capture", "From photo to memory in two taps.", "Capture happens at the table, often one-handed, so every step is reachable with a thumb. It plays on its own; hover to pause, or pick a step.", {
+    block("FLOW_PLAYER", "05 · Half one: capture", "From photo to saved memory.", "The capture flow keeps the photo and meal name prominent, with additional context available when someone wants it. It plays on its own; hover to pause, or pick a step.", {
       layout: "phone",
       steps: [
         { title: "Start with a photo", description: "The intro sets the promise: no calorie counting, no long forms.", image: `${P}/onboarding-1.webp`, alt: "Nomory onboarding screen titled Start with a photo" },

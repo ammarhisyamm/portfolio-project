@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Download } from "lucide-react";
 import { gsap } from "@/lib/gsap";
 import { reducedMotion, splitWords } from "@/lib/utils";
 import type { SocialLink, TrustItem } from "@/lib/content";
@@ -15,15 +15,15 @@ type HeroProps = {
   headline: string;
   intro: string;
   available: boolean;
-  email: string;
   socials: SocialLink[];
   trust: TrustItem[];
   profilePhoto?: string;
+  cvUrl?: string;
 };
 
 const LOGO_SHADOW = "inset 0 0 0 2px rgba(255,255,255,0.9), 0 14px 32px -14px rgba(22,22,22,0.25)";
 
-export default function Hero({ name, title, headline, intro, available, email, socials, trust, profilePhoto }: HeroProps) {
+export default function Hero({ name, title, headline, intro, available, socials, trust, profilePhoto, cvUrl }: HeroProps) {
   const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -100,14 +100,15 @@ export default function Hero({ name, title, headline, intro, available, email, s
         </p>
 
         <div data-hero-fade className="flex w-full flex-wrap gap-3 sm:w-auto">
-          <Btn href={`mailto:${email}`}>
-            Let&rsquo;s work together
+          <Btn href="#selected-work">
+            View selected work
             <ArrowRight
               size={15}
               className="transition-transform duration-300 ease-out group-hover:translate-x-1"
               aria-hidden="true"
             />
           </Btn>
+          {cvUrl && <Btn href={cvUrl} download variant="secondary">Download CV (PDF)<Download size={14} aria-hidden="true" /></Btn>}
         </div>
         </div>
       </div>

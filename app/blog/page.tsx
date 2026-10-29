@@ -5,8 +5,8 @@ import Reveal from "@/components/Reveal";
 import { formatPostDate, getBlogSummaries, DEFAULT_SUBSTACK } from "@/lib/blog";
 
 export const metadata: Metadata = {
-  title: "Blog",
-  description: "Personal essays from Hisyam on life, growth, and the small things worth noticing.",
+  title: "Personal Essays | Ammar Hisyam Fakhrudin",
+  description: "Reflections on faith, growth, and everyday life, in English and Indonesian.",
   alternates: { canonical: "/blog" },
 };
 
@@ -16,12 +16,12 @@ export default async function BlogPage() {
   return (
     <div className="grid gap-3 pb-16 pt-3 md:gap-4">
       <Reveal className="panel grid gap-5 p-5 sm:p-8 lg:p-10">
-        <span className="kicker">Blog</span>
+        <span className="kicker">Personal essays</span>
         <h1 className="max-w-[820px] text-[clamp(26px,4vw,32px)] font-normal leading-[1.08] tracking-[-0.05em]">
-          Notes on life, growth, and the things in between.
+          Reflections on faith, growth, and everyday life.
         </h1>
         <p className="max-w-[560px] leading-relaxed text-sub">
-          Essays and field notes, also published on{" "}
+          In English and Indonesian, also published on{" "}
           <a href={DEFAULT_SUBSTACK} target="_blank" rel="noreferrer" className="text-ink">Substack</a>.
         </p>
       </Reveal>

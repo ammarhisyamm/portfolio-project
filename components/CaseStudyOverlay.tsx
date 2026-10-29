@@ -52,7 +52,7 @@ export default function CaseStudyOverlay({
   }, [cs, onClose]);
 
   const info = cs ? projectInfo(cs) : [];
-  const blocks = cs ? cs.blocks.filter((b) => b.visible) : [];
+  const blocks = cs ? cs.blocks.filter((b) => b.visible && !b.draft) : [];
   const meta = cs ? [cs.category, cs.year, cs.platform, cs.project_status].filter(Boolean).join(" · ") : "";
   const heroImage = cs ? cs.hero_image || cs.thumbnail || caseStudyCover(cs.slug) : "";
 

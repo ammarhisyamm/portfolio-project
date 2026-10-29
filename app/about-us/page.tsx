@@ -10,8 +10,9 @@ import { capabilityMeta } from "@/lib/capability-meta";
 import { toolLogos } from "@/lib/tool-logos";
 
 export const metadata: Metadata = {
-  title: "About",
-  description: "Learn about Hisyam's background, design approach, capabilities, and recent work on GitHub.",
+  title: "About Ammar Hisyam Fakhrudin | Product Designer",
+  description: "Meet Hisyam, a Jakarta-based product designer at Serba Mulia Group. Read about his approach, experience, capabilities, and independent products.",
+  alternates: { canonical: "/about-us" },
 };
 
 export default async function AboutUsPage() {
@@ -43,10 +44,10 @@ export default async function AboutUsPage() {
           </dl>
         )}
         <div className="mt-7 flex flex-wrap gap-3">
-          <Link href="/contact" className="btn btn-primary">Get in touch</Link>
+          <Link href="/contact" className="btn btn-primary">Contact Hisyam</Link>
           {about.cvUrl && (
             <a className="btn btn-secondary" href={about.cvUrl} target="_blank" rel="noreferrer">
-              {about.cvLabel || "View CV"}
+              {about.cvLabel || "Download CV (PDF)"}
             </a>
           )}
         </div>
@@ -68,40 +69,50 @@ export default async function AboutUsPage() {
 
       <section className="panel p-5 sm:p-8" aria-labelledby="capabilities-title">
         <div>
-          <h2 id="capabilities-title" className="text-[clamp(22px,3vw,28px)] font-normal tracking-[-0.05em]">Capabilities</h2>
-          <p className="mt-1 text-sm text-sub">What I help with across the product lifecycle.</p>
+          <h2 id="capabilities-title" className="text-[clamp(22px,3vw,28px)] font-normal tracking-[-0.05em]">How I can help</h2>
+          <p className="mt-1 text-sm text-sub">From understanding a workflow to preparing a design for implementation.</p>
         </div>
-        <div className="mt-6 flex flex-wrap gap-2.5">
-          {about.capabilities.map((item) => {
-            const meta = capabilityMeta[item.toLowerCase()] ?? { icon: Sparkles, tone: "slate" };
-            const Icon = meta.icon;
-            return (
-              <span key={item} className="about-skill-chip" data-tone={meta.tone}>
-                <Icon size={16} strokeWidth={1.9} aria-hidden="true" />
-                {item}
-              </span>
-            );
-          })}
-        </div>
+        {[
+          { title: "Understand the problem", items: ["Product strategy", "UX research", "Competitor analysis", "Product audits"] },
+          { title: "Shape the experience", items: ["User flows and information architecture", "Wireframing", "Prototyping", "Interaction design"] },
+          { title: "Design and refine", items: ["Visual design", "Design systems", "Usability testing", "Design-to-development handoff", "Developer handoff"] },
+        ].map((group) => {
+          const items = group.items.filter((item) => about.capabilities.includes(item));
+          return items.length ? <div key={group.title} className="mt-5 border-t border-line pt-4">
+            <h3 className="text-[11px] uppercase tracking-[0.06em] text-muted">{group.title}</h3>
+            <div className="mt-3 flex flex-wrap gap-2.5">{items.map((item) => {
+              const meta = capabilityMeta[item.toLowerCase()] ?? { icon: Sparkles, tone: "slate" };
+              const Icon = meta.icon;
+              return <span key={item} className="about-skill-chip" data-tone={meta.tone}><Icon size={16} strokeWidth={1.9} aria-hidden="true" />{item}</span>;
+            })}</div>
+          </div> : null;
+        })}
       </section>
 
       <section className="panel p-5 sm:p-8" aria-labelledby="industries-title">
         <div>
-          <h2 id="industries-title" className="text-[clamp(22px,3vw,28px)] font-normal tracking-[-0.05em]">Industries</h2>
-          <p className="mt-1 text-sm text-sub">Domains I&apos;ve designed for.</p>
+          <h2 id="industries-title" className="text-[clamp(22px,3vw,28px)] font-normal tracking-[-0.05em]">Products and sectors</h2>
+          <p className="mt-1 text-sm text-sub">The kinds of products and contexts I&apos;ve worked in.</p>
         </div>
-        <div className="mt-6 grid grid-cols-2 gap-2 sm:grid-cols-4">
-          {about.industries.map((item) => {
-            const Icon = industryMeta[item.toLowerCase()] ?? Sparkles;
-            return <span key={item} className="about-industry-chip"><Icon size={15} strokeWidth={1.8} aria-hidden="true" />{item}</span>;
-          })}
-        </div>
+        {[
+          { title: "Product contexts", items: [{ source: "Enterprise", label: "B2B and enterprise tools" }, { source: "SaaS", label: "SaaS" }, { source: "AI products", label: "AI products" }, { source: "Marketplaces", label: "Marketplaces" }] },
+          { title: "Sectors", items: [{ source: "Fintech", label: "Financial services" }, { source: "Education", label: "Education" }, { source: "Communication", label: "Communication" }, { source: "Lifestyle", label: "Lifestyle" }] },
+        ].map((group) => {
+          const items = group.items.filter((item) => about.industries.includes(item.source));
+          return items.length ? <div key={group.title} className="mt-5 border-t border-line pt-4">
+            <h3 className="text-[11px] uppercase tracking-[0.06em] text-muted">{group.title}</h3>
+            <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">{items.map(({ source, label }) => {
+              const Icon = industryMeta[source.toLowerCase()] ?? Sparkles;
+              return <span key={source} className="about-industry-chip"><Icon size={15} strokeWidth={1.8} aria-hidden="true" />{label}</span>;
+            })}</div>
+          </div> : null;
+        })}
       </section>
 
       <section className="panel p-5 sm:p-8" aria-labelledby="tools-title">
         <div>
           <h2 id="tools-title" className="text-[clamp(22px,3vw,28px)] font-normal tracking-[-0.05em]">Tools and collaboration</h2>
-          <p className="mt-1 text-sm text-sub">Tools I use to design, research, and collaborate.</p>
+          <p className="mt-1 text-sm text-sub">Tools I use to map ideas, design interfaces, build prototypes, and work with the team.</p>
         </div>
         <div className="mt-6 flex flex-wrap gap-3" aria-label="Design and collaboration tools">
           {toolLogos.map((tool) => (

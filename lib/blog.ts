@@ -105,6 +105,14 @@ function dropCoverCopy(html: string, cover: string) {
   return html.slice(0, start) + html.slice(end);
 }
 
+/** Keep Substack's subscription prompt out of the article body; the page already links to the publication. */
+function dropSubscriptionPrompts(html: string) {
+  return html.replace(/<p\b[^>]*>[\s\S]*?<\/p>/gi, (paragraph) => {
+    const text = paragraph.replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim();
+    return /^(thanks for reading|subscribe for free to receive|subscribe to .+ for free)/i.test(text) ? "" : paragraph;
+  });
+}
+
 function readingMinutes(html: string) {
   const words = html.replace(/<[^>]+>/g, " ").split(/\s+/).filter(Boolean).length;
   return Math.max(1, Math.round(words / 220));
@@ -166,7 +174,7 @@ export const getBlogPosts = cache(async (): Promise<BlogPost[]> => {
   }
   return Array.from(bySlug.values())
     .filter((post) => post.published)
-    .map((post) => ({ ...post, body: dropCoverCopy(sanitizeHtml(post.body), post.cover) }))
+    .map((post) => ({ ...post, body: dropSubscriptionPrompts(dropCoverCopy(sanitizeHtml(post.body), post.cover)) }))
     .sort((a, b) => (b.date || "").localeCompare(a.date || ""));
 });
 

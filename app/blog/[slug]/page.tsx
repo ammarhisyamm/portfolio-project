@@ -43,7 +43,7 @@ export default async function BlogPostPage({ params }: Props) {
     ...(post.url ? { sameAs: post.url } : {}),
   };
   return (
-    <article className="grid gap-3 pb-16 pt-3 md:gap-4">
+    <article lang={/menerima-diri|menikmati|hal-kecil|mengapresiasi|mengelola-ego/i.test(post.slug) ? "id" : "en"} className="grid gap-3 pb-16 pt-3 md:gap-4">
       <ReadingProgress />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <header className="panel grid gap-5 p-5 sm:p-8 lg:p-10">

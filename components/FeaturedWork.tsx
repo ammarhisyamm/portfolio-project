@@ -50,7 +50,7 @@ export default function FeaturedWork({
           key={p.slug}
           type="button"
           onClick={() => onOpen(p)}
-          aria-label={`Open case study: ${p.title}`}
+          aria-label={`Read ${p.title} case study`}
           data-stagger
           className={`group block w-full text-left no-underline focus-visible:outline-2 focus-visible:outline-offset-4 ${
             i > 0 ? "border-t border-line" : ""
@@ -94,7 +94,7 @@ export default function FeaturedWork({
               </p>
             )}
             <span className="-mt-1 inline-flex items-center gap-1.5 text-[13px] font-medium text-ink">
-              {p.role ? `${p.role} · ` : ""}Read case study
+              Read case study
               <ArrowRight size={14} aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-0.5" />
             </span>
           </div>
@@ -108,7 +108,7 @@ export default function FeaturedWork({
             aria-expanded={showAll}
             className="inline-flex min-h-11 items-center gap-2 rounded-full border border-line bg-panel px-5 text-[13px] font-medium text-ink transition-colors hover:bg-bg"
           >
-            {showAll ? "Show less" : `View all work (${caseStudies.length})`}
+            {showAll ? "Show featured work" : `View ${caseStudies.length - INITIAL_COUNT} more ${caseStudies.length - INITIAL_COUNT === 1 ? "case study" : "case studies"}`}
             <ChevronDown size={15} aria-hidden="true" className={`transition-transform duration-300 ${showAll ? "rotate-180" : ""}`} />
           </button>
         </div>

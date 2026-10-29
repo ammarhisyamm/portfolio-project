@@ -27,14 +27,14 @@ export const synqra: CaseStudy = {
       caption: "One review cycle before Synqra, recreated for illustration from the tools the team used.",
       alt_text: "Overlapping Word notes, an Excel tracker, a Drive folder of duplicate files and a chat asking who owns what",
     }),
-    block("CHALLENGE", "If nothing changes", "Five costs the team was already paying.", "", {
+    block("CHALLENGE", "Risks to address", "What a shared review record is designed to improve.", "These are potential effects of a fragmented review process and areas for the pilot to evaluate.", {
       layout: "list",
       cards: [
-        { title: "Revisions found late", body: "With no central place to monitor follow-ups, a missed revision only shows up when someone runs into it." },
-        { title: "Rework", body: "Feedback that was overlooked or picked up late has to be redone after the work has moved on." },
-        { title: "Delayed delivery", body: "Revision cycles become unpredictable, so release dates slip with them." },
-        { title: "Nothing to learn from", body: "Review history is not recorded consistently, so the process cannot be evaluated or improved." },
-        { title: "Less transparency", body: "Progress on each action item is hard to see, which weakens coordination between teams." },
+        { title: "Late follow-up", body: "Without a shared place to track actions, a revision may be harder to notice in time." },
+        { title: "Repeated work", body: "Feedback that is missed or picked up late can require another pass after work has moved on." },
+        { title: "Unclear timing", body: "When follow-up is difficult to track, the timing of revision work can be harder to plan." },
+        { title: "Limited history", body: "A consistent record gives the team a basis for reviewing the process over time." },
+        { title: "Less visible ownership", body: "Showing each action's owner and status helps the team see what still needs attention." },
       ],
     }),
     block("INTERVIEW", "02 · Problem validation", "Checking the problem before choosing a solution.", "Before deciding what to build, I wanted to know whether this was a real problem or an assumption. I traced how a review result actually travels today, from the meeting to the person who fixes it.", {

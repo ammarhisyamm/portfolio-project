@@ -13,7 +13,7 @@ export default function SiteHeader({ logo, workLabel }: { logo?: string; workLab
   const [scrolled, setScrolled] = useState(false);
 
   const LINKS = [
-    { href: "/", label: "Home" },
+    { href: "/#selected-work", label: "Work" },
     { href: "/about-us", label: "About" },
     { href: "/blog", label: "Blog" },
     { href: "/contact", label: "Contact" },
@@ -36,7 +36,7 @@ export default function SiteHeader({ logo, workLabel }: { logo?: string; workLab
         <div className="flex items-center">
           <Link
             href="/"
-            aria-label="Home"
+            aria-label="Hisyam — Home"
             className="grid h-8 w-8 place-items-center overflow-hidden rounded-[10px] bg-bg no-underline"
             style={{ boxShadow: LOGO_SHADOW }}
           >
@@ -52,7 +52,7 @@ export default function SiteHeader({ logo, workLabel }: { logo?: string; workLab
         <nav className="hidden items-center gap-7 md:flex" aria-label="Primary">
           {LINKS.map(({ href, label }) => {
             const isActive =
-              href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
+              href === "/#selected-work" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
             return (
               <Link
                 key={href}

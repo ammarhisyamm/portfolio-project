@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowUpRight, ArrowUp } from "lucide-react";
+import Link from "next/link";
 import type { FooterContent } from "@/lib/content";
 
 export default function SiteFooter({ footer }: { footer: FooterContent }) {
@@ -11,8 +12,8 @@ export default function SiteFooter({ footer }: { footer: FooterContent }) {
           {footer.note}
         </p>
         <h2 className="text-[clamp(24px,4vw,32px)] font-normal leading-[1.1] tracking-[-0.05em]">
-          <a
-            href={`mailto:${footer.email}`}
+          <Link
+            href="/contact"
             className="group inline-flex items-center gap-2.5 no-underline"
           >
             {footer.heading}
@@ -21,7 +22,7 @@ export default function SiteFooter({ footer }: { footer: FooterContent }) {
               className="inline-block text-muted transition-transform duration-300 ease-out group-hover:translate-x-1 group-hover:-translate-y-1"
               aria-hidden="true"
             />
-          </a>
+          </Link>
         </h2>
       </div>
       <div className="flex flex-col items-start lg:justify-self-end">

@@ -13,7 +13,11 @@ import { SITE_URL } from "@/lib/site";
 import { getContent } from "@/lib/content";
 import { withShowcase } from "@/lib/showcase-categories";
 
-export const metadata: Metadata = { alternates: { canonical: "/" } };
+export const metadata: Metadata = {
+  title: "Ammar Hisyam Fakhrudin | B2B & AI Product Designer",
+  description: "Jakarta-based product designer working on B2B, AI, and operational tools. Explore selected projects, design decisions, experience, and CV.",
+  alternates: { canonical: "/" },
+};
 
 export default async function HomePage() {
   const [content, posts] = await Promise.all([getContent(), getBlogSummaries()]);
@@ -23,7 +27,7 @@ export default async function HomePage() {
   const person = {
     "@context": "https://schema.org",
     "@type": "Person",
-    name: content.hero.name,
+    name: "Ammar Hisyam Fakhrudin",
     jobTitle: content.hero.title,
     description: content.hero.intro,
     url: SITE_URL,
@@ -44,14 +48,15 @@ export default async function HomePage() {
           headline={content.hero.headline}
           intro={content.hero.intro}
           available={content.hero.available}
-          email={content.contact.email}
           socials={content.socials.items}
           trust={content.trust}
           profilePhoto={content.branding.profilePhoto}
+          cvUrl={content.about.cvUrl}
         />
 
-        <section className="panel p-5 sm:p-8">
-          <span className="kicker">Selected work</span>
+        <section id="selected-work" className="panel scroll-mt-28 p-5 sm:p-8" aria-labelledby="selected-work-title">
+          <h2 id="selected-work-title" className="kicker">Selected work</h2>
+          <p className="mt-3 max-w-[560px] text-[14px] leading-relaxed text-sub">Four projects showing how I frame a problem, make design decisions, and take a product into implementation.</p>
           <div className="mt-8">
             <SelectedWork caseStudies={featured} />
           </div>

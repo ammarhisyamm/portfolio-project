@@ -6,9 +6,9 @@ const P = "/case-studies/offstories";
 export const offstories: CaseStudy = {
   slug: "offstories", title: "One calm place to plan a wedding together", published: true, featured: true, featured_order: -3,
   year: "2026", category: "OffStories · Wedding planning web app", industry: "Consumer lifestyle", platform: "Web, desktop and mobile", project_status: "Live",
-  short_description: "A calm, shared workspace where Indonesian couples plan their wedding together instead of across spreadsheets and group chats.",
+  short_description: "A shared workspace for Indonesian couples, bringing the plan, budget, vendors, and guests together from a guided setup.",
   hero_headline: "",
-  hero_description: "OffStories brings the checklist, budget, vendors, guests, timeline and notes into one workspace for two. A short guided setup turns a few answers into a first plan that already understands akad, resepsi, adat and Rupiah.",
+  hero_description: "OffStories brings the checklist, budget, vendors, guests, timeline and notes into one shared workspace. A guided setup creates a starting plan with Indonesian ceremony terms and Rupiah built into the experience.",
   hero_image: `${P}/cover.mp4`, hero_image_alt: "A walkthrough of OffStories: the seven-question smart setup on desktop, then the dashboard, checklist and budget, with the mobile app alongside",
   thumbnail: `${P}/cover-poster.webp`, cover_video: `${P}/cover.mp4`, thumbnail_alt: "A walkthrough of OffStories: the seven-question smart setup on desktop, then the dashboard, checklist and budget, with the mobile app alongside",
   live_url: "https://offstories.fun",
@@ -18,18 +18,19 @@ export const offstories: CaseStudy = {
       cards: [
         { label: "Problem", title: "Planning is scattered", body: "Budgets live in spreadsheets, decisions in family group chats, quotes in DMs. One partner ends up relaying everything." },
         { label: "Approach", title: "One shared workspace", body: "Checklist, budget, vendors, guests and timeline in one place, opened by a seven-question setup that drafts the first plan." },
-        { label: "My role", title: "End to end", body: "Desk research, interviews, information architecture, onboarding and interface design, then I built the front end myself." },
+        { label: "My role", title: "Product design and build", body: "I shaped the information architecture, onboarding and interface, then built the front end." },
         { label: "Outcome", title: "Live and free", body: "Live at offstories.fun with partner invites, RSVP links, a public invitation page and an English and Indonesian interface." },
       ],
     }),
-    block("COMPARE_SLIDER", "01 · The problem", "Five places, one wedding.", "A typical Indonesian wedding has two ceremonies, two families, a few hundred guests and a budget in the hundreds of millions of Rupiah. Most couples run it from a spreadsheet and a WhatsApp group, and the spreadsheet is always one version behind the chat. Drag across the screen to see the same wedding inside OffStories.", {
+    block("COMPARE_SLIDER", "01 · The problem", "A plan spread across places.", "Wedding details can live in spreadsheets, family conversations and vendor messages. OffStories brings the plan into one shared workspace. Drag across the screen to compare the recreated planning tools with the product.", {
       media: media(`${P}/before-scattered.webp`, `${P}/dashboard.webp`),
       labels: ["Before: scattered", "After: one workspace"],
       layout: "desktop",
       alt_text: "A budget spreadsheet with broken totals and a busy family group chat, compared with the OffStories dashboard",
       caption: "The before state is recreated for illustration from common planning tools. The after state is the live product with sample data.",
     }),
-    block("AFFINITY_BOARD", "02 · Desk research", "What a planning tool would need to know.", "I started with the facts a planner can't fake: what an Indonesian wedding actually costs, which ceremonies it includes, and where the coordination breaks. Each note is a finding; the board sorts them the way I did.", {
+    block("AFFINITY_BOARD", "02 · Product context", "Planning details, brought together.", "The product makes room for ceremony dates, guest planning, budget, vendors, and family coordination. These are product requirements and design considerations, not claims about every couple's experience.", {
+      draft: true,
       notes: [
         { theme: "Information lives everywhere", color: "coral", notes: ["Budget in a spreadsheet, decisions in a group chat", "Three versions of the guest list", "Vendor quotes buried in DMs and PDFs", "One partner becomes the family messenger"], insight: "The gap is not another tool. It is one shared source of truth." },
         { theme: "Indonesian weddings have their own shape", color: "yellow", notes: ["Akad and resepsi can be on different days", "8 adat traditions, each with its own prosesi", "Seserahan is its own shopping list and budget", "KUA is free in office hours, paid outside them"], insight: "Generic planners skip the steps couples worry about most." },
@@ -49,12 +50,12 @@ export const offstories: CaseStudy = {
       ],
       supporting_text: "Five of the six couples kept their main plan in a spreadsheet; all six coordinated decisions in WhatsApp groups with family.",
     }),
-    block("INSIGHTS", "From research to principles", "What the research changed.", "", {
+    block("INSIGHTS", "Design priorities", "Four decisions that shape the plan.", "", {
       cards: [
         { title: "Shared, not forwarded", body: "Both partners need their own login to the same plan, so nobody has to relay updates between families." },
         { title: "Local knowledge is the feature", body: "Akad, resepsi, adat processions, seserahan and KUA belong in the defaults, not in a notes field." },
-        { title: "A number calms people down", body: "A per-city, per-guest estimate gives couples a realistic budget before the first vendor call." },
-        { title: "Momentum beats completeness", body: "Showing one next best step does more for a stressed couple than a list of every task." },
+        { title: "Budget states stay distinct", body: "Paid, committed, and remaining amounts are presented separately so each can be read on its own." },
+        { title: "Put a next step in view", body: "The dashboard brings one suggested action forward while keeping the full checklist available." },
       ],
     }),
     block("PROBLEM_STATEMENT", "The principle", "How might we give two people, and their families, one calm place that already knows how an Indonesian wedding works?", "Calm became the test for every screen: it should lower the temperature of a stressful project, not add another dashboard to worry about."),
@@ -67,7 +68,7 @@ export const offstories: CaseStudy = {
         { label: "Gap", title: "OffStories", body: "A private workspace for two, with Indonesian ceremonies, adat and Rupiah built into the first plan." },
       ],
     }),
-    block("FLOW_PLAYER", "05 · The first five minutes", "Seven questions to a first plan.", "Research said starting was the hardest part, so onboarding got the most design time. Couples choose between a blank canvas and a guided setup, and every answer returns a short planning note, so the form feels like talking to a planner. It plays on its own; hover to pause, or pick a step.", {
+    block("FLOW_PLAYER", "05 · The guided setup", "From a few details to a first plan.", "Couples can start with a blank canvas or use a guided setup. Each step adds context to the plan. It plays on its own; hover to pause, or pick a step.", {
       layout: "desktop",
       steps: [
         { title: "Choose a start", description: "A blank canvas, or a guided setup that drafts the plan for you.", image: `${P}/setup-0.webp`, alt: "OffStories setup asking how the couple would like to start, with Blank canvas and Smart Wedding Setup options" },
@@ -87,7 +88,7 @@ export const offstories: CaseStudy = {
     }),
     block("DESIGN_DIRECTION", "07 · Decisions", "Four calls that shaped the rest of the product.", "", {
       cards: [
-        { title: "Answers come back as advice", body: "Every setup question returns a planning note with a next step. The setup grew from five to seven questions after research, and each one earns its place by giving something back." },
+        { title: "Make each step useful", body: "The guided setup returns planning notes alongside the answers, so the form also helps people understand what comes next." },
         { title: "Two accounts, one workspace", body: "A partner joins by email invite as an editor with their own login. No shared passwords, and nobody is the messenger." },
         { title: "Local by default", body: "Rupiah, akad and resepsi dates, adat processions, a seserahan tracker, KUA tasks and an Indonesian language switch." },
         { title: "Calm over alarming", body: "Warm off-white surfaces, soft gradients and quiet type. Colour is saved for money that is paid, committed or due." },
@@ -129,6 +130,6 @@ export const offstories: CaseStudy = {
         { label: "Next", title: "Measure the real thing", body: "Track setup completion, partner invite acceptance and weekly active workspaces, then interview couples who finish their wedding inside the product." },
       ],
     }),
-    block("REFLECTION", "Reflection", "Localisation is a product decision, not a translation.", "The biggest improvement did not come from the interface. It came from encoding how Indonesian weddings really work into the defaults. The trade-off was a longer setup, which I offset by making every question return something useful, and the usability test was the first real check of that trade-off."),
+    block("REFLECTION", "Reflection", "Local context shapes the product structure.", "The guided setup creates a more tailored first plan, but asks people to make more decisions at the start. That trade-off should be tested with couples using their own plans."),
   ],
 };
