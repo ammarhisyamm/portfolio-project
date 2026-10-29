@@ -660,24 +660,23 @@ export const DEFAULTS: SiteContent = {
   trust: trustItems.map((label) => ({ label, image: "" })),
   hero: {
     name: "Hisyam",
-    title: "Product Designer (UI/UX)",
-    headline: "I design B2B and AI products that make complex work feel simple.",
-    intro:
-      "Currently a UI/UX Designer at Serba Mulia Group. I take products from the first research question to a clean developer handoff, across fintech, SaaS, marketplaces, and AI.",
+    title: "Product Designer",
+    headline: "A product designer for B2B, AI, and operational tools.",
+    intro: "I'm Hisyam, based in Jakarta and currently at Serba Mulia Group. I research workflows, design interfaces and systems, and work with engineers through delivery.",
     available: true,
   },
   about: {
-    introTitle: "Hey, I'm Hisyam. I design B2B and AI products that feel simple to use.",
-    introBody:
-      "I work across research, interaction design, visual systems, and prototyping, so teams get a clear flow they can build with confidence.",
+    introTitle: "I'm Ammar Hisyam Fakhrudin, a product designer based in Jakarta. I work on B2B, AI, and operational products at Serba Mulia Group, and build independent products alongside my in-house work.",
+    introBody: "I work across research, interaction design, and design systems, with a practical focus on how a team will build and use the product.",
     philosophyTitle: "Make the complex legible.",
     philosophyBody:
-      "I design with structure and restraint. Every flow, screen, and pattern should earn its place and make the next decision easier for both users and the team building it.",
+      "I start by understanding the task and the decisions around it. Then I map the flow, establish the hierarchy, and develop patterns the team can build and maintain. I work with product and engineering throughout, so the design has a clear path into implementation.",
     background: [
-      "I have worked in-house, at agencies, and as a freelancer on fintech, SaaS, marketplace, education, security, communication, and AI products. I stay involved from research through visual design to developer handoff.",
+      "My experience spans in-house teams, agencies, and freelance work. I've worked on operational platforms, financial products, marketplaces, and AI software, from early research and user flows to interface design and developer handoff.",
+      "Building independent products gives me a place to explore the details: how people get started, what a form asks for, and how an interaction helps them find their way back.",
     ],
     tools:
-      "Figma, FigJam, Adobe tools, Photopea, Notion, and AI-assisted design and research tools. I work openly with product, engineering, and stakeholders to turn decisions into momentum.",
+      "I use Figma and FigJam for interface and collaboration work, Adobe tools and Photopea for visual assets, and Notion to document decisions. AI-assisted tools support exploration and research; I check the output against the product context.",
     capabilities,
     industries,
     cvUrl: CV_URL,
@@ -707,7 +706,7 @@ export const DEFAULTS: SiteContent = {
     ],
   },
   contact: {
-    email: "hello@hisyam.design",
+    email: "ammarhisyam151@gmail.com",
     location: "Jakarta, Indonesia",
     whatsapp: "#",
     available: true,
@@ -724,7 +723,7 @@ export const DEFAULTS: SiteContent = {
   footer: {
     heading: "Let's talk about a role or a project.",
     note: "Hiring a product designer?",
-    email: "hello@hisyam.design",
+    email: "ammarhisyam151@gmail.com",
     links: [
       { label: "LinkedIn", href: "#" },
       { label: "Behance", href: "#" },
