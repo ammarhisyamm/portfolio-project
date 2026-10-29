@@ -17,9 +17,10 @@ export default function AboutPanel({
     <Reveal className="panel p-5 sm:p-8">
       <span className="kicker">About Hisyam</span>
       <p className="mb-4 mt-4 text-[clamp(22px,2.2vw,30px)] leading-snug tracking-[-0.05em]">
-        {about.introTitle}
+        A product designer for B2B, AI, and operational tools.
       </p>
       <p className="leading-relaxed text-sub">{about.introBody}</p>
+      <p className="mt-3 leading-relaxed text-sub">Alongside my in-house work, I build independent products to explore onboarding and interaction details.</p>
       <Link href="/about-us" className="mt-4 inline-flex w-fit text-[13px] font-medium text-ink underline decoration-line underline-offset-4 hover:decoration-ink">More about Hisyam</Link>
       <div className="mt-6 border-t border-line">
         <a
