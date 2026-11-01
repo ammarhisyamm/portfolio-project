@@ -15,6 +15,7 @@ export const synqra: CaseStudy = {
   client: "Serba Mulia, internal Kaizen project", role: "Product designer and researcher", timeline: "May 2026 to now", scope: "Research - Validation - PRD - UX flows - Front end", team: "Two people, with Erlangga Dermawan (product designer)", project_type: "Internal Kaizen project",
   blocks: [
     block("OVERVIEW", "At a glance", "A Kaizen project that became a working tool.", "", {
+      variant: "table",
       cards: [
         { label: "Problem", title: "Review results got lost", body: "Feedback from review meetings was spread across Word, Excel, Drive and chats, so revisions surfaced late and nobody owned them." },
         { label: "Approach", title: "Validate, then stay narrow", body: "Proved the root causes first, then built only the review loop: a meeting template, AI-extracted items checked by a person, one board." },
@@ -28,7 +29,7 @@ export const synqra: CaseStudy = {
       alt_text: "Overlapping Word notes, an Excel tracker, a Drive folder of duplicate files and a chat asking who owns what",
     }),
     block("CHALLENGE", "Risks to address", "What a shared review record is designed to improve.", "These are potential effects of a fragmented review process and areas for the pilot to evaluate.", {
-      layout: "list",
+      variant: "bullets",
       cards: [
         { title: "Late follow-up", body: "Without a shared place to track actions, a revision may be harder to notice in time." },
         { title: "Repeated work", body: "Feedback that is missed or picked up late can require another pass after work has moved on." },
@@ -38,6 +39,7 @@ export const synqra: CaseStudy = {
       ],
     }),
     block("INTERVIEW", "02 · Problem validation", "Checking the problem before choosing a solution.", "Before deciding what to build, I wanted to know whether this was a real problem or an assumption. I traced how a review result actually travels today, from the meeting to the person who fixes it.", {
+      variant: "sequence",
       cards: [
         { label: "Method", title: "Workflow walkthrough", body: "Followed recent review results from the meeting notes to the final fix, noting every tool and hand-off along the way." },
         { label: "Method", title: "Conversations with the team", body: "Talked with the people who write review notes, the PICs who act on them and the project owner who chases them." },
@@ -65,15 +67,16 @@ export const synqra: CaseStudy = {
     }),
     block("COMPETITOR_ANALYSIS", "03 · Competitor analysis", "Strong tools, but none built for review follow-up.", "The team already knew Notion and ClickUp. I compared what each would take to solve this problem, then where Synqra sits between them.", {
       cards: [
-        { label: "Notion", title: "Flexible, but blank", body: "Works for docs, databases or simple notes, with AI meeting notes and transcription.", image: `${P}/competitor-notion.webp`, pros: ["Can be shaped for documentation, databases or plain notes", "Works on desktop and mobile, so notes can be updated anywhere"], cons: ["The team has to design its own structure, format and workflow first, which takes setup effort"] },
-        { label: "ClickUp", title: "Complete, but heavy", body: "Full task management, with meeting notes as docs and an AI that turns them into tasks.", image: `${P}/competitor-clickup.webp`, pros: ["Assignees, deadlines, priority and status in one platform", "AI summarises meeting notes and converts them into tasks"], cons: ["The AI is limited on the free plan and needs a monthly subscription", "So many options and settings that new users take time to learn the workflow"] },
-        { label: "Synqra", title: "Narrow on purpose", body: "Only the review loop: a meeting template, AI extraction of review items, a human check, then one five-stage board.", image: `${P}/board.webp`, pros: ["Ready on day one, with no structure to design first", "AI suggestions always pass a person before they become tasks", "Every item keeps the meeting it came from"], cons: ["Another tool to adopt, so it needs the SOP update to stick"] },
+        { label: "Notion", title: "Flexible, but blank", body: "Works for docs, databases or simple notes, with AI meeting notes and transcription.", pros: ["Can be shaped for documentation, databases or plain notes", "Works on desktop and mobile, so notes can be updated anywhere"], cons: ["The team has to design its own structure, format and workflow first, which takes setup effort"] },
+        { label: "ClickUp", title: "Complete, but heavy", body: "Full task management, with meeting notes as docs and an AI that turns them into tasks.", pros: ["Assignees, deadlines, priority and status in one platform", "AI summarises meeting notes and converts them into tasks"], cons: ["The AI is limited on the free plan and needs a monthly subscription", "So many options and settings that new users take time to learn the workflow"] },
+        { label: "Synqra", title: "Narrow on purpose", body: "Only the review loop: a meeting template, AI extraction of review items, a human check, then one five-stage board.", pros: ["Ready on day one, with no structure to design first", "AI suggestions always pass a person before they become tasks", "Every item keeps the meeting it came from"], cons: ["Another tool to adopt, so it needs the SOP update to stick"] },
       ],
     }),
     block("TEXT_WITH_MEDIA", "04 · Our solution", "One place for the whole review cycle.", "Synqra is a central system where the team records meeting results, manages feedback and tracks follow-up in a structured way. From writing the feedback to assigning a PIC and a deadline to watching it get done, nobody has to switch tools.", {
       media: media(`${P}/overview.webp`),
       caption: "The overview opens on what needs attention: blocked reviews, upcoming meetings and progress per stage.",
       alt_text: "Synqra overview with reviews that need attention, meetings, stage progress and a project summary",
+      variant: "checks",
       cards: [
         { label: "Supports", title: "Process documentation", body: "Every review is recorded from the same template." },
         { label: "Supports", title: "Multi-user collaboration", body: "Note takers, PICs and owners work on the same items." },
@@ -108,8 +111,9 @@ export const synqra: CaseStudy = {
       ],
       caption: "All screens use sample data for a fictional project.",
     }),
-    block("FLOW_PLAYER", "07 · How it works", "Three steps, from notes to progress.", "It plays on its own; hover to pause, or pick a step.", {
+    block("FLOW_PLAYER", "07 · How it works", "Three steps, from notes to progress.", "Write the notes, check what the AI pulled out, then follow each item on the board.", {
       layout: "desktop",
+      variant: "static",
       steps: [
         { title: "Start with a template", description: "Write the discussion and revision points straight into the dashboard, without switching to another tool.", image: `${P}/meeting-notes.webp`, alt: "Meeting editor with client feedback, approvals and follow-ups written in the notes" },
         { title: "The system summarises review items", description: "The AI turns the notes into structured items with an owner, priority and due date, and you check them before saving.", image: `${P}/ai-review.webp`, alt: "AI review with four extracted items grouped by assignee" },
@@ -142,6 +146,7 @@ export const synqra: CaseStudy = {
       ],
     }),
     block("CHALLENGE", "09 · Next action plan", "Making Synqra the default, not an extra.", "", {
+      variant: "labelled",
       cards: [
         { label: "Standardise", title: "One official place for reviews", body: "Synqra becomes the main place to record review results, with the meeting, handover and follow-up SOPs updated to match." },
         { label: "Monitor", title: "Weekly and monthly check-ins", body: "PICs monitor it weekly and the manager reviews it monthly, using the dashboard, the audit log and the three-month metrics." },
@@ -150,11 +155,14 @@ export const synqra: CaseStudy = {
       ],
     }),
     block("OUTCOME", "10 · Conclusion and follow-up", "A working review loop, live as a pilot.", "Synqra runs with meeting templates, AI extraction of review items, a five-stage board, task details with owners and dates, reports across projects and a public product site.", {
+      variant: "columns",
       cards: [
         { label: "Impact summary", title: "One system for review input", body: "Reviews can come in earlier, revision cycles stay under control and progress is visible to everyone." },
-        { label: "What we learned", title: "Validate the habit before automating it", body: "Proving that the problem was format, storage and history, not a lack of tools, kept the product narrow on purpose." },
         { label: "What comes next", title: "Pilot, measure, standardise", body: "Run the three-month pilot and the usability rounds, then make Synqra the standard through the updated SOPs." },
       ],
+    }),
+    block("REFLECTION", "Reflection", "Validate the habit before automating it.", "Proving that the problem was format, storage and history, not a lack of tools, kept the product narrow on purpose. Writing the targets down before the pilot started keeps the next evaluation honest: it will show what changed, not what we hoped would change.", {
+      variant: "quote",
     }),
   ],
 };

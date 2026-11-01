@@ -29,6 +29,15 @@ export const offstories: CaseStudy = {
       alt_text: "A budget spreadsheet with broken totals and a busy family group chat, compared with the OffStories dashboard",
       caption: "The before state is recreated for illustration from common planning tools. The after state is the live product with sample data.",
     }),
+    block("CONTEXT", "Constraints", "What I designed within.", "", {
+      variant: "facts",
+      cards: [
+        { label: "Team", title: "Solo", body: "Research, design and front end by one person, so every feature had to earn its build time." },
+        { label: "Timeline", title: "Five months", body: "June to October 2026, from the first sketch to a live product." },
+        { label: "Language", title: "Two languages", body: "English and Indonesian, with ceremony terms such as akad and resepsi kept as couples say them." },
+        { label: "Device", title: "Mobile-first", body: "Most updates happen between vendor visits and family calls, so screens start on a phone." },
+      ],
+    }),
     block("AFFINITY_BOARD", "02 · Product context", "Planning details, brought together.", "The product makes room for ceremony dates, guest planning, budget, vendors, and family coordination. These are product requirements and design considerations, not claims about every couple's experience.", {
       draft: true,
       notes: [
@@ -51,6 +60,7 @@ export const offstories: CaseStudy = {
       supporting_text: "Five of the six couples kept their main plan in a spreadsheet; all six coordinated decisions in WhatsApp groups with family.",
     }),
     block("INSIGHTS", "Design priorities", "Four decisions that shape the plan.", "", {
+      variant: "numerals",
       cards: [
         { title: "Shared, not forwarded", body: "Both partners need their own login to the same plan, so nobody has to relay updates between families." },
         { title: "Local knowledge is the feature", body: "Akad, resepsi, adat processions, seserahan and KUA belong in the defaults, not in a notes field." },
@@ -58,7 +68,7 @@ export const offstories: CaseStudy = {
         { title: "Put a next step in view", body: "The dashboard brings one suggested action forward while keeping the full checklist available." },
       ],
     }),
-    block("PROBLEM_STATEMENT", "The principle", "How might we give two people, and their families, one calm place that already knows how an Indonesian wedding works?", "Calm became the test for every screen: it should lower the temperature of a stressful project, not add another dashboard to worry about."),
+    block("PROBLEM_STATEMENT", "The principle", "How might we give two people, and their families, one calm place that already knows how an Indonesian wedding works?", "Calm became the test for every screen: it should lower the temperature of a stressful project, not add another dashboard to worry about.", { variant: "rule" }),
     block("COMPETITOR_ANALYSIS", "04 · Landscape", "Where existing options fall short.", "", {
       layout: "list",
       cards: [
@@ -83,8 +93,9 @@ export const offstories: CaseStudy = {
       media: media(`${P}/wire-dashboard.webp`, `${P}/dashboard.webp`),
       labels: ["Lo-fi sketch", "Final"],
       layout: "desktop",
+      variant: "stacked",
       alt_text: "A hand-drawn wireframe of the dashboard compared with the final OffStories dashboard",
-      caption: "Lo-fi structure redrawn for this case study, overlaid on the shipped dashboard.",
+      caption: "Lo-fi structure redrawn for this case study, shown next to the shipped dashboard.",
     }),
     block("DESIGN_DIRECTION", "07 · Decisions", "Four calls that shaped the rest of the product.", "", {
       cards: [
@@ -94,8 +105,9 @@ export const offstories: CaseStudy = {
         { title: "Calm over alarming", body: "Warm off-white surfaces, soft gradients and quiet type. Colour is saved for money that is paid, committed or due." },
       ],
     }),
-    block("RESULT_SHOWCASE", "08 · The product", "The workspace, screen by screen.", "Built mobile-first, because most updates happen between vendor visits and family calls.", {
+    block("RESULT_SHOWCASE", "08 · The product", "The workspace, screen by screen.", "Desktop for planning sessions at the table, mobile for the quick updates in between.", {
       layout: "desktop",
+      variant: "mosaic",
       steps: [
         { title: "Dashboard: countdown and the next best step", image: `${P}/dashboard.webp`, alt: "OffStories dashboard with countdown, progress, budget, vendors and guests" },
         { title: "Budget: paid, committed, remaining", image: `${P}/budget.webp`, alt: "Budget tracker with paid, committed and remaining totals" },
@@ -125,6 +137,7 @@ export const offstories: CaseStudy = {
       ],
     }),
     block("OUTCOME", "10 · Outcome", "A live, free workspace for two.", "OffStories is live at offstories.fun. Couples can run the smart setup, invite a partner, send RSVP links, publish an invitation page, track gifts and export their data.", {
+      variant: "highlight",
       cards: [
         { label: "Research in the defaults", title: "12 cities, 8 adat traditions", body: "Per-guest pricing for 12 cities and the processions of 8 adat traditions are built into the first plan." },
         { label: "Next", title: "Measure the real thing", body: "Track setup completion, partner invite acceptance and weekly active workspaces, then interview couples who finish their wedding inside the product." },

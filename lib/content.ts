@@ -17,7 +17,7 @@ export type CaseStudyStep = { title: string; description?: string; image: string
 /** A cluster on the research wall: its sticky notes and what they add up to. */
 export type CaseStudyNoteGroup = { theme: string; color: string; notes: string[]; insight?: string };
 
-export type CaseStudyCard = { label?: string; title: string; body: string; pros?: string[]; cons?: string[]; /** Screenshot shown at the top of the card. */ image?: string };
+export type CaseStudyCard = { label?: string; title: string; body: string; pros?: string[]; cons?: string[]; /** Screenshot shown at the top of the card. */ image?: string; /** 0 to 100: where the card sits on a "spectrum" layout. */ position?: number };
 
 export type CaseStudyBlock = {
   block_type: string;
@@ -36,6 +36,8 @@ export type CaseStudyBlock = {
   notes?: CaseStudyNoteGroup[];
   cards?: CaseStudyCard[];
   labels?: [string, string];
+  /** Visual variant for this block, so each case study can tell its story in its own shape (see CaseStudyBlockView). */
+  variant?: string;
   /** Placeholder research written to show the shape of the evidence. Shows a "Sample data" badge until real data replaces it. */
   draft?: boolean;
 };
@@ -661,19 +663,19 @@ export const DEFAULTS: SiteContent = {
   hero: {
     name: "Hisyam",
     title: "Product Designer",
-    headline: "A product designer for B2B, AI, and operational tools.",
-    intro: "I'm Hisyam, based in Jakarta and currently at Serba Mulia Group. I research workflows, design interfaces and systems, and work with engineers through delivery.",
+    headline: "I design digital products that make everyday things feel a little easier.",
+    intro: "I'm Hisyam, a product designer in Jakarta. I listen to the people who will use a product, turn what I learn into clear flows and interfaces, and stay close to the engineers until it ships. I'm currently at Serba Mulia Group, and I build products of my own on the side.",
     available: true,
   },
   about: {
-    introTitle: "I'm Ammar Hisyam Fakhrudin, a product designer based in Jakarta. I work on B2B, AI, and operational products at Serba Mulia Group, and build independent products alongside my in-house work.",
-    introBody: "I work across research, interaction design, and design systems, with a practical focus on how a team will build and use the product.",
-    philosophyTitle: "Make the complex legible.",
+    introTitle: "I'm Ammar Hisyam Fakhrudin, a product designer in Jakarta who likes turning messy, everyday problems into products that feel simple to use.",
+    introBody: "Most of my work starts with a conversation: what people are trying to do, and where it gets hard. From there I shape the flow, design the interface, and work closely with the team building it, so the idea holds up all the way to launch.",
+    philosophyTitle: "Start with people, finish with the details.",
     philosophyBody:
-      "I start by understanding the task and the decisions around it. Then I map the flow, establish the hierarchy, and develop patterns the team can build and maintain. I work with product and engineering throughout, so the design has a clear path into implementation.",
+      "I start by understanding who I'm designing for and the moment they're in. Then I map the flow, set a clear hierarchy, and put something in front of real people early. I keep product and engineering close the whole way, so what we design is what actually gets built.",
     background: [
-      "My experience spans in-house teams, agencies, and freelance work. I've worked on operational platforms, financial products, marketplaces, and AI software, from early research and user flows to interface design and developer handoff.",
-      "Building independent products gives me a place to explore the details: how people get started, what a form asks for, and how an interaction helps them find their way back.",
+      "I've worked in-house, with agencies, and as a freelancer, on products for finance, logistics, construction, education, and everyday life. Every industry asks for something different, but the work always starts the same way: listening first.",
+      "On the side I build my own products, from a wedding planner to a food diary and a Quran practice app. They give me room to sweat the small things: how people get started, what a form really needs to ask, and what makes someone come back.",
     ],
     tools:
       "I use Figma and FigJam for interface and collaboration work, Adobe tools and Photopea for visual assets, and Notion to document decisions. AI-assisted tools support exploration and research; I check the output against the product context.",
@@ -939,6 +941,8 @@ export const getContent = cache(async (): Promise<SiteContent> => {
         introTitle: DEFAULTS.about.introTitle,
         introBody: DEFAULTS.about.introBody,
         background: DEFAULTS.about.background,
+        philosophyTitle: DEFAULTS.about.philosophyTitle,
+        philosophyBody: DEFAULTS.about.philosophyBody,
         cvUrl: CV_URL,
       },
       contact: { ...DEFAULTS.contact, ...(site.contact ?? {}) },

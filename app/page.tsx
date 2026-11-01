@@ -14,8 +14,8 @@ import { getContent } from "@/lib/content";
 import { withShowcase } from "@/lib/showcase-categories";
 
 export const metadata: Metadata = {
-  title: "Ammar Hisyam Fakhrudin | B2B & AI Product Designer",
-  description: "Jakarta-based product designer working on B2B, AI, and operational tools. Explore selected projects, design decisions, experience, and CV.",
+  title: "Ammar Hisyam Fakhrudin | Product Designer",
+  description: "Jakarta-based product designer who turns everyday problems into simple, useful products. Explore selected work, experience, and CV.",
   alternates: { canonical: "/" },
 };
 
@@ -56,7 +56,7 @@ export default async function HomePage() {
 
         <section id="selected-work" className="panel scroll-mt-28 p-5 sm:p-8" aria-labelledby="selected-work-title">
           <h2 id="selected-work-title" className="kicker">Selected work</h2>
-          <p className="mt-3 max-w-[560px] text-[14px] leading-relaxed text-sub">Four projects showing how I frame a problem, make design decisions, and take a product into implementation.</p>
+          <p className="mt-3 max-w-[560px] text-[14px] leading-relaxed text-sub">A few projects, from the first question to a shipped product, with the decisions in between.</p>
           <div className="mt-8">
             <SelectedWork caseStudies={featured} />
           </div>

@@ -7,9 +7,6 @@ export const trustItems = [
   "Synqra",
   "Drawtopia",
   "Base44",
-  "Fintech products",
-  "SaaS platforms",
-  "AI-powered tools",
 ];
 
 export const capabilities = [

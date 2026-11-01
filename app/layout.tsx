@@ -21,12 +21,12 @@ const FALLBACK_ICON = `data:image/svg+xml,${encodeURIComponent(
 )}`;
 
 const DESCRIPTION =
-  "Jakarta-based product designer working on B2B, AI, and operational tools. Explore selected projects, design decisions, experience, and CV.";
+  "Jakarta-based product designer who turns everyday problems into simple, useful products. Explore selected work, experience, and CV.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Ammar Hisyam Fakhrudin | B2B & AI Product Designer",
+    default: "Ammar Hisyam Fakhrudin | Product Designer",
     template: "%s — Hisyam",
   },
   description: DESCRIPTION,
@@ -36,13 +36,13 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: "Hisyam Design",
-    title: "Ammar Hisyam Fakhrudin | B2B & AI Product Designer",
+    title: "Ammar Hisyam Fakhrudin | Product Designer",
     description: DESCRIPTION,
     url: "/",
     locale: "en_US",
     images: [{ url: "/case-studies/nomory-cover.webp", width: 1672, height: 941, alt: "Nomory meal diary interface on mobile" }],
   },
-  twitter: { card: "summary_large_image", title: "Ammar Hisyam Fakhrudin | B2B & AI Product Designer", description: DESCRIPTION, images: ["/case-studies/nomory-cover.webp"] },
+  twitter: { card: "summary_large_image", title: "Ammar Hisyam Fakhrudin | Product Designer", description: DESCRIPTION, images: ["/case-studies/nomory-cover.webp"] },
   robots: { index: true, follow: true },
 };
 

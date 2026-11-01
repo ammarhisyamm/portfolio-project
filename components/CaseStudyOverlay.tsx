@@ -140,7 +140,7 @@ export default function CaseStudyOverlay({
               )}
 
               {blocks.length > 0 && (
-                <div className="grid grid-cols-[minmax(0,1fr)] gap-3 md:gap-4">
+                <div className="mt-10 grid grid-cols-[minmax(0,1fr)] gap-16 md:mt-14 md:gap-20">
                   {blocks.map((b, i) => (
                     <CaseStudyBlockView key={`${i}-${b.block_type}`} block={b} />
                   ))}
