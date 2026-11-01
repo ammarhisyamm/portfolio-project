@@ -15,6 +15,7 @@ export const nomory: CaseStudy = {
   client: "Independent product", role: "Product designer and builder", timeline: "September 2026", scope: "Research - UX - UI - Interaction design - Front end", team: "Solo", project_type: "Consumer product",
   blocks: [
     block("OVERVIEW", "At a glance", "Lighter than a log, more useful than a camera roll.", "", {
+      variant: "split",
       cards: [
         { label: "Problem", title: "Food photos lose their story", body: "Meal photos sit between receipts and screenshots. A month later nobody remembers where it was, who was there or what it cost." },
         { label: "Approach", title: "Capture and recall", body: "Save a photo and meal name, add optional context, then return through a calendar, archive, or search." },
@@ -29,7 +30,8 @@ export const nomory: CaseStudy = {
       alt_text: "A cluttered photo gallery with meal photos mixed with screenshots, compared with the Nomory daily diary",
       caption: "The before state is recreated for illustration. The after state is the live product with sample data.",
     }),
-    block("AFFINITY_BOARD", "02 · Framing", "A wall of notes, and four assumptions to check.", "I wrote down what goes wrong between taking a meal photo and wanting it back later, then sorted the notes. Notes marked as assumptions went into the interviews that follow.", {
+    block("AFFINITY_BOARD", "02 · Framing", "A wall of notes, and four assumptions to check.", "I wrote down what goes wrong between taking a meal photo and wanting it back later, then sorted the notes. Notes marked as assumptions are the ones still to check with people.", {
+      variant: "insight-rows",
       notes: [
         { theme: "The context disappears", color: "coral", notes: ["Where was this pasta?", "Who was there?", "What did it cost?", "The photo keeps the plate, not the moment"], insight: "The valuable part of a meal memory is the context, and that is what a gallery drops." },
         { theme: "Logging feels like homework", color: "yellow", notes: ["Calorie apps frame food as a number", "Long forms get skipped after a week", "Assumption: one required field is the limit", "Capture happens at the table, one-handed"], insight: "Capture must be faster than the moment passes; detail has to be optional." },
@@ -49,14 +51,16 @@ export const nomory: CaseStudy = {
       ],
       supporting_text: "All four assumptions held. One did not appear on the board at all: three of five said they would come back to see how much they had spent on eating out, which moved price into the meal form as an optional field.",
     }),
-    block("PROBLEM_STATEMENT", "How might we", "How might we make saving a meal faster than the moment passes, and make finding it again feel like opening a photo album?", "Two moments mattered equally, so the design is told in two halves: a capture with almost no friction, and a recall that rewards people for having captured."),
-    block("COMPETITOR_ANALYSIS", "04 · Landscape", "Between a gallery and a tracker.", "", {
+    block("PROBLEM_STATEMENT", "How might we", "How might we make saving a meal faster than the moment passes, and make finding it again feel like opening a photo album?", "Two moments mattered equally, so the design is told in two halves: a capture with almost no friction, and a recall that rewards people for having captured.", { variant: "bar" }),
+    block("COMPETITOR_ANALYSIS", "04 · Landscape", "Between a gallery and a tracker.", "Each option sits somewhere between saving with no effort and logging with a lot of it. Nomory aims for the spot just past the gallery.", {
+      variant: "spectrum",
       cards: [
-        { label: "Photo galleries", title: "Effortless, but contextless", body: "Everything is captured, nothing is organised. Meals are mixed with screenshots and receipts." },
-        { label: "Calorie trackers", title: "Structured, but clinical", body: "Rich logging, framed around nutrition targets. Too much effort for people who only want to remember." },
-        { label: "Journaling apps", title: "Flexible, but blank", body: "A blank page asks people to write. Food rarely gets more than a photo." },
-        { label: "Nomory", title: "A diary built for meals", body: "Photo-first capture, optional context, and recall by day, archive or search." },
+        { label: "Photo galleries", title: "Effortless, but contextless", body: "Everything is captured, nothing is organised. Meals are mixed with screenshots and receipts.", position: 6 },
+        { label: "Nomory", title: "A diary built for meals", body: "Photo-first capture, optional context, and recall by day, archive or search.", position: 30 },
+        { label: "Journaling apps", title: "Flexible, but blank", body: "A blank page asks people to write. Food rarely gets more than a photo.", position: 64 },
+        { label: "Calorie trackers", title: "Structured, but clinical", body: "Rich logging, framed around nutrition targets. Too much effort for people who only want to remember.", position: 94 },
       ],
+      caption: "Positions are qualitative, based on how much each option asks of someone per meal.",
     }),
     block("FLOW_PLAYER", "05 · Half one: capture", "From photo to saved memory.", "The capture flow keeps the photo and meal name prominent, with additional context available when someone wants it. It plays on its own; hover to pause, or pick a step.", {
       layout: "phone",
@@ -69,6 +73,7 @@ export const nomory: CaseStudy = {
       ],
     }),
     block("DESIGN_DIRECTION", "Capture decisions", "Nothing may block the save.", "", {
+      variant: "annotations",
       cards: [
         { title: "One required field", body: "Only a photo and a name are needed to save. Date and time are filled in automatically, so the form never blocks capture." },
         { title: "Local first, sync optional", body: "Meals are stored on the device without an account. Signing in reconciles local memories into the cloud and keeps devices in step." },
@@ -83,6 +88,7 @@ export const nomory: CaseStudy = {
       ],
     }),
     block("DESIGN_DIRECTION", "Recall decisions", "Make coming back feel like a reward.", "", {
+      variant: "annotations",
       cards: [
         { title: "A streak that encourages", body: "The weekly streak sits at the top of the diary as a quiet reason to come back, not a penalty for missing a day." },
         { title: "Memories that flip", body: "Memory cards open with a shared-element flip, so revisiting a meal feels like picking up a photo, not opening a record." },
@@ -92,11 +98,13 @@ export const nomory: CaseStudy = {
       media: media(`${P}/wire-today.webp`, `${P}/screen-today.webp`),
       labels: ["Lo-fi sketch", "Final"],
       layout: "phone",
+      variant: "overlap",
       alt_text: "A hand-drawn wireframe of the Nomory daily diary compared with the final screen",
-      caption: "Lo-fi structure redrawn for this case study, overlaid on the shipped screen.",
+      caption: "Lo-fi structure redrawn for this case study, shown next to the shipped screen.",
     }),
     block("RESULT_SHOWCASE", "08 · The product", "The diary, screen by screen.", "", {
       layout: "phone",
+      variant: "wall",
       steps: [
         { title: "Today: greeting, streak and meals", image: `${P}/screen-today.webp`, alt: "Nomory daily diary with a streak and today's meals" },
         { title: "Add a meal in two taps", image: `${P}/screen-add.webp`, alt: "Add a meal sheet with Take a photo and Choose from library" },
@@ -126,12 +134,21 @@ export const nomory: CaseStudy = {
         { label: "Kept", title: "The streak", body: "Nobody felt guilty about a broken streak; two said it made them want to open the app." },
       ],
     }),
-    block("OUTCOME", "10 · Outcome", "A live diary with a complete capture-to-recall loop.", "Nomory is live at nomory.site as an installable web app. It can be used locally without an account, and signed-in users sync memories across devices.", {
+    block("RESEARCH", "10 · What to measure", "How I'll know it works.", "Nomory is live, but it has not been measured yet. These are the first signals I'll watch.", {
+      variant: "measures",
       cards: [
-        { label: "Shipped", title: "One required field, four ways back", body: "A photo and a name to save; Today, Calendar, Memories and Search to find it again; no account to start." },
-        { label: "Next", title: "Measure return visits", body: "Whether saved meals lead to return visits over 7 and 30 days, and which optional details people actually fill in." },
+        { title: "Do saved meals bring people back?", body: "Return visits after 7 and 30 days, read against how many meals someone has saved." },
+        { title: "Which optional details get filled in?", body: "Place, price, menu items and notes, to learn which context people actually value." },
+        { title: "Does capture stay fast?", body: "Time from tapping add to saved, so any new prompt never slows the moment down." },
       ],
     }),
-    block("REFLECTION", "Reflection", "The smallest details may be the reason someone returns.", "The temptation with a diary is to ask for more fields. Every iteration went the other way: fewer required steps and richer ways back in. The next step is to test which optional prompts improve recall without slowing capture."),
+    block("OUTCOME", "11 · Outcome", "A live diary with a complete capture-to-recall loop.", "Nomory is live at nomory.site as an installable web app. It can be used locally without an account, and signed-in users sync memories across devices.", {
+      variant: "ledger",
+      cards: [
+        { label: "Shipped", title: "One required field, four ways back", body: "A photo and a name to save; Today, Calendar, Memories and Search to find it again." },
+        { label: "Access", title: "No account to start", body: "Memories are stored on the device first. Signing in is optional and only adds sync across devices." },
+      ],
+    }),
+    block("REFLECTION", "Reflection", "The smallest details may be the reason someone returns.", "The temptation with a diary is to ask for more fields. Every iteration went the other way: fewer required steps and richer ways back in. The next step is to test which optional prompts improve recall without slowing capture.", { variant: "note" }),
   ],
 };
