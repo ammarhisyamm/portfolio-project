@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { ArrowRight, ArrowUpRight, Check } from "lucide-react";
 import type { CaseStudyBlock, CaseStudyCard } from "@/lib/content";
+import { cardIcon } from "@/lib/case-study-icons";
 import Media from "./Media";
 import AffinityBoard from "./case-study/AffinityBoard";
 import CompareSlider from "./case-study/CompareSlider";
@@ -43,6 +44,29 @@ const RULE = "border-[#e4e4e4]";
 const LABEL = "text-[11px] uppercase tracking-[0.08em] text-muted";
 const H3 = "text-[16px] font-medium leading-snug tracking-[-0.02em] text-ink";
 const BODY = "text-[14px] leading-[1.65] text-sub";
+
+/** A quiet outline tile for an icon. Grey on white panels, white on the page grey; never a filled colour. */
+function IconBadge({ card, tone = "page", size = "md" }: { card: CaseStudyCard; tone?: "page" | "panel"; size?: "sm" | "md" }) {
+  const Icon = cardIcon(card);
+  if (!Icon) return null;
+  const box = size === "sm" ? "h-7 w-7 rounded-[8px]" : "h-9 w-9 rounded-[10px]";
+  return (
+    <span aria-hidden="true" className={`grid shrink-0 place-items-center text-ink ${box} ${tone === "panel" ? "bg-[#f2f2f2]" : "border border-[#e2e2e2] bg-panel"}`}>
+      <Icon size={size === "sm" ? 14 : 17} strokeWidth={1.75} />
+    </span>
+  );
+}
+
+/** A card's label with its icon in front, when it has one. */
+function IconLabel({ card, tone, text }: { card: CaseStudyCard; tone?: "page" | "panel"; text?: string }) {
+  const label = text ?? card.label;
+  return (
+    <span className="flex items-center gap-2.5">
+      <IconBadge card={card} tone={tone} size="sm" />
+      {label && <span className={LABEL}>{label}</span>}
+    </span>
+  );
+}
 
 function mediaList(block: CaseStudyBlock): string[] {
   return (block.media ?? "")
@@ -102,6 +126,7 @@ function Cards({ cards, variant, layout, numbered }: { cards: CaseStudyCard[]; v
         <div className={`grid gap-6 ${cards.length > 1 ? "sm:grid-cols-2 sm:gap-8" : ""}`}>
           {cards.map((card) => (
             <div key={card.title} className="grid content-start gap-2 border-t-2 border-ink pt-4">
+              {cardIcon(card) && <span className="mb-1"><IconBadge card={card} /></span>}
               <h3 className={H3}>{card.title}</h3>
               <p className={BODY}>{card.body}</p>
             </div>
@@ -126,7 +151,10 @@ function Cards({ cards, variant, layout, numbered }: { cards: CaseStudyCard[]; v
         <dl className={`grid border-t ${RULE}`}>
           {cards.map((card) => (
             <div key={card.title} className={`grid gap-1.5 border-b ${RULE} py-5 sm:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] sm:gap-8`}>
-              <dt className="text-[18px] font-normal leading-snug tracking-[-0.025em] text-ink">{card.title}</dt>
+              <dt className="flex items-start gap-3 text-[18px] font-normal leading-snug tracking-[-0.025em] text-ink">
+                <IconBadge card={card} size="sm" />
+                <span className="pt-0.5">{card.title}</span>
+              </dt>
               <dd className={BODY}>{card.body}</dd>
             </div>
           ))}
@@ -138,9 +166,13 @@ function Cards({ cards, variant, layout, numbered }: { cards: CaseStudyCard[]; v
         <ul className="grid gap-x-8 gap-y-5 sm:grid-cols-2">
           {cards.map((card) => (
             <li key={card.title} className="grid grid-cols-[28px_1fr] gap-3">
-              <span aria-hidden="true" className="mt-0.5 grid h-7 w-7 place-items-center rounded-full border border-[#d9d9d9] bg-panel text-ink">
-                <Check size={14} strokeWidth={2} />
-              </span>
+              {cardIcon(card) ? (
+                <span className="mt-0.5"><IconBadge card={card} size="sm" /></span>
+              ) : (
+                <span aria-hidden="true" className="mt-0.5 grid h-7 w-7 place-items-center rounded-full border border-[#d9d9d9] bg-panel text-ink">
+                  <Check size={14} strokeWidth={2} />
+                </span>
+              )}
               <div className="grid gap-1">
                 <h3 className="text-[15px] font-medium leading-snug tracking-[-0.015em] text-ink">{card.title}</h3>
                 <p className="text-[13.5px] leading-[1.6] text-sub">{card.body}</p>
@@ -154,8 +186,9 @@ function Cards({ cards, variant, layout, numbered }: { cards: CaseStudyCard[]; v
       return (
         <ul className="grid gap-x-8 gap-y-4 sm:grid-cols-2">
           {cards.map((card, i, all) => (
-            <li key={card.title} className={`text-[14px] leading-[1.65] text-sub ${lastSpans(all, i, 1) ? "sm:col-span-2 sm:max-w-[50%]" : ""}`}>
-              <span className="font-medium text-ink">{card.title}.</span> {card.body}
+            <li key={card.title} className={`grid grid-cols-[28px_1fr] gap-3 text-[14px] leading-[1.65] text-sub ${lastSpans(all, i, 1) ? "sm:col-span-2 sm:max-w-[50%]" : ""}`}>
+              <IconBadge card={card} size="sm" />
+              <p className={cardIcon(card) ? "" : "col-span-2"}><span className="font-medium text-ink">{card.title}.</span> {card.body}</p>
             </li>
           ))}
         </ul>
@@ -167,10 +200,10 @@ function Cards({ cards, variant, layout, numbered }: { cards: CaseStudyCard[]; v
           {cards.map((card, i) => (
             <li key={card.title} className={`relative grid content-start gap-2 sm:pr-8 ${i > 0 ? "sm:pl-6" : ""}`}>
               <span className="flex items-center gap-3">
-                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-ink text-[12px] tabular-nums text-ink">{i + 1}</span>
+                {cardIcon(card) ? <IconBadge card={card} /> : <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-ink text-[12px] tabular-nums text-ink">{i + 1}</span>}
                 {i < cards.length - 1 && <ArrowRight size={14} aria-hidden="true" className="hidden text-muted sm:block" />}
               </span>
-              <span className={LABEL}>{card.label}</span>
+              <span className={LABEL}>{[card.label, pad(i)].filter(Boolean).join(" ")}</span>
               <h3 className={H3}>{card.title}</h3>
               <p className="text-[13.5px] leading-[1.6] text-sub">{card.body}</p>
             </li>
@@ -183,7 +216,7 @@ function Cards({ cards, variant, layout, numbered }: { cards: CaseStudyCard[]; v
         <div className={`grid gap-6 sm:gap-0 sm:divide-x sm:divide-[#e4e4e4] ${cards.length >= 3 ? "sm:grid-cols-3" : cards.length === 2 ? "sm:grid-cols-2" : ""}`}>
           {cards.map((card, i) => (
             <div key={card.title} className={`grid content-start gap-2 ${i > 0 ? "sm:pl-6" : ""} ${i < cards.length - 1 ? "sm:pr-6" : ""}`}>
-              {card.label && <span className={LABEL}>{card.label}</span>}
+              <IconLabel card={card} />
               <h3 className={H3}>{card.title}</h3>
               <p className="text-[13.5px] leading-[1.6] text-sub">{card.body}</p>
             </div>
@@ -196,7 +229,7 @@ function Cards({ cards, variant, layout, numbered }: { cards: CaseStudyCard[]; v
         <div className={`grid border-t ${RULE}`}>
           {cards.map((card) => (
             <div key={card.title} className={`grid gap-2 border-b ${RULE} py-5`}>
-              <span className="w-fit rounded-full bg-panel px-2.5 py-1 text-[11px] uppercase tracking-[0.06em] text-sub">{card.label}</span>
+              <IconLabel card={card} />
               <h3 className={H3}>{card.title}</h3>
               <p className={`${BODY} max-w-[600px]`}>{card.body}</p>
             </div>
@@ -209,14 +242,14 @@ function Cards({ cards, variant, layout, numbered }: { cards: CaseStudyCard[]; v
       return (
         <div className="grid gap-4 sm:grid-cols-[1.3fr_1fr]">
           <div className="grid content-start gap-3 rounded-[18px] bg-panel p-6 sm:p-7">
-            {lead.label && <span className={LABEL}>{lead.label}</span>}
+            <IconLabel card={lead} tone="panel" />
             <h3 className="text-[clamp(26px,3.6vw,34px)] font-normal leading-[1.08] tracking-[-0.045em] text-ink">{lead.title}</h3>
             <p className={BODY}>{lead.body}</p>
           </div>
           <div className="grid content-start gap-5 sm:pt-7">
             {rest.map((card) => (
               <div key={card.title} className="grid gap-2">
-                {card.label && <span className={LABEL}>{card.label}</span>}
+                <IconLabel card={card} />
                 <h3 className={H3}>{card.title}</h3>
                 <p className={BODY}>{card.body}</p>
               </div>
@@ -230,8 +263,8 @@ function Cards({ cards, variant, layout, numbered }: { cards: CaseStudyCard[]; v
       return (
         <dl className={`grid border-y ${RULE}`}>
           {cards.map((card, i) => (
-            <div key={card.title} className={`grid gap-2 py-5 sm:grid-cols-[120px_1fr] sm:gap-6 ${i > 0 ? `border-t ${RULE}` : ""}`}>
-              <dt className={`${LABEL} sm:pt-1`}>{card.label}</dt>
+            <div key={card.title} className={`grid gap-2 py-5 sm:grid-cols-[140px_1fr] sm:gap-6 ${i > 0 ? `border-t ${RULE}` : ""}`}>
+              <dt className="sm:pt-0.5"><IconLabel card={card} /></dt>
               <dd className="grid gap-1.5">
                 <span className="text-[18px] leading-snug tracking-[-0.025em] text-ink">{card.title}</span>
                 <span className={BODY}>{card.body}</span>
@@ -252,7 +285,7 @@ function Cards({ cards, variant, layout, numbered }: { cards: CaseStudyCard[]; v
                 </span>
               )}
               <div className={`grid content-start gap-2 rounded-[18px] p-6 ${i === 0 ? "bg-panel" : "border border-dashed border-[#cfcfcf]"}`}>
-                {card.label && <span className={LABEL}>{card.label}</span>}
+                <IconLabel card={card} tone={i === 0 ? "panel" : "page"} />
                 <h3 className="text-[18px] font-medium leading-snug tracking-[-0.02em] text-ink">{card.title}</h3>
                 <p className={BODY}>{card.body}</p>
               </div>
@@ -266,7 +299,7 @@ function Cards({ cards, variant, layout, numbered }: { cards: CaseStudyCard[]; v
         <dl className="grid grid-cols-2 gap-x-6 gap-y-6 md:grid-cols-4">
           {cards.map((card) => (
             <div key={card.title} className={`grid content-start gap-1.5 border-t ${RULE} pt-4`}>
-              <dt className={LABEL}>{card.label}</dt>
+              <dt><IconLabel card={card} /></dt>
               <dd className="grid gap-1.5">
                 <span className="text-[17px] font-medium leading-snug tracking-[-0.02em] text-ink">{card.title}</span>
                 <span className="text-[13px] leading-[1.6] text-sub">{card.body}</span>
@@ -282,7 +315,7 @@ function Cards({ cards, variant, layout, numbered }: { cards: CaseStudyCard[]; v
           {cards.map((card, i) => (
             <li key={card.title} className="grid gap-3 rounded-[16px] bg-panel p-5 sm:grid-cols-[1fr_1.1fr] sm:gap-6 sm:p-6">
               <div className="grid content-start gap-1.5">
-                <span className="text-[11px] tabular-nums tracking-[0.08em] text-muted">MEASURE {pad(i)}</span>
+                <IconLabel card={card} tone="panel" text={`Measure ${pad(i)}`} />
                 <h3 className="text-[17px] font-medium leading-snug tracking-[-0.02em] text-ink">{card.title}</h3>
               </div>
               <p className={`${BODY} sm:border-l sm:border-[#e4e4e4] sm:pl-6`}>{card.body}</p>
@@ -300,9 +333,12 @@ function Cards({ cards, variant, layout, numbered }: { cards: CaseStudyCard[]; v
           <ul className="grid sm:hidden">
             {rows.map((card, i) => (
               <li key={card.title} className={`grid gap-3 p-5 ${i > 0 ? `border-t ${RULE}` : ""}`}>
-                <div>
+                <div className="flex items-start gap-3">
+                  <IconBadge card={card} tone="panel" size="sm" />
+                  <div>
                   <span className="block text-[15px] font-medium leading-snug text-ink">{card.title}</span>
                   <span className="mt-1 block text-[12.5px] leading-[1.55] text-sub">{card.body}</span>
+                  </div>
                 </div>
                 <p className="text-[13.5px] leading-[1.6] text-ink"><span className={`${LABEL} mr-2`}>Borrowed</span>{card.pros?.join(" ")}</p>
                 <p className="text-[13.5px] leading-[1.6] text-sub"><span className={`${LABEL} mr-2`}>Left out</span>{card.cons?.join(" ")}</p>
@@ -320,9 +356,14 @@ function Cards({ cards, variant, layout, numbered }: { cards: CaseStudyCard[]; v
             <tbody>
               {rows.map((card) => (
                 <tr key={card.title} className={`border-b ${RULE} align-top last:border-b-0`}>
-                  <th scope="row" className="w-[30%] px-5 py-4 font-normal">
-                    <span className="block text-[15px] font-medium leading-snug text-ink">{card.title}</span>
-                    <span className="mt-1 block text-[12.5px] leading-[1.55] text-sub">{card.body}</span>
+                  <th scope="row" className="w-[32%] px-5 py-4 font-normal">
+                    <span className="flex items-start gap-3">
+                      <IconBadge card={card} tone="panel" size="sm" />
+                      <span>
+                        <span className="block text-[15px] font-medium leading-snug text-ink">{card.title}</span>
+                        <span className="mt-1 block text-[12.5px] leading-[1.55] text-sub">{card.body}</span>
+                      </span>
+                    </span>
                   </th>
                   <td className="px-5 py-4 text-[13.5px] leading-[1.6] text-ink">{card.pros?.join(" ")}</td>
                   <td className="px-5 py-4 text-[13.5px] leading-[1.6] text-sub">{card.cons?.join(" ")}</td>
@@ -397,8 +438,8 @@ function Cards({ cards, variant, layout, numbered }: { cards: CaseStudyCard[]; v
     return (
       <ol className={`grid border-t ${RULE}`}>
         {cards.map((card, i) => (
-          <li key={card.title} className={`grid gap-1 border-b ${RULE} py-5 sm:grid-cols-[64px_200px_1fr] sm:gap-5`}>
-            <span className={`${LABEL} sm:pt-0.5`}>{card.label || pad(i)}</span>
+          <li key={card.title} className={`grid gap-1 border-b ${RULE} py-5 sm:grid-cols-[104px_190px_1fr] sm:gap-5`}>
+            <span className="sm:pt-0.5">{cardIcon(card) ? <IconLabel card={card} /> : <span className={LABEL}>{card.label || pad(i)}</span>}</span>
             <h3 className="text-[15px] font-medium leading-snug tracking-[-0.02em] text-ink">{card.title}</h3>
             <p className="text-[14px] leading-[1.65] text-sub">{card.body}</p>
           </li>
@@ -416,7 +457,7 @@ function Cards({ cards, variant, layout, numbered }: { cards: CaseStudyCard[]; v
               <img src={card.image} alt={`${card.label || card.title} screenshot`} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover object-top" />
             </div>
           )}
-          {(card.label || numbered) && <span className={LABEL}>{card.label || pad(i)}</span>}
+          {cardIcon(card) ? <IconLabel card={card} tone="panel" text={card.label || (numbered ? pad(i) : "")} /> : (card.label || numbered) && <span className={LABEL}>{card.label || pad(i)}</span>}
           <h3 className={H3}>{card.title}</h3>
           <p className={BODY}>{card.body}</p>
           {[["Strengths", "+", card.pros], ["Gaps", "−", card.cons]].map(([title, mark, items]) =>
@@ -502,8 +543,8 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
             {header("Overview")}
             <dl className="grid rounded-[18px] bg-panel px-5 sm:px-7">
               {all.map((card, i) => (
-                <div key={card.title} className={`grid gap-1.5 py-5 sm:grid-cols-[110px_1fr] sm:gap-6 ${i > 0 ? `border-t ${RULE}` : ""}`}>
-                  <dt className={`${LABEL} sm:pt-1`}>{card.label}</dt>
+                <div key={card.title} className={`grid gap-1.5 py-5 sm:grid-cols-[150px_1fr] sm:gap-6 ${i > 0 ? `border-t ${RULE}` : ""}`}>
+                  <dt className="sm:pt-0.5"><IconLabel card={card} tone="panel" /></dt>
                   <dd className="grid gap-1">
                     <span className={H3}>{card.title}</span>
                     <span className={BODY}>{card.body}</span>
@@ -522,7 +563,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
             <div className="grid gap-8 sm:grid-cols-2 sm:gap-10">
               {[a, b].filter(Boolean).map((card) => (
                 <div key={card.title} className="grid content-start gap-2.5">
-                  <span className={LABEL}>{card.label}</span>
+                  <IconLabel card={card} />
                   <h3 className="text-[clamp(20px,2.6vw,24px)] font-normal leading-[1.2] tracking-[-0.035em] text-ink">{card.title}</h3>
                   <p className={BODY}>{card.body}</p>
                 </div>
@@ -532,7 +573,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
               <dl className={`grid gap-5 border-t ${RULE} pt-5 sm:grid-cols-2 sm:gap-10`}>
                 {meta.map((card) => (
                   <div key={card.title} className="grid content-start gap-1">
-                    <dt className={LABEL}>{card.label}</dt>
+                    <dt><IconLabel card={card} /></dt>
                     <dd className="text-[13.5px] leading-[1.6] text-sub">
                       <span className="font-medium text-ink">{card.title}.</span> {card.body}
                     </dd>
@@ -550,7 +591,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
             <div className="grid overflow-hidden rounded-[18px] bg-[#e4e4e4] sm:grid-cols-2" style={{ gap: 1 }}>
               {all.map((card) => (
                 <div key={card.title} className="grid content-start gap-2 bg-panel p-6">
-                  <span className={LABEL}>{card.label}</span>
+                  <span className="mb-1"><IconLabel card={card} tone="panel" /></span>
                   <h3 className="text-[18px] font-normal leading-snug tracking-[-0.03em] text-ink">{card.title}</h3>
                   <p className="text-[13.5px] leading-[1.6] text-sub">{card.body}</p>
                 </div>

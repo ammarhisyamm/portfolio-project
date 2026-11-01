@@ -49,9 +49,9 @@ export const quriz: CaseStudy = {
     block("COMPETITOR_ANALYSIS", "04 · Landscape", "Learning from adjacent products.", "No single product did what Quriz needed, so I took one idea from each and left the rest. The gap: short quizzes on any juz or surah, with audio, honest progress and a review path for mistakes.", {
       variant: "table",
       cards: [
-        { title: "Quran readers", body: "Quran.com, Muslim Pro", pros: ["Ayah audio and translations next to the Arabic text."], cons: ["Reading as the main task. Self-testing is not their focus."] },
-        { title: "Habit learning apps", body: "Short daily lessons", pros: ["Short sessions, streaks and XP that make progress visible."], cons: ["Locked levels and streaks that feel like a debt."] },
-        { title: "Memorisation tools", body: "Built for hafalan", pros: ["Practising by juz and surah, the units people already use."], cons: ["Long sessions, heavier than a two-minute daily check."] },
+        { icon: "book", title: "Quran readers", body: "Quran.com, Muslim Pro", pros: ["Ayah audio and translations next to the Arabic text."], cons: ["Reading as the main task. Self-testing is not their focus."] },
+        { icon: "flame", title: "Habit learning apps", body: "Short daily lessons", pros: ["Short sessions, streaks and XP that make progress visible."], cons: ["Locked levels and streaks that feel like a debt."] },
+        { icon: "brain", title: "Memorisation tools", body: "Built for hafalan", pros: ["Practising by juz and surah, the units people already use."], cons: ["Long sessions, heavier than a two-minute daily check."] },
       ],
     }),
     block("INSIGHTS", "05 · The loop", "Four rules for the practice loop.", "Before any visual work, the loop had to work in a plain interface.", {
@@ -108,10 +108,10 @@ export const quriz: CaseStudy = {
     block("DESIGN_DIRECTION", "08 · Playful, still respectful", "What makes it feel like play, and still feel right.", "", {
       variant: "spec",
       cards: [
-        { title: "Play around the text", body: "Painted frames, scrolls and medallions decorate the interface. The ayah itself always sits on a calm paper panel." },
-        { title: "Accessible game states", body: "Selection uses one gold state everywhere; correct and wrong answers keep explicit success and error semantics, not colour alone." },
-        { title: "Physical, tappable buttons", body: "56px pill buttons with a visible bottom edge, cream labels and white icon silhouettes that keep contrast when disabled." },
-        { title: "Arabic done properly", body: "Surah names and ayahs are isolated as right-to-left Arabic, so mixed Indonesian and Arabic lines never scramble." },
+        { icon: "frame", title: "Play around the text", body: "Painted frames, scrolls and medallions decorate the interface. The ayah itself always sits on a calm paper panel." },
+        { icon: "contrast", title: "Accessible game states", body: "Selection uses one gold state everywhere; correct and wrong answers keep explicit success and error semantics, not colour alone." },
+        { icon: "pointer", title: "Physical, tappable buttons", body: "56px pill buttons with a visible bottom edge, cream labels and white icon silhouettes that keep contrast when disabled." },
+        { icon: "languages", title: "Arabic done properly", body: "Surah names and ayahs are isolated as right-to-left Arabic, so mixed Indonesian and Arabic lines never scramble." },
       ],
     }),
     block("RESULT_SHOWCASE", "09 · The product", "The painted game world, screen by screen.", "", {

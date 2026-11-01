@@ -72,10 +72,10 @@ export const offstories: CaseStudy = {
     block("COMPETITOR_ANALYSIS", "04 · Landscape", "Where existing options fall short.", "", {
       layout: "list",
       cards: [
-        { label: "Sheets", title: "Spreadsheets and chats", body: "Free and familiar, but there is no structure, no shared state, and totals break the moment someone edits a copy." },
-        { label: "Market", title: "Wedding marketplaces", body: "Great for finding vendors and inspiration, not for running your own plan, budget and guest list." },
-        { label: "Global", title: "International planners", body: "Strong checklists and budgets, designed around Western ceremonies, USD and a single wedding day." },
-        { label: "Gap", title: "OffStories", body: "A private workspace for two, with Indonesian ceremonies, adat and Rupiah built into the first plan." },
+        { label: "Sheets", icon: "table", title: "Spreadsheets and chats", body: "Free and familiar, but there is no structure, no shared state, and totals break the moment someone edits a copy." },
+        { label: "Market", icon: "store", title: "Wedding marketplaces", body: "Great for finding vendors and inspiration, not for running your own plan, budget and guest list." },
+        { label: "Global", icon: "globe", title: "International planners", body: "Strong checklists and budgets, designed around Western ceremonies, USD and a single wedding day." },
+        { label: "Gap", icon: "target", title: "OffStories", body: "A private workspace for two, with Indonesian ceremonies, adat and Rupiah built into the first plan." },
       ],
     }),
     block("FLOW_PLAYER", "05 · The guided setup", "From a few details to a first plan.", "Couples can start with a blank canvas or use a guided setup. Each step adds context to the plan. It plays on its own; hover to pause, or pick a step.", {
@@ -99,10 +99,10 @@ export const offstories: CaseStudy = {
     }),
     block("DESIGN_DIRECTION", "07 · Decisions", "Four calls that shaped the rest of the product.", "", {
       cards: [
-        { title: "Make each step useful", body: "The guided setup returns planning notes alongside the answers, so the form also helps people understand what comes next." },
-        { title: "Two accounts, one workspace", body: "A partner joins by email invite as an editor with their own login. No shared passwords, and nobody is the messenger." },
-        { title: "Local by default", body: "Rupiah, akad and resepsi dates, adat processions, a seserahan tracker, KUA tasks and an Indonesian language switch." },
-        { title: "Calm over alarming", body: "Warm off-white surfaces, soft gradients and quiet type. Colour is saved for money that is paid, committed or due." },
+        { icon: "lightbulb", title: "Make each step useful", body: "The guided setup returns planning notes alongside the answers, so the form also helps people understand what comes next." },
+        { icon: "users", title: "Two accounts, one workspace", body: "A partner joins by email invite as an editor with their own login. No shared passwords, and nobody is the messenger." },
+        { icon: "pin", title: "Local by default", body: "Rupiah, akad and resepsi dates, adat processions, a seserahan tracker, KUA tasks and an Indonesian language switch." },
+        { icon: "leaf", title: "Calm over alarming", body: "Warm off-white surfaces, soft gradients and quiet type. Colour is saved for money that is paid, committed or due." },
       ],
     }),
     block("RESULT_SHOWCASE", "08 · The product", "The workspace, screen by screen.", "Desktop for planning sessions at the table, mobile for the quick updates in between.", {
