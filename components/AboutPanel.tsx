@@ -17,7 +17,7 @@ export default function AboutPanel({
     <Reveal className="panel p-5 sm:p-8">
       <span className="kicker">About Hisyam</span>
       <p className="mb-4 mt-4 text-[clamp(22px,2.2vw,30px)] leading-snug tracking-[-0.05em]">
-        A product designer for B2B, AI, and operational tools.
+        Curious about people, careful with the details.
       </p>
       <p className="leading-relaxed text-sub">{about.introBody}</p>
       <p className="mt-3 leading-relaxed text-sub">Alongside my in-house work, I build independent products to explore onboarding and interaction details.</p>

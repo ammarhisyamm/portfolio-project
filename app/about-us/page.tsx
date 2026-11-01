@@ -11,7 +11,7 @@ import { toolLogos } from "@/lib/tool-logos";
 
 export const metadata: Metadata = {
   title: "About Ammar Hisyam Fakhrudin | Product Designer",
-  description: "Meet Hisyam, a Jakarta-based product designer at Serba Mulia Group. Read about his approach, experience, capabilities, and independent products.",
+  description: "Meet Hisyam, a product designer in Jakarta. Read how I work, where I have worked, and the products I build on my own.",
   alternates: { canonical: "/about-us" },
 };
 
@@ -70,7 +70,7 @@ export default async function AboutUsPage() {
       <section className="panel p-5 sm:p-8" aria-labelledby="capabilities-title">
         <div>
           <h2 id="capabilities-title" className="text-[clamp(22px,3vw,28px)] font-normal tracking-[-0.05em]">How I can help</h2>
-          <p className="mt-1 text-sm text-sub">From understanding a workflow to preparing a design for implementation.</p>
+          <p className="mt-1 text-sm text-sub">From understanding the people involved to getting the design built.</p>
         </div>
         {[
           { title: "Understand the problem", items: ["Product strategy", "UX research", "Competitor analysis", "Product audits"] },
@@ -95,7 +95,7 @@ export default async function AboutUsPage() {
           <p className="mt-1 text-sm text-sub">The kinds of products and contexts I&apos;ve worked in.</p>
         </div>
         {[
-          { title: "Product contexts", items: [{ source: "Enterprise", label: "B2B and enterprise tools" }, { source: "SaaS", label: "SaaS" }, { source: "AI products", label: "AI products" }, { source: "Marketplaces", label: "Marketplaces" }] },
+          { title: "Product contexts", items: [{ source: "Enterprise", label: "Business and internal tools" }, { source: "SaaS", label: "SaaS" }, { source: "AI products", label: "AI products" }, { source: "Marketplaces", label: "Marketplaces" }] },
           { title: "Sectors", items: [{ source: "Fintech", label: "Financial services" }, { source: "Education", label: "Education" }, { source: "Communication", label: "Communication" }, { source: "Lifestyle", label: "Lifestyle" }] },
         ].map((group) => {
           const items = group.items.filter((item) => about.industries.includes(item.source));
