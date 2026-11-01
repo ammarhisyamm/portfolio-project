@@ -75,8 +75,8 @@ export const nomory: CaseStudy = {
     block("DESIGN_DIRECTION", "Capture decisions", "Nothing may block the save.", "", {
       variant: "annotations",
       cards: [
-        { title: "One required field", body: "Only a photo and a name are needed to save. Date and time are filled in automatically, so the form never blocks capture." },
-        { title: "Local first, sync optional", body: "Meals are stored on the device without an account. Signing in reconciles local memories into the cloud and keeps devices in step." },
+        { icon: "camera", title: "One required field", body: "Only a photo and a name are needed to save. Date and time are filled in automatically, so the form never blocks capture." },
+        { icon: "phone", title: "Local first, sync optional", body: "Meals are stored on the device without an account. Signing in reconciles local memories into the cloud and keeps devices in step." },
       ],
     }),
     block("FLOW_PLAYER", "06 · Half two: recall", "Three doors back in.", "Each view answers a different recall question: which day, what happened, where was that.", {
@@ -90,8 +90,8 @@ export const nomory: CaseStudy = {
     block("DESIGN_DIRECTION", "Recall decisions", "Make coming back feel like a reward.", "", {
       variant: "annotations",
       cards: [
-        { title: "A streak that encourages", body: "The weekly streak sits at the top of the diary as a quiet reason to come back, not a penalty for missing a day." },
-        { title: "Memories that flip", body: "Memory cards open with a shared-element flip, so revisiting a meal feels like picking up a photo, not opening a record." },
+        { icon: "flame", title: "A streak that encourages", body: "The weekly streak sits at the top of the diary as a quiet reason to come back, not a penalty for missing a day." },
+        { icon: "images", title: "Memories that flip", body: "Memory cards open with a shared-element flip, so revisiting a meal feels like picking up a photo, not opening a record." },
       ],
     }),
     block("COMPARE_SLIDER", "07 · Sketch to screen", "The diary kept its first order.", "The first sketch fixed the order: a greeting, the streak, then today's meals, with one add button that is always reachable. The shipped screen kept the same order.", {
@@ -137,9 +137,9 @@ export const nomory: CaseStudy = {
     block("RESEARCH", "10 · What to measure", "How I'll know it works.", "Nomory is live, but it has not been measured yet. These are the first signals I'll watch.", {
       variant: "measures",
       cards: [
-        { title: "Do saved meals bring people back?", body: "Return visits after 7 and 30 days, read against how many meals someone has saved." },
-        { title: "Which optional details get filled in?", body: "Place, price, menu items and notes, to learn which context people actually value." },
-        { title: "Does capture stay fast?", body: "Time from tapping add to saved, so any new prompt never slows the moment down." },
+        { icon: "repeat", title: "Do saved meals bring people back?", body: "Return visits after 7 and 30 days, read against how many meals someone has saved." },
+        { icon: "list-plus", title: "Which optional details get filled in?", body: "Place, price, menu items and notes, to learn which context people actually value." },
+        { icon: "timer", title: "Does capture stay fast?", body: "Time from tapping add to saved, so any new prompt never slows the moment down." },
       ],
     }),
     block("OUTCOME", "11 · Outcome", "A live diary with a complete capture-to-recall loop.", "Nomory is live at nomory.site as an installable web app. It can be used locally without an account, and signed-in users sync memories across devices.", {

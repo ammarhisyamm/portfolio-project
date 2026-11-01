@@ -31,19 +31,19 @@ export const synqra: CaseStudy = {
     block("CHALLENGE", "Risks to address", "What a shared review record is designed to improve.", "These are potential effects of a fragmented review process and areas for the pilot to evaluate.", {
       variant: "bullets",
       cards: [
-        { title: "Late follow-up", body: "Without a shared place to track actions, a revision may be harder to notice in time." },
-        { title: "Repeated work", body: "Feedback that is missed or picked up late can require another pass after work has moved on." },
-        { title: "Unclear timing", body: "When follow-up is difficult to track, the timing of revision work can be harder to plan." },
-        { title: "Limited history", body: "A consistent record gives the team a basis for reviewing the process over time." },
-        { title: "Less visible ownership", body: "Showing each action's owner and status helps the team see what still needs attention." },
+        { icon: "timer", title: "Late follow-up", body: "Without a shared place to track actions, a revision may be harder to notice in time." },
+        { icon: "repeat", title: "Repeated work", body: "Feedback that is missed or picked up late can require another pass after work has moved on." },
+        { icon: "calendar", title: "Unclear timing", body: "When follow-up is difficult to track, the timing of revision work can be harder to plan." },
+        { icon: "history", title: "Limited history", body: "A consistent record gives the team a basis for reviewing the process over time." },
+        { icon: "user", title: "Less visible ownership", body: "Showing each action's owner and status helps the team see what still needs attention." },
       ],
     }),
     block("INTERVIEW", "02 · Problem validation", "Checking the problem before choosing a solution.", "Before deciding what to build, I wanted to know whether this was a real problem or an assumption. I traced how a review result actually travels today, from the meeting to the person who fixes it.", {
       variant: "sequence",
       cards: [
-        { label: "Method", title: "Workflow walkthrough", body: "Followed recent review results from the meeting notes to the final fix, noting every tool and hand-off along the way." },
-        { label: "Method", title: "Conversations with the team", body: "Talked with the people who write review notes, the PICs who act on them and the project owner who chases them." },
-        { label: "Method", title: "Document audit", body: "Looked at where review notes were stored, in which formats, and whether owners and due dates were written down at all." },
+        { label: "Method", icon: "route", title: "Workflow walkthrough", body: "Followed recent review results from the meeting notes to the final fix, noting every tool and hand-off along the way." },
+        { label: "Method", icon: "messages", title: "Conversations with the team", body: "Talked with the people who write review notes, the PICs who act on them and the project owner who chases them." },
+        { label: "Method", icon: "file-search", title: "Document audit", body: "Looked at where review notes were stored, in which formats, and whether owners and due dates were written down at all." },
       ],
     }),
     block("INTERVIEW", "In their words", "What the team told us.", "", {
@@ -78,12 +78,12 @@ export const synqra: CaseStudy = {
       alt_text: "Synqra overview with reviews that need attention, meetings, stage progress and a project summary",
       variant: "checks",
       cards: [
-        { label: "Supports", title: "Process documentation", body: "Every review is recorded from the same template." },
-        { label: "Supports", title: "Multi-user collaboration", body: "Note takers, PICs and owners work on the same items." },
-        { label: "Supports", title: "Feedback and action items", body: "Each point becomes an item with an owner and a date." },
-        { label: "Supports", title: "Status and PIC monitoring", body: "One board shows where every item stands and who has it." },
-        { label: "Supports", title: "Meeting reminders", body: "Upcoming reviews show on the overview and the calendar." },
-        { label: "Supports", title: "History and progress tracking", body: "Items keep their source meeting and every status change." },
+        { label: "Supports", icon: "file", title: "Process documentation", body: "Every review is recorded from the same template." },
+        { label: "Supports", icon: "users", title: "Multi-user collaboration", body: "Note takers, PICs and owners work on the same items." },
+        { label: "Supports", icon: "message", title: "Feedback and action items", body: "Each point becomes an item with an owner and a date." },
+        { label: "Supports", icon: "kanban", title: "Status and PIC monitoring", body: "One board shows where every item stands and who has it." },
+        { label: "Supports", icon: "bell", title: "Meeting reminders", body: "Upcoming reviews show on the overview and the calendar." },
+        { label: "Supports", icon: "history", title: "History and progress tracking", body: "Items keep their source meeting and every status change." },
       ],
     }),
     block("STAGES", "05 · Implementation stages", "Four stages, from requirements to evaluation.", "", {
