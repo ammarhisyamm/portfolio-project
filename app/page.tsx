@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Hero from "@/components/Hero";
-import AboutPanel from "@/components/AboutPanel";
 import ExperienceAccordion from "@/components/ExperienceAccordion";
 import CategoryStacks from "@/components/CategoryStacks";
 import RestoreScroll from "@/components/RestoreScroll";
@@ -55,16 +54,18 @@ export default async function HomePage() {
         />
 
         <section id="selected-work" className="panel scroll-mt-28 p-5 sm:p-8" aria-labelledby="selected-work-title">
-          <h2 id="selected-work-title" className="kicker">Selected work</h2>
-          <p className="mt-3 max-w-[560px] text-[14px] leading-relaxed text-sub">A few projects, from the first question to a shipped product, with the decisions in between.</p>
+          <div className="section-head">
+            <div>
+              <h2 id="selected-work-title" className="t-title">Selected work</h2>
+              <p className="t-lede">A few projects, from the first question to a shipped product, with the decisions in between.</p>
+            </div>
+          </div>
           <div className="mt-8">
             <SelectedWork caseStudies={featured} />
           </div>
         </section>
 
         <ExperienceAccordion items={content.experience} />
-
-        <AboutPanel about={content.about} contact={content.contact} socials={content.socials.items} />
 
         <CategoryStacks categories={withShowcase(content.homeCategories)} />
 

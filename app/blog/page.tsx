@@ -17,10 +17,10 @@ export default async function BlogPage() {
     <div className="grid gap-3 pb-16 pt-3 md:gap-4">
       <Reveal className="panel grid gap-5 p-5 sm:p-8 lg:p-10">
         <span className="kicker">Personal essays</span>
-        <h1 className="max-w-[820px] text-[clamp(26px,4vw,32px)] font-normal leading-[1.08] tracking-[-0.05em]">
+        <h1 className="t-display max-w-[760px]">
           Reflections on faith, growth, and everyday life.
         </h1>
-        <p className="max-w-[560px] leading-relaxed text-sub">
+        <p className="t-lede">
           In English and Indonesian, also published on{" "}
           <a href={DEFAULT_SUBSTACK} target="_blank" rel="noreferrer" className="text-ink">Substack</a>.
         </p>
@@ -35,7 +35,7 @@ export default async function BlogPage() {
             )}
             <div className="grid content-end gap-3 p-5 sm:p-8">
               <span className="text-[11px] uppercase text-muted">{[formatPostDate(lead.date), `${lead.readingMinutes} min read`].filter(Boolean).join(" · ")}</span>
-              <h2 className="text-[clamp(22px,2.6vw,28px)] font-normal leading-tight tracking-[-0.04em] group-hover:text-sub">{lead.title}</h2>
+              <h2 className="t-title group-hover:text-sub">{lead.title}</h2>
               {lead.subtitle && <p className="leading-relaxed text-sub">{lead.subtitle}</p>}
             </div>
           </Link>
@@ -51,7 +51,7 @@ export default async function BlogPage() {
 
       {rest.length > 0 && (
         <Reveal className="panel p-5 sm:p-8">
-          <span className="kicker">All articles</span>
+          <h2 className="t-title">All articles</h2>
           <ul className="mt-6 border-t border-line">
             {rest.map((post) => (
               <li key={post.slug} className="border-b border-line">

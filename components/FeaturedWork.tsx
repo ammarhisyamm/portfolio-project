@@ -59,7 +59,7 @@ export default function FeaturedWork({
           <div className={`grid gap-5 sm:gap-6 ${i > 0 ? "pb-7 pt-7 sm:pb-9 sm:pt-9" : "pb-7 sm:pb-9"}`}>
             {p.category && <span className="kicker -mb-3 sm:-mb-4">{p.category}</span>}
             <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1.5">
-              <h3 className="flex items-center gap-2.5 text-[clamp(20px,3.2vw,26px)] font-medium leading-tight tracking-[-0.045em]">
+              <h3 className="flex items-center gap-2.5 text-[clamp(19px,2.2vw,21px)] font-medium leading-snug tracking-[-0.03em]">
                 {p.title}
                 <ArrowUpRight
                   size={18}

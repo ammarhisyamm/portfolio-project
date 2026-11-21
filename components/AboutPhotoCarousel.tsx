@@ -26,6 +26,7 @@ function InfoPage({ photo, number, total, onClick }: { photo: AboutGalleryItem; 
     <div className="album-page is-right" onClick={onClick}>
       <span className="album-eyebrow">Photo {pad(number)} of {pad(total)}</span>
       <h3 className="album-title">{photo.title || "A moment to keep"}</h3>
+      <span className="album-rule" aria-hidden="true" />
       <p className="album-note">{photo.note}</p>
     </div>
   );
@@ -98,20 +99,16 @@ export default function AboutPhotoCarousel({ items }: { items: AboutGalleryItem[
 
   return (
     <section className="panel min-w-0 overflow-hidden p-5 sm:p-8" aria-labelledby="about-album-title">
-      <div className="flex flex-wrap items-end justify-between gap-4">
+      <div className="section-head">
         <div>
           <span className="kicker">Photo album</span>
-          <h2 id="about-album-title" className="mt-3 text-[clamp(22px,3vw,28px)] font-normal tracking-[-0.05em]">
-            A few frames beyond the screen.
-          </h2>
+          <h2 id="about-album-title" className="t-title mt-1">A few frames beyond the screen.</h2>
         </div>
-        <p className="max-w-[240px] text-[12px] leading-relaxed text-muted">
-          Turn the page to see the next photo and read its note.
-        </p>
+        <p className="t-caption max-w-[260px]">Click a page, swipe, or use the arrows to turn it.</p>
       </div>
 
       <div
-        className={`album-book mx-auto mt-7 w-full max-w-[860px]${wide ? "" : " is-compact"}`}
+        className={`album-book mx-auto mt-8 w-full max-w-[880px]${wide ? "" : " is-compact"}`}
         role="group"
         aria-roledescription="photo album"
         aria-label="Photo album"
@@ -159,12 +156,12 @@ export default function AboutPhotoCarousel({ items }: { items: AboutGalleryItem[
 
       <p className="sr-only" aria-live="polite">Photo {current + 1} of {total}: {photos[current].title}</p>
 
-      <div className="mx-auto mt-6 flex w-full max-w-[860px] items-center justify-between gap-3">
-        <button type="button" onClick={() => go(-1)} disabled={total < 2} aria-label="Previous photo" className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-line-strong text-ink transition-colors hover:bg-bg disabled:cursor-not-allowed disabled:opacity-40">
+      <div className="mx-auto mt-6 flex w-full max-w-[880px] items-center justify-between gap-3">
+        <button type="button" onClick={() => go(-1)} disabled={total < 2} aria-label="Previous photo" className="album-nav">
           <ArrowLeft size={17} aria-hidden="true" />
         </button>
         <span className="text-[12px] tabular-nums tracking-[0.06em] text-muted" aria-hidden="true">{pad(current + 1)} / {pad(total)}</span>
-        <button type="button" onClick={() => go(1)} disabled={total < 2} aria-label="Next photo" className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-line-strong text-ink transition-colors hover:bg-bg disabled:cursor-not-allowed disabled:opacity-40">
+        <button type="button" onClick={() => go(1)} disabled={total < 2} aria-label="Next photo" className="album-nav">
           <ArrowRight size={17} aria-hidden="true" />
         </button>
       </div>

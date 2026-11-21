@@ -85,7 +85,7 @@ export default function Hero({ name, title, headline, intro, available, socials,
 
         <h2
           aria-label={headline}
-          className="text-[clamp(26px,4vw,32px)] font-normal leading-[1.1] tracking-[-0.05em]"
+          className="t-display"
         >
           {splitWords(headline).map((word, i) => (
             <span key={i} data-hero-word className="inline-block will-change-transform">
@@ -95,7 +95,7 @@ export default function Hero({ name, title, headline, intro, available, socials,
           ))}
         </h2>
 
-        <p data-hero-fade className="max-w-[560px] text-[15px] leading-relaxed text-sub">
+        <p data-hero-fade className="t-lede">
           {intro}
         </p>
 

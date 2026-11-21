@@ -17,17 +17,17 @@ export default async function ContactPage() {
     <div className="grid gap-3 pb-16 pt-3 md:gap-4">
       <Reveal className="panel grid gap-6 p-5 sm:p-8 lg:p-10">
         <span className="kicker">Contact</span>
-        <h1 className="max-w-[820px] text-[clamp(26px,4vw,32px)] font-normal leading-[1.08] tracking-[-0.05em]">
+        <h1 className="t-display max-w-[760px]">
           Let&apos;s talk about a role or a product.
         </h1>
-        <p className="max-w-[560px] leading-relaxed text-sub">
+        <p className="t-lede">
           I&rsquo;m open to full-time product design roles and selected projects. Share what your team needs and a little context about the work.
         </p>
       </Reveal>
 
       <Reveal className="panel p-5 sm:p-8">
-        <span className="kicker">Send a message</span>
-        <p className="mt-2 text-sm text-sub">All fields are required.</p>
+        <h2 className="t-title">Send a message</h2>
+        <p className="t-lede mt-2">All fields are required.</p>
         <div className="mt-6">
           <ContactForm email={contact.email} />
         </div>

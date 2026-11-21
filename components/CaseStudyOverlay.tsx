@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowLeft, ArrowRight, ArrowUpRight, X } from "lucide-react";
 import Link from "next/link";
@@ -51,10 +51,65 @@ export default function CaseStudyOverlay({
     };
   }, [cs, onClose]);
 
+  const scroller = useRef<HTMLDivElement>(null);
+  const [progress, setProgress] = useState(0);
+  const [active, setActive] = useState(-1);
+
   const info = cs ? projectInfo(cs) : [];
   const blocks = cs ? cs.blocks.filter((b) => b.visible && !b.draft) : [];
   const meta = cs ? [cs.category, cs.year, cs.platform, cs.project_status].filter(Boolean).join(" · ") : "";
   const heroImage = cs ? cs.hero_image || cs.thumbnail || caseStudyCover(cs.slug) : "";
+  // Numbered eyebrows ("03 · Landscape") are the study's chapters; they become the jump links.
+  const chapters = blocks
+    .map((b, i) => ({ i, match: /^(\d{2})\s*·\s*(.+)$/.exec(b.eyebrow ?? "") }))
+    .filter((c): c is { i: number; match: RegExpExecArray } => Boolean(c.match))
+    // Renumber in reading order, so a hidden draft block never leaves a gap (01, 02, 04).
+    .map(({ i, match }, n) => ({ i, num: String(n + 1).padStart(2, "0"), label: match[2] }));
+  const chapterNo = new Map(chapters.map((c) => [c.i, c.num]));
+  const chapterKey = chapters.map((c) => c.i).join(",");
+
+  useEffect(() => {
+    const el = scroller.current;
+    if (!el) return;
+    setProgress(0);
+    setActive(-1);
+    let raf = 0;
+    const update = () => {
+      const max = el.scrollHeight - el.clientHeight;
+      setProgress(max > 0 ? Math.min(1, el.scrollTop / max) : 0);
+      let current = -1;
+      for (const c of chapters) {
+        const target = document.getElementById(`cs-block-${c.i}`);
+        if (target && target.getBoundingClientRect().top < 220) current = c.i;
+      }
+      setActive(current);
+    };
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(update);
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      cancelAnimationFrame(raf);
+      el.removeEventListener("scroll", onScroll);
+    };
+    // chapterKey stands in for chapters, which is rebuilt every render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cs?.slug, chapterKey]);
+
+  // Keep the active chapter pill in view inside the scrolling nav.
+  useEffect(() => {
+    if (active < 0) return;
+    document.getElementById(`cs-nav-${active}`)?.scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" });
+  }, [active]);
+
+  const jump = (i: number) => {
+    const el = scroller.current;
+    const target = document.getElementById(`cs-block-${i}`);
+    if (!el || !target) return;
+    const top = target.getBoundingClientRect().top - el.getBoundingClientRect().top + el.scrollTop - 120;
+    el.scrollTo({ top, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+  };
 
   return (
     <AnimatePresence>
@@ -64,6 +119,7 @@ export default function CaseStudyOverlay({
           role="dialog"
           aria-modal="true"
           aria-label={`${cs.title} case study`}
+          ref={scroller}
           className="fixed inset-0 z-[300] overflow-y-auto bg-bg text-ink"
           data-lenis-prevent
           initial={{ opacity: 0 }}
@@ -72,7 +128,8 @@ export default function CaseStudyOverlay({
           transition={{ duration: 0.25, ease: "easeOut" }}
         >
           <div className="mx-auto w-full max-w-[720px] px-4 sm:px-6">
-            <div className="sticky top-0 z-10 -mx-4 flex items-center justify-between border-b border-line bg-bg/95 px-4 py-3 sm:-mx-6 sm:px-6">
+            <div className="sticky top-0 z-10 -mx-4 border-b border-[#e8e8e8] bg-bg/90 px-4 backdrop-blur-md sm:-mx-6 sm:px-6">
+             <div className="flex items-center justify-between gap-4 py-3">
               <button
                 type="button"
                 onClick={onClose}
@@ -89,16 +146,42 @@ export default function CaseStudyOverlay({
               >
                 <X size={16} aria-hidden="true" />
               </button>
+             </div>
+              {chapters.length > 2 && (
+                <nav aria-label="Case study sections" className="-mx-4 overflow-x-auto px-4 pb-3 [mask-image:linear-gradient(90deg,transparent,#000_16px,#000_calc(100%-32px),transparent)] [scrollbar-width:none] sm:-mx-6 sm:px-6 [&::-webkit-scrollbar]:hidden">
+                  <ol className="flex w-max gap-1.5">
+                    {chapters.map((c) => (
+                      <li key={c.i}>
+                        <button
+                          id={`cs-nav-${c.i}`}
+                          type="button"
+                          onClick={() => jump(c.i)}
+                          aria-current={active === c.i ? "true" : undefined}
+                          className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[12px] transition-colors duration-200 ${
+                            active === c.i ? "border-[#cfcfcf] bg-panel text-ink" : "border-transparent text-muted hover:bg-panel/70 hover:text-ink"
+                          }`}
+                        >
+                          <span className="tabular-nums text-[11px] opacity-70">{c.num}</span>
+                          {c.label}
+                        </button>
+                      </li>
+                    ))}
+                  </ol>
+                </nav>
+              )}
+              <div aria-hidden="true" className="absolute inset-x-0 -bottom-px h-[2px]">
+                <div className="h-full origin-left bg-ink transition-transform duration-150 ease-out" style={{ transform: `scaleX(${progress})` }} />
+              </div>
             </div>
 
             <div className="grid grid-cols-[minmax(0,1fr)] gap-3 pb-16 pt-4 md:gap-4">
               <div className="panel grid gap-5 p-5 sm:p-8">
                 {meta && <span className="kicker">{meta}</span>}
-                <h2 className="text-[clamp(26px,4vw,32px)] font-normal leading-[1.08] tracking-[-0.05em]">
+                <h2 className="t-display">
                   {cs.hero_headline || cs.title}
                 </h2>
                 {cs.hero_description && (
-                  <p className="max-w-[640px] text-[15px] leading-[1.7] text-sub sm:text-[16px]">
+                  <p className="t-lede max-w-[640px]">
                     {cs.hero_description}
                   </p>
                 )}
@@ -107,7 +190,7 @@ export default function CaseStudyOverlay({
                     href={cs.live_url}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex w-fit items-center gap-1.5 text-[14px] font-medium text-ink underline decoration-line underline-offset-4 hover:decoration-ink"
+                    className="link-arrow w-fit text-[14px] text-ink"
                   >
                     {cs.live_url.includes("behance.net")
                       ? "View the full case study on Behance"
@@ -129,11 +212,11 @@ export default function CaseStudyOverlay({
               )}
 
               {info.length > 0 && (
-                <div className="grid grid-cols-2 gap-x-8 gap-y-6 border-t border-line pt-8">
+                <div className="grid grid-cols-2 gap-x-8 gap-y-6 border-t border-[#e4e4e4] pt-8 sm:grid-cols-3">
                   {info.map(([label, value]) => (
-                    <div key={label} className="grid content-start gap-1.5">
-                      <span className="text-[10px] uppercase tracking-[0.08em] text-muted">{label}</span>
-                      <span className="text-[13px] leading-relaxed text-ink">{value}</span>
+                    <div key={label} className="grid content-start gap-2">
+                      <span className="kicker">{label}</span>
+                      <span className="text-[14px] leading-relaxed text-ink">{value}</span>
                     </div>
                   ))}
                 </div>
@@ -142,7 +225,17 @@ export default function CaseStudyOverlay({
               {blocks.length > 0 && (
                 <div className="mt-10 grid grid-cols-[minmax(0,1fr)] gap-16 md:mt-14 md:gap-20">
                   {blocks.map((b, i) => (
-                    <CaseStudyBlockView key={`${i}-${b.block_type}`} block={b} />
+                    <motion.div
+                      key={`${i}-${b.block_type}`}
+                      id={`cs-block-${i}`}
+                      className="min-w-0"
+                      initial={{ opacity: 0, y: 18 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, margin: "0px 0px -12% 0px", root: scroller }}
+                      transition={{ duration: 0.6, ease: [0.2, 0.8, 0.2, 1] }}
+                    >
+                      <CaseStudyBlockView block={b} chapter={chapterNo.get(i)} />
+                    </motion.div>
                   ))}
                 </div>
               )}
@@ -152,7 +245,7 @@ export default function CaseStudyOverlay({
                   type="button"
                   onClick={() => onNext(next)}
                   aria-label={`Next case study: ${next.title}`}
-                  className="group mt-6 grid gap-4 border-t border-line pt-8 text-left"
+                  className="group mt-6 grid gap-4 border-t border-[#e4e4e4] pt-8 text-left"
                 >
                   <span className="kicker">Next case study</span>
                   <span
@@ -167,17 +260,18 @@ export default function CaseStudyOverlay({
                     />
                   </span>
                   <span className="flex items-baseline justify-between gap-4">
-                    <span className="text-[clamp(20px,3.2vw,26px)] font-medium leading-tight tracking-[-0.045em]">{next.title}</span>
+                    <span className="t-title">{next.title}</span>
                     <ArrowRight size={20} aria-hidden="true" className="shrink-0 self-center text-ink transition-transform duration-300 group-hover:translate-x-1" />
                   </span>
-                  {next.short_description && <span className="max-w-[560px] text-[15px] leading-relaxed text-sub">{next.short_description}</span>}
+                  {next.short_description && <span className="t-lede">{next.short_description}</span>}
                 </button>
               )}
 
-              <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-line pt-6">
+              <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-[#e4e4e4] pt-6">
                 <span className="text-[15px] text-sub">Hiring a product designer?</span>
                 <Link href="/contact" className="btn btn-primary">
                   Get in touch
+                  <ArrowRight size={15} aria-hidden="true" />
                 </Link>
               </div>
             </div>
