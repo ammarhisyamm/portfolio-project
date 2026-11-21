@@ -16,16 +16,17 @@ export function caseStudyCover(slug: string) {
 }
 
 /**
- * Card covers for the home page: a close crop of one telling screen on a light studio
- * mockup, each study with a prop in its own colour (scenes generated with GPT Image, real
- * screens composited onto the device), so the list never reads like one template repeated.
+ * Card covers for the home page: the device floats over a gradient in the study's own
+ * colours (scenes generated with GPT Image, real screens composited onto the device), with
+ * one or two real UI components lifted out of the product and floated beside it, so each
+ * card shows the work up close and the list never reads like one template repeated.
  */
 const CARD_COVERS: Record<string, { src: string; alt: string }> = {
-  synqra: { src: "/case-studies/synqra/card.webp", alt: "Synqra's AI review screen on a laptop resting on a cobalt blue ribbon" },
-  offstories: { src: "/case-studies/offstories/card.webp", alt: "The OffStories dashboard on a laptop and phone, counting down 210 days to the wedding" },
-  nomory: { src: "/case-studies/nomory/card.webp", alt: "Close-up of Nomory's diary on a phone: good morning, two memories today and a four day streak" },
-  quriz: { src: "/case-studies/quriz/card.webp", alt: "Close-up of the Quriz home screen on a phone, with the consistency week and a start button" },
-  jeam: { src: "/case-studies/jeam/card.webp", alt: "Close-up of Jeam's run summary on a phone: 5 km, 45 minutes and calories per kilometre" },
+  synqra: { src: "/case-studies/synqra/cover-card.webp", alt: "Synqra's AI review on a laptop over a cobalt gradient, with an extracted action item and the Create 4 items button floating beside it" },
+  offstories: { src: "/case-studies/offstories/cover-card.webp", alt: "The OffStories dashboard on a laptop over a peach and lilac gradient, with the wedding countdown and remaining budget floating beside it" },
+  nomory: { src: "/case-studies/nomory/cover-card.webp", alt: "Nomory's diary on a phone over a tangerine gradient, with the four day streak and an oat latte memory floating beside it" },
+  quriz: { src: "/case-studies/quriz/cover-card.webp", alt: "The Quriz home screen on a phone over a sky to lavender gradient, with the consistency week and the start practice button floating beside it" },
+  jeam: { src: "/case-studies/jeam/cover-card.webp", alt: "Jeam's run summary on a phone wrapped in an orange ribbon, with the calories chart and total distance floating beside it" },
 };
 
 export function cardCover(slug: string) {
