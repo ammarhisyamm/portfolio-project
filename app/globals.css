@@ -984,12 +984,13 @@ html.lenis body {
 /* Work covers stay flat: a hairline and a soft contact shadow, nothing that lifts. On
    hover the mockup scales a touch and drifts against the pointer, and a black chip follows
    the cursor. */
-.work-cover { box-shadow: 0 0 0 1px rgba(22, 22, 22, .05), 0 1px 2px rgba(22, 22, 22, .04); }
+.work-cover { box-shadow: 0 0 0 1px rgba(22, 22, 22, .05), 0 1px 2px rgba(22, 22, 22, .04); transform: perspective(1400px) rotateX(calc(var(--dy, 0) * -5deg)) rotateY(calc(var(--dx, 0) * 6deg)); transition: transform 500ms cubic-bezier(.2, .8, .2, 1); }
+.group:hover .work-cover { transition-duration: 160ms; }
 .work-cover-img { transform: translate3d(calc(var(--dx, 0) * -10px), calc(var(--dy, 0) * -10px), 0) scale(1); transition: transform 700ms cubic-bezier(.2, .8, .2, 1); will-change: transform; }
 .group:hover .work-cover-img { transform: translate3d(calc(var(--dx, 0) * -10px), calc(var(--dy, 0) * -10px), 0) scale(1.035); }
 .work-cover-chip { position: absolute; left: var(--x, 50%); top: var(--y, 50%); z-index: 2; display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 999px; background: #161616; color: #fff; font-size: 13px; font-weight: 500; white-space: nowrap; pointer-events: none; opacity: 0; transform: translate(-50%, -50%) scale(.6); transition: opacity 200ms ease, transform 300ms cubic-bezier(.2, .8, .2, 1); }
 @media (hover: hover) and (pointer: fine) { .group:hover .work-cover-chip { opacity: 1; transform: translate(-50%, -50%) scale(1); } .work-cover { cursor: none; } }
-@media (prefers-reduced-motion: reduce) { .work-cover-img, .work-cover-chip { transition: none; } .work-cover-img, .group:hover .work-cover-img { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .work-cover { transform: none; } .work-cover-img, .work-cover-chip { transition: none; } .work-cover-img, .group:hover .work-cover-img { transform: none; } }
 
 /* Photo album: a real-feeling album. It starts closed on a linen cover; opening it swings
    the cover over to the left, then every page can be turned by click, arrow key, swipe, or

@@ -72,6 +72,10 @@ export default function FeaturedWork({
 
             <div
               className="work-cover relative aspect-[16/9] w-full overflow-hidden rounded-[16px] border-[6px] border-white bg-bg sm:rounded-[20px]"
+              onPointerLeave={(e) => {
+                e.currentTarget.style.setProperty("--dx", "0");
+                e.currentTarget.style.setProperty("--dy", "0");
+              }}
               onPointerMove={(e) => {
                 // The "View" chip follows the pointer, and the mockup drifts a little the other way.
                 const r = e.currentTarget.getBoundingClientRect();

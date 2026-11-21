@@ -16,17 +16,17 @@ export function caseStudyCover(slug: string) {
 }
 
 /**
- * Card covers for the home page: each study plays its own flow inside a photographed
- * mockup scene (generated with GPT Image, real screens composited onto the device), so
+ * Card covers for the home page: each study plays its own flow inside a light studio
+ * mockup with its own colour (generated with GPT Image, real screens composited onto the device), so
  * the list never reads like one template repeated. `poster` is the still for the first
  * paint and for reduced motion.
  */
 const CARD_COVERS: Record<string, { video: string; poster: string; alt: string }> = {
-  synqra: { video: "/case-studies/synqra/card.mp4", poster: "/case-studies/synqra/card.webp", alt: "Synqra on a laptop at night, moving from meeting notes to AI review to the project board" },
-  offstories: { video: "/case-studies/offstories/card.mp4", poster: "/case-studies/offstories/card.webp", alt: "OffStories on a laptop and phone on a linen table with wedding rings and flowers, stepping through setup, dashboard and budget" },
-  nomory: { video: "/case-studies/nomory/card.mp4", poster: "/case-studies/nomory/card.webp", alt: "Nomory on a phone held over pasta and a latte, moving from today's diary to saving a meal and the calendar" },
-  quriz: { video: "/case-studies/quriz/card.mp4", poster: "/case-studies/quriz/card.webp", alt: "Quriz on a phone standing on a pedestal in the clouds, moving from home to a quiz, progress and badges" },
-  jeam: { video: "/case-studies/jeam/card.mp4", poster: "/case-studies/jeam/card.webp", alt: "Jeam on a phone held at a running track at sunset, moving from home to a run and its result" },
+  synqra: { video: "/case-studies/synqra/card.mp4", poster: "/case-studies/synqra/card.webp", alt: "Synqra on a laptop resting on a cobalt blue ribbon, moving from meeting notes to AI review to the project board" },
+  offstories: { video: "/case-studies/offstories/card.mp4", poster: "/case-studies/offstories/card.webp", alt: "OffStories on a laptop and phone on a blush arch plinth, stepping through setup, dashboard and budget" },
+  nomory: { video: "/case-studies/nomory/card.mp4", poster: "/case-studies/nomory/card.webp", alt: "Nomory on a phone tilted on a tomato orange ledge, moving from today's diary to saving a meal and the calendar" },
+  quriz: { video: "/case-studies/quriz/card.mp4", poster: "/case-studies/quriz/card.webp", alt: "Quriz on a phone floating over a glass pedestal in pale blue water, moving from home to a quiz, progress and badges" },
+  jeam: { video: "/case-studies/jeam/card.mp4", poster: "/case-studies/jeam/card.webp", alt: "Jeam on a phone balanced on stacked orange blocks, moving from home to a run and its result" },
 };
 
 export function cardCover(slug: string) {
