@@ -15,31 +15,19 @@ export function caseStudyCover(slug: string) {
   return FALLBACK_COVERS[slug] ?? "";
 }
 
-type CoverDetail = { src: string; kind: "desktop" | "phone"; alt: string };
-
 /**
- * Two close-ups shown under each cover on the home page, so a card shows the product
- * at a glance (a whole flow above, two telling screens below) before anyone opens it.
+ * Card covers for the home page: one composed mockup per study, each with its own
+ * colour, device and idea, so the list never reads like one template repeated.
+ * The walkthrough videos stay as the hero inside each case study.
  */
-const COVER_DETAILS: Record<string, CoverDetail[]> = {
-  synqra: [
-    { src: "/case-studies/synqra/board.webp", kind: "desktop", alt: "Synqra board with review items by stage" },
-    { src: "/case-studies/synqra/mobile-flow.webp", kind: "phone", alt: "Synqra on mobile" },
-  ],
-  offstories: [
-    { src: "/case-studies/offstories/budget.webp", kind: "desktop", alt: "OffStories budget view" },
-    { src: "/case-studies/offstories/mobile-dashboard.webp", kind: "phone", alt: "OffStories dashboard on mobile" },
-  ],
-  nomory: [
-    { src: "/case-studies/nomory/screen-calendar.webp", kind: "phone", alt: "Nomory calendar with meal photos on each day" },
-    { src: "/case-studies/nomory/screen-meal.webp", kind: "phone", alt: "A saved meal memory in Nomory" },
-  ],
-  quriz: [
-    { src: "/case-studies/quriz/v3-quiz.webp", kind: "phone", alt: "A Quriz question with four answers" },
-    { src: "/case-studies/quriz/v3-badges.webp", kind: "phone", alt: "Quriz badges earned for practice" },
-  ],
+const CARD_COVERS: Record<string, { src: string; alt: string }> = {
+  synqra: { src: "/case-studies/synqra/card.webp", alt: "Synqra's AI review card listing four action items beside the project board" },
+  offstories: { src: "/case-studies/offstories/card.webp", alt: "OffStories counting down 210 days to a wedding, with the mobile dashboard and checklist" },
+  nomory: { src: "/case-studies/nomory/card.webp", alt: "Three Nomory screens fanned out: calendar, today's meals and a saved pasta memory" },
+  quriz: { src: "/case-studies/quriz/card.webp", alt: "A Quriz question answered correctly, with streak and XP cards around it" },
+  jeam: { src: "/case-studies/jeam/card.webp", alt: "A grid of Jeam screens, from the home feed to a finished run" },
 };
 
-export function coverDetails(slug: string): CoverDetail[] {
-  return COVER_DETAILS[slug] ?? [];
+export function cardCover(slug: string) {
+  return CARD_COVERS[slug];
 }

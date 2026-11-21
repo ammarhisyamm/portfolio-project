@@ -17,13 +17,13 @@ export const quriz: CaseStudy = {
     block("OVERVIEW", "At a glance", "A small, repeatable starting point for Quran practice.", "", {
       variant: "quadrants",
       cards: [
-        { label: "Problem", title: "Finding a small next step", body: "The product explores a short, repeatable way to practise what someone remembers." },
+        { label: "Problem", title: "Daily intention, weekly reality", body: "Checking what you remember needs a mushaf, quiet time or a teacher. Without them practice slips, and the verses you mix up are forgotten with the session." },
         { label: "Approach", title: "Ship the loop, then give it a world", body: "Four quiz modes by juz or surah, ayah audio, streaks and XP, and a one-tap review of every wrong answer, then three visual passes." },
         { label: "My role", title: "Product design and build", body: "I shaped the practice flow, designed the interface and visual direction, and built the front end." },
         { label: "Outcome", title: "Live, three iterations", body: "Live at quriz.online. The interface went from a flat system to a painted game world in five weeks." },
       ],
     }),
-    block("CONTEXT", "01 · The problem", "A small next step for practice.", "Quriz explores a repeatable starting point for Quran practice. The design helps people begin, understand an answer, and see what to revisit after a session."),
+    block("CONTEXT", "01 · The problem", "Practice needs a smaller first step.", "Checking what you remember usually takes a mushaf, quiet time, or someone to listen. Without that, a daily intention becomes a weekly one, and the verses you keep mixing up are forgotten as soon as the session ends. Quriz makes one round short enough to start anywhere, then keeps every wrong answer so the next round starts there."),
     block("AFFINITY_BOARD", "02 · Framing", "What I knew, and what I was only assuming.", "Before designing screens I grouped what I knew and what I assumed about daily practice. Pick a theme to see what I knew, what I was only assuming, and the rule it became.", {
       variant: "tabs",
       notes: [

@@ -8,6 +8,8 @@ import SiteFooter from "@/components/SiteFooter";
 import PageTransition from "@/components/PageTransition";
 import MobileTabBar from "@/components/MobileTabBar";
 import DesignLabLauncher from "@/components/DesignLabLauncher";
+import IntroLoader from "@/components/IntroLoader";
+import { INTRO_KEY } from "@/lib/intro";
 import { getContent } from "@/lib/content";
 import { SITE_URL } from "@/lib/site";
 
@@ -55,9 +57,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <head>
         {/* The page opens in the classic view. Only a museum visit that still owes its doors is covered before hydration. */}
         <script dangerouslySetInnerHTML={{ __html: `try{var q=new URLSearchParams(location.search);if(location.pathname==='/'&&q.get('view')!=='classic'&&(q.get('entrance')==='1'||((q.get('museum')==='1'||sessionStorage.getItem('hisyam.portfolio.view.v1')==='museum')&&sessionStorage.getItem('hisyam.home-entrance.seen.v3')!=='1')))document.documentElement.setAttribute('data-studio-pending','true')}catch(e){}` }} />
+        {/* The first-load intro plays once per session on the classic home page, never over a museum visit, a shared case study link, or reduced motion. */}
+        <script dangerouslySetInnerHTML={{ __html: `try{var d=document.documentElement,q=new URLSearchParams(location.search);if(location.pathname==='/'&&!q.get('work')&&!d.hasAttribute('data-studio-pending')&&sessionStorage.getItem('${INTRO_KEY}')!=='1'&&!matchMedia('(prefers-reduced-motion: reduce)').matches)d.setAttribute('data-intro','play')}catch(e){}` }} />
         <link rel="icon" href={content.branding.logo || FALLBACK_ICON} />
       </head>
       <body className={`${manrope.variable} font-sans`}>
+        <IntroLoader />
         <Providers>
           <div data-portfolio-shell>
           <div className="mx-auto w-full max-w-[720px] px-4 sm:px-6">

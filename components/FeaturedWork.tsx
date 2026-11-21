@@ -5,7 +5,7 @@ import { ArrowRight, ArrowUpRight, ChevronDown } from "lucide-react";
 import { gsap } from "@/lib/gsap";
 import { reducedMotion } from "@/lib/utils";
 import type { CaseStudy } from "@/lib/content";
-import { caseStudyCover, coverDetails } from "@/lib/case-study-visuals";
+import { cardCover, caseStudyCover } from "@/lib/case-study-visuals";
 import Media from "./Media";
 
 /** Studies shown before "View all work"; the rest stay one click away. */
@@ -71,36 +71,28 @@ export default function FeaturedWork({
             </div>
 
             <div
-              className="work-cover relative aspect-[16/9] w-full overflow-hidden rounded-[16px] border-8 border-white bg-bg sm:rounded-[20px]"
+              className="work-cover relative aspect-[16/9] w-full overflow-hidden rounded-[16px] border-[6px] border-white bg-bg sm:rounded-[20px]"
               onPointerMove={(e) => {
-                // The "View" chip follows the pointer across the cover.
+                // The "View" chip follows the pointer, and the mockup drifts a little the other way.
                 const r = e.currentTarget.getBoundingClientRect();
-                e.currentTarget.style.setProperty("--x", `${e.clientX - r.left}px`);
-                e.currentTarget.style.setProperty("--y", `${e.clientY - r.top}px`);
+                const el = e.currentTarget.style;
+                el.setProperty("--x", `${e.clientX - r.left}px`);
+                el.setProperty("--y", `${e.clientY - r.top}px`);
+                el.setProperty("--dx", ((e.clientX - r.left) / r.width - 0.5).toFixed(3));
+                el.setProperty("--dy", ((e.clientY - r.top) / r.height - 0.5).toFixed(3));
               }}
             >
               <Media
-                src={p.cover_video || p.thumbnail || caseStudyCover(p.slug)}
-                poster={p.cover_video ? p.thumbnail : undefined}
-                alt={p.thumbnail_alt || `Visual for ${p.title}`}
+                src={cardCover(p.slug)?.src || p.cover_video || p.thumbnail || caseStudyCover(p.slug)}
+                poster={!cardCover(p.slug) && p.cover_video ? p.thumbnail : undefined}
+                alt={cardCover(p.slug)?.alt || p.thumbnail_alt || `Visual for ${p.title}`}
                 label={p.year || p.category}
-                imgClassName="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                imgClassName="work-cover-img h-full w-full object-cover"
               />
               <span aria-hidden="true" className="work-cover-chip">
                 View case study <ArrowRight size={13} />
               </span>
             </div>
-
-            {coverDetails(p.slug).length > 0 && (
-              <div className="-mt-2 grid grid-cols-2 gap-3 sm:-mt-3 sm:gap-4" aria-hidden="true">
-                {coverDetails(p.slug).map((d, n) => (
-                  <span key={d.src} className={`work-detail is-${d.kind}`} style={{ transitionDelay: `${n * 60}ms` }}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={d.src} alt="" loading="lazy" decoding="async" style={{ transitionDelay: `${n * 60}ms` }} />
-                  </span>
-                ))}
-              </div>
-            )}
 
             {p.short_description && (
               <p className="t-lede">

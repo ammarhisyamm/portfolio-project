@@ -981,20 +981,15 @@ html.lenis body {
 
 /* Selected work covers: the card lifts, the image eases in, and a small black chip
    follows the pointer as the call to open the study. Touch screens keep the static link. */
-.work-cover { box-shadow: 0 1px 2px rgba(22, 22, 22, .04), 0 8px 24px -12px rgba(22, 22, 22, .06); transition: box-shadow 400ms ease, transform 400ms cubic-bezier(.2, .8, .2, 1); }
-.group:hover .work-cover { transform: translateY(-3px); box-shadow: 0 1px 2px rgba(22, 22, 22, .05), 0 22px 40px -22px rgba(22, 22, 22, .3); }
-.work-cover-chip { position: absolute; left: var(--x, 50%); top: var(--y, 50%); z-index: 2; display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 999px; background: #161616; color: #fff; font-size: 13px; font-weight: 500; white-space: nowrap; pointer-events: none; opacity: 0; transform: translate(-50%, -50%) scale(.6); transition: opacity 200ms ease, transform 300ms cubic-bezier(.2, .8, .2, 1); box-shadow: 0 10px 24px -10px rgba(0, 0, 0, .45); }
+/* Work covers stay flat: a hairline and a soft contact shadow, nothing that lifts. On
+   hover the mockup scales a touch and drifts against the pointer, and a black chip follows
+   the cursor. */
+.work-cover { box-shadow: 0 0 0 1px rgba(22, 22, 22, .05), 0 1px 2px rgba(22, 22, 22, .04); }
+.work-cover-img { transform: translate3d(calc(var(--dx, 0) * -10px), calc(var(--dy, 0) * -10px), 0) scale(1); transition: transform 700ms cubic-bezier(.2, .8, .2, 1); will-change: transform; }
+.group:hover .work-cover-img { transform: translate3d(calc(var(--dx, 0) * -10px), calc(var(--dy, 0) * -10px), 0) scale(1.035); }
+.work-cover-chip { position: absolute; left: var(--x, 50%); top: var(--y, 50%); z-index: 2; display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 999px; background: #161616; color: #fff; font-size: 13px; font-weight: 500; white-space: nowrap; pointer-events: none; opacity: 0; transform: translate(-50%, -50%) scale(.6); transition: opacity 200ms ease, transform 300ms cubic-bezier(.2, .8, .2, 1); }
 @media (hover: hover) and (pointer: fine) { .group:hover .work-cover-chip { opacity: 1; transform: translate(-50%, -50%) scale(1); } .work-cover { cursor: none; } }
-@media (prefers-reduced-motion: reduce) { .work-cover, .work-cover-chip { transition: none; } .group:hover .work-cover { transform: none; } }
-
-/* Two close-up tiles under each cover: soft grey tiles with a screen peeking up from the
-   bottom edge; on hover the screens rise a little, one after the other. */
-.work-detail { position: relative; display: block; aspect-ratio: 4 / 3; overflow: hidden; border: 8px solid #fff; border-radius: 16px; background: #efefed; box-shadow: 0 1px 2px rgba(22, 22, 22, .04), 0 8px 24px -12px rgba(22, 22, 22, .06); }
-.work-detail img { position: absolute; display: block; box-shadow: 0 0 0 1px rgba(22, 22, 22, .06), 0 14px 28px -16px rgba(22, 22, 22, .35); transition: transform 600ms cubic-bezier(.2, .8, .2, 1); }
-.work-detail.is-desktop img { left: 9%; top: 14%; width: 112%; border-radius: 8px; }
-.work-detail.is-phone img { left: 50%; top: 12%; width: 40%; margin-left: -20%; border-radius: 14px; }
-.group:hover .work-detail img { transform: translateY(-6px); }
-@media (prefers-reduced-motion: reduce) { .work-detail img { transition: none; } .group:hover .work-detail img { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .work-cover-img, .work-cover-chip { transition: none; } .work-cover-img, .group:hover .work-cover-img { transform: none; } }
 
 /* Photo album: a real-feeling album. It starts closed on a linen cover; opening it swings
    the cover over to the left, then every page can be turned by click, arrow key, swipe, or
@@ -1085,3 +1080,27 @@ html.lenis body {
 .album-dots button:hover { background: #9a9a9a; }
 .album-dots button[aria-current="true"]:hover { background: #161616; }
 .album-single { display: grid; height: 100%; grid-template-columns: minmax(0, 1fr); align-content: start; background: var(--paper); }
+
+/* First-load intro: the five case study covers drop onto a stack while a counter runs,
+   then the stack lifts away and the page wipes in. The head script sets
+   html[data-intro="play"] only when it should run, so without scripts it never shows, and a
+   failsafe hides it after five seconds if the client never takes over. */
+.intro { display: none; }
+html[data-intro="play"] .intro { position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; background: #f5f5f5; color: #161616; animation: intro-failsafe 0s linear 5s forwards; }
+html[data-intro="play"] .intro.is-leaving { animation: intro-wipe 720ms cubic-bezier(.76, 0, .24, 1) 160ms forwards; }
+html[data-intro="play"], html[data-intro="play"] body { overflow: hidden; }
+.intro-deck { position: relative; width: min(380px, 68vw); aspect-ratio: 16 / 9; }
+.intro-card { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border: 5px solid #fff; border-radius: 14px; background: #e9e9e7; box-shadow: 0 0 0 1px rgba(22, 22, 22, .05), 0 24px 44px -26px rgba(22, 22, 22, .45); opacity: 0; animation: intro-drop 760ms cubic-bezier(.2, .8, .2, 1) forwards; animation-delay: calc(var(--i) * 170ms); }
+.intro-card:nth-child(1) { --r: -7deg; } .intro-card:nth-child(2) { --r: 5deg; } .intro-card:nth-child(3) { --r: -3deg; } .intro-card:nth-child(4) { --r: 6deg; } .intro-card:nth-child(5) { --r: 0deg; }
+.intro.is-leaving .intro-card { opacity: 1; animation: intro-lift 620ms cubic-bezier(.7, 0, .3, 1) forwards; animation-delay: calc((4 - var(--i)) * 35ms); }
+.intro-meta { position: absolute; left: 24px; right: 24px; bottom: 26px; display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 2px 16px; }
+.intro-name { font-size: 13px; font-weight: 600; letter-spacing: -.01em; }
+.intro-line { grid-row: 2; font-size: 13px; color: #6f6f6f; }
+.intro-count { grid-row: 1 / span 2; grid-column: 2; font-size: clamp(44px, 7vw, 72px); font-weight: 500; line-height: .9; letter-spacing: -.05em; font-variant-numeric: tabular-nums; }
+.intro-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: #161616; transform-origin: left; }
+.intro-skip { position: absolute; top: 22px; left: 0; right: 0; text-align: center; font-size: 12px; color: #8a8a8a; }
+@media (min-width: 640px) { .intro-meta { left: 40px; right: 40px; bottom: 36px; } }
+@keyframes intro-drop { from { opacity: 0; transform: translateY(-56px) rotate(calc(var(--r) * 2.5)) scale(1.08); } to { opacity: 1; transform: translateY(0) rotate(var(--r)) scale(1); } }
+@keyframes intro-lift { from { transform: translateY(0) rotate(var(--r)); } to { opacity: 0; transform: translateY(-38vh) rotate(calc(var(--r) * -1.5)) scale(.94); } }
+@keyframes intro-wipe { to { clip-path: inset(0 0 100% 0); } }
+@keyframes intro-failsafe { to { visibility: hidden; opacity: 0; pointer-events: none; } }
