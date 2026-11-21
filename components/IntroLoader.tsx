@@ -72,7 +72,7 @@ export default function IntroLoader() {
           const cover = cardCover(slug);
           return cover ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img key={slug} src={cover.poster} alt="" className="intro-card" style={{ "--i": i } as CSSProperties} decoding="async" />
+            <img key={slug} src={cover.src} alt="" className="intro-card" style={{ "--i": i } as CSSProperties} decoding="async" />
           ) : null;
         })}
       </div>

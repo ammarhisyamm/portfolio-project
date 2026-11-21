@@ -16,17 +16,16 @@ export function caseStudyCover(slug: string) {
 }
 
 /**
- * Card covers for the home page: each study plays its own flow inside a light studio
- * mockup with its own colour (generated with GPT Image, real screens composited onto the device), so
- * the list never reads like one template repeated. `poster` is the still for the first
- * paint and for reduced motion.
+ * Card covers for the home page: a close crop of one telling screen on a light studio
+ * mockup, each study with a prop in its own colour (scenes generated with GPT Image, real
+ * screens composited onto the device), so the list never reads like one template repeated.
  */
-const CARD_COVERS: Record<string, { video: string; poster: string; alt: string }> = {
-  synqra: { video: "/case-studies/synqra/card.mp4", poster: "/case-studies/synqra/card.webp", alt: "Synqra on a laptop resting on a cobalt blue ribbon, moving from meeting notes to AI review to the project board" },
-  offstories: { video: "/case-studies/offstories/card.mp4", poster: "/case-studies/offstories/card.webp", alt: "OffStories on a laptop and phone on a blush arch plinth, stepping through setup, dashboard and budget" },
-  nomory: { video: "/case-studies/nomory/card.mp4", poster: "/case-studies/nomory/card.webp", alt: "Nomory on a phone tilted on a tomato orange ledge, moving from today's diary to saving a meal and the calendar" },
-  quriz: { video: "/case-studies/quriz/card.mp4", poster: "/case-studies/quriz/card.webp", alt: "Quriz on a phone floating over a glass pedestal in pale blue water, moving from home to a quiz, progress and badges" },
-  jeam: { video: "/case-studies/jeam/card.mp4", poster: "/case-studies/jeam/card.webp", alt: "Jeam on a phone balanced on stacked orange blocks, moving from home to a run and its result" },
+const CARD_COVERS: Record<string, { src: string; alt: string }> = {
+  synqra: { src: "/case-studies/synqra/card.webp", alt: "Synqra's AI review screen on a laptop resting on a cobalt blue ribbon" },
+  offstories: { src: "/case-studies/offstories/card.webp", alt: "The OffStories dashboard on a laptop and phone, counting down 210 days to the wedding" },
+  nomory: { src: "/case-studies/nomory/card.webp", alt: "Close-up of Nomory's diary on a phone: good morning, two memories today and a four day streak" },
+  quriz: { src: "/case-studies/quriz/card.webp", alt: "Close-up of the Quriz home screen on a phone, with the consistency week and a start button" },
+  jeam: { src: "/case-studies/jeam/card.webp", alt: "Close-up of Jeam's run summary on a phone: 5 km, 45 minutes and calories per kilometre" },
 };
 
 export function cardCover(slug: string) {
