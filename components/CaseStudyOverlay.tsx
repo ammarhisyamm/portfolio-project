@@ -9,6 +9,19 @@ import { caseStudyCover } from "@/lib/case-study-visuals";
 import Media from "./Media";
 import CaseStudyBlockView from "./CaseStudyBlockView";
 
+const SHORT_TYPES = new Set(["OVERVIEW", "PROBLEM_STATEMENT", "RESULT_SHOWCASE", "METRIC_HIGHLIGHT", "OUTCOME", "REFLECTION"]);
+
+/** Rough reading time at 220 words a minute, counted over the text a reader actually sees. */
+function readingMinutes(cs: CaseStudy, blocks: CaseStudy["blocks"]) {
+  const parts: string[] = [cs.hero_description ?? ""];
+  for (const b of blocks) {
+    parts.push(b.heading ?? "", b.description ?? "", b.supporting_text ?? "");
+    for (const c of b.cards ?? []) parts.push(c.title ?? "", c.body ?? "");
+  }
+  const words = parts.join(" ").split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.round(words / 220));
+}
+
 function projectInfo(cs: CaseStudy): [string, string][] {
   const rows: [string, string][] = [];
   const fields: [string, string][] = [
@@ -54,10 +67,14 @@ export default function CaseStudyOverlay({
   const scroller = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
   const [active, setActive] = useState(-1);
+  // "Full" reads the whole story; "In short" keeps the overview, the problem, what shipped and the outcome.
+  const [short, setShort] = useState(false);
 
   const info = cs ? projectInfo(cs) : [];
-  const blocks = cs ? cs.blocks.filter((b) => b.visible && !b.draft) : [];
-  const meta = cs ? [cs.category, cs.year, cs.platform, cs.project_status].filter(Boolean).join(" · ") : "";
+  const allBlocks = cs ? cs.blocks.filter((b) => b.visible && !b.draft) : [];
+  const blocks = short ? allBlocks.filter((b) => SHORT_TYPES.has(b.block_type)) : allBlocks;
+  const minutes = cs ? readingMinutes(cs, allBlocks) : 0;
+  const meta = cs ? [cs.year, cs.category, `${minutes} min read`].filter(Boolean).join(" · ") : "";
   const heroImage = cs ? cs.hero_image || cs.thumbnail || caseStudyCover(cs.slug) : "";
   // Numbered eyebrows ("03 · Landscape") are the study's chapters; they become the jump links.
   const chapters = blocks
@@ -96,6 +113,8 @@ export default function CaseStudyOverlay({
     // chapterKey stands in for chapters, which is rebuilt every render.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cs?.slug, chapterKey]);
+
+  useEffect(() => setShort(false), [cs?.slug]);
 
   // Keep the active chapter pill in view inside the scrolling nav.
   useEffect(() => {
@@ -138,6 +157,25 @@ export default function CaseStudyOverlay({
                 <ArrowLeft size={14} aria-hidden="true" />
                 Back to work
               </button>
+              <div role="group" aria-label="Reading length" className="relative flex rounded-full border border-[#e2e2e2] bg-panel p-0.5 text-[12px]">
+                {([[false, "Full story"], [true, "In short"]] as const).map(([value, label]) => (
+                  <button
+                    key={label}
+                    type="button"
+                    aria-pressed={short === value}
+                    onClick={() => {
+                      setShort(value);
+                      scroller.current?.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
+                    className={`relative rounded-full px-3 py-1.5 transition-colors duration-200 ${short === value ? "text-white" : "text-sub hover:text-ink"}`}
+                  >
+                    {short === value && (
+                      <motion.span layoutId="cs-length" className="absolute inset-0 rounded-full bg-ink" transition={{ type: "spring", stiffness: 500, damping: 38 }} />
+                    )}
+                    <span className="relative">{label}</span>
+                  </button>
+                ))}
+              </div>
               <button
                 type="button"
                 onClick={onClose}
@@ -148,7 +186,7 @@ export default function CaseStudyOverlay({
               </button>
              </div>
               {chapters.length > 2 && (
-                <nav aria-label="Case study sections" className="-mx-4 overflow-x-auto px-4 pb-3 [mask-image:linear-gradient(90deg,transparent,#000_16px,#000_calc(100%-32px),transparent)] [scrollbar-width:none] sm:-mx-6 sm:px-6 [&::-webkit-scrollbar]:hidden">
+                <nav aria-label="Case study sections" className="-mx-4 overflow-x-auto xl:hidden px-4 pb-3 [mask-image:linear-gradient(90deg,transparent,#000_16px,#000_calc(100%-32px),transparent)] [scrollbar-width:none] sm:-mx-6 sm:px-6 [&::-webkit-scrollbar]:hidden">
                   <ol className="flex w-max gap-1.5">
                     {chapters.map((c) => (
                       <li key={c.i}>
@@ -173,6 +211,29 @@ export default function CaseStudyOverlay({
                 <div className="h-full origin-left bg-ink transition-transform duration-150 ease-out" style={{ transform: `scaleX(${progress})` }} />
               </div>
             </div>
+
+            {chapters.length > 2 && (
+              <nav aria-label="Case study contents" className="fixed top-28 hidden w-[180px] xl:block" style={{ left: "max(24px, calc(50% - 360px - 220px))" }}>
+                <span className="kicker mb-3">Contents</span>
+                <ol className="grid gap-0.5 border-l border-[#e2e2e2]">
+                  {chapters.map((c) => (
+                    <li key={c.i}>
+                      <button
+                        type="button"
+                        onClick={() => jump(c.i)}
+                        aria-current={active === c.i ? "true" : undefined}
+                        className={`-ml-px flex w-full items-baseline gap-2 border-l py-1.5 pl-3 text-left text-[13px] leading-snug transition-colors duration-200 ${
+                          active === c.i ? "border-ink text-ink" : "border-transparent text-muted hover:text-ink"
+                        }`}
+                      >
+                        <span className="tabular-nums text-[11px] opacity-70">{c.num}</span>
+                        {c.label}
+                      </button>
+                    </li>
+                  ))}
+                </ol>
+              </nav>
+            )}
 
             <div className="grid grid-cols-[minmax(0,1fr)] gap-3 pb-16 pt-4 md:gap-4">
               <div className="panel grid gap-5 p-5 sm:p-8">
@@ -226,7 +287,7 @@ export default function CaseStudyOverlay({
                 <div className="mt-10 grid grid-cols-[minmax(0,1fr)] gap-16 md:mt-14 md:gap-20">
                   {blocks.map((b, i) => (
                     <motion.div
-                      key={`${i}-${b.block_type}`}
+                      key={`${short ? "s" : "f"}-${i}-${b.block_type}`}
                       id={`cs-block-${i}`}
                       className="min-w-0"
                       initial={{ opacity: 0, y: 18 }}

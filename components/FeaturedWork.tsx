@@ -5,7 +5,7 @@ import { ArrowRight, ArrowUpRight, ChevronDown } from "lucide-react";
 import { gsap } from "@/lib/gsap";
 import { reducedMotion } from "@/lib/utils";
 import type { CaseStudy } from "@/lib/content";
-import { caseStudyCover } from "@/lib/case-study-visuals";
+import { caseStudyCover, coverDetails } from "@/lib/case-study-visuals";
 import Media from "./Media";
 
 /** Studies shown before "View all work"; the rest stay one click away. */
@@ -57,7 +57,7 @@ export default function FeaturedWork({
           }`}
         >
           <div className={`grid gap-5 sm:gap-6 ${i > 0 ? "pb-7 pt-7 sm:pb-9 sm:pt-9" : "pb-7 sm:pb-9"}`}>
-            {p.category && <span className="kicker -mb-3 sm:-mb-4">{p.category}</span>}
+            {(p.year || p.category) && <span className="kicker -mb-3 sm:-mb-4">{[p.year, p.category].filter(Boolean).join(" · ")}</span>}
             <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1.5">
               <h3 className="flex items-center gap-2.5 text-[clamp(19px,2.2vw,21px)] font-medium leading-snug tracking-[-0.03em]">
                 {p.title}
@@ -68,11 +68,6 @@ export default function FeaturedWork({
                   aria-hidden="true"
                 />
               </h3>
-              {p.year && (
-                <span className="shrink-0 text-[12px] tracking-[0.02em] text-muted sm:text-[13px]">
-                  {p.year}
-                </span>
-              )}
             </div>
 
             <div
@@ -96,10 +91,33 @@ export default function FeaturedWork({
               </span>
             </div>
 
+            {coverDetails(p.slug).length > 0 && (
+              <div className="-mt-2 grid grid-cols-2 gap-3 sm:-mt-3 sm:gap-4" aria-hidden="true">
+                {coverDetails(p.slug).map((d, n) => (
+                  <span key={d.src} className={`work-detail is-${d.kind}`} style={{ transitionDelay: `${n * 60}ms` }}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={d.src} alt="" loading="lazy" decoding="async" style={{ transitionDelay: `${n * 60}ms` }} />
+                  </span>
+                ))}
+              </div>
+            )}
+
             {p.short_description && (
               <p className="t-lede">
                 {p.short_description}
               </p>
+            )}
+            {(p.role || p.platform || p.project_status) && (
+              <dl className="grid grid-cols-3 gap-4 border-t border-[#ececec] pt-4">
+                {([["Role", p.role?.split(/,| and /)[0]], ["Platform", p.platform], ["Status", p.project_status]] as const)
+                  .filter(([, v]) => v)
+                  .map(([k, v]) => (
+                    <div key={k} className="grid content-start gap-1">
+                      <dt className="text-[12px] text-muted">{k}</dt>
+                      <dd className="text-[13.5px] leading-snug text-ink">{v}</dd>
+                    </div>
+                  ))}
+              </dl>
             )}
             <span className="link-arrow -mt-1 w-fit text-ink group-hover:bg-[length:100%_1px]">
               Read case study

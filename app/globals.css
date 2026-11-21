@@ -987,6 +987,15 @@ html.lenis body {
 @media (hover: hover) and (pointer: fine) { .group:hover .work-cover-chip { opacity: 1; transform: translate(-50%, -50%) scale(1); } .work-cover { cursor: none; } }
 @media (prefers-reduced-motion: reduce) { .work-cover, .work-cover-chip { transition: none; } .group:hover .work-cover { transform: none; } }
 
+/* Two close-up tiles under each cover: soft grey tiles with a screen peeking up from the
+   bottom edge; on hover the screens rise a little, one after the other. */
+.work-detail { position: relative; display: block; aspect-ratio: 4 / 3; overflow: hidden; border: 8px solid #fff; border-radius: 16px; background: #efefed; box-shadow: 0 1px 2px rgba(22, 22, 22, .04), 0 8px 24px -12px rgba(22, 22, 22, .06); }
+.work-detail img { position: absolute; display: block; box-shadow: 0 0 0 1px rgba(22, 22, 22, .06), 0 14px 28px -16px rgba(22, 22, 22, .35); transition: transform 600ms cubic-bezier(.2, .8, .2, 1); }
+.work-detail.is-desktop img { left: 9%; top: 14%; width: 112%; border-radius: 8px; }
+.work-detail.is-phone img { left: 50%; top: 12%; width: 40%; margin-left: -20%; border-radius: 14px; }
+.group:hover .work-detail img { transform: translateY(-6px); }
+@media (prefers-reduced-motion: reduce) { .work-detail img { transition: none; } .group:hover .work-detail img { transform: none; } }
+
 /* Photo album: a real-feeling album. It starts closed on a linen cover; opening it swings
    the cover over to the left, then every page can be turned by click, arrow key, swipe, or
    by grabbing a page and dragging it across the spine. Pages are textured paper with
