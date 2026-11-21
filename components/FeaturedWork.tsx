@@ -76,24 +76,32 @@ export default function FeaturedWork({
             </div>
 
             <div
-              className="relative aspect-[16/9] w-full overflow-hidden rounded-[16px] border-8 border-white bg-bg sm:rounded-[20px]"
-              style={{ boxShadow: "0 1px 2px rgba(22,22,22,.04), 0 8px 24px -12px rgba(22,22,22,.06)" }}
+              className="work-cover relative aspect-[16/9] w-full overflow-hidden rounded-[16px] border-8 border-white bg-bg sm:rounded-[20px]"
+              onPointerMove={(e) => {
+                // The "View" chip follows the pointer across the cover.
+                const r = e.currentTarget.getBoundingClientRect();
+                e.currentTarget.style.setProperty("--x", `${e.clientX - r.left}px`);
+                e.currentTarget.style.setProperty("--y", `${e.clientY - r.top}px`);
+              }}
             >
               <Media
                 src={p.cover_video || p.thumbnail || caseStudyCover(p.slug)}
                 poster={p.cover_video ? p.thumbnail : undefined}
                 alt={p.thumbnail_alt || `Visual for ${p.title}`}
                 label={p.year || p.category}
-                imgClassName="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02]"
+                imgClassName="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
               />
+              <span aria-hidden="true" className="work-cover-chip">
+                View case study <ArrowRight size={13} />
+              </span>
             </div>
 
             {p.short_description && (
-              <p className="max-w-[560px] text-[15px] leading-relaxed text-sub">
+              <p className="t-lede">
                 {p.short_description}
               </p>
             )}
-            <span className="-mt-1 inline-flex items-center gap-1.5 text-[13px] font-medium text-ink">
+            <span className="link-arrow -mt-1 w-fit text-ink group-hover:bg-[length:100%_1px]">
               Read case study
               <ArrowRight size={14} aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-0.5" />
             </span>

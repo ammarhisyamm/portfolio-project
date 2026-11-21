@@ -8,7 +8,7 @@ const config: Config = {
         bg: "#f5f5f5",
         panel: "#ffffff",
         ink: "#161616",
-        sub: "#5f5f5f",
+        sub: "#4d4d4d",
         muted: "#6f6f6f",
         line: "#F4F4F4",
         "line-strong": "#F4F4F4",
