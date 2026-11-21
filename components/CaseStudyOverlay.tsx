@@ -314,7 +314,8 @@ export default function CaseStudyOverlay({
                     style={{ boxShadow: "0 1px 2px rgba(22,22,22,.04), 0 8px 24px -12px rgba(22,22,22,.06)" }}
                   >
                     <Media
-                      src={cardCover(next.slug)?.src || next.thumbnail || caseStudyCover(next.slug)}
+                      src={cardCover(next.slug)?.video || next.thumbnail || caseStudyCover(next.slug)}
+                      poster={cardCover(next.slug)?.poster}
                       alt={cardCover(next.slug)?.alt || next.thumbnail_alt || `Visual for ${next.title}`}
                       label={next.title}
                       imgClassName="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02]"

@@ -83,8 +83,8 @@ export default function FeaturedWork({
               }}
             >
               <Media
-                src={cardCover(p.slug)?.src || p.cover_video || p.thumbnail || caseStudyCover(p.slug)}
-                poster={!cardCover(p.slug) && p.cover_video ? p.thumbnail : undefined}
+                src={cardCover(p.slug)?.video || p.cover_video || p.thumbnail || caseStudyCover(p.slug)}
+                poster={cardCover(p.slug)?.poster || (p.cover_video ? p.thumbnail : undefined)}
                 alt={cardCover(p.slug)?.alt || p.thumbnail_alt || `Visual for ${p.title}`}
                 label={p.year || p.category}
                 imgClassName="work-cover-img h-full w-full object-cover"
