@@ -42,17 +42,18 @@ const ARTICLE_TYPES = new Set([
 /** A divider that stays visible on both the page grey and white panels. */
 const RULE = "border-[#e4e4e4]";
 const LABEL = "text-[11px] uppercase tracking-[0.08em] text-muted";
-const H3 = "text-[16px] font-medium leading-snug tracking-[-0.02em] text-ink";
+const H3 = "t-h3";
 const BODY = "text-[14px] leading-[1.65] text-sub";
 
 /** A quiet outline tile for an icon. Grey on white panels, white on the page grey; never a filled colour. */
 function IconBadge({ card, tone = "page", size = "md" }: { card: CaseStudyCard; tone?: "page" | "panel"; size?: "sm" | "md" }) {
   const Icon = cardIcon(card);
   if (!Icon) return null;
-  const box = size === "sm" ? "h-7 w-7 rounded-[8px]" : "h-9 w-9 rounded-[10px]";
+  // One tile size everywhere so icons line up across blocks; `size` only tightens the gap it sits in.
+  void size;
   return (
-    <span aria-hidden="true" className={`grid shrink-0 place-items-center text-ink ${box} ${tone === "panel" ? "bg-[#f2f2f2]" : "border border-[#e2e2e2] bg-panel"}`}>
-      <Icon size={size === "sm" ? 14 : 17} strokeWidth={1.75} />
+    <span aria-hidden="true" className={`grid h-8 w-8 shrink-0 place-items-center rounded-[9px] text-ink ${tone === "panel" ? "bg-[#f3f3f1]" : "border border-[#e4e4e4] bg-panel"}`}>
+      <Icon size={16} strokeWidth={1.75} />
     </span>
   );
 }
@@ -139,7 +140,7 @@ function Cards({ cards, variant, layout, numbered }: { cards: CaseStudyCard[]; v
         <div className="grid gap-8">
           {cards.map((card) => (
             <div key={card.title} className="grid max-w-[600px] gap-2">
-              <h3 className="text-[clamp(20px,2.6vw,24px)] font-normal leading-[1.2] tracking-[-0.035em] text-ink">{card.title}</h3>
+              <h3 className="t-statement">{card.title}</h3>
               <p className={BODY}>{card.body}</p>
             </div>
           ))}
@@ -243,7 +244,7 @@ function Cards({ cards, variant, layout, numbered }: { cards: CaseStudyCard[]; v
         <div className="grid gap-4 sm:grid-cols-[1.3fr_1fr]">
           <div className="grid content-start gap-3 rounded-[18px] bg-panel p-6 sm:p-7">
             <IconLabel card={lead} tone="panel" />
-            <h3 className="text-[clamp(26px,3.6vw,34px)] font-normal leading-[1.08] tracking-[-0.045em] text-ink">{lead.title}</h3>
+            <h3 className="t-title">{lead.title}</h3>
             <p className={BODY}>{lead.body}</p>
           </div>
           <div className="grid content-start gap-5 sm:pt-7">
@@ -412,7 +413,7 @@ function Cards({ cards, variant, layout, numbered }: { cards: CaseStudyCard[]; v
         <ul className="grid gap-6">
           {cards.map((card) => (
             <li key={card.title} className="grid gap-1.5 border-l-2 border-[#d4d4d4] pl-5">
-              <h3 className="text-[clamp(18px,2.4vw,21px)] font-normal leading-[1.3] tracking-[-0.03em] text-ink">{card.title}</h3>
+              <h3 className="t-statement">{card.title}</h3>
               <p className={BODY}>{card.body}</p>
             </li>
           ))}
@@ -484,7 +485,7 @@ function ScreenTag({ children }: { children: ReactNode }) {
   return <span className="w-fit rounded-full border border-[#dcdcdc] bg-panel px-2.5 py-1 text-[11px] uppercase tracking-[0.06em] text-sub">{children}</span>;
 }
 
-export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock }) {
+export default function CaseStudyBlockView({ block, chapter: chapterNo }: { block: CaseStudyBlock; chapter?: string }) {
   if (!block.visible || !hasContent(block)) return null;
   const medias = mediaList(block);
   const variant = block.variant;
@@ -492,9 +493,18 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
   const frame = block.layout === "desktop" ? "desktop" : "phone";
   const numbered = block.block_type === "INSIGHTS" || block.block_type === "DESIGN_DIRECTION";
 
+  const chapter = /^(\d{2})\s*·\s*(.+)$/.exec(block.eyebrow ?? "");
   const kicker = (fallback: string) => (
     <span className="kicker flex flex-wrap items-center gap-2">
-      {block.eyebrow || fallback}
+      {chapter ? (
+        <>
+          <span className="tabular-nums text-ink">{chapterNo ?? chapter[1]}</span>
+          <span aria-hidden="true" className="h-px w-5 bg-[#cfcfcf]" />
+          {chapter[2]}
+        </>
+      ) : (
+        block.eyebrow || fallback
+      )}
       {block.draft && (
         <span title="Placeholder research. Replace it with real data, then remove draft from this block." className="rounded-full border border-dashed border-[#a8871a] bg-[#fdf8e6] px-2 py-0.5 text-[10px] normal-case tracking-normal text-[#6b5512]">
           Sample data
@@ -504,19 +514,17 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
   );
 
   const header = (fallback: string) => (
-    <div className="grid gap-4">
+    <div className="grid gap-3">
       {kicker(fallback)}
-      {block.heading && (
-        <h2 className="max-w-[640px] text-[clamp(24px,3vw,34px)] font-normal leading-[1.12] tracking-[-0.05em] text-ink">{block.heading}</h2>
-      )}
-      {block.description && <p className="max-w-[620px] text-[15px] leading-[1.7] text-sub">{block.description}</p>}
+      {block.heading && <h2 className="t-title max-w-[640px]">{block.heading}</h2>}
+      {block.description && <p className="t-lede mt-1">{block.description}</p>}
       {block.supporting_text && (
         <p className="max-w-[560px] border-l-2 border-[#dcdcdc] pl-4 text-[13.5px] leading-[1.65] text-sub">{block.supporting_text}</p>
       )}
     </div>
   );
 
-  const captionText = block.caption && <p className="text-[12.5px] leading-relaxed text-muted">{block.caption}</p>;
+  const captionText = block.caption && <p className="t-caption">{block.caption}</p>;
   const cards = block.cards?.length ? <Cards cards={block.cards} variant={variant} layout={block.layout} numbered={numbered} /> : null;
   const section = (children: ReactNode) => <section className="grid min-w-0 gap-6 md:gap-7">{children}</section>;
 
@@ -530,7 +538,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
           <Media src={src} alt={block.alt_text || block.caption || "Case study visual"} label={block.caption || "Media"} />
         )}
       </div>
-      {showCaption && block.caption && <figcaption className="text-[12.5px] leading-relaxed text-muted">{block.caption}</figcaption>}
+      {showCaption && block.caption && <figcaption className="t-caption">{block.caption}</figcaption>}
     </figure>
   );
 
@@ -564,7 +572,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
               {[a, b].filter(Boolean).map((card) => (
                 <div key={card.title} className="grid content-start gap-2.5">
                   <IconLabel card={card} />
-                  <h3 className="text-[clamp(20px,2.6vw,24px)] font-normal leading-[1.2] tracking-[-0.035em] text-ink">{card.title}</h3>
+                  <h3 className="t-statement">{card.title}</h3>
                   <p className={BODY}>{card.body}</p>
                 </div>
               ))}
@@ -650,11 +658,11 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
     }
 
     case "PROBLEM_STATEMENT": {
-      const statement = <p className="max-w-[620px] text-[clamp(22px,3.2vw,30px)] font-normal leading-[1.22] tracking-[-0.04em] text-ink">{block.heading}</p>;
+      const statement = <p className="t-statement max-w-[620px]">{block.heading}</p>;
       const note = block.description && <p className="max-w-[560px] text-[14.5px] leading-[1.7] text-sub">{block.description}</p>;
       if (variant === "bar") {
         return (
-          <section className="grid gap-4 border-l-[3px] border-ink py-1 pl-6 sm:pl-8">
+          <section className="grid gap-4 border-l-[3px] border-[#d6d6d3] py-1 pl-6 sm:pl-8">
             {kicker("How might we")}
             {statement}
             {note}
@@ -690,7 +698,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
               <li key={g.theme} className={`grid gap-3 border-b ${RULE} py-6 sm:grid-cols-[180px_1fr] sm:gap-8`}>
                 <span className="text-[13px] font-medium leading-snug text-ink sm:pt-1">{g.theme}</span>
                 <div className="grid gap-3">
-                  {g.insight && <p className="text-[clamp(18px,2.3vw,21px)] leading-[1.35] tracking-[-0.025em] text-ink">{g.insight}</p>}
+                  {g.insight && <p className="t-statement">{g.insight}</p>}
                   <ul className="flex flex-wrap gap-2">
                     {g.notes.map((n) => {
                       const assumed = /^assumption:\s*/i.test(n);
@@ -870,7 +878,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
         <>
           {kicker("Quote")}
           <figure className="grid gap-5">
-            <blockquote className="text-[clamp(22px,3vw,32px)] font-normal leading-[1.25] tracking-[-0.04em]">{block.description || block.heading}</blockquote>
+            <blockquote className="t-statement">{block.description || block.heading}</blockquote>
             {block.supporting_text && <figcaption className={LABEL}>— {block.supporting_text}</figcaption>}
           </figure>
         </>
@@ -983,10 +991,10 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
       const fallback = block.block_type.replaceAll("_", " ");
       if (block.block_type === "REFLECTION" && variant === "note") {
         return (
-          <section className="grid gap-4 rounded-[20px] bg-[#f6f3ec] p-6 sm:p-8">
+          <section className="grid gap-4 rounded-[20px] border border-[#e4e4e4] bg-panel p-6 sm:p-8">
             {kicker(fallback)}
-            <p className="font-hand text-[clamp(24px,3.2vw,30px)] leading-[1.15] text-[#3b3427]">{block.heading}</p>
-            {block.description && <p className="max-w-[600px] text-[14.5px] leading-[1.7] text-[#4f4a40]">{block.description}</p>}
+            <p className="t-statement max-w-[620px]">{block.heading}</p>
+            {block.description && <p className="max-w-[600px] text-[14.5px] leading-[1.7] text-sub">{block.description}</p>}
           </section>
         );
       }
@@ -994,7 +1002,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
         return (
           <section className="grid gap-5 border-t-2 border-ink pt-8">
             {kicker(fallback)}
-            <h2 className="max-w-[620px] text-[clamp(26px,3.6vw,36px)] font-normal leading-[1.1] tracking-[-0.05em] text-ink">{block.heading}</h2>
+            <h2 className="t-title max-w-[620px]">{block.heading}</h2>
             {block.description && <p className="max-w-[600px] text-[15px] leading-[1.7] text-sub">{block.description}</p>}
           </section>
         );
@@ -1004,7 +1012,7 @@ export default function CaseStudyBlockView({ block }: { block: CaseStudyBlock })
           <section className="grid gap-5">
             {kicker(fallback)}
             <figure className="grid gap-4">
-              <blockquote className="max-w-[620px] text-[clamp(24px,3.4vw,32px)] font-normal leading-[1.2] tracking-[-0.045em] text-ink">
+              <blockquote className="t-statement max-w-[620px]">
                 <span aria-hidden="true" className="text-muted">“</span>
                 {block.heading}
                 <span aria-hidden="true" className="text-muted">”</span>

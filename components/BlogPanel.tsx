@@ -7,9 +7,12 @@ export default function BlogPanel({ posts }: { posts: BlogSummary[] }) {
   if (!posts.length) return null;
   return (
     <Reveal className="panel p-5 sm:p-8">
-      <div className="flex items-center justify-between gap-4">
-        <span className="kicker">From the blog</span>
-        <Link href="/blog" className="inline-flex items-center gap-1.5 text-[13px] text-sub no-underline hover:text-ink">
+      <div className="section-head">
+        <div>
+          <h2 className="t-title">From the blog</h2>
+          <p className="t-lede">Personal essays on faith, growth and everyday life.</p>
+        </div>
+        <Link href="/blog" className="link-arrow">
           All articles <ArrowRight size={14} aria-hidden="true" />
         </Link>
       </div>

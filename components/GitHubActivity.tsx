@@ -49,10 +49,10 @@ export default function GitHubActivity({ username }: { username: string }) {
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <span className="kicker">GitHub activity</span>
-          <h2 id="github-title" className="mt-3 text-[clamp(22px,3vw,28px)] font-normal tracking-[-0.05em]">
+          <h2 id="github-title" className="t-title mt-3">
             Contributions over the past year
           </h2>
-          <p className="mt-2 text-sm text-sub">
+          <p className="t-lede mt-2">
             {activity ? `${activity.total.toLocaleString()} contributions` : error ? "Activity is temporarily unavailable." : "Loading contribution activity..."}
           </p>
         </div>

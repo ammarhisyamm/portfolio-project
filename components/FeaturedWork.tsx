@@ -5,7 +5,7 @@ import { ArrowRight, ArrowUpRight, ChevronDown } from "lucide-react";
 import { gsap } from "@/lib/gsap";
 import { reducedMotion } from "@/lib/utils";
 import type { CaseStudy } from "@/lib/content";
-import { caseStudyCover } from "@/lib/case-study-visuals";
+import { cardCover, caseStudyCover } from "@/lib/case-study-visuals";
 import Media from "./Media";
 
 /** Studies shown before "View all work"; the rest stay one click away. */
@@ -57,9 +57,9 @@ export default function FeaturedWork({
           }`}
         >
           <div className={`grid gap-5 sm:gap-6 ${i > 0 ? "pb-7 pt-7 sm:pb-9 sm:pt-9" : "pb-7 sm:pb-9"}`}>
-            {p.category && <span className="kicker -mb-3 sm:-mb-4">{p.category}</span>}
+            {(p.year || p.category) && <span className="kicker -mb-3 sm:-mb-4">{[p.year, p.category].filter(Boolean).join(" · ")}</span>}
             <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1.5">
-              <h3 className="flex items-center gap-2.5 text-[clamp(20px,3.2vw,26px)] font-medium leading-tight tracking-[-0.045em]">
+              <h3 className="flex items-center gap-2.5 text-[clamp(19px,2.2vw,21px)] font-medium leading-snug tracking-[-0.03em]">
                 {p.title}
                 <ArrowUpRight
                   size={18}
@@ -68,32 +68,54 @@ export default function FeaturedWork({
                   aria-hidden="true"
                 />
               </h3>
-              {p.year && (
-                <span className="shrink-0 text-[12px] tracking-[0.02em] text-muted sm:text-[13px]">
-                  {p.year}
-                </span>
-              )}
             </div>
 
             <div
-              className="relative aspect-[16/9] w-full overflow-hidden rounded-[16px] border-8 border-white bg-bg sm:rounded-[20px]"
-              style={{ boxShadow: "0 1px 2px rgba(22,22,22,.04), 0 8px 24px -12px rgba(22,22,22,.06)" }}
+              className="work-cover relative aspect-[16/9] w-full overflow-hidden rounded-[16px] border-[6px] border-white bg-bg sm:rounded-[20px]"
+              onPointerLeave={(e) => {
+                e.currentTarget.style.setProperty("--dx", "0");
+                e.currentTarget.style.setProperty("--dy", "0");
+              }}
+              onPointerMove={(e) => {
+                // The "View" chip follows the pointer, and the mockup drifts a little the other way.
+                const r = e.currentTarget.getBoundingClientRect();
+                const el = e.currentTarget.style;
+                el.setProperty("--x", `${e.clientX - r.left}px`);
+                el.setProperty("--y", `${e.clientY - r.top}px`);
+                el.setProperty("--dx", ((e.clientX - r.left) / r.width - 0.5).toFixed(3));
+                el.setProperty("--dy", ((e.clientY - r.top) / r.height - 0.5).toFixed(3));
+              }}
             >
               <Media
-                src={p.cover_video || p.thumbnail || caseStudyCover(p.slug)}
-                poster={p.cover_video ? p.thumbnail : undefined}
-                alt={p.thumbnail_alt || `Visual for ${p.title}`}
+                src={cardCover(p.slug)?.src || p.cover_video || p.thumbnail || caseStudyCover(p.slug)}
+                poster={!cardCover(p.slug) && p.cover_video ? p.thumbnail : undefined}
+                alt={cardCover(p.slug)?.alt || p.thumbnail_alt || `Visual for ${p.title}`}
                 label={p.year || p.category}
-                imgClassName="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02]"
+                imgClassName="work-cover-img h-full w-full object-cover"
               />
+              <span aria-hidden="true" className="work-cover-chip">
+                View case study <ArrowRight size={13} />
+              </span>
             </div>
 
             {p.short_description && (
-              <p className="max-w-[560px] text-[15px] leading-relaxed text-sub">
+              <p className="t-lede">
                 {p.short_description}
               </p>
             )}
-            <span className="-mt-1 inline-flex items-center gap-1.5 text-[13px] font-medium text-ink">
+            {(p.role || p.platform || p.project_status) && (
+              <dl className="grid grid-cols-3 gap-4 border-t border-[#ececec] pt-4">
+                {([["Role", p.role?.split(/,| and /)[0]], ["Platform", p.platform], ["Status", p.project_status]] as const)
+                  .filter(([, v]) => v)
+                  .map(([k, v]) => (
+                    <div key={k} className="grid content-start gap-1">
+                      <dt className="text-[12px] text-muted">{k}</dt>
+                      <dd className="text-[13.5px] leading-snug text-ink">{v}</dd>
+                    </div>
+                  ))}
+              </dl>
+            )}
+            <span className="link-arrow -mt-1 w-fit text-ink group-hover:bg-[length:100%_1px]">
               Read case study
               <ArrowRight size={14} aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-0.5" />
             </span>

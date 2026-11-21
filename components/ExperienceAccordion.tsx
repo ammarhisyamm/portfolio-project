@@ -12,9 +12,14 @@ export default function ExperienceAccordion({ items }: { items: ExperienceItem[]
   const [lightbox, setLightbox] = useState<{ job: number; index: number } | null>(null);
 
   return (
-    <div className="panel p-5 sm:p-8">
-      <span className="kicker">Working experience</span>
-      <div className="mt-4 border-t border-line">
+    <section className="panel p-5 sm:p-8" aria-labelledby="experience-title">
+      <div className="section-head">
+        <div>
+          <h2 id="experience-title" className="t-title">Working experience</h2>
+          <p className="t-lede">The teams I&apos;ve worked with and what I looked after there.</p>
+        </div>
+      </div>
+      <div className="mt-6 border-t border-line">
         {items.map((job, i) => {
           const isOpen = open === i;
           const images = job.images?.filter(Boolean) ?? [];
@@ -127,6 +132,6 @@ export default function ExperienceAccordion({ items }: { items: ExperienceItem[]
         onIndexChange={(idx) => setLightbox((l) => (l ? { ...l, index: idx } : l))}
         onClose={() => setLightbox(null)}
       />
-    </div>
+    </section>
   );
 }

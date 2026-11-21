@@ -71,7 +71,7 @@ export default function ThemeTabs({ groups }: { groups: CaseStudyNoteGroup[] }) 
           )}
         </div>
         {group.insight && (
-          <p className="border-t border-[#ececec] pt-5 text-[clamp(18px,2.2vw,21px)] leading-[1.35] tracking-[-0.02em] text-ink">
+          <p className="t-statement border-t border-[#ececec] pt-5">
             {group.insight}
           </p>
         )}

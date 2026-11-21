@@ -41,9 +41,14 @@ export default function CategoryStacks({ categories }: { categories: HomeCategor
   if (categories.length === 0) return null;
 
   return (
-    <section className="panel p-5 sm:p-8">
-      <span className="kicker">Design exploration</span>
-      <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2">
+    <section className="panel p-5 sm:p-8" aria-labelledby="exploration-title">
+      <div className="section-head">
+        <div>
+          <h2 id="exploration-title" className="t-title">Design exploration</h2>
+          <p className="t-lede">Visual work outside the case studies. Open a stack to look through it.</p>
+        </div>
+      </div>
+      <div className="mt-8 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2">
         {categories.map((cat) => (
           <CategoryStack key={cat.key} cat={cat} onOpen={() => setFeed(cat)} />
         ))}
@@ -152,7 +157,7 @@ function FeedOverlay({ cat, onClose }: { cat: HomeCategory; onClose: () => void 
         <div className="mb-6 flex items-center justify-between gap-4">
           <div>
             <span className="kicker">Design exploration</span>
-            <h2 className="mt-2 text-[clamp(22px,4vw,30px)] font-normal leading-[1.1] tracking-[-0.05em]">
+            <h2 className="t-title mt-2">
               {cat.label}
             </h2>
           </div>

@@ -8,18 +8,18 @@ export default function SiteFooter({ footer }: { footer: FooterContent }) {
   return (
     <footer className="panel mb-9 mt-3 grid gap-8 p-5 sm:p-8 lg:grid-cols-[1.4fr_auto] lg:gap-14 lg:p-10">
       <div>
-        <p className="mb-3.5  text-[11px] uppercase tracking-[0.02em] text-sub">
+        <p className="kicker mb-3">
           {footer.note}
         </p>
-        <h2 className="text-[clamp(24px,4vw,32px)] font-normal leading-[1.1] tracking-[-0.05em]">
+        <h2 className="t-display">
           <Link
             href="/contact"
-            className="group inline-flex items-center gap-2.5 no-underline"
+            className="group no-underline"
           >
             {footer.heading}
             <ArrowUpRight
               size={24}
-              className="inline-block text-muted transition-transform duration-300 ease-out group-hover:translate-x-1 group-hover:-translate-y-1"
+              className="ml-2 inline-block align-[0.05em] text-muted transition-transform duration-300 ease-out group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-ink"
               aria-hidden="true"
             />
           </Link>
