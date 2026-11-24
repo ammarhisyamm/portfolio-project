@@ -15,12 +15,7 @@ export const metadata: Metadata = {
 };
 
 export default async function AboutUsPage() {
-  const { about, socials, contact, experience } = await getContent();
-  const current = experience.find((item) => /present/i.test(item.period));
-  const facts = [
-    current && { label: "Currently", value: `${current.role.split(" - ")[0]} at ${current.company}` },
-    contact.location && { label: "Based in", value: contact.location },
-  ].filter((fact): fact is { label: string; value: string } => Boolean(fact));
+  const { about, socials } = await getContent();
   const githubUrl = socials.items.find((item) => item.type === "github")?.href ?? "";
   const username = githubUrl.match(/github\.com\/([^/?#]+)/i)?.[1] ?? "ammarhisyamm";
 
@@ -44,16 +39,6 @@ export default async function AboutUsPage() {
           {about.introTitle}
         </h1>
         <p className="t-lede mt-4">{about.introBody}</p>
-        {facts.length > 0 && (
-          <dl className="mt-6 grid gap-x-8 gap-y-3 border-t border-line pt-5 sm:grid-cols-2">
-            {facts.map((fact) => (
-              <div key={fact.label}>
-                <dt className="kicker">{fact.label}</dt>
-                <dd className="mt-1 text-sm">{fact.value}</dd>
-              </div>
-            ))}
-          </dl>
-        )}
       </section>
 
       <section className="panel p-5 sm:p-8" aria-labelledby="approach-title">

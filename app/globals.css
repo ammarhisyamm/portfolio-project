@@ -1230,7 +1230,7 @@ html[data-intro]:has(.intro), html[data-intro]:has(.intro) body { overflow: hidd
 .blog-book-slot[data-active="true"] .blog-book-spine { opacity: 0; }
 .blog-book-slot[data-active="true"] .blog-book-cover { opacity: 1; transform: rotateY(-5deg); }
 .blog-book-slot:nth-child(even) .blog-book-title { font-family: inherit; font-weight: 600; }
-.blog-shelf-caption { display: grid; justify-items: center; gap: .35rem; max-width: 46ch; margin-inline: auto; padding-top: .65rem; }
+.blog-shelf-caption { display: grid; justify-items: start; gap: .35rem; max-width: 46ch; margin-inline: 0; padding-top: .65rem; text-align: left; }
 .blog-shelf-caption .t-h3 { font-size: 14px; }
 .blog-shelf-caption .t-lede { font-size: 13px; }
 .blog-shelf-caption .link-arrow { font-size: 13px; }
