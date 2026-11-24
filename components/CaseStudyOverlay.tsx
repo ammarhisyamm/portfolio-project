@@ -33,6 +33,7 @@ function projectInfo(cs: CaseStudy): [string, string][] {
     ["Scope", cs.scope],
     ["Team", cs.team],
     ["Platform", cs.platform],
+    ["Status", cs.project_status],
   ];
   for (const [label, value] of fields) {
     if (value && value.trim()) rows.push([label, value]);
@@ -253,7 +254,7 @@ export default function CaseStudyOverlay({
             )}
 
             <div className="grid grid-cols-[minmax(0,1fr)] gap-5 pb-16 pt-5 sm:gap-6 sm:pt-6">
-              <div className="panel grid gap-5 p-5 sm:p-8">
+              <div className="grid gap-5 py-2 sm:py-4">
                 {meta && <span className="kicker">{meta}</span>}
                 <h2 className="t-display max-w-[24ch]">
                   {cs.hero_headline || cs.title}

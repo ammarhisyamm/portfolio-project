@@ -241,7 +241,7 @@ function Cards({ cards, variant, layout, numbered }: { cards: CaseStudyCard[]; v
       const [lead, ...rest] = cards;
       return (
         <div className="grid gap-4 sm:grid-cols-[1.3fr_1fr]">
-          <div className="grid content-start gap-3 rounded-[18px] bg-panel p-6 sm:p-7">
+          <div className="grid content-start gap-3">
             <IconLabel card={lead} tone="panel" />
             <h3 className="t-title">{lead.title}</h3>
             <p className={BODY}>{lead.body}</p>
@@ -284,7 +284,7 @@ function Cards({ cards, variant, layout, numbered }: { cards: CaseStudyCard[]; v
                   <ArrowRight size={18} className="rotate-90 sm:rotate-0" />
                 </span>
               )}
-              <div className={`grid content-start gap-2 rounded-[18px] p-6 ${i === 0 ? "bg-panel" : "border border-dashed border-[#cfcfcf]"}`}>
+              <div className={`grid content-start gap-2 py-4 ${i > 0 ? `border-t ${RULE} sm:border-t-0 sm:border-l sm:pl-6` : ""}`}>
                 <IconLabel card={card} tone={i === 0 ? "panel" : "page"} />
                 <h3 className="text-[18px] font-medium leading-snug tracking-[-0.02em] text-ink">{card.title}</h3>
                 <p className={BODY}>{card.body}</p>
@@ -313,7 +313,7 @@ function Cards({ cards, variant, layout, numbered }: { cards: CaseStudyCard[]; v
       return (
         <ol className="grid gap-3">
           {cards.map((card, i) => (
-            <li key={card.title} className="grid gap-3 rounded-[16px] bg-panel p-5 sm:grid-cols-[1fr_1.1fr] sm:gap-6 sm:p-6">
+            <li key={card.title} className={`grid gap-3 border-t ${RULE} py-5 sm:grid-cols-[1fr_1.1fr] sm:gap-6 ${i === 0 ? "sm:border-t-0 sm:pt-0" : ""}`}>
               <div className="grid content-start gap-1.5">
                 <IconLabel card={card} tone="panel" text={`Measure ${pad(i)}`} />
                 <h3 className="text-[17px] font-medium leading-snug tracking-[-0.02em] text-ink">{card.title}</h3>
@@ -328,7 +328,7 @@ function Cards({ cards, variant, layout, numbered }: { cards: CaseStudyCard[]; v
       // A comparison table: what each option is good at, and where it falls short.
       const rows = cards.filter((c) => c.pros?.length || c.cons?.length);
       return (
-        <div className="rounded-[16px] bg-panel">
+        <div className={`border-y ${RULE}`}>
           {/* Phones get the same comparison stacked, so nothing hides behind a sideways scroll. */}
           <ul className="grid sm:hidden">
             {rows.map((card, i) => (
@@ -378,7 +378,7 @@ function Cards({ cards, variant, layout, numbered }: { cards: CaseStudyCard[]; v
     case "spectrum": {
       // A qualitative dot plot: each option on one effort axis.
       return (
-        <div className="grid gap-5 rounded-[18px] bg-panel p-5 sm:p-7">
+        <div className="grid gap-5">
           <div className="flex justify-between gap-4 text-[11.5px] leading-snug text-muted sm:pl-[170px]">
             <span>Effortless, little context</span>
             <span className="text-right">Structured, more effort</span>
@@ -424,7 +424,7 @@ function Cards({ cards, variant, layout, numbered }: { cards: CaseStudyCard[]; v
     return (
       <div className={`grid gap-3 ${cards.length > 1 ? "sm:grid-cols-2" : ""}`}>
         {cards.map((card, i, all) => (
-          <figure key={card.title} className={`grid content-start gap-4 rounded-[18px] bg-panel p-6 ${lastSpans(all, i, 1) ? "sm:col-span-2" : ""}`}>
+          <figure key={card.title} className={`grid content-start gap-3 border-t ${RULE} py-5 ${lastSpans(all, i, 1) ? "sm:col-span-2" : ""}`}>
             <blockquote className="text-[17px] leading-[1.45] tracking-[-0.02em] text-ink">“{card.title}”</blockquote>
             {card.label && <figcaption className={LABEL}>{card.label}</figcaption>}
             {card.body && <p className={`border-t ${RULE} pt-3 text-[13px] leading-[1.6] text-sub`}>{card.body}</p>}
@@ -451,7 +451,7 @@ function Cards({ cards, variant, layout, numbered }: { cards: CaseStudyCard[]; v
   return (
     <div className={`grid gap-3 ${cards.some(card => card.logo) ? "lg:grid-cols-3" : cards.length > 2 ? "sm:grid-cols-2" : ""}`}>
       {cards.map((card, i, all) => (
-        <div key={card.title} className={`grid min-w-0 content-start gap-2 rounded-[16px] border border-line bg-panel p-4 sm:p-5 ${!cards.some(item => item.logo) && lastSpans(all, i) ? "sm:col-span-2" : ""}`}>
+        <div key={card.title} className={`grid min-w-0 content-start gap-2 ${cards.some(item => item.logo || item.image) ? "rounded-[16px] border border-line bg-panel p-4 sm:p-5" : `border-t ${RULE} py-5`} ${!cards.some(item => item.logo || item.image) && lastSpans(all, i) ? "sm:col-span-2" : ""}`}>
           {card.image && (
             <div className="relative -mx-2 -mt-2 mb-2 aspect-[16/10] overflow-hidden rounded-[12px] border border-line bg-bg">
               <img src={card.image} alt={`${card.label || card.title} screenshot`} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover object-top" />
@@ -553,7 +553,7 @@ export default function CaseStudyBlockView({ block, chapter: chapterNo }: { bloc
         return section(
           <>
             {header("Overview")}
-            <dl className="grid rounded-[18px] bg-panel px-5 sm:px-7">
+            <dl className={`grid border-y ${RULE}`}>
               {all.map((card, i) => (
                 <div key={card.title} className={`grid gap-1.5 py-5 sm:grid-cols-[150px_1fr] sm:gap-6 ${i > 0 ? `border-t ${RULE}` : ""}`}>
                   <dt className="sm:pt-0.5"><IconLabel card={card} tone="panel" /></dt>
@@ -600,9 +600,9 @@ export default function CaseStudyBlockView({ block, chapter: chapterNo }: { bloc
         return section(
           <>
             {header("Overview")}
-            <div className="grid overflow-hidden rounded-[18px] bg-[#e4e4e4] sm:grid-cols-2" style={{ gap: 1 }}>
+            <div className="grid gap-y-5 sm:grid-cols-2 sm:gap-x-10">
               {all.map((card) => (
-                <div key={card.title} className="grid content-start gap-2 bg-panel p-6">
+                <div key={card.title} className="grid content-start gap-2 py-2">
                   <span className="mb-1"><IconLabel card={card} tone="panel" /></span>
                   <h3 className="text-[18px] font-normal leading-snug tracking-[-0.03em] text-ink">{card.title}</h3>
                   <p className="text-[13.5px] leading-[1.6] text-sub">{card.body}</p>
@@ -856,7 +856,7 @@ export default function CaseStudyBlockView({ block, chapter: chapterNo }: { bloc
           {(block.metrics?.length ?? 0) > 0 && (
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {block.metrics.map((m, i) => (
-                <div key={i} className="rounded-[18px] bg-panel p-6">
+                <div key={i} className={`border-t ${RULE} py-5`}>
                   <div className="text-[clamp(28px,3.6vw,44px)] font-normal leading-none tracking-[-0.05em] text-ink">{m.value}</div>
                   <div className="mt-3 text-[13px] leading-[1.5] text-sub">{m.label}</div>
                   {m.bar && (
@@ -998,7 +998,7 @@ export default function CaseStudyBlockView({ block, chapter: chapterNo }: { bloc
       const fallback = block.block_type.replaceAll("_", " ");
       if (block.block_type === "REFLECTION" && variant === "note") {
         return (
-          <section className="grid gap-4 rounded-[20px] border border-[#e4e4e4] bg-panel p-6 sm:p-8">
+          <section className={`grid gap-4 border-t ${RULE} py-6 sm:py-8`}>
             {kicker(fallback)}
             <p className="t-statement max-w-[620px]">{block.heading}</p>
             {block.description && <p className="max-w-[600px] text-[14.5px] leading-[1.7] text-sub">{block.description}</p>}

@@ -73,18 +73,6 @@ export default function FeaturedWork({
                 {p.short_description}
               </p>
             )}
-            {(p.role || p.platform || p.project_status) && (
-              <dl className="grid grid-cols-3 gap-4 border-t border-[#ececec] pt-4">
-                {([["Role", p.role?.split(/,| and /)[0]], ["Platform", p.platform], ["Status", p.project_status]] as const)
-                  .filter(([, v]) => v)
-                  .map(([k, v]) => (
-                    <div key={k} className="grid content-start gap-1">
-                      <dt className="text-[12px] text-muted">{k}</dt>
-                      <dd className="text-[13.5px] leading-snug text-ink">{v}</dd>
-                    </div>
-                  ))}
-              </dl>
-            )}
             <button type="button" onClick={() => onOpen(p)} className="link-arrow -mt-1 w-fit text-ink group-hover:bg-[length:100%_1px]">
               Read case study
               <ArrowRight size={14} aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-0.5" />
