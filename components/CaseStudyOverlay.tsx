@@ -2,7 +2,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowLeft, ArrowRight, ArrowUpRight, ChevronDown, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, X } from "lucide-react";
 import Link from "next/link";
 import type { CaseStudy } from "@/lib/content";
 import { caseStudyCover } from "@/lib/case-study-visuals";
@@ -297,20 +297,7 @@ export default function CaseStudyOverlay({
                 <div className="mt-5 grid grid-cols-[minmax(0,1fr)] gap-10 sm:mt-8 sm:gap-14">
                   {blocks.map((b, i) => (
                     <div key={`${cs.slug}-${short}-${i}`} id={`cs-block-${i}`} className="min-w-0 border-t border-line pt-6 sm:pt-8">
-                      {b.block_type === "FLOW_PLAYER" ? (
-                        <details className="case-flow group rounded-2xl border border-line bg-panel">
-                          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 focus-visible:outline-2 focus-visible:outline-offset-2 sm:p-5">
-                            <span>
-                              <span className="kicker">{b.eyebrow.replace(/^\d{2}\s*·\s*/, "") || "How it works"}</span>
-                              {b.heading && <span className="t-h3 mt-1 block">{b.heading}</span>}
-                            </span>
-                            <ChevronDown size={18} aria-hidden="true" className="shrink-0 transition-transform group-open:rotate-180 motion-reduce:transition-none" />
-                          </summary>
-                          <div className="border-t border-line p-4 sm:p-5">
-                            <CaseStudyBlockView block={b} chapter={chapterNo.get(i)} hideHeading />
-                          </div>
-                        </details>
-                      ) : <CaseStudyBlockView block={b} chapter={chapterNo.get(i)} />}
+                      <CaseStudyBlockView block={b} chapter={chapterNo.get(i)} />
                     </div>
                   ))}
                 </div>

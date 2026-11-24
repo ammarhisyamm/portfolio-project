@@ -21,7 +21,6 @@ type HeroProps = {
   cvUrl?: string;
 };
 
-const LOGO_SHADOW = "inset 0 0 0 2px rgba(255,255,255,0.9), 0 14px 32px -14px rgba(22,22,22,0.25)";
 
 export default function Hero({ name, title, headline, intro, available, socials, trust, profilePhoto, cvUrl }: HeroProps) {
   const ref = useRef<HTMLElement>(null);
@@ -68,12 +67,13 @@ export default function Hero({ name, title, headline, intro, available, socials,
         <div data-hero-fade className="flex items-center gap-4">
           <div
             aria-hidden="true"
-            className="grid size-[68px] shrink-0 place-items-center overflow-hidden rounded-[22px] bg-bg ring-1 ring-black/10 sm:size-[84px]"
-            style={{ boxShadow: LOGO_SHADOW }}
+            className="grid size-[68px] shrink-0 place-items-center rounded-full bg-panel p-[2px] ring-1 ring-black/10 sm:size-[84px]"
           >
             {profilePhoto ? (
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img src={profilePhoto} alt="" className="h-full w-full object-cover object-[center_40%]" fetchPriority="high" />
+              <span className="block size-full overflow-hidden rounded-full">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={profilePhoto} alt="" className="size-full scale-[1.36] object-cover" fetchPriority="high" />
+              </span>
             ) : (
               <span className="text-[20px] font-medium tracking-tight text-ink">H</span>
             )}

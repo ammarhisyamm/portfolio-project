@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { ArrowRight, ArrowUpRight, Check } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Check, ChevronDown } from "lucide-react";
 import type { CaseStudyBlock, CaseStudyCard } from "@/lib/content";
 import { cardIcon } from "@/lib/case-study-icons";
 import Media from "./Media";
@@ -490,7 +490,7 @@ function ScreenTag({ children }: { children: ReactNode }) {
   return <span className="w-fit rounded-full border border-[#dcdcdc] bg-panel px-2.5 py-1 text-[11px] uppercase tracking-[0.06em] text-sub">{children}</span>;
 }
 
-export default function CaseStudyBlockView({ block, chapter: chapterNo, hideHeading = false }: { block: CaseStudyBlock; chapter?: string; hideHeading?: boolean }) {
+export default function CaseStudyBlockView({ block, chapter: chapterNo }: { block: CaseStudyBlock; chapter?: string }) {
   if (!block.visible || !hasContent(block)) return null;
   const medias = mediaList(block);
   const variant = block.variant;
@@ -520,8 +520,8 @@ export default function CaseStudyBlockView({ block, chapter: chapterNo, hideHead
 
   const header = (fallback: string) => (
     <div className="grid gap-3">
-      {!hideHeading && kicker(fallback)}
-      {!hideHeading && block.heading && <h2 className="t-title max-w-[33ch]">{block.heading}</h2>}
+      {kicker(fallback)}
+      {block.heading && <h2 className="t-title max-w-[33ch]">{block.heading}</h2>}
       {block.description && <p className="t-lede">{block.description}</p>}
       {block.supporting_text && (
         <p className="max-w-[560px] border-l-2 border-[#dcdcdc] pl-4 text-[13.5px] leading-[1.65] text-sub">{block.supporting_text}</p>
@@ -738,20 +738,37 @@ export default function CaseStudyBlockView({ block, chapter: chapterNo, hideHead
           <>
             {header("Walkthrough")}
             <ol className="grid gap-10">
-              {steps.map((step, i) => (
-                <li key={step.image} className="grid gap-4">
-                  <div className="grid gap-1.5 sm:grid-cols-[48px_1fr] sm:gap-4">
-                    <span className="text-[13px] tabular-nums text-muted">{pad(i)}</span>
-                    <div className="grid gap-1.5">
-                      <h3 className="text-[18px] font-medium leading-snug tracking-[-0.02em] text-ink">{step.title}</h3>
-                      {step.description && <p className={`${BODY} max-w-[560px]`}>{step.description}</p>}
-                    </div>
-                  </div>
-                  <DeviceFrame kind={step.frame ?? frame}>
-                    <img src={step.image} alt={step.alt || step.title} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover object-top" />
-                  </DeviceFrame>
-                </li>
-              ))}
+              {steps.map((step, i) => {
+                const preview = (
+                  <>
+                    {step.description && <p className={`${BODY} max-w-[560px]`}>{step.description}</p>}
+                    <DeviceFrame kind={step.frame ?? frame}>
+                      <img src={step.image} alt={step.alt || step.title} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover object-top" />
+                    </DeviceFrame>
+                  </>
+                );
+                const number = <span className="text-[13px] tabular-nums text-muted">{pad(i)}</span>;
+
+                return (
+                  <li key={step.image} className="grid gap-4">
+                    {step.collapsed ? (
+                      <details className="case-flow group rounded-2xl border border-line bg-panel">
+                        <summary className="flex cursor-pointer list-none items-center gap-3 p-4 focus-visible:outline-2 focus-visible:outline-offset-2 sm:p-5">
+                          {number}
+                          <span className="t-h3 flex-1">{step.title}</span>
+                          <ChevronDown size={18} aria-hidden="true" className="shrink-0 transition-transform group-open:rotate-180 motion-reduce:transition-none" />
+                        </summary>
+                        <div className="grid gap-4 border-t border-line p-4 sm:p-5">{preview}</div>
+                      </details>
+                    ) : (
+                      <>
+                        <h3 className="t-h3 flex items-baseline gap-3">{number}{step.title}</h3>
+                        {preview}
+                      </>
+                    )}
+                  </li>
+                );
+              })}
             </ol>
             {captionText}
           </>

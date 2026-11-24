@@ -24,6 +24,18 @@ export default async function AboutUsPage() {
   const githubUrl = socials.items.find((item) => item.type === "github")?.href ?? "";
   const username = githubUrl.match(/github\.com\/([^/?#]+)/i)?.[1] ?? "ammarhisyamm";
 
+  const industryLabels: Record<string, string> = {
+    Enterprise: "Internal tools",
+    Fintech: "Financial services",
+  };
+  // These sectors appear in the Website, Dashboard and Mobile exploration collections.
+  const exploredSectors = [
+    "Logistics", "Travel", "Real estate", "Healthcare", "Food & beverage",
+    "Retail", "Sports", "Events", "Gaming", "Media", "Recruitment",
+    "Fundraising", "Home services", "Creative services",
+  ];
+  const sectors = [...new Set([...about.industries, ...exploredSectors])];
+
   return (
     <div className="page-stack grid pb-16 pt-3">
       <section className="panel p-5 sm:p-8">
@@ -83,21 +95,19 @@ export default async function AboutUsPage() {
       <section className="panel p-5 sm:p-8" aria-labelledby="industries-title">
         <div>
           <h2 id="industries-title" className="t-title">Products and sectors</h2>
-          <p className="t-lede mt-2">The kinds of products and contexts I&apos;ve worked in.</p>
+          <p className="t-lede mt-2">Areas I’ve designed for in projects and explorations.</p>
         </div>
-        {[
-          { title: "Product contexts", items: [{ source: "Enterprise", label: "Business and internal tools" }, { source: "SaaS", label: "SaaS" }, { source: "AI products", label: "AI products" }, { source: "Marketplaces", label: "Marketplaces" }] },
-          { title: "Sectors", items: [{ source: "Fintech", label: "Financial services" }, { source: "Education", label: "Education" }, { source: "Communication", label: "Communication" }, { source: "Lifestyle", label: "Lifestyle" }] },
-        ].map((group) => {
-          const items = group.items.filter((item) => about.industries.includes(item.source));
-          return items.length ? <div key={group.title} className="mt-6 border-t border-line pt-5">
-            <h3 className="kicker">{group.title}</h3>
-            <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">{items.map(({ source, label }) => {
-              const Icon = industryMeta[source.toLowerCase()] ?? Sparkles;
-              return <span key={source} className="about-industry-chip"><Icon size={15} strokeWidth={1.8} aria-hidden="true" />{label}</span>;
-            })}</div>
-          </div> : null;
-        })}
+        <ul className="mt-6 flex flex-wrap gap-2.5">
+          {sectors.map((sector) => {
+            const Icon = industryMeta[sector.toLowerCase()] ?? Sparkles;
+            return (
+              <li key={sector} className="about-industry-chip">
+                <Icon size={15} strokeWidth={1.8} aria-hidden="true" />
+                {industryLabels[sector] ?? sector}
+              </li>
+            );
+          })}
+        </ul>
       </section>
 
       <section className="panel p-5 sm:p-8" aria-labelledby="tools-title">
