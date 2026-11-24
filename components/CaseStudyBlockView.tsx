@@ -490,7 +490,7 @@ function ScreenTag({ children }: { children: ReactNode }) {
   return <span className="w-fit rounded-full border border-[#dcdcdc] bg-panel px-2.5 py-1 text-[11px] uppercase tracking-[0.06em] text-sub">{children}</span>;
 }
 
-export default function CaseStudyBlockView({ block, chapter: chapterNo }: { block: CaseStudyBlock; chapter?: string }) {
+export default function CaseStudyBlockView({ block, chapter: chapterNo, hideHeading = false }: { block: CaseStudyBlock; chapter?: string; hideHeading?: boolean }) {
   if (!block.visible || !hasContent(block)) return null;
   const medias = mediaList(block);
   const variant = block.variant;
@@ -520,8 +520,8 @@ export default function CaseStudyBlockView({ block, chapter: chapterNo }: { bloc
 
   const header = (fallback: string) => (
     <div className="grid gap-3">
-      {kicker(fallback)}
-      {block.heading && <h2 className="t-title max-w-[33ch]">{block.heading}</h2>}
+      {!hideHeading && kicker(fallback)}
+      {!hideHeading && block.heading && <h2 className="t-title max-w-[33ch]">{block.heading}</h2>}
       {block.description && <p className="t-lede">{block.description}</p>}
       {block.supporting_text && (
         <p className="max-w-[560px] border-l-2 border-[#dcdcdc] pl-4 text-[13.5px] leading-[1.65] text-sub">{block.supporting_text}</p>

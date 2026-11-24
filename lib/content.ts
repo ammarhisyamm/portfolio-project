@@ -663,8 +663,8 @@ export const DEFAULTS: SiteContent = {
   hero: {
     name: "Hisyam",
     title: "Product Designer",
-    headline: "I design digital products that make everyday things feel a little easier.",
-    intro: "I'm Hisyam, a product designer in Jakarta. I listen to the people who will use a product, turn what I learn into clear flows and interfaces, and stay close to the engineers until it ships. I'm currently at Serba Mulia Group, and I build products of my own on the side.",
+    headline: "I design tools that make complex work easier.",
+    intro: "I’m Hisyam, a product designer in Jakarta. At Serba Mulia Group, I turn messy workflows into clear interfaces and work with engineers to ship them. I also build products of my own, from a food diary to a wedding planner.",
     available: true,
   },
   about: {

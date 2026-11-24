@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { INTRO_EXPLORATIONS, type IntroExploration } from "@/lib/intro-explorations";
-import { INTRO_KEY } from "@/lib/intro";
+import { usePathname } from "next/navigation";
+import { INTRO_EXPLORATIONS } from "@/lib/intro-explorations";
+import { INTRO_KEY, shouldPlayIntro } from "@/lib/intro";
 
 const DURATION = 1500;
 const LINES = ["Gathering the explorations", "A few ideas, in motion", "Opening the studio"];
@@ -14,33 +15,44 @@ const LINES = ["Gathering the explorations", "A few ideas, in motion", "Opening 
  * run (seen this session, another page, reduced motion, or a museum visit), and CSS hides it
  * on its own after a few seconds if scripts never run.
  */
-export default function IntroLoader({ images = INTRO_EXPLORATIONS }: { images?: IntroExploration[] }) {
+export default function IntroLoader() {
+  const pathname = usePathname();
   const [phase, setPhase] = useState<"run" | "leave" | "done">("run");
   const [count, setCount] = useState(0);
   // Covers mount only once the intro is really playing, so other visits never fetch them.
   const [active, setActive] = useState(false);
-  const leaving = useRef(false);
+  const completed = useRef(false);
 
   useEffect(() => {
-    if (document.documentElement.getAttribute("data-intro") !== "play") {
+    const root = document.documentElement;
+    if (completed.current || !shouldPlayIntro()) {
+      root.removeAttribute("data-intro");
       setPhase("done");
       return;
     }
+    let leaving = false;
+    setCount(0);
+    setPhase("run");
     setActive(true);
+    root.setAttribute("data-intro", "play");
     let frame = 0;
     let timer = 0;
     const start = performance.now();
     const leave = () => {
-      if (leaving.current) return;
-      leaving.current = true;
+      if (leaving) return;
+      leaving = true;
+      completed.current = true;
+      window.clearTimeout(timer);
+      root.setAttribute("data-intro", "leaving");
       cancelAnimationFrame(frame);
       setCount(100);
       setPhase("leave");
       try { sessionStorage.setItem(INTRO_KEY, "1"); } catch {}
       timer = window.setTimeout(() => {
         setPhase("done");
-        document.documentElement.removeAttribute("data-intro");
-      }, 750);
+        root.removeAttribute("data-intro");
+        window.dispatchEvent(new Event("portfolio:intro-complete"));
+      }, 900);
     };
     const tick = (now: number) => {
       const t = Math.min(1, (now - start) / DURATION);
@@ -56,10 +68,12 @@ export default function IntroLoader({ images = INTRO_EXPLORATIONS }: { images?: 
     return () => {
       cancelAnimationFrame(frame);
       window.clearTimeout(timer);
+      root.removeAttribute("data-intro");
+      setActive(false);
       window.removeEventListener("pointerdown", skip);
       window.removeEventListener("keydown", skip);
     };
-  }, []);
+  }, [pathname]);
 
   if (phase === "done") return null;
   const line = LINES[Math.min(LINES.length - 1, Math.floor(count / 34))];
@@ -67,14 +81,9 @@ export default function IntroLoader({ images = INTRO_EXPLORATIONS }: { images?: 
   return (
     <div className={`intro${phase === "leave" ? " is-leaving" : ""}`} aria-hidden="true">
       <div className="intro-deck">
-        {active && images.map((cover, i) => (
+        {active && INTRO_EXPLORATIONS.map((cover, i) => (
           // eslint-disable-next-line @next/next/no-img-element
-          <img key={`${cover.src}-${i}`} src={cover.src} alt="" className="intro-card" style={{ "--i": i, objectPosition: cover.position || "center" } as CSSProperties} decoding="async" onError={event => {
-            const fallback = INTRO_EXPLORATIONS[i % INTRO_EXPLORATIONS.length].src;
-            if (event.currentTarget.dataset.fallback) return;
-            event.currentTarget.dataset.fallback = "true";
-            event.currentTarget.src = fallback;
-          }} />
+          <img key={cover.src} src={cover.src} alt="" className="intro-card" style={{ "--i": i } as CSSProperties} decoding="async" />
         ))}
       </div>
       <div className="intro-meta">

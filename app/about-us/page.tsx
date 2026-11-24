@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Sparkles } from "lucide-react";
 
 import GitHubActivity from "@/components/GitHubActivity";
@@ -43,14 +42,6 @@ export default async function AboutUsPage() {
             ))}
           </dl>
         )}
-        <div className="mt-7 flex flex-wrap gap-3">
-          <Link href="/contact" className="btn btn-primary">Contact Hisyam</Link>
-          {about.cvUrl && (
-            <a className="btn btn-secondary" href={about.cvUrl} target="_blank" rel="noreferrer">
-              {about.cvLabel || "Download CV (PDF)"}
-            </a>
-          )}
-        </div>
       </section>
 
       <section className="panel p-5 sm:p-8" aria-labelledby="approach-title">

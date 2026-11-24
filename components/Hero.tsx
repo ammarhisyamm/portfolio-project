@@ -42,9 +42,10 @@ export default function Hero({ name, title, headline, intro, available, socials,
         );
       }, ref);
     };
-    reveal();
+    if (!document.documentElement.hasAttribute("data-intro")) reveal();
     window.addEventListener("studio:entered", reveal);
-    return () => { window.removeEventListener("studio:entered", reveal); ctx?.revert(); };
+    window.addEventListener("portfolio:intro-complete", reveal);
+    return () => { window.removeEventListener("studio:entered", reveal); window.removeEventListener("portfolio:intro-complete", reveal); ctx?.revert(); };
   }, []);
 
   return (
@@ -67,12 +68,12 @@ export default function Hero({ name, title, headline, intro, available, socials,
         <div data-hero-fade className="flex items-center gap-4">
           <div
             aria-hidden="true"
-            className="grid h-12 w-12 place-items-center overflow-hidden rounded-[16px] bg-bg"
+            className="grid size-[68px] shrink-0 place-items-center overflow-hidden rounded-[22px] bg-bg ring-1 ring-black/10 sm:size-[84px]"
             style={{ boxShadow: LOGO_SHADOW }}
           >
             {profilePhoto ? (
               /* eslint-disable-next-line @next/next/no-img-element */
-              <img src={profilePhoto} alt="" className="h-full w-full object-cover" />
+              <img src={profilePhoto} alt="" className="h-full w-full object-cover object-[center_40%]" fetchPriority="high" />
             ) : (
               <span className="text-[20px] font-medium tracking-tight text-ink">H</span>
             )}
@@ -85,7 +86,7 @@ export default function Hero({ name, title, headline, intro, available, socials,
 
         <h2
           aria-label={headline}
-          className="t-display"
+          className="t-display max-w-[19ch]"
         >
           {splitWords(headline).map((word, i) => (
             <span key={i} data-hero-word className="inline-block will-change-transform">
