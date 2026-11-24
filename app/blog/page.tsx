@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import Reveal from "@/components/Reveal";
+import BlogBookshelf from "@/components/BlogBookshelf";
 import { formatPostDate, getBlogSummaries, DEFAULT_SUBSTACK } from "@/lib/blog";
 
 export const metadata: Metadata = {
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
 
 export default async function BlogPage() {
   const posts = await getBlogSummaries();
-  const [lead, ...rest] = posts;
+  const [lead] = posts;
   return (
     <div className="grid gap-4 pb-16 pt-3 sm:gap-5">
       <Reveal className="panel grid gap-5 p-5 sm:p-8">
@@ -51,23 +52,13 @@ export default async function BlogPage() {
         </Reveal>
       )}
 
-      {rest.length > 0 && (
-        <Reveal className="panel p-5 sm:p-8">
-          <h2 className="t-title">All articles</h2>
-          <ul className="mt-6 border-t border-line">
-            {rest.map((post) => (
-              <li key={post.slug} className="border-b border-line">
-                <Link href={`/blog/${post.slug}`} className="group grid gap-1 py-4 no-underline sm:grid-cols-[minmax(0,1fr)_auto] sm:items-baseline sm:gap-6">
-                  <span>
-                    <span className="block text-[15px] font-medium group-hover:text-sub">{post.title}</span>
-                    {post.subtitle && <span className="mt-1 block text-sm leading-relaxed text-sub">{post.subtitle}</span>}
-                  </span>
-                  <span className="text-[11px] uppercase text-muted sm:text-right">{formatPostDate(post.date)}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </Reveal>
+      {posts.length > 0 && (
+        <section className="panel min-w-0 p-5 sm:p-8" aria-labelledby="all-articles">
+          <h2 id="all-articles" className="t-title">All articles</h2>
+          <BlogBookshelf articles={posts.map(({ slug, title, subtitle, date, readingMinutes }) => ({
+            slug, title, subtitle, date: formatPostDate(date), readingMinutes,
+          }))} />
+        </section>
       )}
     </div>
   );
