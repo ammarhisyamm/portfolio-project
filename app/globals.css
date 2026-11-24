@@ -948,10 +948,6 @@ html.lenis body {
 .process-chip-tool { background: #fff; border-style: dashed; color: #5f5f5f; }
 
 /* Blog */
-.blog-lead img { transition: transform .5s cubic-bezier(.23, 1, .32, 1); }
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .blog-lead:hover img { transform: scale(1.02); }
-}
 .blog-prose { --prose-ink: #161616; --prose-sub: #3d3d3d; --prose-line: #ececec; --prose-link: #161616; max-width: 680px; color: var(--prose-sub); font-size: 16px; line-height: 1.75; overflow-wrap: anywhere; }
 .blog-prose > * + * { margin-top: 1.1em; }
 .blog-prose h1, .blog-prose h2, .blog-prose h3, .blog-prose h4 { color: var(--prose-ink); font-weight: 500; letter-spacing: -0.03em; line-height: 1.25; margin-top: 1.8em; }
@@ -1184,10 +1180,6 @@ html[data-intro]:has(.intro), html[data-intro]:has(.intro) body { overflow: hidd
   justify-content: center;
   gap: clamp(3px, 1.2cqw, 9px);
   padding: clamp(12px, 4cqw, 28px) clamp(4px, 2cqw, 14px);
-  border: 1px solid #ebe8e1;
-  border-radius: 14px;
-  background: #f8f7f4;
-  perspective: 850px;
 }
 .blog-book-slot { flex: 0 0 var(--spine-width); min-width: 0; }
 .blog-book-slot[data-active="true"] { flex-basis: var(--cover-width); }
@@ -1196,6 +1188,7 @@ html[data-intro]:has(.intro), html[data-intro]:has(.intro) body { overflow: hidd
   display: block;
   width: 100%;
   height: clamp(155px, 53cqw, 244px);
+  perspective: 740px;
   text-align: left;
   border-radius: 3px 6px 6px 3px;
 }
@@ -1228,23 +1221,30 @@ html[data-intro]:has(.intro), html[data-intro]:has(.intro) body { overflow: hidd
   padding-left: clamp(13px, 3.4cqw, 25px);
   opacity: 0;
   pointer-events: none;
-  transform: rotateY(-90deg);
+  transform: rotateY(-86deg);
   transform-origin: left center;
   backface-visibility: hidden;
 }
-.blog-book-title { font-family: Georgia, serif; font-size: clamp(14px, 4cqw, 25px); line-height: 1.12; letter-spacing: -.025em; text-wrap: pretty; overflow-wrap: anywhere; }
+.blog-book-title { font-family: Georgia, serif; font-size: clamp(12px, 2.8cqw, 18px); line-height: 1.22; letter-spacing: -.025em; text-wrap: pretty; overflow-wrap: anywhere; }
 .blog-book-author { font-size: clamp(8px, 1.6cqw, 10px); line-height: 1.2; }
 .blog-book-slot[data-active="true"] .blog-book-spine { opacity: 0; }
 .blog-book-slot[data-active="true"] .blog-book-cover { opacity: 1; transform: rotateY(-5deg); }
 .blog-book-slot:nth-child(even) .blog-book-title { font-family: inherit; font-weight: 600; }
-.blog-shelf-caption { display: grid; gap: .45rem; padding: 1rem 0 0; }
+.blog-shelf-caption { display: grid; justify-items: center; gap: .35rem; max-width: 46ch; margin-inline: auto; padding-top: .65rem; }
+.blog-shelf-caption .t-h3 { font-size: 14px; }
+.blog-shelf-caption .t-lede { font-size: 13px; }
+.blog-shelf-caption .link-arrow { font-size: 13px; }
 .blog-shelf-caption .link-arrow { margin-top: .35rem; }
 
 @media (prefers-reduced-motion: no-preference) {
-  .blog-book-cover {
-    transition: transform 240ms cubic-bezier(.23, 1, .32, 1), opacity 150ms ease;
+  .blog-book-slot {
+    /* A small, bounded row reflows so the next book makes room for the cover. */
+    transition: flex-basis 360ms cubic-bezier(.23, 1, .32, 1);
   }
-  .blog-book-slot:not([data-active="true"]) .blog-book-cover { transition: none; }
+  .blog-book-spine { transition: opacity 220ms ease; }
+  .blog-book-cover {
+    transition: transform 360ms cubic-bezier(.23, 1, .32, 1), opacity 240ms ease;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .blog-book-slot[data-active="true"] .blog-book-cover { transform: none; }
