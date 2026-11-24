@@ -197,12 +197,11 @@ function Cards({ cards, variant, layout, numbered }: { cards: CaseStudyCard[]; v
 
     case "sequence":
       return (
-        <ol className="grid gap-5 sm:grid-cols-3 sm:gap-0">
+        <ol className="grid gap-5 sm:grid-cols-3 sm:gap-6">
           {cards.map((card, i) => (
-            <li key={card.title} className={`relative grid content-start gap-2 sm:pr-8 ${i > 0 ? "sm:pl-6" : ""}`}>
+            <li key={card.title} className="grid content-start gap-2">
               <span className="flex items-center gap-3">
                 {cardIcon(card) ? <IconBadge card={card} /> : <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-ink text-[12px] tabular-nums text-ink">{i + 1}</span>}
-                {i < cards.length - 1 && <ArrowRight size={14} aria-hidden="true" className="hidden text-muted sm:block" />}
               </span>
               <span className={LABEL}>{[card.label, pad(i)].filter(Boolean).join(" ")}</span>
               <h3 className={H3}>{card.title}</h3>
@@ -733,42 +732,28 @@ export default function CaseStudyBlockView({ block, chapter: chapterNo }: { bloc
     case "EVOLUTION": {
       const steps = block.steps ?? [];
       if (!steps.length) return null;
-      if (variant === "static") {
+      if (variant === "accordion") {
         return section(
           <>
             {header("Walkthrough")}
-            <ol className="grid gap-10">
-              {steps.map((step, i) => {
-                const preview = (
-                  <>
-                    {step.description && <p className={`${BODY} max-w-[560px]`}>{step.description}</p>}
-                    <DeviceFrame kind={step.frame ?? frame}>
-                      <img src={step.image} alt={step.alt || step.title} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover object-top" />
-                    </DeviceFrame>
-                  </>
-                );
-                const number = <span className="text-[13px] tabular-nums text-muted">{pad(i)}</span>;
-
-                return (
-                  <li key={step.image} className="grid gap-4">
-                    {step.collapsed ? (
-                      <details className="case-flow group rounded-2xl border border-line bg-panel">
-                        <summary className="flex cursor-pointer list-none items-center gap-3 p-4 focus-visible:outline-2 focus-visible:outline-offset-2 sm:p-5">
-                          {number}
-                          <span className="t-h3 flex-1">{step.title}</span>
-                          <ChevronDown size={18} aria-hidden="true" className="shrink-0 transition-transform group-open:rotate-180 motion-reduce:transition-none" />
-                        </summary>
-                        <div className="grid gap-4 border-t border-line p-4 sm:p-5">{preview}</div>
-                      </details>
-                    ) : (
-                      <>
-                        <h3 className="t-h3 flex items-baseline gap-3">{number}{step.title}</h3>
-                        {preview}
-                      </>
-                    )}
-                  </li>
-                );
-              })}
+            <ol className="divide-y divide-line border-y border-line">
+              {steps.map((step, i) => (
+                <li key={step.image}>
+                  <details className="case-flow group">
+                    <summary className="flex cursor-pointer list-none items-center gap-3 py-4 focus-visible:outline-2 focus-visible:outline-offset-2">
+                      <span className="shrink-0 text-[13px] tabular-nums text-muted">{pad(i)}</span>
+                      <span className="t-h3 flex-1">{step.title}</span>
+                      <ChevronDown size={18} aria-hidden="true" className="shrink-0 text-muted transition-transform group-open:rotate-180 motion-reduce:transition-none" />
+                    </summary>
+                    <div className="grid gap-4 pb-5">
+                      {step.description && <p className={`${BODY} max-w-[560px]`}>{step.description}</p>}
+                      <DeviceFrame kind={step.frame ?? frame}>
+                        <img src={step.image} alt={step.alt || step.title} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover object-top" />
+                      </DeviceFrame>
+                    </div>
+                  </details>
+                </li>
+              ))}
             </ol>
             {captionText}
           </>

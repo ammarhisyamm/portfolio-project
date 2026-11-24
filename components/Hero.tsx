@@ -67,7 +67,7 @@ export default function Hero({ name, title, headline, intro, available, socials,
         <div data-hero-fade className="flex items-center gap-4">
           <div
             aria-hidden="true"
-            className="grid size-[68px] shrink-0 place-items-center rounded-full bg-panel p-[2px] ring-1 ring-black/10 sm:size-[84px]"
+            className="grid size-[46px] shrink-0 place-items-center rounded-full bg-panel p-[2px] ring-1 ring-black/10 sm:size-12"
           >
             {profilePhoto ? (
               <span className="block size-full overflow-hidden rounded-full">
@@ -79,8 +79,8 @@ export default function Hero({ name, title, headline, intro, available, socials,
             )}
           </div>
           <div>
-            <h1 className="text-[22px] font-medium tracking-[-0.04em] sm:text-[24px]">{name}</h1>
-            <p className="mt-0.5 text-[13px] text-sub">{title}</p>
+            <h1 className="text-[22px] font-medium leading-[26px] tracking-[-0.04em] sm:text-[24px] sm:leading-7">{name}</h1>
+            <p className="mt-0.5 text-[13px] leading-[18px] text-sub">{title}</p>
           </div>
         </div>
 

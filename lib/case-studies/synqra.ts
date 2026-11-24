@@ -113,10 +113,10 @@ export const synqra: CaseStudy = {
     }),
     block("FLOW_PLAYER", "07 · How it works", "Three steps, from notes to progress.", "Write the notes, check what the AI pulled out, then follow each item on the board.", {
       layout: "desktop",
-      variant: "static",
+      variant: "accordion",
       steps: [
         { title: "Start with a template", description: "Write the discussion and revision points straight into the dashboard, without switching to another tool.", image: `${P}/meeting-notes.webp`, alt: "Meeting editor with client feedback, approvals and follow-ups written in the notes" },
-        { title: "The system summarises review items", collapsed: true, description: "The AI turns the notes into structured items with an owner, priority and due date, and you check them before saving.", image: `${P}/ai-review.webp`, alt: "AI review with four extracted items grouped by assignee" },
+        { title: "The system summarises review items", description: "The AI turns the notes into structured items with an owner, priority and due date, and you check them before saving.", image: `${P}/ai-review.webp`, alt: "AI review with four extracted items grouped by assignee" },
         { title: "Assign a PIC and track progress", description: "Confirmed items land on one board, where the team follows them to done in real time.", image: `${P}/board.webp`, alt: "Board showing the newly created review items in Planning" },
       ],
     }),
