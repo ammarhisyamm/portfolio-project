@@ -783,7 +783,7 @@ const PORTFOLIO_CASE_STUDIES: CaseStudy[] = [
 ];
 
 /** Studies kept out of the portfolio for now, whatever the CMS says. */
-const HIDDEN_CASE_STUDIES = new Set(["selog", "jeam"]);
+const HIDDEN_CASE_STUDIES = new Set(["selog", "jeam", "pajak-mas", "pajakmas", "promas"]);
 
 function enrichPortfolioCaseStudies(caseStudies: CaseStudy[]) {
   caseStudies = caseStudies.filter((study) => !HIDDEN_CASE_STUDIES.has(study.slug));

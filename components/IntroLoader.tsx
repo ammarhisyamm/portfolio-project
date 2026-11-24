@@ -1,21 +1,20 @@
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { cardCover } from "@/lib/case-study-visuals";
+import { INTRO_EXPLORATIONS, type IntroExploration } from "@/lib/intro-explorations";
 import { INTRO_KEY } from "@/lib/intro";
 
 const DURATION = 1500;
-const DECK = ["jeam", "quriz", "nomory", "offstories", "synqra"];
-const LINES = ["Sorting the case studies", "Lining up the mockups", "Opening the studio"];
+const LINES = ["Gathering the explorations", "A few ideas, in motion", "Opening the studio"];
 
 /**
- * A short first-load moment: the five case study covers drop onto a stack while a counter
+ * A short first-load moment: website and mobile explorations drop onto a stack while a counter
  * runs to 100, then the stack lifts away and the page slides in from underneath. Any click
  * or key skips it. The head script in the layout hides it before paint when it should not
  * run (seen this session, another page, reduced motion, or a museum visit), and CSS hides it
  * on its own after a few seconds if scripts never run.
  */
-export default function IntroLoader() {
+export default function IntroLoader({ images = INTRO_EXPLORATIONS }: { images?: IntroExploration[] }) {
   const [phase, setPhase] = useState<"run" | "leave" | "done">("run");
   const [count, setCount] = useState(0);
   // Covers mount only once the intro is really playing, so other visits never fetch them.
@@ -68,13 +67,15 @@ export default function IntroLoader() {
   return (
     <div className={`intro${phase === "leave" ? " is-leaving" : ""}`} aria-hidden="true">
       <div className="intro-deck">
-        {active && DECK.map((slug, i) => {
-          const cover = cardCover(slug);
-          return cover ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img key={slug} src={cover.src} alt="" className="intro-card" style={{ "--i": i } as CSSProperties} decoding="async" />
-          ) : null;
-        })}
+        {active && images.map((cover, i) => (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img key={`${cover.src}-${i}`} src={cover.src} alt="" className="intro-card" style={{ "--i": i, objectPosition: cover.position || "center" } as CSSProperties} decoding="async" onError={event => {
+            const fallback = INTRO_EXPLORATIONS[i % INTRO_EXPLORATIONS.length].src;
+            if (event.currentTarget.dataset.fallback) return;
+            event.currentTarget.dataset.fallback = "true";
+            event.currentTarget.src = fallback;
+          }} />
+        ))}
       </div>
       <div className="intro-meta">
         <span className="intro-name">Hisyam Fakhrudin</span>

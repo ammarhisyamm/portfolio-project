@@ -5,8 +5,10 @@ import { AnimatePresence, motion } from "motion/react";
 import { ArrowLeft, ArrowRight, ArrowUpRight, X } from "lucide-react";
 import Link from "next/link";
 import type { CaseStudy } from "@/lib/content";
-import { cardCover, caseStudyCover } from "@/lib/case-study-visuals";
+import { caseStudyCover } from "@/lib/case-study-visuals";
 import Media from "./Media";
+import CaseStudyCover from "./CaseStudyCover";
+import { caseStudyPreview } from "@/lib/case-study-previews";
 import CaseStudyBlockView from "./CaseStudyBlockView";
 
 const SHORT_TYPES = new Set(["OVERVIEW", "PROBLEM_STATEMENT", "RESULT_SHOWCASE", "METRIC_HIGHLIGHT", "OUTCOME", "REFLECTION"]);
@@ -261,14 +263,9 @@ export default function CaseStudyOverlay({
                 )}
               </div>
 
-              {heroImage && (
+              {caseStudyPreview(cs.slug) ? <CaseStudyCover key={cs.slug} study={cs} /> : heroImage && (
                 <div className="aspect-[16/9] w-full overflow-hidden rounded-[18px] border border-line bg-bg sm:rounded-[24px]">
-                  <Media
-                    src={heroImage}
-                    poster={heroImage.endsWith(".mp4") ? cs.thumbnail : undefined}
-                    alt={cs.hero_image_alt || cs.hero_description || `Visual for ${cs.title}`}
-                    label={cs.title}
-                  />
+                  <Media src={heroImage} poster={heroImage.endsWith(".mp4") ? cs.thumbnail : undefined} alt={cs.hero_image_alt || cs.title} label={cs.title} />
                 </div>
               )}
 
@@ -309,17 +306,7 @@ export default function CaseStudyOverlay({
                   className="group mt-6 grid gap-4 border-t border-[#e4e4e4] pt-8 text-left"
                 >
                   <span className="kicker">Next case study</span>
-                  <span
-                    className="relative block aspect-[16/9] w-full overflow-hidden rounded-[16px] border-8 border-white bg-bg sm:rounded-[20px]"
-                    style={{ boxShadow: "0 1px 2px rgba(22,22,22,.04), 0 8px 24px -12px rgba(22,22,22,.06)" }}
-                  >
-                    <Media
-                      src={cardCover(next.slug)?.src || next.thumbnail || caseStudyCover(next.slug)}
-                      alt={cardCover(next.slug)?.alt || next.thumbnail_alt || `Visual for ${next.title}`}
-                      label={next.title}
-                      imgClassName="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02]"
-                    />
-                  </span>
+                  <CaseStudyCover key={next.slug} study={next} still />
                   <span className="flex items-baseline justify-between gap-4">
                     <span className="t-title">{next.title}</span>
                     <ArrowRight size={20} aria-hidden="true" className="shrink-0 self-center text-ink transition-transform duration-300 group-hover:translate-x-1" />

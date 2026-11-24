@@ -9,6 +9,7 @@ import PageTransition from "@/components/PageTransition";
 import MobileTabBar from "@/components/MobileTabBar";
 import DesignLabLauncher from "@/components/DesignLabLauncher";
 import IntroLoader from "@/components/IntroLoader";
+import { introExplorations } from "@/lib/intro-explorations";
 import { INTRO_KEY } from "@/lib/intro";
 import { getContent } from "@/lib/content";
 import { SITE_URL } from "@/lib/site";
@@ -62,7 +63,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link rel="icon" href={content.branding.logo || FALLBACK_ICON} />
       </head>
       <body className={`${manrope.variable} font-sans`}>
-        <IntroLoader />
+        <IntroLoader images={introExplorations(content.exploration, content.homeCategories)} />
         <Providers>
           <div data-portfolio-shell>
           <div className="mx-auto w-full max-w-[720px] px-4 sm:px-6">
