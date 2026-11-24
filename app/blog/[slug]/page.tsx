@@ -43,22 +43,22 @@ export default async function BlogPostPage({ params }: Props) {
     ...(post.url ? { sameAs: post.url } : {}),
   };
   return (
-    <article lang={/menerima-diri|menikmati|hal-kecil|mengapresiasi|mengelola-ego/i.test(post.slug) ? "id" : "en"} className="grid gap-3 pb-16 pt-3 md:gap-4">
+    <article lang={/meminta-maaf|menerima-diri|menikmati|hal-kecil|mengapresiasi|mengelola-ego/i.test(post.slug) ? "id" : "en"} className="grid gap-4 pb-16 pt-3 sm:gap-5">
       <ReadingProgress />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
-      <header className="panel grid gap-5 p-5 sm:p-8 lg:p-10">
+      <header className="panel grid gap-5 p-5 sm:p-8">
         <Link href="/blog" className="inline-flex w-fit items-center gap-2 text-[13px] text-sub no-underline hover:text-ink">
           <ArrowLeft size={14} aria-hidden="true" /> All articles
         </Link>
         <span className="text-[11px] uppercase text-muted">{formatPostDate(post.date)}</span>
-        <h1 className="text-[clamp(28px,4.4vw,40px)] font-normal leading-[1.06] tracking-[-0.05em]">{post.title}</h1>
+        <h1 className="t-display text-pretty">{post.title}</h1>
         {post.subtitle && <p className="max-w-[600px] text-[17px] leading-relaxed text-sub">{post.subtitle}</p>}
         {post.cover && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={post.cover} alt="" className="mt-2 w-full rounded-[12px] object-cover" fetchPriority="high" />
+          <img src={post.cover} alt="" className="mt-2 aspect-[3/2] w-full rounded-xl object-cover" fetchPriority="high" />
         )}
       </header>
-      <div className="panel p-5 sm:p-8 lg:p-10">
+      <div className="panel min-w-0 p-5 sm:p-8">
         {post.body ? (
           <div className="blog-prose" dangerouslySetInnerHTML={{ __html: post.body }} />
         ) : (

@@ -949,7 +949,9 @@ html.lenis body {
 
 /* Blog */
 .blog-lead img { transition: transform .5s cubic-bezier(.23, 1, .32, 1); }
-.blog-lead:hover img { transform: scale(1.02); }
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .blog-lead:hover img { transform: scale(1.02); }
+}
 .blog-prose { --prose-ink: #161616; --prose-sub: #3d3d3d; --prose-line: #ececec; --prose-link: #161616; max-width: 680px; color: var(--prose-sub); font-size: 16px; line-height: 1.75; overflow-wrap: anywhere; }
 .blog-prose > * + * { margin-top: 1.1em; }
 .blog-prose h1, .blog-prose h2, .blog-prose h3, .blog-prose h4 { color: var(--prose-ink); font-weight: 500; letter-spacing: -0.03em; line-height: 1.25; margin-top: 1.8em; }
@@ -1123,18 +1125,28 @@ html[data-intro="play"], html[data-intro="play"] body { overflow: hidden; }
 .case-cover-desktop .case-cover-device-0 { left: 4%; top: 7%; width: 92%; height: 81%; border-radius: 8px; }
 .case-cover-desktop .case-cover-device-1 { left: 50%; top: 68%; width: 62%; height: 70%; border-radius: 8px; box-shadow: 0 0 0 5px rgb(255 255 255 / .3), 0 16px 30px -12px rgb(30 25 45 / .35); }
 .case-cover-mobile .case-cover-browser { display: none; }
-.case-cover-mobile .case-cover-device { width: 36%; height: 100%; padding: 4px; background: #242424; border-color: #4b4b4b; border-radius: clamp(16px, 3vw, 25px); }
-.case-cover-mobile .case-cover-viewport { border-radius: clamp(12px, 2.5vw, 21px); }
-.case-cover-mobile .case-cover-device-0 { left: -10%; top: 17%; transform: rotate(-7deg); }
-.case-cover-mobile .case-cover-device-1 { left: 31%; top: 8%; width: 38%; z-index: 1; }
-.case-cover-mobile .case-cover-device-2 { right: -10%; top: -12%; transform: rotate(7deg); }
+.case-cover-mobile .case-cover-device {
+  left: 50%; top: 5%; height: 90%; aspect-ratio: 780 / 1688;
+  padding: clamp(3px, .65vw, 7px); background: #242424; border-color: #4b4b4b;
+  border-radius: clamp(14px, 2.8vw, 26px);
+  transform: translateX(-50%);
+  transform-origin: 50% 45%;
+  animation: case-cover-phone 12s cubic-bezier(.77, 0, .175, 1) infinite paused;
+}
+.case-cover-mobile .case-cover-viewport { border-radius: clamp(10px, 2vw, 20px); }
+.case-cover-mobile .case-cover-scroll { height: 100%; object-fit: contain; animation: none; }
+.case-cover[data-playing="true"] .case-cover-mobile .case-cover-device { animation-play-state: running; }
+@keyframes case-cover-phone {
+  0%, 12%, 100% { transform: translateX(-50%) scale(1); }
+  46%, 64% { transform: translate(-50%, 4%) scale(1.65); }
+}
 .case-cover-hint { position: absolute; z-index: 3; left: 50%; top: 50%; padding: 10px 16px; border-radius: 999px; background: rgb(22 22 22 / .92); color: #fff; font-size: 13px; font-weight: 500; white-space: nowrap; pointer-events: none; opacity: 0; transform: translate(-50%, -40%); transition: opacity 180ms ease, transform 180ms cubic-bezier(.23, 1, .32, 1); }
 .case-cover-play { position: absolute; z-index: 4; left: 12px; bottom: 12px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 36px; padding: 0 10px; border: 1px solid rgb(255 255 255 / .65); border-radius: 999px; background: rgb(255 255 255 / .94); color: #242424; box-shadow: 0 2px 8px rgb(0 0 0 / .06); font-size: 11px; }
 .case-cover-play:focus-visible { outline: 2px solid #161616; outline-offset: 3px; }
 @keyframes case-cover-scroll { 0%, 15%, 100% { transform: translateY(0); } 45%, 65% { transform: translateY(var(--cover-scroll-end, 0px)); } }
 @media (hover: hover) and (pointer: fine) { .case-cover-open:hover .case-cover-hint { opacity: 1; transform: translate(-50%, -50%); } .case-cover-play:hover { background: #fff; } }
-@media (max-width: 639px) { .case-cover { aspect-ratio: 4 / 3; } .case-cover-mobile .case-cover-device { height: 94%; } .case-cover-play span { display: none; } .case-cover-play { min-width: 36px; } }
-@media (prefers-reduced-motion: reduce) { .case-cover-scroll { animation: none; transform: none; } .case-cover-hint { transition: opacity 150ms ease; transform: translate(-50%, -50%); } }
+@media (max-width: 639px) { .case-cover { aspect-ratio: 4 / 3; } .case-cover-play span { display: none; } .case-cover-play { min-width: 36px; } }
+@media (prefers-reduced-motion: reduce) { .case-cover-scroll { animation: none; transform: none; } .case-cover-mobile .case-cover-device { animation: none; } .case-cover-hint { transition: opacity 150ms ease; transform: translate(-50%, -50%); } }
 @media (max-width: 639px) {
   .case-cover-desktop .case-cover-device-0 .case-cover-scroll { width: 145%; margin-left: -12%; }
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowLeft, ArrowRight, ArrowUpRight, X } from "lucide-react";
 import Link from "next/link";
@@ -67,10 +67,13 @@ export default function CaseStudyOverlay({
   }, [cs, onClose]);
 
   const scroller = useRef<HTMLDivElement>(null);
+  const toolbar = useRef<HTMLDivElement>(null);
+  const chapterRail = useRef<HTMLElement>(null);
   const [progress, setProgress] = useState(0);
   const [active, setActive] = useState(-1);
   // "Full" reads the whole story; "In short" keeps the overview, the problem, what shipped and the outcome.
-  const [short, setShort] = useState(false);
+  const [shortFor, setShortFor] = useState<string>();
+  const short = Boolean(cs && shortFor === cs.slug);
 
   const info = cs ? projectInfo(cs) : [];
   const allBlocks = cs ? cs.blocks.filter((b) => b.visible && !b.draft) : [];
@@ -98,8 +101,8 @@ export default function CaseStudyOverlay({
       setProgress(max > 0 ? Math.min(1, el.scrollTop / max) : 0);
       let current = -1;
       for (const c of chapters) {
-        const target = document.getElementById(`cs-block-${c.i}`);
-        if (target && target.getBoundingClientRect().top < 220) current = c.i;
+        const target = el.querySelector(`#cs-block-${c.i}`);
+        if (target && target.getBoundingClientRect().top <= (toolbar.current?.getBoundingClientRect().bottom ?? 0) + 32) current = c.i;
       }
       setActive(current);
     };
@@ -107,6 +110,7 @@ export default function CaseStudyOverlay({
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(update);
     };
+    onScroll();
     el.addEventListener("scroll", onScroll, { passive: true });
     return () => {
       cancelAnimationFrame(raf);
@@ -116,19 +120,30 @@ export default function CaseStudyOverlay({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cs?.slug, chapterKey]);
 
-  useEffect(() => setShort(false), [cs?.slug]);
+  useLayoutEffect(() => {
+    if (scroller.current) scroller.current.scrollTop = 0;
+    if (chapterRail.current) chapterRail.current.scrollLeft = 0;
+    setShortFor(undefined);
+  }, [cs?.slug]);
 
-  // Keep the active chapter pill in view inside the scrolling nav.
   useEffect(() => {
-    if (active < 0) return;
-    document.getElementById(`cs-nav-${active}`)?.scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" });
+    const rail = chapterRail.current;
+    if (!rail || !rail.clientWidth || active < 0) return;
+    const pill = rail.querySelector(`#cs-nav-${active}`);
+    if (!pill) return;
+    const bounds = pill.getBoundingClientRect();
+    const railBounds = rail.getBoundingClientRect();
+    if (bounds.left < railBounds.left || bounds.right > railBounds.right) {
+      rail.scrollLeft += bounds.left - railBounds.left - (railBounds.width - bounds.width) / 2;
+    }
   }, [active]);
 
   const jump = (i: number) => {
     const el = scroller.current;
-    const target = document.getElementById(`cs-block-${i}`);
+    const target = el?.querySelector(`#cs-block-${i}`);
     if (!el || !target) return;
-    const top = target.getBoundingClientRect().top - el.getBoundingClientRect().top + el.scrollTop - 120;
+    const toolbarBottom = toolbar.current?.getBoundingClientRect().bottom ?? 0;
+    const top = target.getBoundingClientRect().top - toolbarBottom + el.scrollTop - 24;
     el.scrollTo({ top, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
   };
 
@@ -136,12 +151,12 @@ export default function CaseStudyOverlay({
     <AnimatePresence>
       {cs && (
         <motion.div
-          key={cs.slug}
+          key="case-study"
           role="dialog"
           aria-modal="true"
           aria-label={`${cs.title} case study`}
           ref={scroller}
-          className="fixed inset-0 z-[300] overflow-y-auto bg-bg text-ink"
+          className="fixed inset-0 z-[300] overflow-y-auto overscroll-contain bg-bg text-ink"
           data-lenis-prevent
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -149,7 +164,7 @@ export default function CaseStudyOverlay({
           transition={{ duration: 0.25, ease: "easeOut" }}
         >
           <div className="mx-auto w-full max-w-[720px] px-4 sm:px-6">
-            <div className="sticky top-0 z-10 -mx-4 border-b border-[#e8e8e8] bg-bg/90 px-4 backdrop-blur-md sm:-mx-6 sm:px-6">
+            <div ref={toolbar} className="sticky top-0 z-10 -mx-4 border-b border-[#e8e8e8] bg-bg/90 px-4 backdrop-blur-md sm:-mx-6 sm:px-6">
              <div className="flex items-center justify-between gap-4 py-3">
               <button
                 type="button"
@@ -166,8 +181,8 @@ export default function CaseStudyOverlay({
                     type="button"
                     aria-pressed={short === value}
                     onClick={() => {
-                      setShort(value);
-                      scroller.current?.scrollTo({ top: 0, behavior: "smooth" });
+                      setShortFor(value ? cs.slug : undefined);
+                      if (scroller.current) scroller.current.scrollTop = 0;
                     }}
                     className={`relative rounded-full px-3 py-1.5 transition-colors duration-200 ${short === value ? "text-white" : "text-sub hover:text-ink"}`}
                   >
@@ -188,7 +203,7 @@ export default function CaseStudyOverlay({
               </button>
              </div>
               {chapters.length > 2 && (
-                <nav aria-label="Case study sections" className="-mx-4 overflow-x-auto xl:hidden px-4 pb-3 [mask-image:linear-gradient(90deg,transparent,#000_16px,#000_calc(100%-32px),transparent)] [scrollbar-width:none] sm:-mx-6 sm:px-6 [&::-webkit-scrollbar]:hidden">
+                <nav ref={chapterRail} aria-label="Case study sections" className="-mx-4 overflow-x-auto xl:hidden px-4 pb-3 [mask-image:linear-gradient(90deg,transparent,#000_16px,#000_calc(100%-32px),transparent)] [scrollbar-width:none] sm:-mx-6 sm:px-6 [&::-webkit-scrollbar]:hidden">
                   <ol className="flex w-max gap-1.5">
                     {chapters.map((c) => (
                       <li key={c.i}>
@@ -237,10 +252,10 @@ export default function CaseStudyOverlay({
               </nav>
             )}
 
-            <div className="grid grid-cols-[minmax(0,1fr)] gap-3 pb-16 pt-4 md:gap-4">
+            <div className="grid grid-cols-[minmax(0,1fr)] gap-5 pb-16 pt-5 sm:gap-6 sm:pt-6">
               <div className="panel grid gap-5 p-5 sm:p-8">
                 {meta && <span className="kicker">{meta}</span>}
-                <h2 className="t-display">
+                <h2 className="t-display max-w-[24ch]">
                   {cs.hero_headline || cs.title}
                 </h2>
                 {cs.hero_description && (
@@ -274,26 +289,18 @@ export default function CaseStudyOverlay({
                   {info.map(([label, value]) => (
                     <div key={label} className="grid content-start gap-2">
                       <span className="kicker">{label}</span>
-                      <span className="text-[14px] leading-relaxed text-ink">{value}</span>
+                      <span className="text-[15px] leading-relaxed text-ink">{value}</span>
                     </div>
                   ))}
                 </div>
               )}
 
               {blocks.length > 0 && (
-                <div className="mt-10 grid grid-cols-[minmax(0,1fr)] gap-16 md:mt-14 md:gap-20">
+                <div className="mt-5 grid grid-cols-[minmax(0,1fr)] gap-10 sm:mt-8 sm:gap-14">
                   {blocks.map((b, i) => (
-                    <motion.div
-                      key={`${short ? "s" : "f"}-${i}-${b.block_type}`}
-                      id={`cs-block-${i}`}
-                      className="min-w-0"
-                      initial={{ opacity: 0, y: 18 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true, margin: "0px 0px -12% 0px", root: scroller }}
-                      transition={{ duration: 0.6, ease: [0.2, 0.8, 0.2, 1] }}
-                    >
+                    <div key={`${cs.slug}-${short}-${i}`} id={`cs-block-${i}`} className="min-w-0 border-t border-line pt-6 sm:pt-8">
                       <CaseStudyBlockView block={b} chapter={chapterNo.get(i)} />
-                    </motion.div>
+                    </div>
                   ))}
                 </div>
               )}

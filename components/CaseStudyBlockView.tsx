@@ -43,7 +43,7 @@ const ARTICLE_TYPES = new Set([
 const RULE = "border-[#e4e4e4]";
 const LABEL = "text-[11px] uppercase tracking-[0.08em] text-muted";
 const H3 = "t-h3";
-const BODY = "text-[14px] leading-[1.65] text-sub";
+const BODY = "text-sm leading-relaxed text-sub";
 
 /** A quiet outline tile for an icon. Grey on white panels, white on the page grey; never a filled colour. */
 function IconBadge({ card, tone = "page", size = "md" }: { card: CaseStudyCard; tone?: "page" | "panel"; size?: "sm" | "md" }) {
@@ -450,15 +450,20 @@ function Cards({ cards, variant, layout, numbered }: { cards: CaseStudyCard[]; v
   }
 
   return (
-    <div className={`grid gap-3 ${cards.length > 2 ? "sm:grid-cols-2" : ""}`}>
+    <div className={`grid gap-3 ${cards.some(card => card.logo) ? "lg:grid-cols-3" : cards.length > 2 ? "sm:grid-cols-2" : ""}`}>
       {cards.map((card, i, all) => (
-        <div key={card.title} className={`grid content-start gap-2 rounded-[18px] bg-panel p-6 ${lastSpans(all, i) ? "sm:col-span-2" : ""}`}>
+        <div key={card.title} className={`grid min-w-0 content-start gap-2 rounded-[16px] border border-line bg-panel p-4 sm:p-5 ${!cards.some(item => item.logo) && lastSpans(all, i) ? "sm:col-span-2" : ""}`}>
           {card.image && (
             <div className="relative -mx-2 -mt-2 mb-2 aspect-[16/10] overflow-hidden rounded-[12px] border border-line bg-bg">
               <img src={card.image} alt={`${card.label || card.title} screenshot`} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover object-top" />
             </div>
           )}
-          {cardIcon(card) ? <IconLabel card={card} tone="panel" text={card.label || (numbered ? pad(i) : "")} /> : (card.label || numbered) && <span className={LABEL}>{card.label || pad(i)}</span>}
+          {card.logo ? (
+            <div className="mb-1 flex min-w-0 items-center gap-2.5">
+              <img src={card.logo} alt="" width={28} height={28} className="size-7 shrink-0 object-contain" loading="lazy" />
+              <span className="text-sm font-semibold text-ink">{card.label}</span>
+            </div>
+          ) : cardIcon(card) ? <IconLabel card={card} tone="panel" text={card.label || (numbered ? pad(i) : "")} /> : (card.label || numbered) && <span className={LABEL}>{card.label || pad(i)}</span>}
           <h3 className={H3}>{card.title}</h3>
           <p className={BODY}>{card.body}</p>
           {[["Strengths", "+", card.pros], ["Gaps", "−", card.cons]].map(([title, mark, items]) =>
@@ -466,7 +471,7 @@ function Cards({ cards, variant, layout, numbered }: { cards: CaseStudyCard[]; v
               <div key={title as string} className={`mt-2 grid gap-1.5 border-t ${RULE} pt-3`}>
                 <span className={LABEL}>{title as string}</span>
                 {(items as string[]).map((item) => (
-                  <p key={item} className="grid grid-cols-[14px_1fr] text-[13.5px] leading-[1.55] text-sub">
+                  <p key={item} className={`grid grid-cols-[14px_minmax(0,1fr)] ${BODY}`}>
                     <span aria-hidden="true" className="text-ink">{mark as string}</span>
                     {item}
                   </p>
@@ -516,8 +521,8 @@ export default function CaseStudyBlockView({ block, chapter: chapterNo }: { bloc
   const header = (fallback: string) => (
     <div className="grid gap-3">
       {kicker(fallback)}
-      {block.heading && <h2 className="t-title max-w-[640px]">{block.heading}</h2>}
-      {block.description && <p className="t-lede mt-1">{block.description}</p>}
+      {block.heading && <h2 className="t-title max-w-[33ch]">{block.heading}</h2>}
+      {block.description && <p className="t-lede">{block.description}</p>}
       {block.supporting_text && (
         <p className="max-w-[560px] border-l-2 border-[#dcdcdc] pl-4 text-[13.5px] leading-[1.65] text-sub">{block.supporting_text}</p>
       )}
@@ -526,7 +531,7 @@ export default function CaseStudyBlockView({ block, chapter: chapterNo }: { bloc
 
   const captionText = block.caption && <p className="t-caption">{block.caption}</p>;
   const cards = block.cards?.length ? <Cards cards={block.cards} variant={variant} layout={block.layout} numbered={numbered} /> : null;
-  const section = (children: ReactNode) => <section className="grid min-w-0 gap-6 md:gap-7">{children}</section>;
+  const section = (children: ReactNode) => <section className="grid min-w-0 gap-5 sm:gap-6">{children}</section>;
 
   const figure = (src: string, label?: string, className?: string, showCaption = true) => (
     <figure key={src} className={`grid gap-3 ${className ?? ""}`}>

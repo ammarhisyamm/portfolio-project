@@ -14,8 +14,8 @@ export default async function BlogPage() {
   const posts = await getBlogSummaries();
   const [lead, ...rest] = posts;
   return (
-    <div className="grid gap-3 pb-16 pt-3 md:gap-4">
-      <Reveal className="panel grid gap-5 p-5 sm:p-8 lg:p-10">
+    <div className="grid gap-4 pb-16 pt-3 sm:gap-5">
+      <Reveal className="panel grid gap-5 p-5 sm:p-8">
         <span className="kicker">Personal essays</span>
         <h1 className="t-display max-w-[760px]">
           Reflections on faith, growth, and everyday life.
@@ -27,16 +27,18 @@ export default async function BlogPage() {
       </Reveal>
 
       {lead ? (
-        <Reveal className="panel overflow-hidden p-0">
-          <Link href={`/blog/${lead.slug}`} className="blog-lead group grid no-underline sm:grid-cols-[1.1fr_1fr]">
+        <Reveal className="panel p-5 sm:p-8">
+          <Link href={`/blog/${lead.slug}`} className={`blog-lead group grid min-w-0 items-center gap-4 no-underline sm:gap-6 ${lead.cover ? "md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]" : ""}`}>
             {lead.cover && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={lead.cover} alt="" className="aspect-[16/10] h-full w-full object-cover" fetchPriority="high" />
+              <div className="overflow-hidden rounded-xl">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={lead.cover} alt="" className="aspect-[3/2] w-full object-cover" fetchPriority="high" />
+              </div>
             )}
-            <div className="grid content-end gap-3 p-5 sm:p-8">
+            <div className="grid min-w-0 gap-2.5">
               <span className="text-[11px] uppercase text-muted">{[formatPostDate(lead.date), `${lead.readingMinutes} min read`].filter(Boolean).join(" · ")}</span>
-              <h2 className="t-title group-hover:text-sub">{lead.title}</h2>
-              {lead.subtitle && <p className="leading-relaxed text-sub">{lead.subtitle}</p>}
+              <h2 className="text-pretty text-[clamp(20px,2.8vw,26px)] font-semibold leading-tight tracking-[-0.03em] group-hover:text-sub">{lead.title}</h2>
+              {lead.subtitle && <p className="text-pretty text-[15px] leading-relaxed text-sub">{lead.subtitle}</p>}
             </div>
           </Link>
         </Reveal>
@@ -55,12 +57,12 @@ export default async function BlogPage() {
           <ul className="mt-6 border-t border-line">
             {rest.map((post) => (
               <li key={post.slug} className="border-b border-line">
-                <Link href={`/blog/${post.slug}`} className="group grid gap-1 py-4 no-underline sm:grid-cols-[1fr_auto] sm:items-baseline sm:gap-6">
+                <Link href={`/blog/${post.slug}`} className="group grid gap-1 py-4 no-underline sm:grid-cols-[minmax(0,1fr)_auto] sm:items-baseline sm:gap-6">
                   <span>
                     <span className="block text-[15px] font-medium group-hover:text-sub">{post.title}</span>
                     {post.subtitle && <span className="mt-1 block text-sm leading-relaxed text-sub">{post.subtitle}</span>}
                   </span>
-                  <span className="text-[11px] uppercase text-muted">{formatPostDate(post.date)}</span>
+                  <span className="text-[11px] uppercase text-muted sm:text-right">{formatPostDate(post.date)}</span>
                 </Link>
               </li>
             ))}
